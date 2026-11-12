@@ -45,8 +45,8 @@ Second session (any time later):
 - **In the game:** Options > Data > **Send feedback** saves a folder with their note, a screenshot, the error log
   and (if they tick it) their play stats. They zip it and send it to you.
 - **Where they send it:** choose one channel and put it in the invite: a Discord channel, an email address, or
-  GitHub Issues. GitHub Issues only works for testers after the repository is made public; the "Report a bug
-  online" button in the game points there.
+  GitHub Issues (github.com/ScikuVRC/destiny-unbound/issues), where the game's "Report a bug online" button
+  points. Testers need a free GitHub account to post there.
 - Ask three questions at the end: What was the best moment? What was the most confusing moment? Would you play
   again tomorrow, and why or why not?
 
@@ -59,8 +59,8 @@ Second session (any time later):
 ## Known issues in this alpha (tell testers up front)
 
 - The build is not code-signed, so Windows SmartScreen warns on first launch.
-- Automatic updates need the releases to be reachable: the GitHub repository is private, so until it is public
-  (or releases are hosted elsewhere) testers must download new versions by hand.
+- Automatic updates work for the installer once a release is published on GitHub
+  (github.com/ScikuVRC/destiny-unbound/releases); the portable `.exe` never updates itself.
 - Fullscreen is borderless fullscreen; there is no exclusive fullscreen mode.
 - Sound always uses the system's default output device.
 - Spanish covers the menus, Options and most of the game; some story text may still be in English.
