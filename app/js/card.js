@@ -7,10 +7,10 @@
   function hash(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
 
   const CT = {
-    classic:  { font: '"Segoe UI", Inter, sans-serif', head: '"Segoe UI", Inter, sans-serif', panel: 'rgba(6,6,8,.72)', stroke: 'rgba(255,255,255,.12)', key: '#7fb0ff', val: '#ffffff', sub: '#9aa', accent: '#4d8dff', bgTop: 12, caps: false, radius: 34 },
-    gilded:   { font: '"Palatino Linotype", "Book Antiqua", Georgia, serif', head: '"Palatino Linotype", Georgia, serif', panel: 'rgba(20,13,5,.78)', stroke: '#c9a24d', key: '#e3bd62', val: '#fbf1d6', sub: '#bda56a', accent: '#e3bd62', bgTop: 10, caps: true, radius: 14 },
-    neon:     { font: 'Bahnschrift, "Segoe UI", sans-serif', head: 'Bahnschrift, "Segoe UI", sans-serif', panel: 'rgba(5,5,28,.78)', stroke: '#00e5ff', key: '#ff2bd6', val: '#f4f4ff', sub: '#8d8db8', accent: '#00e5ff', bgTop: 10, caps: true, radius: 26 },
-    grimoire: { font: 'Georgia, "Times New Roman", serif', head: 'Georgia, "Times New Roman", serif', panel: 'rgba(233,219,187,.93)', stroke: '#8a6a3c', key: '#8c231c', val: '#2b1d0f', sub: '#6d5532', accent: '#9c2a22', bgTop: 14, caps: false, radius: 10 }
+    ashen:     { font: '"EB Garamond", Georgia, serif', head: '"Cinzel", "Palatino Linotype", serif', panel: 'rgba(16,12,10,.86)', stroke: '#6b5636', key: '#e0662d', val: '#f3e2c3', sub: '#a89a82', accent: '#e0b46a', bgTop: 10, caps: true, radius: 4 },
+    tabletop:  { font: '"IM Fell English", Georgia, serif', head: '"IM Fell English SC", "IM Fell English", Georgia, serif', panel: 'rgba(239,226,192,.95)', stroke: '#3b2a1a', key: '#8e1b16', val: '#2b1d10', sub: '#5a4330', accent: '#a3221b', bgTop: 14, caps: false, radius: 6, light: true },
+    iron:      { font: '"Share Tech Mono", Consolas, monospace', head: '"UnifrakturCook", "Cinzel", serif', panel: 'rgba(18,19,22,.9)', stroke: '#b8862b', key: '#c9302c', val: '#efe2bf', sub: '#a99e86', accent: '#e8c46a', bgTop: 10, caps: false, radius: 0 },
+    bloodmoon: { font: '"Cormorant Garamond", Georgia, serif', head: '"Cormorant SC", "Cormorant Garamond", serif', panel: 'rgba(11,10,16,.88)', stroke: 'rgba(201,206,222,.55)', key: '#ec4d6a', val: '#f1ecf7', sub: '#a39cb4', accent: '#c9cede', bgTop: 8, caps: true, radius: 2 }
   };
 
   function rr(c, x, y, w, h, r) { c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
@@ -103,18 +103,30 @@
   }
 
   function frame(c, name, hue) {
-    if (name === 'gilded') {
-      c.lineWidth = 10; c.strokeStyle = '#c9a24d'; c.strokeRect(14, 14, W - 28, H - 28);
-      c.lineWidth = 3; c.strokeRect(34, 34, W - 68, H - 68);
-      [[34, 34, 1, 1], [W - 34, 34, -1, 1], [34, H - 34, 1, -1], [W - 34, H - 34, -1, -1]].forEach(p => { c.beginPath(); c.moveTo(p[0], p[1] + p[3] * 80); c.quadraticCurveTo(p[0], p[1], p[0] + p[2] * 80, p[1]); c.lineWidth = 6; c.stroke(); c.beginPath(); c.arc(p[0] + p[2] * 22, p[1] + p[3] * 22, 8, 0, TAU); c.fillStyle = '#e3bd62'; c.fill(); });
-    } else if (name === 'neon') {
-      c.shadowColor = '#00e5ff'; c.shadowBlur = 30; c.lineWidth = 6; c.strokeStyle = '#00e5ff'; rr(c, 16, 16, W - 32, H - 32, 40); c.stroke();
-      c.shadowColor = '#ff2bd6'; c.strokeStyle = '#ff2bd6'; c.lineWidth = 3; rr(c, 32, 32, W - 64, H - 64, 30); c.stroke(); c.shadowBlur = 0;
-    } else if (name === 'grimoire') {
-      c.lineWidth = 26; c.strokeStyle = '#3a2716'; c.strokeRect(13, 13, W - 26, H - 26);
-      c.lineWidth = 4; c.strokeStyle = '#a98a5b'; c.strokeRect(30, 30, W - 60, H - 60);
+    const corners = (inset, fn) => [[inset, inset], [W - inset, inset], [inset, H - inset], [W - inset, H - inset]].forEach(fn);
+    if (name === 'tabletop') {
+      c.lineWidth = 28; c.strokeStyle = '#4a2c18'; c.strokeRect(14, 14, W - 28, H - 28);
+      c.setLineDash([10, 8]); c.lineWidth = 2; c.strokeStyle = 'rgba(217,169,74,.55)'; c.strokeRect(22, 22, W - 44, H - 44); c.setLineDash([]);
+      c.lineWidth = 3; c.strokeStyle = '#3b2a1a'; c.strokeRect(34, 34, W - 68, H - 68);
+      const g = c.createRadialGradient(W - 96, 104, 4, W - 90, 110, 46); g.addColorStop(0, '#d2483d'); g.addColorStop(.6, '#8e1b16'); g.addColorStop(1, '#5a0f0b');
+      c.beginPath(); c.arc(W - 90, 110, 44, 0, TAU); c.fillStyle = g; c.fill();
+      c.fillStyle = '#f5d9c8'; c.font = '700 40px "IM Fell English SC", serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('F', W - 90, 112);
+    } else if (name === 'iron') {
+      c.lineWidth = 12; c.strokeStyle = '#8a5f1f'; c.strokeRect(10, 10, W - 20, H - 20);
+      c.lineWidth = 2; c.strokeStyle = '#d9a94a'; c.strokeRect(22, 22, W - 44, H - 44);
+      c.save(); c.beginPath(); c.rect(22, 22, W - 44, 18); c.clip(); for (let x = 0; x < W; x += 28) { c.beginPath(); c.moveTo(x, 40); c.lineTo(x + 14, 22); c.lineTo(x + 28, 22); c.lineTo(x + 14, 40); c.closePath(); c.fillStyle = 'rgba(179,18,27,.85)'; c.fill(); } c.restore();
+      corners(16, p => { c.beginPath(); c.arc(p[0], p[1], 7, 0, TAU); c.fillStyle = '#e8c46a'; c.fill(); c.strokeStyle = '#3a2a10'; c.lineWidth = 2; c.stroke(); });
+    } else if (name === 'bloodmoon') {
+      c.lineWidth = 2; c.strokeStyle = 'rgba(201,206,222,.6)'; c.strokeRect(20, 20, W - 40, H - 40);
+      c.lineWidth = 1; c.strokeRect(30, 30, W - 60, H - 60);
+      c.fillStyle = '#c41e3a'; c.font = '44px "Cormorant Garamond", serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
+      corners(48, p => c.fillText('\u2767', p[0], p[1]));
     } else {
-      c.lineWidth = 2; c.strokeStyle = 'rgba(255,255,255,.1)'; rr(c, 1, 1, W - 2, H - 2, 6); c.stroke();
+      c.lineWidth = 3; c.strokeStyle = '#b8975a'; c.strokeRect(16, 16, W - 32, H - 32);
+      c.lineWidth = 1.5; c.strokeStyle = '#6b5636'; c.strokeRect(28, 28, W - 56, H - 56);
+      c.textAlign = 'center'; c.textBaseline = 'middle'; c.font = '30px "Cinzel", serif';
+      [[W / 2, 17], [W / 2, H - 17], [17, H / 2], [W - 17, H / 2]].forEach(p => { c.fillStyle = '#0b0908'; c.fillRect(p[0] - 20, p[1] - 16, 40, 32); c.fillStyle = '#e0b46a'; c.fillText('\u2756', p[0], p[1]); });
+      const glow = c.createLinearGradient(0, H - 160, 0, H); glow.addColorStop(0, 'rgba(194,65,12,0)'); glow.addColorStop(1, 'rgba(194,65,12,.22)'); c.fillStyle = glow; c.fillRect(28, H - 160, W - 56, 132);
     }
   }
 
@@ -141,7 +153,7 @@
 
   FW.drawCard = function (canvas, legend, opts) {
     opts = opts || {};
-    const name = opts.theme && CT[opts.theme] ? opts.theme : 'classic';
+    const name = opts.theme && CT[opts.theme] ? opts.theme : (FW.THEME_ALIAS && CT[FW.THEME_ALIAS[opts.theme]]) ? FW.THEME_ALIAS[opts.theme] : 'ashen';
     const th = CT[name];
     canvas.width = W; canvas.height = H;
     const c = canvas.getContext('2d');
@@ -162,13 +174,13 @@
     c.shadowColor = 'rgba(0,0,0,.9)'; c.shadowBlur = opts.image ? 26 : 18; c.fillStyle = '#fff'; c.fillText(tt, W / 2, 160);
     const subName = (legend.name && legend.pickName('title') ? legend.pickName('title') + '  ·  ' : '') + (legend.has('sub') ? legend.pickName('sub') + ' ' + race : race);
     c.shadowBlur = opts.image ? 16 : 0;
-    c.fillStyle = name === 'grimoire' ? '#f4e6c4' : opts.image && name === 'classic' ? '#a9c8ff' : th.accent; fit(c, th.caps ? subName.toUpperCase() : subName, W - 140, 36, '600', th.font); c.fillText((th.caps ? subName.toUpperCase() : subName), W / 2, 210);
+    c.fillStyle = th.light ? '#f4e6c4' : th.accent; fit(c, th.caps ? subName.toUpperCase() : subName, W - 140, 36, '600', th.font); c.fillText((th.caps ? subName.toUpperCase() : subName), W / 2, 210);
     c.shadowBlur = 0;
 
     // panel
     const px = 54, py = 800, pw = W - 108, ph = 690;
     c.save(); rr(c, px, py, pw, ph, th.radius); c.fillStyle = th.panel; c.fill();
-    c.lineWidth = name === 'gilded' ? 4 : 2.5; c.strokeStyle = th.stroke; if (name === 'neon') { c.shadowColor = th.stroke; c.shadowBlur = 20; } c.stroke(); c.restore();
+    c.lineWidth = name === 'iron' ? 3 : 2.5; c.strokeStyle = th.stroke; if (name === 'ashen') { c.shadowColor = '#c2410c'; c.shadowBlur = 18; } c.stroke(); c.restore();
     const lines = FW.cardLines(legend, comp);
     const lh = Math.min(48, Math.floor((ph - 56) / lines.length));
     let y = py + 52;
@@ -186,12 +198,12 @@
     });
     // footer: rating + extras
     const fy = py + ph + 36;
-    c.font = '700 30px ' + th.font; c.fillStyle = name === 'grimoire' ? '#efe0bd' : '#fff';
+    c.font = '700 30px ' + th.font; c.fillStyle = th.light ? '#efe0bd' : '#fff';
     c.textAlign = 'left'; c.fillText('POWER RATING  ' + comp.rating, px + 6, fy);
-    c.textAlign = 'right'; c.fillStyle = name === 'grimoire' ? '#efe0bd' : th.accent; c.fillText(comp.rank.toUpperCase(), W - px - 6, fy);
+    c.textAlign = 'right'; c.fillStyle = th.light ? '#efe0bd' : th.accent; c.fillText(comp.rank.toUpperCase(), W - px - 6, fy);
     const bw = pw - 12; rr(c, px + 6, fy + 16, bw, 12, 6); c.fillStyle = 'rgba(255,255,255,.16)'; c.fill();
     rr(c, px + 6, fy + 16, Math.max(12, bw * Math.min(1, comp.rating / 100)), 12, 6); c.fillStyle = th.accent; c.fill();
-    c.textAlign = 'center'; c.font = '500 22px ' + th.font; c.fillStyle = name === 'grimoire' ? '#d9c79c' : 'rgba(255,255,255,.55)';
+    c.textAlign = 'center'; c.font = '500 22px ' + th.font; c.fillStyle = th.light ? '#d9c79c' : 'rgba(255,255,255,.55)';
     const ex = [legend.pickName('birth'), legend.pickName('per'), FW.P(legend.entry('mark')).none ? null : legend.pickName('mark')].filter(Boolean).join('  •  ');
     const exs = fit(c, ex, W - 140, 22, '500', th.font); c.fillText(ex, W / 2, fy + 62);
     frame(c, name, hue);

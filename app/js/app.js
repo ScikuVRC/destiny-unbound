@@ -12,7 +12,7 @@
   };
   const saved = store.get('fw.settings', {});
   const state = {
-    theme: FW.THEMES[saved.theme] ? saved.theme : 'classic',
+    theme: FW.THEMES[saved.theme] ? saved.theme : (FW.THEME_ALIAS[saved.theme] || 'ashen'),
     luck: FW.LUCK.some(l => l.id === saved.luck) ? saved.luck : 'heroic',
     sound: saved.sound !== false, speed: saved.speed === 'fast' ? 'fast' : 'normal', spinDir: saved.spinDir === 'cw' ? 'cw' : 'ccw',
     auto: false, legend: null, image: null, rng: FW.makeRng(), seed: '',
@@ -63,7 +63,7 @@
   function setLuck(id) { state.luck = id; persist(); $('#btnLuck').textContent = 'Luck: ' + luckInfo().name; renderHomeOpts(); }
   function renderHomeOpts() {
     $('#luckOpts').innerHTML = FW.LUCK.map(l => '<button class="opt ' + (l.id === state.luck ? 'sel' : '') + '" data-luck="' + l.id + '"><b>' + l.name + '</b><span>' + (FW.t ? FW.t(l.blurb) : l.blurb) + ' &middot; ' + l.tokens + ' Fate Token' + (l.tokens > 1 ? 's' : '') + '</span></button>').join('');
-    $('#themeOpts').innerHTML = Object.keys(FW.THEMES).map(k => '<button class="opt ' + (k === state.theme ? 'sel' : '') + '" data-theme="' + k + '"><b>' + FW.THEMES[k].name + '</b><span>' + ({ classic: 'Faithful black', gilded: 'Gold and serif', neon: 'Glow arcade', grimoire: 'Parchment' })[k] + '</span></button>').join('');
+    $('#themeOpts').innerHTML = Object.keys(FW.THEMES).map(k => '<button class="opt ' + (k === state.theme ? 'sel' : '') + '" data-theme="' + k + '"><b>' + FW.THEMES[k].name + '</b><span>' + (FW.t ? FW.t : x => x)(({ ashen: 'Dark fantasy', tabletop: 'Tabletop RPG', iron: 'Grimdark sci-fi', bloodmoon: 'Gothic horror' })[k]) + '</span></button>').join('');
   }
 
   /* ---------- steps / chips / result ---------- */

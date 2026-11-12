@@ -3,52 +3,60 @@
   const FW = g.FW = g.FW || {};
   const TAU = Math.PI * 2;
 
-  /* ---------------- themes (wheel side; page side lives in css/themes.css) ---------------- */
+  /* ---------------- themes (wheel side; page side lives in css/themes.css) ----------------
+     kind picks the wheel art: ember (iron, runes, blade), parchment (ink, d20, arrow), gothic (brass cog, gem, spike), eldritch (silver, eye, claw).
+     pal = alternating slice colours [inner, outer]; lad = ladder colours from the lowest to the highest tier; hit = colour of the landed slice. */
   FW.THEMES = {
-    classic:  { name: 'Classic Night',  ring: '#0e0e0e', ringHi: '#2b2b2b', ringW: 0.05, hub: '#171717', hubRing: '#555', pointer: '#0a0a0a', pointerEdge: '#2a2a2a', sat: 74, lMul: 1.1, font: '"Segoe UI", Inter, system-ui, sans-serif', weight: '600', glow: null, stroke: 'rgba(0,0,0,.28)', dim: 0.5, studs: false },
-    gilded:   { name: 'Gilded Arcana',  ring: '#2b1d07', ringHi: '#e3bd62', ringW: 0.065, hub: '#1c1408', hubRing: '#e3bd62', pointer: '#e3bd62', pointerEdge: '#7a5b17', sat: 58, lMul: 1.0, font: '"Palatino Linotype", "Book Antiqua", Georgia, serif', weight: '600', glow: 'rgba(227,189,98,.35)', stroke: 'rgba(40,25,5,.55)', dim: 0.55, studs: true },
-    neon:     { name: 'Neon Arcade',    ring: '#06060f', ringHi: '#00e5ff', ringW: 0.045, hub: '#0a0a1c', hubRing: '#ff2bd6', pointer: '#ff2bd6', pointerEdge: '#ffffff', sat: 96, lMul: 1.05, font: 'Bahnschrift, "Segoe UI", system-ui, sans-serif', weight: '700', glow: 'rgba(0,229,255,.55)', stroke: 'rgba(0,0,20,.7)', dim: 0.6, studs: true },
-    grimoire: { name: 'Old Grimoire',   ring: '#3a2716', ringHi: '#a98a5b', ringW: 0.055, hub: '#2a1c10', hubRing: '#c9a86b', pointer: '#7b1e1e', pointerEdge: '#2a1010', sat: 42, lMul: 1.12, font: 'Georgia, "Times New Roman", serif', weight: '700', glow: null, stroke: 'rgba(50,30,10,.45)', dim: 0.45, studs: false }
+    ashen: { name: 'Ashen Crown', kind: 'ember', font: '"Cinzel", "Palatino Linotype", serif', weight: '700', upper: true, italic: false,
+      pal: [['#24201d', '#3a322b'], ['#3b1612', '#5e1f17'], ['#2b1f19', '#46322a']], lad: ['#f0d9ad', '#c9893f', '#7a2a10', '#2a0d06'], gray: ['#151210', '#100d0c'],
+      line: 'rgba(212,175,110,.35)', ink: '#f3e2c3', inkDark: '#2a1608', hit: 'rgba(255,140,40,.55)', glow: '#ff7a1a', dim: 0.55 },
+    tabletop: { name: "Adventurer's Sheet", kind: 'parchment', font: '"IM Fell English", "Palatino Linotype", Georgia, serif', weight: '400', upper: false, italic: false,
+      pal: [['#efe2c0', '#efe2c0'], ['#e3cf9f', '#e3cf9f']], lad: ['#f8efd9', '#e6d2a3', '#b48a52', '#5a3a1e'], gray: ['#d4c39b', '#d4c39b'],
+      line: '#3b2a1a', ink: '#2b1d10', inkLight: '#fff4dc', hit: 'rgba(179,38,30,.85)', glow: null, dim: 0.35, hatch: true },
+    iron: { name: 'Iron Litany', kind: 'gothic', font: '"Share Tech Mono", Consolas, monospace', weight: '400', upper: true, italic: false,
+      pal: [['#2b2f35', '#40464e'], ['#4a0f0f', '#6e1414']], lad: ['#e8d9b0', '#b8862b', '#6e1414', '#1a0505'], gray: ['#18191c', '#131417'],
+      line: '#b8862b', ink: '#efe2bf', inkDark: '#1a0d02', hit: 'rgba(255,214,110,.6)', glow: '#ffd166', dim: 0.55 },
+    bloodmoon: { name: 'Blood Moon', kind: 'eldritch', font: '"Cormorant Garamond", Georgia, serif', weight: '700', upper: false, italic: true,
+      pal: [['#1a0f1f', '#3a1d45'], ['#0f1a1c', '#173a3d'], ['#200d10', '#4a1520']], lad: ['#e6dff0', '#9a8cb6', '#4a2a5a', '#120a16'], gray: ['#0d0c12', '#0a090e'],
+      line: 'rgba(200,210,225,.3)', ink: '#e6e0f0', inkDark: '#0d1405', hit: 'rgba(182,255,92,.5)', glow: '#b6ff5c', dim: 0.6 }
   };
+  FW.THEME_ALIAS = { classic: 'ashen', gilded: 'ashen', neon: 'iron', grimoire: 'tabletop' };   // themes before the redesign
+  const RUNES = 'ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛞᛟ';
+  function brass(c, R) { const g = c.createLinearGradient(-R, -R, R, R); g.addColorStop(0, '#f0c96a'); g.addColorStop(.5, '#8a5f1f'); g.addColorStop(1, '#d9a94a'); return g; }
 
-  const hsl = (h, s, l) => 'hsl(' + ((h % 360 + 360) % 360).toFixed(1) + ',' + s.toFixed(1) + '%,' + l.toFixed(1) + '%)';
+  /* mix two hex colours */
+  function mix(a, b, t) { const p = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)); const x = p(a), y = p(b); return 'rgb(' + x.map((v, i) => Math.round(v + (y[i] - v) * t)).join(',') + ')'; }
+  function ladderColor(lad, r) { const seg = Math.min(lad.length - 2, Math.floor(r * (lad.length - 1))), t = r * (lad.length - 1) - seg; return mix(lad[seg], lad[seg + 1], t); }
+  const lum = c => { const m = /rgb\((\d+),(\d+),(\d+)\)/.exec(c) || /#(..)(..)(..)/.exec(c); if (!m) return 0.5; const v = m[0][0] === '#' ? [1, 2, 3].map(i => parseInt(m[i], 16)) : [1, 2, 3].map(i => +m[i]); return (0.299 * v[0] + 0.587 * v[1] + 0.114 * v[2]) / 255; };
 
-  /* slice colour: returns {fill, light} */
+  /* slice colour: returns {inner, outer, light} (light = needs dark text) */
   FW.sliceColor = function (style, i, n, entry, theme) {
-    if (entry && entry.color) return { fill: entry.color, light: entry.colorLight != null ? entry.colorLight : 40 };
-    if (entry && entry.gray) return { fill: i % 2 ? '#2a2a2e' : '#323236', light: 20, gray: true };
-    const none = entry && entry.dsl && /(^|\s)none(\s|$)/.test(entry.dsl);
-    if (none) return { fill: '#070707', light: 4 };
-    const S = theme.sat, lm = theme.lMul;
+    if (entry && entry.color) return { inner: entry.color, outer: entry.color, light: (entry.colorLight || 40) > 62 };
+    if (entry && entry.gray) return { inner: theme.gray[0], outer: theme.gray[1], light: lum(theme.gray[0]) > 0.6, gray: true };
+    if (entry && entry.dsl && /(^|\s)none(\s|$)/.test(entry.dsl)) return { inner: '#070606', outer: '#0d0b0a', light: false, none: true };
     if (style.mode === 'ladder' || style.mode === 'gradient') {
-      const r = n > 1 ? i / (n - 1) : 0;
-      if (i === n - 1) return { fill: hsl(style.hue, S * 0.7, 5), light: 5 };
-      const L = (80 - r * 62) * lm;
-      return { fill: hsl(style.hue, S, L), light: L };
+      const c = ladderColor(theme.lad, n > 1 ? i / (n - 1) : 0);
+      return { inner: c, outer: c, light: lum(c) > 0.55 };
     }
-    if (style.mode === 'stripe' || style.mode === 'ladderish') {
-      const L = (i % 2 ? 31 : 40) * lm + (i % 5 === 0 ? 4 : 0);
-      return { fill: hsl(style.hue + (i % 3) * 2, S * 0.85, L), light: L };
-    }
-    const hue = (style.hue + i * 137.508) % 360;
-    const L = (44 + (i % 3) * 4) * lm;
-    return { fill: hsl(hue, S, L), light: L };
+    const p = theme.pal[i % theme.pal.length];
+    return { inner: p[0], outer: p[1], light: lum(p[0]) > 0.55 };
   };
 
   class Wheel {
     constructor(canvas, themeName) {
       this.cv = canvas; this.ctx = canvas.getContext('2d');
-      this.theme = FW.THEMES[themeName || 'classic'];
+      this.theme = FW.THEMES[themeName] || FW.THEMES[FW.THEME_ALIAS[themeName]] || FW.THEMES.ashen;
       this.entries = []; this.style = { mode: 'cat', hue: 0 };
       this.rot = 0; this.focus = -1; this.kick = 0; this.spinning = false; this.dir = -1;   // -1 = counter-clockwise, 1 = clockwise
       this.onTick = null; this.onLabel = null; this.size = 0; this.dpr = 1;
-      this.off = document.createElement('canvas');
+      this.off = document.createElement('canvas'); this.rim = document.createElement('canvas');
       this.cum = [0, 1];
       this._raf = 0; this._skip = false; this._lastIdx = -1; this._lastTick = 0;
       this.resize();
       if (typeof ResizeObserver !== 'undefined') { this._ro = new ResizeObserver(() => { this.resize(); }); this._ro.observe(canvas.parentElement || canvas); }
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { this.buildFace(); this.draw(); });   // redraw once the theme font has loaded
     }
-    setTheme(name) { this.theme = FW.THEMES[name] || FW.THEMES.classic; this.buildFace(); this.draw(); }
+    setTheme(name) { this.theme = FW.THEMES[name] || FW.THEMES[FW.THEME_ALIAS[name]] || FW.THEMES.ashen; this.buildFace(); this.draw(); }
     setEntries(entries, style) {
       this.entries = entries; this.style = style || this.style;
       // dw = drawn size (greyed-out slices stay visible but can never be landed on: w = 0)
@@ -65,51 +73,79 @@
       if (Math.abs(w - this.size) < 1 && dpr === this.dpr && this.cv.width) return;
       this.size = w; this.dpr = dpr;
       this.cv.width = Math.round(w * dpr); this.cv.height = Math.round(w * dpr);
-      this.off.width = this.cv.width; this.off.height = this.cv.height;
+      this.off.width = this.cv.width; this.off.height = this.cv.height; this.rim.width = this.cv.width; this.rim.height = this.cv.height;
       this.buildFace(); this.draw();
     }
     geometry() {
-      const S = this.size, pad = this.theme.glow ? S * 0.025 : S * 0.008;
-      const R = S / 2 - pad, ringW = this.theme.ringW * R;
-      return { S, cx: S / 2, cy: S / 2, R, Rs: R - ringW * 0.92, ringW, hubR: R * 0.17 };
+      const S = this.size, k = this.theme.kind;
+      const rimW = S * ({ ember: 0.058, parchment: 0.045, gothic: 0.075, eldritch: 0.05 }[k] || 0.05);
+      const R = S / 2 - rimW - S * 0.012;                  // slices
+      const hubR = R * ({ ember: 0.19, parchment: 0.23, gothic: 0.22, eldritch: 0.25 }[k] || 0.2);
+      return { S, cx: S / 2, cy: S / 2, R, Rs: R, rimW, hubR };
     }
-    /* static face: slices + labels, slice 0 starts at 12 o'clock going clockwise */
+    /* static parts: the rim behind the slices (rim canvas) and the slices with labels (off canvas, rotated while spinning) */
     buildFace() {
       if (!this.size) return;
-      const c = this.off.getContext('2d'); const d = this.dpr; const G = this.geometry(); const th = this.theme;
+      const d = this.dpr, G = this.geometry(), th = this.theme;
+      this.buildRim(G);
+      const c = this.off.getContext('2d');
       c.setTransform(d, 0, 0, d, 0, 0); c.clearRect(0, 0, G.S, G.S);
       const n = this.entries.length; if (!n) return;
-      const dense = n > 70;
+      c.save(); c.translate(G.cx, G.cy);
       for (let i = 0; i < n; i++) {
-        const a0 = -Math.PI / 2 + this.cum[i] * TAU, a1 = -Math.PI / 2 + this.cum[i + 1] * TAU;
-        const col = FW.sliceColor(this.style, i, n, this.entries[i], th);
-        this.entries[i]._light = col.light;
-        c.beginPath(); c.moveTo(G.cx, G.cy); c.arc(G.cx, G.cy, G.Rs, a0, a1); c.closePath();
-        c.fillStyle = col.fill; c.fill();
-        if (n <= 120) { c.lineWidth = dense ? 0.5 : 1.1; c.strokeStyle = th.stroke; c.stroke(); }
+        const a0 = -Math.PI / 2 + this.cum[i] * TAU, a1 = -Math.PI / 2 + this.cum[i + 1] * TAU, e = this.entries[i];
+        const col = FW.sliceColor(this.style, i, n, e, th); e._light = col.light;
+        c.beginPath(); c.moveTo(0, 0); c.arc(0, 0, G.R, a0, a1); c.closePath();
+        if (col.inner === col.outer) c.fillStyle = col.inner; else { const gr = c.createRadialGradient(0, 0, G.hubR, 0, 0, G.R); gr.addColorStop(0, col.inner); gr.addColorStop(1, col.outer); c.fillStyle = gr; }
+        c.fill();
+        if (th.hatch && i % 2 && !col.gray && !e.color && this.style.mode !== 'ladder' && this.style.mode !== 'gradient') { c.save(); c.clip(); c.strokeStyle = 'rgba(59,42,26,.13)'; c.lineWidth = 0.8; for (let k = -G.R; k < G.R; k += 6) { c.beginPath(); c.moveTo(k, -G.R); c.lineTo(k + G.R, G.R); c.stroke(); } c.restore(); }
+        if (n <= 140) { c.lineWidth = n > 70 ? 0.5 : th.kind === 'parchment' ? 1.2 : th.kind === 'gothic' ? 1.3 : 1; c.strokeStyle = th.line; c.stroke(); }
       }
       // labels
       const sizeBoost = n <= 8 ? 1.7 : n <= 14 ? 1.4 : n <= 28 ? 1.12 : 1;
       for (let i = 0; i < n; i++) {
-        const e = this.entries[i]; const ang = (this.cum[i + 1] - this.cum[i]) * TAU;
-        const mid = -Math.PI / 2 + (this.cum[i] + this.cum[i + 1]) / 2 * TAU;
-        const arcPx = ang * G.Rs * 0.52;
-        let fs = Math.min(arcPx * 0.82, G.Rs * 0.088 * sizeBoost);
+        const e = this.entries[i], ang = (this.cum[i + 1] - this.cum[i]) * TAU, mid = -Math.PI / 2 + (this.cum[i] + this.cum[i + 1]) / 2 * TAU;
+        let fs = Math.min(ang * G.R * 0.52 * 0.82, G.R * (th.upper ? 0.075 : 0.088) * sizeBoost);
         if (fs < 3.6) continue;
-        const avail = G.Rs * 0.93 - G.hubR * 1.25;
-        c.save(); c.translate(G.cx, G.cy); c.rotate(mid + Math.PI);
-        c.font = th.weight + ' ' + fs.toFixed(1) + 'px ' + th.font;
-        let label = FW.t ? FW.t(e.name) : e.name;
+        const avail = G.R * 0.93 - G.hubR * 1.15;
+        c.save(); c.rotate(mid + Math.PI);
+        const font = s => (th.italic ? 'italic ' : '') + th.weight + ' ' + s.toFixed(1) + 'px ' + th.font;
+        c.font = font(fs);
+        let label = FW.t ? FW.t(e.name) : e.name; if (th.upper) label = label.toUpperCase();
         let wd = c.measureText(label).width;
-        if (wd > avail) { fs = Math.max(3.6, fs * avail / wd); c.font = th.weight + ' ' + fs.toFixed(1) + 'px ' + th.font; wd = c.measureText(label).width; if (wd > avail * 1.04) { const cut = Math.floor(label.length * avail / wd) - 1; label = label.slice(0, Math.max(3, cut)) + '…'; } }
+        if (wd > avail) { fs = Math.max(3.6, fs * avail / wd); c.font = font(fs); wd = c.measureText(label).width; if (wd > avail * 1.04) { const cut = Math.floor(label.length * avail / wd) - 1; label = label.slice(0, Math.max(3, cut)) + '…'; } }
         if (fs < 3.6) { c.restore(); continue; }
         c.textBaseline = 'middle'; c.textAlign = 'left';
-        const light = e._light > 62;
-        c.fillStyle = e.gray ? 'rgba(255,255,255,.38)' : light ? 'rgba(20,16,10,.92)' : 'rgba(255,255,255,.96)';
-        if (!light && fs > 7) { c.shadowColor = 'rgba(0,0,0,.45)'; c.shadowBlur = 2; }
-        c.fillText(label, -(G.Rs - G.Rs * 0.045), 0);
+        c.fillStyle = e.gray ? (e._light ? 'rgba(43,29,16,.4)' : 'rgba(230,220,200,.32)') : e._light ? (th.inkDark || th.ink) : (th.inkLight && th.kind === 'parchment' ? th.inkLight : th.ink);
+        if (!e._light && fs > 7) { c.shadowColor = 'rgba(0,0,0,.5)'; c.shadowBlur = 2.5; }
+        c.fillText(label, -(G.R - G.R * 0.045), 0);
         c.restore();
       }
+      c.restore();
+    }
+    buildRim(G) {
+      const c = this.rim.getContext('2d'), d = this.dpr, th = this.theme, R = G.R, W = G.rimW;
+      c.setTransform(d, 0, 0, d, 0, 0); c.clearRect(0, 0, G.S, G.S); c.save(); c.translate(G.cx, G.cy);
+      if (th.kind === 'ember') {
+        c.beginPath(); c.arc(0, 0, R + W, 0, TAU); const rg = c.createRadialGradient(0, 0, R, 0, 0, R + W); rg.addColorStop(0, '#2a2522'); rg.addColorStop(.5, '#4a423b'); rg.addColorStop(1, '#141110'); c.fillStyle = rg; c.fill();
+        c.font = Math.max(8, W * 0.55).toFixed(1) + 'px serif'; c.fillStyle = 'rgba(255,170,90,.8)'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.shadowColor = '#ff7a1a'; c.shadowBlur = 8;
+        for (let i = 0; i < 36; i++) { c.save(); c.rotate(i / 36 * TAU); c.fillText(RUNES[i % RUNES.length], 0, -(R + W / 2)); c.restore(); }
+        c.shadowBlur = 0;
+      } else if (th.kind === 'parchment') {
+        c.beginPath(); c.arc(0, 0, R + W, 0, TAU); c.fillStyle = '#e9d9b2'; c.fill(); c.strokeStyle = '#3b2a1a'; c.lineWidth = 2; c.stroke();
+        c.beginPath(); c.arc(0, 0, R + W * 0.78, 0, TAU); c.lineWidth = 0.8; c.stroke();
+        for (let i = 0; i < 72; i++) { const a = i / 72 * TAU, l = (i % 6 ? 0.3 : 0.62) * W; c.beginPath(); c.moveTo(Math.cos(a) * (R + 1), Math.sin(a) * (R + 1)); c.lineTo(Math.cos(a) * (R + 1 + l), Math.sin(a) * (R + 1 + l)); c.lineWidth = i % 6 ? 0.7 : 1.4; c.stroke(); }
+      } else if (th.kind === 'gothic') {
+        const teeth = 40; c.beginPath();
+        for (let i = 0; i < teeth * 2; i++) { const a = i / (teeth * 2) * TAU, r = i % 2 ? R + W * 0.68 : R + W; c.lineTo(Math.cos(a - 0.03) * r, Math.sin(a - 0.03) * r); c.lineTo(Math.cos(a + 0.03) * r, Math.sin(a + 0.03) * r); }
+        c.closePath(); c.fillStyle = brass(c, R); c.fill();
+        c.beginPath(); c.arc(0, 0, R + W * 0.6, 0, TAU); c.fillStyle = '#1d1e21'; c.fill();
+        for (let i = 0; i < 24; i++) { const a = i / 24 * TAU; c.beginPath(); c.arc(Math.cos(a) * (R + W * 0.3), Math.sin(a) * (R + W * 0.3), Math.max(1.4, W * 0.09), 0, TAU); c.fillStyle = '#c99a3c'; c.fill(); }
+      } else {
+        c.beginPath(); c.arc(0, 0, R + W, 0, TAU); c.fillStyle = '#0b0a0f'; c.fill(); c.strokeStyle = 'rgba(200,205,220,.55)'; c.lineWidth = 1;
+        for (let i = 0; i < 18; i++) { c.save(); c.rotate(i / 18 * TAU); c.beginPath(); const r = R + 2; c.moveTo(0, -r); c.bezierCurveTo(W * 0.5, -(r + W * 0.25), W * 0.5, -(r + W * 0.7), 0, -(r + W * 0.62)); c.bezierCurveTo(-W * 0.3, -(r + W * 0.55), -W * 0.1, -(r + W * 0.3), W * 0.15, -(r + W * 0.38)); c.stroke(); c.restore(); }
+      }
+      c.restore();
     }
     indexAt(rot) {
       const phi = (((-rot) % TAU) + TAU) % TAU / TAU;
@@ -121,36 +157,74 @@
       if (!this.size) return;
       const ctx = this.ctx, d = this.dpr, G = this.geometry(), th = this.theme;
       ctx.setTransform(d, 0, 0, d, 0, 0); ctx.clearRect(0, 0, G.S, G.S);
-      // glow + ring
-      ctx.save();
-      if (th.glow) { ctx.shadowColor = th.glow; ctx.shadowBlur = G.S * 0.05; }
-      ctx.beginPath(); ctx.arc(G.cx, G.cy, G.R, 0, TAU); ctx.fillStyle = th.ring; ctx.fill();
-      ctx.restore();
-      ctx.beginPath(); ctx.arc(G.cx, G.cy, G.R - 0.5, 0, TAU); ctx.lineWidth = Math.max(1, G.S * 0.004); ctx.strokeStyle = th.ringHi; ctx.stroke();
-      // rotated face
+      ctx.drawImage(this.rim, 0, 0, G.S, G.S);
+      // rotated slices
       if (this.entries.length) {
         ctx.save(); ctx.translate(G.cx, G.cy); ctx.rotate(this.rot); ctx.drawImage(this.off, -G.cx, -G.cy, G.S, G.S);
         if (this.focus >= 0) {
           const a0 = -Math.PI / 2 + this.cum[this.focus] * TAU, a1 = -Math.PI / 2 + this.cum[this.focus + 1] * TAU;
-          // dim everything except the winner
-          ctx.beginPath(); ctx.arc(0, 0, G.Rs, 0, TAU); ctx.moveTo(0, 0); ctx.arc(0, 0, G.Rs, a0, a1); ctx.closePath();
+          ctx.beginPath(); ctx.arc(0, 0, G.R, 0, TAU); ctx.moveTo(0, 0); ctx.arc(0, 0, G.R, a0, a1); ctx.closePath();
           ctx.fillStyle = 'rgba(0,0,0,' + th.dim + ')'; ctx.fill('evenodd');
-          ctx.beginPath(); ctx.moveTo(0, 0); ctx.arc(0, 0, G.Rs, a0, a1); ctx.closePath(); ctx.fillStyle = 'rgba(255,255,255,.14)'; ctx.fill();
+          ctx.save(); ctx.beginPath(); ctx.moveTo(0, 0); ctx.arc(0, 0, G.R, a0, a1); ctx.closePath();
+          if (th.glow) { ctx.shadowColor = th.glow; ctx.shadowBlur = G.S * 0.05; }
+          ctx.globalCompositeOperation = th.kind === 'parchment' ? 'multiply' : 'screen'; ctx.fillStyle = th.hit; ctx.fill(); ctx.restore();
         }
         ctx.restore();
       }
-      // studs on ring
-      if (th.studs) { const k = 24; for (let i = 0; i < k; i++) { const a = i / k * TAU + this.rot * 0.0; ctx.beginPath(); ctx.arc(G.cx + Math.cos(a) * (G.R - G.ringW / 2), G.cy + Math.sin(a) * (G.R - G.ringW / 2), Math.max(1.2, G.ringW * 0.16), 0, TAU); ctx.fillStyle = th.ringHi; ctx.globalAlpha = 0.85; ctx.fill(); ctx.globalAlpha = 1; } }
-      // hub
-      ctx.beginPath(); ctx.arc(G.cx, G.cy, G.hubR, 0, TAU); ctx.fillStyle = th.hub; ctx.fill();
-      ctx.lineWidth = Math.max(1.5, G.hubR * 0.08); ctx.strokeStyle = 'rgba(255,255,255,.05)'; ctx.stroke();
-      ctx.beginPath(); ctx.arc(G.cx, G.cy, G.hubR * 0.52, 0, TAU); ctx.lineWidth = G.hubR * 0.16; ctx.strokeStyle = th.hubRing; ctx.stroke();
-      // pointer (teardrop on the hub, tip pointing up into the wheel)
-      ctx.save(); ctx.translate(G.cx, G.cy); ctx.rotate(this.kick * 0.07 * this.dir);
-      const tipY = -(G.hubR + G.R * 0.14), baseW = G.hubR * 0.62;
-      ctx.beginPath(); ctx.moveTo(0, tipY); ctx.bezierCurveTo(baseW * 0.25, tipY + G.R * 0.07, baseW, -G.hubR * 0.7, baseW, -G.hubR * 0.35); ctx.lineTo(-baseW, -G.hubR * 0.35); ctx.bezierCurveTo(-baseW, -G.hubR * 0.7, -baseW * 0.25, tipY + G.R * 0.07, 0, tipY); ctx.closePath();
-      ctx.fillStyle = th.pointer; ctx.fill(); ctx.lineWidth = Math.max(1, G.S * 0.004); ctx.strokeStyle = th.pointerEdge; ctx.stroke();
+      // edge, hub and pointer
+      ctx.save(); ctx.translate(G.cx, G.cy);
+      ctx.beginPath(); ctx.arc(0, 0, G.R, 0, TAU);
+      ctx.strokeStyle = { ember: '#b8975a', parchment: '#3b2a1a', gothic: '#d9a94a', eldritch: '#c9cede' }[th.kind]; ctx.lineWidth = th.kind === 'gothic' ? 2.5 : 2; ctx.stroke();
+      this.drawHub(ctx, G);
       ctx.restore();
+      this.drawPointer(ctx, G);
+    }
+    drawHub(c, G) {
+      const r = G.hubR, th = this.theme;
+      if (th.kind === 'ember') {
+        const hg = c.createRadialGradient(0, -r * 0.2, 1, 0, 0, r); hg.addColorStop(0, '#ffb35c'); hg.addColorStop(.35, '#7a2a10'); hg.addColorStop(1, '#1b1715');
+        c.beginPath(); c.arc(0, 0, r, 0, TAU); c.fillStyle = hg; c.fill(); c.strokeStyle = '#b8975a'; c.lineWidth = 3; c.stroke();
+      } else if (th.kind === 'parchment') {
+        c.beginPath(); c.arc(0, 0, r, 0, TAU); c.fillStyle = '#f5ead0'; c.fill(); c.strokeStyle = '#3b2a1a'; c.lineWidth = 2; c.stroke();
+        const h = r * 0.78, P = k => [Math.cos(-Math.PI / 2 + k * Math.PI / 3) * h, Math.sin(-Math.PI / 2 + k * Math.PI / 3) * h];
+        c.beginPath(); for (let k = 0; k < 6; k++) { const p = P(k); k ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1]); } c.closePath(); c.fillStyle = '#7a1f1a'; c.fill(); c.strokeStyle = '#2b1d10'; c.lineWidth = 1.5; c.stroke();
+        const t = h * 0.55; c.beginPath(); c.moveTo(0, -t); c.lineTo(t * 0.87, t * 0.5); c.lineTo(-t * 0.87, t * 0.5); c.closePath(); c.strokeStyle = 'rgba(255,230,200,.7)'; c.lineWidth = 1; c.stroke();
+        [[0, 0, -t], [2, t * 0.87, t * 0.5], [4, -t * 0.87, t * 0.5]].forEach(q => { const p = P(q[0]); c.beginPath(); c.moveTo(p[0], p[1]); c.lineTo(q[1], q[2]); c.stroke(); });
+        c.fillStyle = '#fff4dc'; c.font = '700 ' + Math.round(r * 0.42) + 'px "IM Fell English", serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('20', 0, t * 0.05);
+      } else if (th.kind === 'gothic') {
+        c.beginPath(); for (let i = 0; i < 24; i++) { const a = i / 24 * TAU, rr = i % 2 ? r : r * 1.18; c.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); } c.closePath(); c.fillStyle = brass(c, r); c.fill();
+        c.beginPath(); c.arc(0, 0, r * 0.72, 0, TAU); c.fillStyle = '#1d1e21'; c.fill();
+        const gem = c.createRadialGradient(-r * 0.12, -r * 0.12, 1, 0, 0, r * 0.45); gem.addColorStop(0, '#ff8a80'); gem.addColorStop(.5, '#b3121b'); gem.addColorStop(1, '#3a0508');
+        c.beginPath(); c.arc(0, 0, r * 0.45, 0, TAU); c.fillStyle = gem; c.shadowColor = '#ff2a2a'; c.shadowBlur = 16; c.fill(); c.shadowBlur = 0;
+      } else {
+        c.beginPath(); c.arc(0, 0, r, 0, TAU); c.fillStyle = '#0b0a0f'; c.fill(); c.strokeStyle = '#c9cede'; c.lineWidth = 2; c.stroke();
+        const eye = () => { c.beginPath(); c.moveTo(-r * 0.85, 0); c.quadraticCurveTo(0, -r * 0.7, r * 0.85, 0); c.quadraticCurveTo(0, r * 0.7, -r * 0.85, 0); c.closePath(); };
+        c.save(); eye(); c.fillStyle = '#efe6d2'; c.fill(); c.clip();
+        // the pupil follows the spin a little
+        const look = Math.max(-1, Math.min(1, this.spinning ? Math.sin(this.rot * 3) : 0)) * r * 0.18;
+        const ir = c.createRadialGradient(look, 0, 1, look, 0, r * 0.4); ir.addColorStop(0, '#d8ff9a'); ir.addColorStop(.6, '#5e9e2a'); ir.addColorStop(1, '#1d3a0d');
+        c.beginPath(); c.arc(look, 0, r * 0.4, 0, TAU); c.fillStyle = ir; c.fill();
+        c.beginPath(); c.ellipse(look, 0, r * 0.07, r * 0.33, 0, 0, TAU); c.fillStyle = '#050505'; c.fill(); c.restore();
+        eye(); c.strokeStyle = '#7a1f2b'; c.lineWidth = 1.5; c.stroke();
+      }
+    }
+    drawPointer(c, G) {
+      const th = this.theme, R = G.R, top = G.cy - R, u = G.S / 400;   // u = scale unit (designs were drawn on a 400px wheel)
+      c.save(); c.translate(G.cx, top - 8 * u); c.rotate(this.kick * 0.12 * this.dir); c.translate(0, -(top - 8 * u));
+      if (th.kind === 'ember') {
+        c.beginPath(); c.moveTo(0, top + 24 * u); c.lineTo(-9 * u, top - 6 * u); c.lineTo(-4 * u, top - 22 * u); c.lineTo(4 * u, top - 22 * u); c.lineTo(9 * u, top - 6 * u); c.closePath();
+        const bl = c.createLinearGradient(-9 * u, 0, 9 * u, 0); bl.addColorStop(0, '#8d8f94'); bl.addColorStop(.5, '#f2f2f2'); bl.addColorStop(1, '#6b6d72'); c.fillStyle = bl; c.fill(); c.strokeStyle = '#2a2522'; c.lineWidth = 1; c.stroke();
+        c.fillStyle = '#b8975a'; c.fillRect(-14 * u, top - 26 * u, 28 * u, 5 * u);
+      } else if (th.kind === 'parchment') {
+        c.beginPath(); c.moveTo(0, top + 20 * u); c.lineTo(-10 * u, top - 14 * u); c.lineTo(0, top - 6 * u); c.lineTo(10 * u, top - 14 * u); c.closePath(); c.fillStyle = '#b3261e'; c.fill(); c.strokeStyle = '#2b1d10'; c.lineWidth = 1.5; c.stroke();
+      } else if (th.kind === 'gothic') {
+        c.beginPath(); c.moveTo(0, top + 28 * u); c.lineTo(-11 * u, top - 8 * u); c.lineTo(0, top - 30 * u); c.lineTo(11 * u, top - 8 * u); c.closePath(); c.fillStyle = brass(c, R); c.fill(); c.strokeStyle = '#3a2a10'; c.lineWidth = 1.5; c.stroke();
+        c.beginPath(); c.arc(0, top - 8 * u, 4 * u, 0, TAU); c.fillStyle = '#b3121b'; c.fill();
+      } else {
+        c.beginPath(); c.moveTo(0, top + 24 * u); c.quadraticCurveTo(-12 * u, top - 2 * u, -6 * u, top - 22 * u); c.quadraticCurveTo(0, top - 8 * u, 6 * u, top - 22 * u); c.quadraticCurveTo(12 * u, top - 2 * u, 0, top + 24 * u);
+        const sv = c.createLinearGradient(-12 * u, 0, 12 * u, 0); sv.addColorStop(0, '#7d8293'); sv.addColorStop(.5, '#f2f3f8'); sv.addColorStop(1, '#6a6f80'); c.fillStyle = sv; c.fill();
+      }
+      c.restore();
     }
     /* put slice idx centred under the pointer without animating */
     showResult(idx, frac) {

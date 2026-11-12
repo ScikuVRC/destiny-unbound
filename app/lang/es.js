@@ -24,8 +24,8 @@
     'Mortal': 'Mortal', 'Heroic': 'Heroica', 'Mythic': 'Mítica', 'Divine': 'Divina',
     'Fair odds. Most heroes are ordinary.': 'Probabilidades justas. La mayoría de los héroes son corrientes.', 'Rare slices swell. Legends happen.': 'Las porciones raras crecen. Nacen leyendas.',
     'Gods notice you. Cosmic tiers appear.': 'Los dioses se fijan en ti. Aparecen niveles cósmicos.', 'Reality bends - like the viral spins.': 'La realidad se dobla, como en los giros virales.',
-    'Classic Night': 'Noche clásica', 'Gilded Arcana': 'Arcano dorado', 'Neon Arcade': 'Arcade neón', 'Old Grimoire': 'Viejo grimorio',
-    'Faithful black': 'Negro fiel', 'Gold and serif': 'Oro y serifa', 'Glow arcade': 'Arcade brillante', 'Parchment': 'Pergamino',
+    'Ashen Crown': 'Corona de Ceniza', "Adventurer's Sheet": 'Hoja del Aventurero', 'Iron Litany': 'Letanía de Hierro', 'Blood Moon': 'Luna de Sangre',
+    'Dark fantasy': 'Fantasía oscura', 'Tabletop RPG': 'Rol de mesa', 'Grimdark sci-fi': 'Ciencia ficción grimdark', 'Gothic horror': 'Terror gótico',
     /* spin screen */
     'SPIN': 'GIRAR', 'Re-spin': 'Volver a girar', 'Next': 'Siguiente', 'Back to card': 'Volver a la carta', 'Auto: off': 'Auto: no', 'Auto: on': 'Auto: sí', 'Speed: normal': 'Velocidad: normal', 'Speed: fast': 'Velocidad: rápida',
     'Auto-play': 'Juego automático', 'Spin speed': 'Velocidad de giro', 'Pause story': 'Pausar la historia', 'Your Legend': 'Tu leyenda', 'Your Saga': 'Tu saga', 'Show / hide': 'Mostrar / ocultar', 'The Arena': 'La Arena',

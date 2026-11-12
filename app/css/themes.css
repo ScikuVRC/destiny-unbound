@@ -1,55 +1,93 @@
-/* FATEWHEEL themes - the four mockup directions */
+/* FATEWHEEL themes: Ashen Crown, Adventurer's Sheet, Iron Litany, Blood Moon.
+   Colours and fonts are variables used by base.css; each theme adds its own ornaments below.
+   Fonts are bundled in app/fonts (fonts.css). */
 
-/* 1. Classic Night - faithful to the original video look */
-:root,[data-theme="classic"]{
-  --bg:#000;--topbar:rgba(0,0,0,.86);--fg:#f2f2f2;--muted:#9a9a9a;--line:#2b2b2b;
-  --panel:#121212;--panel-fg:#ececec;--chip-bg:#1b1b1d;--chip-fg:#4d8dff;--chip-border:#26262a;--chip-radius:22px;
-  --accent:#4d8dff;--accent2:#9a6bff;--accent-fg:#fff;--good:#58e07a;--bad:#ff6b6b;
-  --btn-bg:#1d1d20;--btn-fg:#f2f2f2;--radius:12px;
-  --font:"Segoe UI",Inter,system-ui,-apple-system,sans-serif;--font-display:"Segoe UI",Inter,system-ui,sans-serif;--font-chip:var(--font);--font-result:var(--font);--result-weight:600;
+/* 1. Ashen Crown - dark fantasy: ash, embers and old iron */
+:root,[data-theme="ashen"]{
+  --bg:#0b0908;--topbar:rgba(12,10,9,.9);--fg:#e9dcc4;--muted:#a89a82;--line:#3b3022;
+  --panel:#15110f;--panel-fg:#e9dcc4;--chip-bg:#15110f;--chip-fg:#ffd7a8;--chip-border:#6b5636;--chip-radius:3px;
+  --accent:#e0662d;--accent2:#e0b46a;--accent-fg:#ffe9cf;--good:#9fd36a;--bad:#ff7a5c;
+  --btn-bg:#16120f;--btn-fg:#e9dcc4;--radius:3px;
+  --font:"EB Garamond",Georgia,serif;--font-display:"Cinzel","Palatino Linotype",serif;--font-chip:"Cinzel",serif;--font-result:"Cinzel",serif;--result-weight:900;
 }
+body[data-theme="ashen"]{background:radial-gradient(80% 45% at 50% 110%,#5a1a0866,transparent 70%),radial-gradient(70% 50% at 50% -10%,#1d1816,#0b0908 70%) fixed,#0b0908;font-size:17px}
+[data-theme="ashen"] .hero h1{background:linear-gradient(180deg,#ffe3b8,#e0a35c 60%,#a8380e);-webkit-background-clip:text;background-clip:text;text-shadow:none;filter:drop-shadow(0 0 22px rgba(224,102,45,.35));font-weight:900}
+[data-theme="ashen"] .card-panel,[data-theme="ashen"] .sheet,[data-theme="ashen"] .fx-card,[data-theme="ashen"] .modal{background:linear-gradient(#18130f,#110e0c);border-color:#4d3f2c;box-shadow:inset 0 0 0 3px #0e0b0a,inset 0 0 0 4px #2d2418}
+[data-theme="ashen"] .card-panel h2,[data-theme="ashen"] .sheet h2{color:#e0662d;letter-spacing:.2em}
+[data-theme="ashen"] .chip{text-transform:uppercase;letter-spacing:.12em;box-shadow:0 0 0 1px #0b0908,0 0 24px rgba(224,102,45,.18)}
+[data-theme="ashen"] .result{color:#ffd7a8;letter-spacing:.04em;text-shadow:0 0 26px rgba(255,122,26,.55)}
+[data-theme="ashen"] .result.rare{color:#fff1d6;text-shadow:0 0 30px #ff7a1a,0 0 6px #ffb35c}
+[data-theme="ashen"] .btn{font-family:"Cinzel",serif;letter-spacing:.06em;border-color:#5a4a33}
+[data-theme="ashen"] .btn.primary{background:linear-gradient(#a8380e,#5a1a08);color:#ffe3c2;border:1px solid #e0a35c;box-shadow:0 0 22px rgba(194,65,12,.4),inset 0 1px 0 rgba(255,179,92,.4)}
+[data-theme="ashen"] .pill,[data-theme="ashen"] .icon-btn{font-family:"Cinzel",serif;border-radius:3px;border-color:#5a4a33;background:#120f0d;color:#e9dcc4}
+[data-theme="ashen"] .brand{font-family:"Cinzel",serif;color:#e0b46a}
+[data-theme="ashen"] .opt.sel{border-color:#e0662d;box-shadow:inset 0 0 0 1px #e0662d,0 0 18px rgba(224,102,45,.25)}
 
-/* 2. Gilded Arcana - ornate fantasy, matches the S2 final-card look */
-[data-theme="gilded"]{
-  --bg:#0c0905;--topbar:rgba(12,9,5,.9);--fg:#f3e7c9;--muted:#b09a69;--line:#4a3716;
-  --panel:#16100a;--panel-fg:#f1e3c0;--chip-bg:#21160a;--chip-fg:#e8c872;--chip-border:#8d6a22;--chip-radius:6px;
-  --accent:#e3bd62;--accent2:#b8862b;--accent-fg:#241705;--good:#8fe28a;--bad:#ff8c78;
-  --btn-bg:#241a0c;--btn-fg:#f3e7c9;--radius:6px;
-  --font:"Palatino Linotype","Book Antiqua",Georgia,serif;--font-display:"Palatino Linotype",Georgia,serif;--font-chip:var(--font);--font-result:var(--font);--result-weight:700;
+/* 2. Adventurer's Sheet - tabletop RPG: parchment, ink, red wax on a wooden table */
+[data-theme="tabletop"]{
+  --bg:#2a1a0e;--topbar:rgba(58,36,20,.94);--fg:#f3e6c8;--muted:#d6c29c;--line:#6b4a2c;
+  --panel:#efe2c0;--panel-fg:#2b1d10;--chip-bg:#efe2c0;--chip-fg:#2b1d10;--chip-border:#3b2a1a;--chip-radius:4px;
+  --accent:#a3221b;--accent2:#d9a94a;--accent-fg:#fbe9d0;--good:#2d6a2f;--bad:#a3221b;
+  --btn-bg:#efe2c0;--btn-fg:#2b1d10;--radius:5px;
+  --font:"IM Fell English",Georgia,serif;--font-display:"IM Fell English SC","IM Fell English",Georgia,serif;--font-chip:"IM Fell English SC",serif;--font-result:"IM Fell English",serif;--result-weight:400;
 }
-[data-theme="gilded"] body,body[data-theme="gilded"]{background:radial-gradient(ellipse at 50% -10%,#2a1c08 0,#0c0905 60%)}
-[data-theme="gilded"] .chip,[data-theme="gilded"] .fx-card,[data-theme="gilded"] .sheet,[data-theme="gilded"] .card-panel{box-shadow:inset 0 0 0 1px #0c0905,inset 0 0 0 2px #6b4f17}
-[data-theme="gilded"] .result{letter-spacing:.03em;text-shadow:0 2px 14px rgba(227,189,98,.25)}
-[data-theme="gilded"] .chip{letter-spacing:.06em;text-transform:uppercase;font-size:clamp(14px,3.8vw,18px)}
+body[data-theme="tabletop"]{background:radial-gradient(80% 70% at 50% 35%,transparent,#0d0805 100%) fixed,repeating-linear-gradient(90deg,#3a2414 0 38px,#33200f 38px 80px,#3d2716 80px 120px);font-size:17px}
+[data-theme="tabletop"] .hero h1{background:none;color:#f5e6c4;text-shadow:0 2px 0 #1a0f07;font-weight:400}
+[data-theme="tabletop"] .card-panel,[data-theme="tabletop"] .sheet,[data-theme="tabletop"] .fx-card,[data-theme="tabletop"] .modal{background:radial-gradient(40% 30% at 85% 15%,rgba(217,192,138,.35),transparent),radial-gradient(60% 50% at 50% 50%,#f3e8cc,#e6d4ab);border:1.5px solid #3b2a1a;box-shadow:inset 0 0 0 4px #efe2c0,inset 0 0 0 5px rgba(59,42,26,.45),0 10px 26px rgba(0,0,0,.45)}
+[data-theme="tabletop"] .card-panel h2,[data-theme="tabletop"] .sheet h2{color:#8e1b16;letter-spacing:.06em;font-size:17px}
+[data-theme="tabletop"] .chip{box-shadow:2px 3px 0 #1a0f07}
+[data-theme="tabletop"] .result{color:#f5e6c4;text-shadow:0 2px 0 #1a0f07}
+[data-theme="tabletop"] .result.rare{color:#ffd27a}
+[data-theme="tabletop"] .btn{font-family:"IM Fell English SC",serif;font-weight:400;border:1.5px solid #3b2a1a;box-shadow:2px 2px 0 rgba(26,15,7,.5)}
+[data-theme="tabletop"] .btn.primary{background:radial-gradient(circle at 35% 30%,#d2483d,#8e1b16 60%,#5a0f0b);color:#fbe9d0;border-color:#3b0a07;box-shadow:0 3px 0 #3b0a07}
+[data-theme="tabletop"] .btn.ghost{background:#efe2c0;color:#2b1d10}
+[data-theme="tabletop"] .pill,[data-theme="tabletop"] .icon-btn{border-radius:4px;background:#efe2c0;color:#2b1d10;border-color:#3b2a1a}
+[data-theme="tabletop"] .brand{font-family:"IM Fell English SC",serif;letter-spacing:.06em;color:#f5e0a8}
+[data-theme="tabletop"] .steps i.cur{background:#f5e6c4}
+[data-theme="tabletop"] input,[data-theme="tabletop"] select,[data-theme="tabletop"] textarea{background:#f8efd9;color:#2b1d10;border-color:#3b2a1a}
 
-/* 3. Neon Arcade - game-show energy */
-[data-theme="neon"]{
-  --bg:#05050f;--topbar:rgba(5,5,15,.88);--fg:#f4f4ff;--muted:#8d8db8;--line:#26264a;
-  --panel:#0b0b1f;--panel-fg:#eaeaff;--chip-bg:#101030;--chip-fg:#00e5ff;--chip-border:#00e5ff;--chip-radius:999px;
-  --accent:#ff2bd6;--accent2:#00e5ff;--accent-fg:#10001a;--good:#38ffb0;--bad:#ff5577;
-  --btn-bg:#12123a;--btn-fg:#eaeaff;--radius:14px;
-  --font:Bahnschrift,"Segoe UI",system-ui,sans-serif;--font-display:Bahnschrift,"Segoe UI",system-ui,sans-serif;--font-chip:var(--font);--font-result:var(--font);--result-weight:800;
+/* 3. Iron Litany - grimdark gothic sci-fi: gunmetal, oxblood and brass */
+[data-theme="iron"]{
+  --bg:#0a0a0b;--topbar:rgba(18,19,22,.94);--fg:#e3d8bd;--muted:#a99e86;--line:#3a2a10;
+  --panel:#16171a;--panel-fg:#e3d8bd;--chip-bg:#16171a;--chip-fg:#e8c46a;--chip-border:#8a5f1f;--chip-radius:0;
+  --accent:#b3201c;--accent2:#e8c46a;--accent-fg:#ffe9b0;--good:#9fd36a;--bad:#ff5c4d;
+  --btn-bg:#1d1f23;--btn-fg:#e3d8bd;--radius:0;
+  --font:"Share Tech Mono",Consolas,monospace;--font-display:"Cinzel","Palatino Linotype",serif;--font-chip:"Share Tech Mono",monospace;--font-result:"Cinzel",serif;--result-weight:900;
 }
-body[data-theme="neon"]{background:radial-gradient(circle at 20% 0,#1b0a3a 0,#05050f 45%),radial-gradient(circle at 90% 100%,#06263a 0,transparent 40%),#05050f}
-[data-theme="neon"] .chip{box-shadow:0 0 18px rgba(0,229,255,.45),inset 0 0 12px rgba(0,229,255,.15);text-transform:uppercase;letter-spacing:.08em}
-[data-theme="neon"] .result{text-transform:uppercase;letter-spacing:.04em;text-shadow:0 0 22px rgba(255,43,214,.55)}
-[data-theme="neon"] .btn.primary{box-shadow:0 0 24px rgba(255,43,214,.6)}
-[data-theme="neon"] .sheet,[data-theme="neon"] .fx-card,[data-theme="neon"] .card-panel{box-shadow:0 0 0 1px rgba(0,229,255,.25),0 0 30px rgba(255,43,214,.08)}
+body[data-theme="iron"]{background:repeating-linear-gradient(0deg,rgba(255,40,40,.03) 0 1px,transparent 1px 3px),radial-gradient(70% 50% at 50% -5%,#2a0b0b,#0a0a0b 70%) fixed,#0a0a0b}
+[data-theme="iron"] .hero h1{font-family:"UnifrakturCook","Cinzel",serif;text-transform:none;letter-spacing:.02em;background:linear-gradient(180deg,#ffe08a,#b8862b);-webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 3px 0 #2a1c08)}
+[data-theme="iron"] .card-panel,[data-theme="iron"] .sheet,[data-theme="iron"] .fx-card,[data-theme="iron"] .modal{background:linear-gradient(#1b1c20,#141518);border:1px solid #3a2a10;border-top:2px solid #b8862b;clip-path:polygon(0 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%)}
+[data-theme="iron"] .card-panel h2,[data-theme="iron"] .sheet h2{font-family:"Share Tech Mono",monospace;color:#c9302c;letter-spacing:.22em}
+[data-theme="iron"] .card-panel h2::before,[data-theme="iron"] .sheet h2::before{content:"+++ ";color:#b8862b}
+[data-theme="iron"] .chip{text-transform:uppercase;letter-spacing:.14em;border-width:1px 1px 1px 4px;border-left-color:#b3201c}
+[data-theme="iron"] .result{text-transform:uppercase;letter-spacing:.08em;color:#ffe08a;text-shadow:0 2px 0 #3a2a10,0 0 22px rgba(232,196,106,.35)}
+[data-theme="iron"] .result.rare{color:#fff;text-shadow:0 0 24px #e8c46a,0 0 4px #ffe08a}
+[data-theme="iron"] .btn{text-transform:uppercase;letter-spacing:.14em;font-size:14px;border-color:#3a2a10}
+[data-theme="iron"] .btn.primary{background:linear-gradient(#7a1414,#3a0808);color:#ffe3a0;border:1px solid #d9a94a}
+[data-theme="iron"] .btn.big{border-radius:0}
+[data-theme="iron"] .pill,[data-theme="iron"] .icon-btn{border-radius:0;text-transform:uppercase;letter-spacing:.08em;font-size:12px;background:#121316;border-color:#8a5f1f;color:#e3d8bd}
+[data-theme="iron"] .brand{font-family:"UnifrakturCook","Cinzel",serif;text-transform:none;letter-spacing:.02em;font-size:20px;color:#e8c46a}
+[data-theme="iron"] .top{border-bottom:2px solid #8a5f1f;background:repeating-linear-gradient(135deg,rgba(28,29,32,.96) 0 12px,rgba(42,11,11,.96) 12px 24px)}
 
-/* 4. Old Grimoire - leather and parchment */
-[data-theme="grimoire"]{
-  --bg:#1a120b;--topbar:rgba(26,18,11,.92);--fg:#efe0bd;--muted:#b49c74;--line:#5c4326;
-  --panel:#e9dbbb;--panel-fg:#2b1d0f;--chip-bg:#e9dbbb;--chip-fg:#4a2a10;--chip-border:#a98a5b;--chip-radius:10px;
-  --accent:#9c2a22;--accent2:#c9a86b;--accent-fg:#fff3dc;--good:#2d6a2f;--bad:#9a1f1f;
-  --btn-bg:#3a2716;--btn-fg:#efe0bd;--radius:8px;
-  --font:Georgia,"Times New Roman",serif;--font-display:Georgia,"Times New Roman",serif;--font-chip:var(--font);--font-result:var(--font);--result-weight:700;
+/* 4. Blood Moon - gothic horror: black lace, cold silver, old blood */
+[data-theme="bloodmoon"]{
+  --bg:#050407;--topbar:rgba(8,7,11,.9);--fg:#dcd6e6;--muted:#a39cb4;--line:#2c2836;
+  --panel:#0e0c13;--panel-fg:#dcd6e6;--chip-bg:#0e0c13;--chip-fg:#f1ecf7;--chip-border:#c9cede55;--chip-radius:2px;
+  --accent:#c41e3a;--accent2:#9fd36a;--accent-fg:#fff;--good:#9fd36a;--bad:#ff6b85;
+  --btn-bg:#0e0c13;--btn-fg:#dcd6e6;--radius:2px;
+  --font:"Cormorant Garamond",Georgia,serif;--font-display:"Cormorant SC","Cormorant Garamond",Georgia,serif;--font-chip:"Cormorant Garamond",serif;--font-result:"Cormorant SC",serif;--result-weight:700;
 }
-body[data-theme="grimoire"]{background:radial-gradient(ellipse at 50% 0,#2b1d10 0,#1a120b 70%)}
-[data-theme="grimoire"] .result{font-style:italic;color:#f4e6c4}
-[data-theme="grimoire"] .chip{font-style:italic;box-shadow:0 3px 0 #a98a5b,0 8px 20px rgba(0,0,0,.4)}
-[data-theme="grimoire"] .sheet,[data-theme="grimoire"] .fx-card,[data-theme="grimoire"] .card-panel,[data-theme="grimoire"] .modal{box-shadow:inset 0 0 40px rgba(120,80,20,.25),0 8px 24px rgba(0,0,0,.45)}
-[data-theme="grimoire"] .brand .logo{color:#fff3dc}
-[data-theme="grimoire"] .pill,[data-theme="grimoire"] .icon-btn{background:#e9dbbb;color:#2b1d0f}
-[data-theme="grimoire"] .btn.ghost{color:var(--fg);border-color:#a98a5b}
-[data-theme="grimoire"] .result.rare{color:#ffcf7a;text-shadow:0 0 18px rgba(255,160,40,.5)}
-[data-theme="grimoire"] .steps i.cur{background:#efe0bd}
+body[data-theme="bloodmoon"]{background:radial-gradient(10% 10% at 86% 9%,#c41e3a,#7a0f22 55%,transparent 72%) fixed,radial-gradient(35% 30% at 86% 9%,rgba(122,15,34,.3),transparent 70%) fixed,linear-gradient(transparent 70%,rgba(26,22,34,.7)) fixed,#050407;font-size:18px}
+[data-theme="bloodmoon"] .hero h1{background:none;color:#f1ecf7;text-shadow:0 0 30px rgba(196,30,58,.45);letter-spacing:.08em}
+[data-theme="bloodmoon"] .card-panel,[data-theme="bloodmoon"] .sheet,[data-theme="bloodmoon"] .fx-card,[data-theme="bloodmoon"] .modal{background:linear-gradient(#100e16,#0b0a10);border:1px solid rgba(201,206,222,.22);box-shadow:inset 0 0 0 4px #0b0a10,inset 0 0 0 5px rgba(201,206,222,.12)}
+[data-theme="bloodmoon"] .card-panel h2,[data-theme="bloodmoon"] .sheet h2{color:#c41e3a;letter-spacing:.14em;font-size:17px}
+[data-theme="bloodmoon"] .card-panel h2::after{content:" ❧";color:#c41e3a}
+[data-theme="bloodmoon"] .chip{font-style:italic;font-weight:700;font-size:clamp(16px,4vw,21px)}
+[data-theme="bloodmoon"] .result{color:#f1ecf7;letter-spacing:.04em;text-shadow:0 0 30px rgba(196,30,58,.6)}
+[data-theme="bloodmoon"] .result.rare{color:#d8ff9a;text-shadow:0 0 26px rgba(159,211,106,.7)}
+[data-theme="bloodmoon"] .btn{font-family:"Cormorant SC",serif;font-size:17px;border-color:rgba(201,206,222,.3)}
+[data-theme="bloodmoon"] .btn.primary{background:linear-gradient(#a3122e,#4a0614);color:#fff;border:1px solid rgba(201,206,222,.55);box-shadow:0 0 24px rgba(196,30,58,.35)}
+[data-theme="bloodmoon"] .pill,[data-theme="bloodmoon"] .icon-btn{font-style:italic;border-radius:2px;border-color:rgba(201,206,222,.3);background:#0b0a10;color:#dcd6e6}
+[data-theme="bloodmoon"] .brand{font-family:"Cormorant SC",serif;letter-spacing:.1em;font-size:17px}
+[data-theme="bloodmoon"] .brand::after{content:"❦";color:#c41e3a}
+[data-theme="bloodmoon"] .opt.sel{border-color:#c41e3a}

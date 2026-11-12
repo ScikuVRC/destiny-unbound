@@ -144,6 +144,21 @@ story results) is still English. To add a language, copy `app/lang/es.js`, chang
 translate the values and add a `<script>` line for it in `app/index.html` next to `es.js`. Any text
 without an entry simply stays in English, so a translation can grow a bit at a time.
 
+## Themes
+
+Pick a look under **Look** on the home screen or with the theme button in the top bar. Each theme has
+its own page style, wheel art and character-card frame:
+
+| Theme | Genre | Wheel |
+| --- | --- | --- |
+| Ashen Crown | Dark fantasy | Iron rim with glowing runes, ember hub, sword pointer |
+| Adventurer's Sheet | Tabletop RPG | Hand-inked parchment, d20 hub, ink arrow |
+| Iron Litany | Grimdark gothic sci-fi | Brass cog rim with rivets, red gem hub, brass spike |
+| Blood Moon | Gothic horror | Silver filigree, a watching eye in the hub, silver claw |
+
+The fonts are bundled in `app/fonts` so every theme works offline and in the desktop app
+(`node scripts/fetch-fonts.js` downloads them again).
+
 ## Make it yours
 
 The home screen has a "Make it yours" panel: hero name, presentation, whether the appearance wheels
@@ -219,7 +234,7 @@ Workshop removals, dynasty) and 5 checks for packs, achievements and translation
 | `.github/workflows/` | Tests on every push; builds and releases on version tags |
 | `electron/main.js` | Desktop shell: serves `app/` on a private `app://` address, sends web links to your browser |
 | `scripts/make-icons.js` | Renders the app icon to PNG for the desktop builds |
-| `mockups/` | Four design mockups (`index.html` gallery) and screenshot previews |
+| `mockups/` | Design mockups: `themed/` (the four current themes), `desktop/` and `modern/` (other directions); the top-level pages are the first, retired themes |
 | `tests/` | Node test suites (`npm test`) |
 
 ## Support
@@ -243,3 +258,6 @@ Public License as published by the Free Software Foundation, either version 3 of
 option) any later version. This program is distributed in the hope that it will be useful, but WITHOUT ANY
 WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 [GNU General Public License](LICENSE) for more details.
+
+The fonts in `app/fonts` are by their respective authors and licensed under the SIL Open Font License 1.1
+(the license text for each family is next to its files).
