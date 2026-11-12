@@ -97,7 +97,7 @@
       App.toast(p.name + (p.enabled ? ' on' : ' off'));
     }));
     root.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', () => { removeEntries(b.dataset.del); savePacks(packs().filter(x => x.id !== b.dataset.del)); packsModal(); }));
-    root.querySelectorAll('[data-exp]').forEach(b => b.addEventListener('click', () => { const p = packs().find(x => x.id === b.dataset.exp); const c = FW.validatePack(p); download(JSON.stringify(c, null, 2), p.name.replace(/[^\w]+/g, '_') + '.fatewheel.json'); }));
+    root.querySelectorAll('[data-exp]').forEach(b => b.addEventListener('click', () => { const p = packs().find(x => x.id === b.dataset.exp); const c = FW.validatePack(p); download(JSON.stringify(c, null, 2), p.name.replace(/[^\w]+/g, '_') + '.destiny-unbound.json'); }));
     document.getElementById('pkImport').onclick = () => document.getElementById('pkFile').click();
     document.getElementById('pkFile').onchange = async e => {
       const f = e.target.files && e.target.files[0]; if (!f) return;
@@ -108,7 +108,7 @@
       const ws = App.state.overrides || {}; if (!Object.keys(ws).length) { document.getElementById('pkErr').textContent = 'You have no Workshop edits yet.'; return; }
       const pack = { format: 'fatewheel-pack', version: 1, name: 'My Workshop pack', description: 'Workshop edits exported from Destiny Unbound', entries: {}, workshop: {} };
       Object.keys(ws).forEach(k => { pack.workshop[k] = { weights: ws[k].weights || {}, removed: ws[k].removed || [] }; const add = (ws[k].added || []).filter(a => KEYS[k]); if (add.length) pack.entries[k] = add.map(a => ({ name: a.name, w: a.w, dsl: '' })); });
-      download(JSON.stringify(pack, null, 2), 'my_workshop.fatewheel.json');
+      download(JSON.stringify(pack, null, 2), 'my_workshop.destiny-unbound.json');
     };
   }
   App.packsModal = packsModal;

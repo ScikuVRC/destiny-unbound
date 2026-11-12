@@ -1,7 +1,7 @@
 /* FATEWHEEL mods: themes, sounds and wheel packs that players add themselves. No code runs from a mod.
    A mod is a folder with a mod.json (see mods/example-mod and the README):
    { "format": "fatewheel-mod", "version": 1, "id": "my-mod", "name": "...", "author": "...", "description": "...",
-     "themes": [ { "id": "verdant", "name": "Verdant Grove", "blurb": "Druid circle", "base": "tabletop",
+     "themes": [ { "id": "verdant", "name": "Verdant Grove", "blurb": "Druid circle", "base": "astral",
                    "vars": { "--bg": "#0d1a10", "--accent": "#5fbf6a" }, "css": "theme.css",
                    "fonts": [ { "family": "My Font", "file": "my-font.woff2", "weight": 400, "style": "normal" } ],
                    "wheel": { "pal": [["#1d3a22", "#2c5a33"]], "lad": ["#e6f5d0", "#1a3a1a"], "hit": "rgba(150,255,120,.5)", "glow": "#7dff6a", "font": "\"My Font\", serif" },
@@ -14,7 +14,8 @@
 (function (g) {
   const FW = g.FW = g.FW || {};
   const M = FW.Mods = { loaded: [], errors: [] };
-  const BASES = ['ashen', 'tabletop', 'iron', 'bloodmoon'];
+  const BASES = ['ashen', 'astral', 'iron', 'bloodmoon'];
+  const baseOf = b => BASES.indexOf(b) >= 0 ? b : (FW.THEME_ALIAS && BASES.indexOf(FW.THEME_ALIAS[b]) >= 0 ? FW.THEME_ALIAS[b] : null);   // old mods may say 'tabletop' (now 'astral')
   const VARS = ['--bg', '--topbar', '--fg', '--muted', '--line', '--panel', '--panel-fg', '--chip-bg', '--chip-fg', '--chip-border', '--chip-radius', '--accent', '--accent2', '--accent-fg', '--good', '--bad', '--btn-bg', '--btn-fg', '--radius', '--font', '--font-display', '--font-chip', '--font-result', '--result-weight'];
   const SOUNDS = ['tick', 'reveal', 'rare', 'bad', 'click', 'music'];
   const SOUND_EXT = /\.(mp3|ogg|oga|wav|m4a|aac|flac|webm)$/i, FONT_EXT = /\.(woff2|woff|ttf|otf)$/i, CSS_EXT = /\.css$/i;
@@ -33,7 +34,7 @@
     const sounds = (s, where) => { const o = {}; Object.keys(s || {}).forEach(k => { if (SOUNDS.indexOf(k) < 0) throw new Error(where + ': unknown sound "' + k + '". Use ' + SOUNDS.join(', ') + '.'); o[k] = file(s[k], SOUND_EXT, where + ' sound ' + k); }); return o; };
     (Array.isArray(m.themes) ? m.themes : []).slice(0, 12).forEach((t, i) => {
       const tid = slug(t && (t.id || t.name)); if (!tid) throw new Error('Theme ' + (i + 1) + ' needs an id.');
-      const base = BASES.indexOf(t.base) >= 0 ? t.base : 'ashen';
+      const base = baseOf(t.base) || 'ashen';
       const th = { id: 'mod-' + id + '-' + tid, name: String(t.name || tid).slice(0, 40), blurb: String(t.blurb || out.name).slice(0, 40), base, vars: {}, css: null, fonts: [], wheel: {}, card: {}, sounds: {} };
       Object.keys(t.vars || {}).forEach(k => { if (VARS.indexOf(k) < 0) throw new Error(th.name + ': unknown variable ' + k + '.'); if (!safeValue(t.vars[k])) throw new Error(th.name + ': the value of ' + k + ' is not allowed.'); th.vars[k] = t.vars[k]; });
       if (t.css) th.css = file(t.css, CSS_EXT, th.name + ' css');
@@ -49,7 +50,7 @@
       const c = t.card || {};
       ['panel', 'stroke', 'key', 'val', 'sub', 'accent'].forEach(k => { if (c[k] != null) { if (!color(c[k])) throw new Error(th.name + ': card "' + k + '" must be a colour.'); th.card[k] = c[k]; } });
       ['font', 'head'].forEach(k => { if (c[k] != null) { if (!safeValue(c[k])) throw new Error(th.name + ': card ' + k + ' not allowed.'); th.card[k] = c[k]; } });
-      if (typeof c.caps === 'boolean') th.card.caps = c.caps; if (BASES.indexOf(c.frame) >= 0) th.card.frame = c.frame;
+      if (typeof c.caps === 'boolean') th.card.caps = c.caps; if (baseOf(c.frame)) th.card.frame = baseOf(c.frame);
       th.sounds = sounds(t.sounds, th.name);
       out.themes.push(th);
     });

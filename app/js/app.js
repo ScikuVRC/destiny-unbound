@@ -63,7 +63,7 @@
   function setLuck(id) { state.luck = id; persist(); $('#btnLuck').textContent = 'Luck: ' + luckInfo().name; renderHomeOpts(); }
   function renderHomeOpts() {
     $('#luckOpts').innerHTML = FW.LUCK.map(l => '<button class="opt ' + (l.id === state.luck ? 'sel' : '') + '" data-luck="' + l.id + '"><b>' + l.name + '</b><span>' + (FW.t ? FW.t(l.blurb) : l.blurb) + ' &middot; ' + l.tokens + ' Fate Token' + (l.tokens > 1 ? 's' : '') + '</span></button>').join('');
-    $('#themeOpts').innerHTML = Object.keys(FW.THEMES).map(k => '<button class="opt ' + (k === state.theme ? 'sel' : '') + '" data-theme="' + k + '"><b>' + H.esc(FW.THEMES[k].name) + '</b><span>' + H.esc((FW.t ? FW.t : x => x)(FW.THEMES[k].blurb || ({ ashen: 'Dark fantasy', tabletop: 'Tabletop RPG', iron: 'Grimdark sci-fi', bloodmoon: 'Gothic horror' })[k] || '')) + (FW.THEMES[k].mod ? ' · mod' : '') + '</span></button>').join('');
+    $('#themeOpts').innerHTML = Object.keys(FW.THEMES).map(k => '<button class="opt ' + (k === state.theme ? 'sel' : '') + '" data-theme="' + k + '"><b>' + H.esc(FW.THEMES[k].name) + '</b><span>' + H.esc((FW.t ? FW.t : x => x)(FW.THEMES[k].blurb || ({ ashen: 'Dark fantasy', astral: 'Celestial fantasy', iron: 'Grimdark sci-fi', bloodmoon: 'Gothic horror' })[k] || '')) + (FW.THEMES[k].mod ? ' · mod' : '') + '</span></button>').join('');
   }
 
   /* ---------- steps / chips / result ---------- */
@@ -238,7 +238,7 @@
   }
   function savePng() {
     const cv = $('#cardCanvas'); const name = state.legend.displayName().replace(/[^\w]+/g, '_');
-    cv.toBlob(b => { const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'fatewheel_' + name + '.png'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }, 'image/png');
+    cv.toBlob(b => { const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'destiny-unbound_' + name + '.png'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }, 'image/png');
   }
   function saveToHall() {
     const L = state.legend, c = FW.compute(L);

@@ -57,10 +57,10 @@
       reveal(rare) { const t = T(); [146.8, 174.6, 220].forEach((f, i) => osc('sawtooth', f, t + i * 0.04, rare ? 1.4 : 0.8, 0.05, null, { lp: 900, a: 0.03 })); osc('sine', 90, t, 0.6, 0.18, null, { to: 45 }); noise(t, 0.25, 0.12, 'lowpass', 300); if (rare) { [587, 880, 1175].forEach((f, i) => osc('triangle', f, t + 0.25 + i * 0.09, 1.2, 0.04)); } },
       bad() { const t = T(); osc('sawtooth', 110, t, 0.9, 0.08, null, { to: 55, lp: 500 }); noise(t, 0.4, 0.08, 'lowpass', 220); }
     },
-    tabletop: {
-      tick(sp) { const t = T(); noise(t, 0.02, 0.12, 'lowpass', 1400, 1); osc('triangle', 320, t, 0.03, 0.04, null, { to: 220 }); },
-      reveal(rare) { const t = T(); [293.7, 370, 440, 587.3].forEach((f, i) => osc('triangle', f, t + i * 0.07, 0.5, 0.07, null, { lp: 2600 })); if (rare) { for (let i = 0; i < 7; i++) noise(t + 0.35 + i * 0.045, 0.03, 0.12, 'bandpass', 2500 + i * 200, 3); [880, 1108.7].forEach((f, i) => osc('triangle', f, t + 0.7 + i * 0.1, 0.8, 0.05)); } },
-      bad() { const t = T(); [220, 207.7, 196].forEach((f, i) => osc('triangle', f, t + i * 0.16, 0.5, 0.07, null, { lp: 1500 })); }
+    astral: {   // glass and starlight
+      tick(sp) { const t = T(); osc('sine', 2349 + 300 * sp, t, 0.06, 0.022); osc('sine', 3520, t, 0.04, 0.008); },
+      reveal(rare) { const t = T(); [523.3, 659.3, 784, 1046.5].forEach((f, i) => osc('sine', f, t + i * 0.06, rare ? 2 : 1.3, 0.045, null, { a: 0.01 })); osc('triangle', 261.6, t, 1.6, 0.04, null, { a: 0.15 }); if (rare) { for (let i = 0; i < 9; i++) osc('sine', 1568 * Math.pow(1.122, i), t + 0.3 + i * 0.05, 0.9, 0.018); } },
+      bad() { const t = T(); [392, 370, 349.2].forEach((f, i) => osc('sine', f, t + i * 0.2, 0.9, 0.05, null, { a: 0.04, detune: -12 * i })); osc('sine', 98, t, 1.2, 0.08, null, { to: 73 }); }
     },
     iron: {
       tick(sp) { const t = T(); osc('square', 180 + 60 * sp, t, 0.035, 0.03, null, { lp: 1800 }); noise(t, 0.025, 0.08, 'highpass', 4000, 1); },
@@ -91,9 +91,11 @@
       every(11, t => { [293.7, 440].forEach(f => osc('sine', f, t, 4, 0.03, out, { a: 0.02 })); });
       return () => { drones.forEach(o => o.stop()); lfo.stop(); };
     },
-    tabletop(ctx, out, every) {   // a lute plays in a tavern
-      const scale = [146.8, 164.8, 174.6, 196, 220, 246.9, 261.6, 293.7], prog = [[0, 2, 4, 7], [3, 5, 7, 2], [4, 6, 1, 4], [0, 4, 7, 2]]; let step = 0;
-      every(0.32, t => { const ch = prog[Math.floor(step / 8) % prog.length], n = ch[step % 4]; if (step % 8 !== 7) osc('triangle', scale[n] * (step % 2 ? 2 : 1), t, 0.45, 0.035, out, { lp: 2200 }); if (step % 4 === 0) osc('sine', scale[ch[0]] / 2, t, 1.2, 0.05, out, { a: 0.02 }); if (step % 8 === 4) noise(t, 0.06, 0.05, 'lowpass', 300, 1, out); step++; });
+    astral(ctx, out, every) {   // a slow shimmering pad under a sky of twinkling bells
+      const chords = [[130.8, 196, 329.6], [110, 164.8, 261.6], [87.3, 130.8, 220], [98, 146.8, 246.9]]; let n = 0;
+      every(8, t => { chords[n++ % chords.length].forEach((f, i) => { osc('sine', f, t, 7, 0.022, out, { a: 3, detune: (i - 1) * 5 }); osc('triangle', f * 2, t, 7, 0.006, out, { a: 3.5 }); }); });
+      const bells = [523.3, 587.3, 659.3, 784, 880, 1046.5, 1174.7, 1318.5];
+      every(0.55, t => { if (Math.random() < 0.3) osc('sine', bells[Math.floor(Math.random() * bells.length)], t, 2.2, 0.012 + Math.random() * 0.012, out, { a: 0.01 }); });
       return () => {};
     },
     iron(ctx, out, every) {   // organ drone, machinery, a distant choir

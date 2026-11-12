@@ -113,7 +113,7 @@
     const bg = getComputedStyle(document.body).backgroundColor || '#000';
     c.fillStyle = bg; c.fillRect(0, 0, W, Hh);
     const fg = getComputedStyle(document.body).color || '#fff';
-    c.textAlign = 'center'; c.fillStyle = fg; c.globalAlpha = 0.55; fitText(c, 'F A T E W H E E L', W - 200, 30, '600'); c.fillText('F A T E W H E E L', W / 2, 80); c.globalAlpha = 1;
+    c.textAlign = 'center'; c.fillStyle = fg; c.globalAlpha = 0.55; fitText(c, 'D E S T I N Y   U N B O U N D', W - 200, 30, '600'); c.fillText('D E S T I N Y   U N B O U N D', W / 2, 80); c.globalAlpha = 1;
     if (st.screen === 'card') {
       const cc = $('#cardCanvas'); const s = Math.min((W - 60) / cc.width, (Hh - 260) / cc.height);
       c.drawImage(cc, (W - cc.width * s) / 2, 130, cc.width * s, cc.height * s);
@@ -145,7 +145,7 @@
     R.rec.ondataavailable = e => { if (e.data && e.data.size) R.chunks.push(e.data); };
     R.rec.onstop = () => {
       const blob = new Blob(R.chunks, { type: mime.split(';')[0] }); const ext = /mp4/.test(mime) ? 'mp4' : 'webm';
-      if (blob.size) { download(blob, 'fatewheel_' + fileName(st.legend) + '.' + ext); App.toast('Video saved (' + ext.toUpperCase() + ', 1080×1920)'); }
+      if (blob.size) { download(blob, 'destiny-unbound_' + fileName(st.legend) + '.' + ext); App.toast('Video saved (' + ext.toUpperCase() + ', 1080×1920)'); }
       FW.Audio.setRecDest(null); R.rec = null;
     };
     R.rec.start(500); R.t0 = Date.now(); drawFrame();

@@ -203,7 +203,7 @@
     $('#arUse').onclick = async () => { if (!lastBlob) return; try { await usePortrait(lastBlob, 'Portrait added to your card'); App.closeModal(); } catch (e) { App.toast(e.message); } };
     $('#arSave').onclick = () => {
       if (!lastBlob) return; const ext = /jpeg/.test(lastBlob.type) ? 'jpg' : /webp/.test(lastBlob.type) ? 'webp' : 'png';
-      const a = document.createElement('a'); a.href = lastUrl; a.download = 'fatewheel_' + L.displayName().replace(/[^\w]+/g, '_') + '_art.' + ext; document.body.appendChild(a); a.click(); a.remove();
+      const a = document.createElement('a'); a.href = lastUrl; a.download = 'destiny-unbound_' + L.displayName().replace(/[^\w]+/g, '_') + '_art.' + ext; document.body.appendChild(a); a.click(); a.remove();
     };
   }
   let pasteHandler = null;

@@ -1,4 +1,4 @@
-/* FATEWHEEL themes: Ashen Crown, Adventurer's Sheet, Iron Litany, Blood Moon.
+/* Destiny Unbound themes: Ashen Crown, Astral Oracle, Iron Litany, Blood Moon.
    Colours and fonts are variables used by base.css; each theme adds its own ornaments below.
    Fonts are bundled in app/fonts (fonts.css). */
 
@@ -23,28 +23,27 @@ body[data-theme="ashen"]{background:radial-gradient(80% 45% at 50% 110%,#5a1a086
 [data-theme="ashen"] .brand{font-family:"Cinzel",serif;color:#e0b46a}
 [data-theme="ashen"] .opt.sel{border-color:#e0662d;box-shadow:inset 0 0 0 1px #e0662d,0 0 18px rgba(224,102,45,.25)}
 
-/* 2. Adventurer's Sheet - tabletop RPG: parchment, ink, red wax on a wooden table */
-[data-theme="tabletop"]{
-  --bg:#2a1a0e;--topbar:rgba(58,36,20,.94);--fg:#f3e6c8;--muted:#d6c29c;--line:#6b4a2c;
-  --panel:#efe2c0;--panel-fg:#2b1d10;--chip-bg:#efe2c0;--chip-fg:#2b1d10;--chip-border:#3b2a1a;--chip-radius:4px;
-  --accent:#a3221b;--accent2:#d9a94a;--accent-fg:#fbe9d0;--good:#2d6a2f;--bad:#a3221b;
-  --btn-bg:#efe2c0;--btn-fg:#2b1d10;--radius:5px;
-  --font:"IM Fell English",Georgia,serif;--font-display:"IM Fell English SC","IM Fell English",Georgia,serif;--font-chip:"IM Fell English SC",serif;--font-result:"IM Fell English",serif;--result-weight:400;
+/* 2. Astral Oracle - celestial high fantasy: midnight blue, silver and starlight */
+[data-theme="astral"]{
+  --bg:#050816;--topbar:rgba(6,10,28,.9);--fg:#dfe6f7;--muted:#9aa8c8;--line:#26345e;
+  --panel:#0a1030;--panel-fg:#dfe6f7;--chip-bg:#0a1030;--chip-fg:#eef6ff;--chip-border:#5a78c4;--chip-radius:6px;
+  --accent:#6f9cff;--accent2:#cfe3ff;--accent-fg:#fff;--good:#8fe0c4;--bad:#ff8fa3;
+  --btn-bg:#0a1030;--btn-fg:#dfe6f7;--radius:6px;
+  --font:"Cormorant Garamond",Georgia,serif;--font-display:"Cinzel","Palatino Linotype",serif;--font-chip:"Cormorant SC","Cormorant Garamond",serif;--font-result:"Cinzel",serif;--result-weight:700;
 }
-body[data-theme="tabletop"]{background:radial-gradient(80% 70% at 50% 35%,transparent,#0d0805 100%) fixed,repeating-linear-gradient(90deg,#3a2414 0 38px,#33200f 38px 80px,#3d2716 80px 120px);font-size:17px}
-[data-theme="tabletop"] .hero h1{background:none;color:#f5e6c4;text-shadow:0 2px 0 #1a0f07;font-weight:400}
-[data-theme="tabletop"] .card-panel,[data-theme="tabletop"] .sheet,[data-theme="tabletop"] .fx-card,[data-theme="tabletop"] .modal{background:radial-gradient(40% 30% at 85% 15%,rgba(217,192,138,.35),transparent),radial-gradient(60% 50% at 50% 50%,#f3e8cc,#e6d4ab);border:1.5px solid #3b2a1a;box-shadow:inset 0 0 0 4px #efe2c0,inset 0 0 0 5px rgba(59,42,26,.45),0 10px 26px rgba(0,0,0,.45)}
-[data-theme="tabletop"] .card-panel h2,[data-theme="tabletop"] .sheet h2{color:#8e1b16;letter-spacing:.06em;font-size:17px}
-[data-theme="tabletop"] .chip{box-shadow:2px 3px 0 #1a0f07}
-[data-theme="tabletop"] .result{color:#f5e6c4;text-shadow:0 2px 0 #1a0f07}
-[data-theme="tabletop"] .result.rare{color:#ffd27a}
-[data-theme="tabletop"] .btn{font-family:"IM Fell English SC",serif;font-weight:400;border:1.5px solid #3b2a1a;box-shadow:2px 2px 0 rgba(26,15,7,.5)}
-[data-theme="tabletop"] .btn.primary{background:radial-gradient(circle at 35% 30%,#d2483d,#8e1b16 60%,#5a0f0b);color:#fbe9d0;border-color:#3b0a07;box-shadow:0 3px 0 #3b0a07}
-[data-theme="tabletop"] .btn.ghost{background:#efe2c0;color:#2b1d10}
-[data-theme="tabletop"] .pill,[data-theme="tabletop"] .icon-btn{border-radius:4px;background:#efe2c0;color:#2b1d10;border-color:#3b2a1a}
-[data-theme="tabletop"] .brand{font-family:"IM Fell English SC",serif;letter-spacing:.06em;color:#f5e0a8}
-[data-theme="tabletop"] .steps i.cur{background:#f5e6c4}
-[data-theme="tabletop"] input,[data-theme="tabletop"] select,[data-theme="tabletop"] textarea{background:#f8efd9;color:#2b1d10;border-color:#3b2a1a}
+body[data-theme="astral"]{background:radial-gradient(1.5px 1.5px at 12% 18%,#fff,transparent) fixed,radial-gradient(1px 1px at 28% 62%,#cfe3ff,transparent) fixed,radial-gradient(1.5px 1.5px at 47% 9%,#fff,transparent) fixed,radial-gradient(1px 1px at 66% 34%,#cfe3ff,transparent) fixed,radial-gradient(1.5px 1.5px at 83% 14%,#fff,transparent) fixed,radial-gradient(1px 1px at 91% 71%,#cfe3ff,transparent) fixed,radial-gradient(1px 1px at 7% 84%,#fff,transparent) fixed,radial-gradient(45% 35% at 78% 8%,rgba(120,80,220,.28),transparent 70%) fixed,radial-gradient(40% 35% at 15% 0%,rgba(40,140,200,.22),transparent 70%) fixed,linear-gradient(#0a1030,#050816 60%) fixed,#050816;font-size:18px}
+[data-theme="astral"] .hero h1{background:linear-gradient(180deg,#ffffff,#cfe3ff 45%,#7f9cd6);-webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 0 22px rgba(120,170,255,.45));letter-spacing:.06em}
+[data-theme="astral"] .card-panel,[data-theme="astral"] .sheet,[data-theme="astral"] .fx-card,[data-theme="astral"] .modal{background:linear-gradient(rgba(12,20,50,.92),rgba(6,10,28,.95));border:1px solid rgba(170,200,255,.25);box-shadow:inset 0 1px 0 rgba(170,210,255,.15),0 16px 40px rgba(0,0,0,.45)}
+[data-theme="astral"] .card-panel h2,[data-theme="astral"] .sheet h2{font-family:"Cinzel",serif;color:#9fc8ff;letter-spacing:.2em}
+[data-theme="astral"] .card-panel h2::before{content:"\2726  ";color:#cfe3ff}
+[data-theme="astral"] .chip{letter-spacing:.06em;font-weight:700;box-shadow:0 0 0 1px #050816,0 0 22px rgba(111,156,255,.22)}
+[data-theme="astral"] .result{color:#eef6ff;letter-spacing:.06em;text-shadow:0 0 26px rgba(120,170,255,.65)}
+[data-theme="astral"] .result.rare{color:#fff;text-shadow:0 0 30px #8fc4ff,0 0 6px #cfe3ff}
+[data-theme="astral"] .btn{font-family:"Cinzel",serif;letter-spacing:.08em;border-color:rgba(170,200,255,.3)}
+[data-theme="astral"] .btn.primary{background:linear-gradient(#3a5cc4,#1a2a6a);color:#fff;border:1px solid #9fd0ff;box-shadow:0 0 22px rgba(90,140,255,.4),inset 0 1px 0 rgba(200,225,255,.35)}
+[data-theme="astral"] .pill,[data-theme="astral"] .icon-btn{font-family:"Cinzel",serif;border-radius:6px;border-color:rgba(170,200,255,.3);background:#070c22;color:#dfe6f7}
+[data-theme="astral"] .brand{font-family:"Cinzel",serif;letter-spacing:.08em;color:#cfe3ff}
+[data-theme="astral"] .opt.sel{border-color:#6f9cff;box-shadow:inset 0 0 0 1px #6f9cff,0 0 18px rgba(111,156,255,.3)}
 
 /* 3. Iron Litany - grimdark gothic sci-fi: gunmetal, oxblood and brass */
 [data-theme="iron"]{

@@ -8,7 +8,7 @@
 
   const CT = FW.CARD_THEMES = {
     ashen:     { font: '"EB Garamond", Georgia, serif', head: '"Cinzel", "Palatino Linotype", serif', panel: 'rgba(16,12,10,.86)', stroke: '#6b5636', key: '#e0662d', val: '#f3e2c3', sub: '#a89a82', accent: '#e0b46a', bgTop: 10, caps: true, radius: 4 },
-    tabletop:  { font: '"IM Fell English", Georgia, serif', head: '"IM Fell English SC", "IM Fell English", Georgia, serif', panel: 'rgba(239,226,192,.95)', stroke: '#3b2a1a', key: '#8e1b16', val: '#2b1d10', sub: '#5a4330', accent: '#a3221b', bgTop: 14, caps: false, radius: 6, light: true },
+    astral:    { font: '"EB Garamond", Georgia, serif', head: '"Cinzel", "Palatino Linotype", serif', panel: 'rgba(8,12,32,.88)', stroke: 'rgba(170,200,255,.55)', key: '#8fc4ff', val: '#eef3ff', sub: '#9aa8c8', accent: '#cfe3ff', bgTop: 12, caps: true, radius: 6 },
     iron:      { font: '"Share Tech Mono", Consolas, monospace', head: '"UnifrakturCook", "Cinzel", serif', panel: 'rgba(18,19,22,.9)', stroke: '#b8862b', key: '#c9302c', val: '#efe2bf', sub: '#a99e86', accent: '#e8c46a', bgTop: 10, caps: false, radius: 0 },
     bloodmoon: { font: '"Cormorant Garamond", Georgia, serif', head: '"Cormorant SC", "Cormorant Garamond", serif', panel: 'rgba(11,10,16,.88)', stroke: 'rgba(201,206,222,.55)', key: '#ec4d6a', val: '#f1ecf7', sub: '#a39cb4', accent: '#c9cede', bgTop: 8, caps: true, radius: 2 }
   };
@@ -104,13 +104,16 @@
 
   function frame(c, name, hue) {
     const corners = (inset, fn) => [[inset, inset], [W - inset, inset], [inset, H - inset], [W - inset, H - inset]].forEach(fn);
-    if (name === 'tabletop') {
-      c.lineWidth = 28; c.strokeStyle = '#4a2c18'; c.strokeRect(14, 14, W - 28, H - 28);
-      c.setLineDash([10, 8]); c.lineWidth = 2; c.strokeStyle = 'rgba(217,169,74,.55)'; c.strokeRect(22, 22, W - 44, H - 44); c.setLineDash([]);
-      c.lineWidth = 3; c.strokeStyle = '#3b2a1a'; c.strokeRect(34, 34, W - 68, H - 68);
-      const g = c.createRadialGradient(W - 96, 104, 4, W - 90, 110, 46); g.addColorStop(0, '#d2483d'); g.addColorStop(.6, '#8e1b16'); g.addColorStop(1, '#5a0f0b');
-      c.beginPath(); c.arc(W - 90, 110, 44, 0, TAU); c.fillStyle = g; c.fill();
-      c.fillStyle = '#f5d9c8'; c.font = '700 40px "IM Fell English SC", serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('F', W - 90, 112);
+    if (name === 'astral') {
+      // a thin silver double frame, a glowing star in each corner and a crescent moon at the top
+      c.lineWidth = 2; c.strokeStyle = 'rgba(201,216,245,.75)'; c.strokeRect(20, 20, W - 40, H - 40);
+      c.lineWidth = 1; c.strokeStyle = 'rgba(201,216,245,.35)'; c.strokeRect(32, 32, W - 64, H - 64);
+      const star = (x, y, s) => { c.beginPath(); for (let k = 0; k < 8; k++) { const r = k % 2 ? s * 0.26 : s, a = k / 8 * TAU; c.lineTo(x + Math.sin(a) * r, y - Math.cos(a) * r); } c.closePath(); c.fill(); };
+      c.save(); c.fillStyle = '#eef6ff'; c.shadowColor = '#8fc4ff'; c.shadowBlur = 18; corners(26, p => star(p[0], p[1], 20));
+      c.shadowBlur = 0; c.fillStyle = '#050816'; c.fillRect(W / 2 - 34, 4, 68, 34);
+      const moon = document.createElement('canvas'); moon.width = 40; moon.height = 40; const mc = moon.getContext('2d');
+      mc.fillStyle = '#eef6ff'; mc.beginPath(); mc.arc(20, 20, 14, 0, TAU); mc.fill(); mc.globalCompositeOperation = 'destination-out'; mc.beginPath(); mc.arc(27, 16, 12, 0, TAU); mc.fill();
+      c.shadowColor = '#8fc4ff'; c.shadowBlur = 14; c.drawImage(moon, W / 2 - 20, 1); c.restore();
     } else if (name === 'iron') {
       c.lineWidth = 12; c.strokeStyle = '#8a5f1f'; c.strokeRect(10, 10, W - 20, H - 20);
       c.lineWidth = 2; c.strokeStyle = '#d9a94a'; c.strokeRect(22, 22, W - 44, H - 44);
@@ -168,7 +171,7 @@
     // title block
     const title = legend.name || legend.pickName('title') || '';
     c.textAlign = 'center'; c.textBaseline = 'alphabetic';
-    c.fillStyle = 'rgba(255,255,255,.55)'; c.font = '600 22px ' + th.font; c.fillText('F A T E W H E E L   L E G E N D', W / 2, 78);
+    c.fillStyle = 'rgba(255,255,255,.55)'; c.font = '600 22px ' + th.font; c.fillText('D E S T I N Y   U N B O U N D', W / 2, 78);
     const tt = th.caps ? title.toUpperCase() : title;
     const ts = fit(c, tt, W - 160, 78, '800', th.head);
     c.shadowColor = 'rgba(0,0,0,.9)'; c.shadowBlur = opts.image ? 26 : 18; c.fillStyle = '#fff'; c.fillText(tt, W / 2, 160);

@@ -8,9 +8,16 @@ function t(name, fn) { try { fn(); pass++; console.log('  ok   ' + name); } catc
 const example = () => JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'mods', 'example-mod', 'mod.json'), 'utf8'));
 
 t('the four built-in themes exist for the wheel and the card, old names map to new ones', () => {
-  ['ashen', 'tabletop', 'iron', 'bloodmoon'].forEach(k => { assert(FW.THEMES[k] && FW.THEMES[k].kind, 'wheel ' + k); assert(FW.CARD_THEMES[k], 'card ' + k); });
-  assert.deepStrictEqual(Object.keys(FW.THEME_ALIAS).sort(), ['classic', 'gilded', 'grimoire', 'neon']);
+  ['ashen', 'astral', 'iron', 'bloodmoon'].forEach(k => { assert(FW.THEMES[k] && FW.THEMES[k].kind, 'wheel ' + k); assert(FW.CARD_THEMES[k], 'card ' + k); });
+  assert.deepStrictEqual(Object.keys(FW.THEME_ALIAS).sort(), ['classic', 'gilded', 'grimoire', 'neon', 'tabletop']);
   Object.values(FW.THEME_ALIAS).forEach(v => assert(FW.THEMES[v]));
+  assert.strictEqual(FW.THEME_ALIAS.tabletop, 'astral');
+});
+
+t('an old mod built on the retired tabletop theme now starts from Astral Oracle', () => {
+  const m = M.validate({ format: 'fatewheel-mod', id: 'old', themes: [{ id: 'x', base: 'tabletop', card: { frame: 'tabletop' } }] });
+  assert.strictEqual(m.themes[0].base, 'astral');
+  assert.strictEqual(m.themes[0].card.frame, 'astral');
 });
 
 t('the example mod is valid and lists every file it uses', () => {

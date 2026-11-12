@@ -4,15 +4,15 @@
   const TAU = Math.PI * 2;
 
   /* ---------------- themes (wheel side; page side lives in css/themes.css) ----------------
-     kind picks the wheel art: ember (iron, runes, blade), parchment (ink, d20, arrow), gothic (brass cog, gem, spike), eldritch (silver, eye, claw).
+     kind picks the wheel art: ember (iron, runes, blade), celestial (silver star ring, star hub, needle), gothic (brass cog, gem, spike), eldritch (silver, eye, claw).
      pal = alternating slice colours [inner, outer]; lad = ladder colours from the lowest to the highest tier; hit = colour of the landed slice. */
   FW.THEMES = {
     ashen: { name: 'Ashen Crown', kind: 'ember', font: '"Cinzel", "Palatino Linotype", serif', weight: '700', upper: true, italic: false,
       pal: [['#24201d', '#3a322b'], ['#3b1612', '#5e1f17'], ['#2b1f19', '#46322a']], lad: ['#f0d9ad', '#c9893f', '#7a2a10', '#2a0d06'], gray: ['#151210', '#100d0c'],
       line: 'rgba(212,175,110,.35)', ink: '#f3e2c3', inkDark: '#2a1608', hit: 'rgba(255,140,40,.55)', glow: '#ff7a1a', dim: 0.55 },
-    tabletop: { name: "Adventurer's Sheet", kind: 'parchment', font: '"IM Fell English", "Palatino Linotype", Georgia, serif', weight: '400', upper: false, italic: false,
-      pal: [['#efe2c0', '#efe2c0'], ['#e3cf9f', '#e3cf9f']], lad: ['#f8efd9', '#e6d2a3', '#b48a52', '#5a3a1e'], gray: ['#d4c39b', '#d4c39b'],
-      line: '#3b2a1a', ink: '#2b1d10', inkLight: '#fff4dc', hit: 'rgba(179,38,30,.85)', glow: null, dim: 0.35, hatch: true },
+    astral: { name: 'Astral Oracle', kind: 'celestial', font: '"Cormorant SC", "Cormorant Garamond", Georgia, serif', weight: '700', upper: false, italic: false,
+      pal: [['#0d1636', '#1d2f6a'], ['#151036', '#2c2264'], ['#0a1c2e', '#16425e']], lad: ['#eef6ff', '#8fc4ff', '#3a5cc4', '#0a1030'], gray: ['#0b0f1e', '#080b16'],
+      line: 'rgba(170,200,255,.35)', ink: '#e6efff', inkDark: '#0a1030', hit: 'rgba(120,190,255,.55)', glow: '#8fc4ff', dim: 0.55 },
     iron: { name: 'Iron Litany', kind: 'gothic', font: '"Share Tech Mono", Consolas, monospace', weight: '400', upper: true, italic: false,
       pal: [['#2b2f35', '#40464e'], ['#4a0f0f', '#6e1414']], lad: ['#e8d9b0', '#b8862b', '#6e1414', '#1a0505'], gray: ['#18191c', '#131417'],
       line: '#b8862b', ink: '#efe2bf', inkDark: '#1a0d02', hit: 'rgba(255,214,110,.6)', glow: '#ffd166', dim: 0.55 },
@@ -20,7 +20,7 @@
       pal: [['#1a0f1f', '#3a1d45'], ['#0f1a1c', '#173a3d'], ['#200d10', '#4a1520']], lad: ['#e6dff0', '#9a8cb6', '#4a2a5a', '#120a16'], gray: ['#0d0c12', '#0a090e'],
       line: 'rgba(200,210,225,.3)', ink: '#e6e0f0', inkDark: '#0d1405', hit: 'rgba(182,255,92,.5)', glow: '#b6ff5c', dim: 0.6 }
   };
-  FW.THEME_ALIAS = { classic: 'ashen', gilded: 'ashen', neon: 'iron', grimoire: 'tabletop' };   // themes before the redesign
+  FW.THEME_ALIAS = { classic: 'ashen', gilded: 'ashen', neon: 'iron', grimoire: 'astral', tabletop: 'astral' };   // older themes and the ones they became
   const RUNES = 'ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛞᛟ';
   function brass(c, R) { const g = c.createLinearGradient(-R, -R, R, R); g.addColorStop(0, '#f0c96a'); g.addColorStop(.5, '#8a5f1f'); g.addColorStop(1, '#d9a94a'); return g; }
 
@@ -78,9 +78,9 @@
     }
     geometry() {
       const S = this.size, k = this.theme.kind;
-      const rimW = S * ({ ember: 0.058, parchment: 0.045, gothic: 0.075, eldritch: 0.05 }[k] || 0.05);
+      const rimW = S * ({ ember: 0.058, parchment: 0.045, celestial: 0.055, gothic: 0.075, eldritch: 0.05 }[k] || 0.05);
       const R = S / 2 - rimW - S * 0.012;                  // slices
-      const hubR = R * ({ ember: 0.19, parchment: 0.23, gothic: 0.22, eldritch: 0.25 }[k] || 0.2);
+      const hubR = R * ({ ember: 0.19, parchment: 0.23, celestial: 0.22, gothic: 0.22, eldritch: 0.25 }[k] || 0.2);
       return { S, cx: S / 2, cy: S / 2, R, Rs: R, rimW, hubR };
     }
     /* static parts: the rim behind the slices (rim canvas) and the slices with labels (off canvas, rotated while spinning) */
@@ -135,6 +135,14 @@
         c.beginPath(); c.arc(0, 0, R + W, 0, TAU); c.fillStyle = '#e9d9b2'; c.fill(); c.strokeStyle = '#3b2a1a'; c.lineWidth = 2; c.stroke();
         c.beginPath(); c.arc(0, 0, R + W * 0.78, 0, TAU); c.lineWidth = 0.8; c.stroke();
         for (let i = 0; i < 72; i++) { const a = i / 72 * TAU, l = (i % 6 ? 0.3 : 0.62) * W; c.beginPath(); c.moveTo(Math.cos(a) * (R + 1), Math.sin(a) * (R + 1)); c.lineTo(Math.cos(a) * (R + 1 + l), Math.sin(a) * (R + 1 + l)); c.lineWidth = i % 6 ? 0.7 : 1.4; c.stroke(); }
+      } else if (th.kind === 'celestial') {
+        // a night-blue band of silver ticks with twelve glowing stars
+        c.beginPath(); c.arc(0, 0, R + W, 0, TAU); const rg = c.createRadialGradient(0, 0, R, 0, 0, R + W); rg.addColorStop(0, '#0a1030'); rg.addColorStop(.55, '#1a2a5a'); rg.addColorStop(1, '#070b1c'); c.fillStyle = rg; c.fill();
+        c.strokeStyle = '#c9d8f5'; c.lineWidth = 1.5; c.stroke(); c.beginPath(); c.arc(0, 0, R + W * 0.82, 0, TAU); c.lineWidth = 0.6; c.strokeStyle = 'rgba(201,216,245,.5)'; c.stroke();
+        for (let i = 0; i < 60; i++) { if (i % 5 === 0) continue; const a = i / 60 * TAU; c.beginPath(); c.moveTo(Math.cos(a) * (R + 1), Math.sin(a) * (R + 1)); c.lineTo(Math.cos(a) * (R + W * 0.28), Math.sin(a) * (R + W * 0.28)); c.lineWidth = 0.8; c.strokeStyle = 'rgba(201,216,245,.55)'; c.stroke(); }
+        c.shadowColor = '#8fc4ff'; c.shadowBlur = 8; c.fillStyle = '#eef6ff';
+        for (let i = 0; i < 12; i++) { c.save(); c.rotate(i / 12 * TAU); c.translate(0, -(R + W * 0.52)); const s = W * 0.3; c.beginPath(); for (let k = 0; k < 8; k++) { const r = k % 2 ? s * 0.28 : s, a = k / 8 * TAU; c.lineTo(Math.sin(a) * r, -Math.cos(a) * r); } c.closePath(); c.fill(); c.restore(); }
+        c.shadowBlur = 0;
       } else if (th.kind === 'gothic') {
         const teeth = 40; c.beginPath();
         for (let i = 0; i < teeth * 2; i++) { const a = i / (teeth * 2) * TAU, r = i % 2 ? R + W * 0.68 : R + W; c.lineTo(Math.cos(a - 0.03) * r, Math.sin(a - 0.03) * r); c.lineTo(Math.cos(a + 0.03) * r, Math.sin(a + 0.03) * r); }
@@ -174,7 +182,7 @@
       // edge, hub and pointer
       ctx.save(); ctx.translate(G.cx, G.cy);
       ctx.beginPath(); ctx.arc(0, 0, G.R, 0, TAU);
-      ctx.strokeStyle = { ember: '#b8975a', parchment: '#3b2a1a', gothic: '#d9a94a', eldritch: '#c9cede' }[th.kind]; ctx.lineWidth = th.kind === 'gothic' ? 2.5 : 2; ctx.stroke();
+      ctx.strokeStyle = { ember: '#b8975a', parchment: '#3b2a1a', celestial: '#c9d8f5', gothic: '#d9a94a', eldritch: '#c9cede' }[th.kind]; ctx.lineWidth = th.kind === 'gothic' ? 2.5 : 2; ctx.stroke();
       this.drawHub(ctx, G);
       ctx.restore();
       this.drawPointer(ctx, G);
@@ -191,6 +199,15 @@
         const t = h * 0.55; c.beginPath(); c.moveTo(0, -t); c.lineTo(t * 0.87, t * 0.5); c.lineTo(-t * 0.87, t * 0.5); c.closePath(); c.strokeStyle = 'rgba(255,230,200,.7)'; c.lineWidth = 1; c.stroke();
         [[0, 0, -t], [2, t * 0.87, t * 0.5], [4, -t * 0.87, t * 0.5]].forEach(q => { const p = P(q[0]); c.beginPath(); c.moveTo(p[0], p[1]); c.lineTo(q[1], q[2]); c.stroke(); });
         c.fillStyle = '#fff4dc'; c.font = '700 ' + Math.round(r * 0.42) + 'px "IM Fell English", serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('20', 0, t * 0.05);
+      } else if (th.kind === 'celestial') {
+        // a silver ring around a bright eight-pointed star
+        const hg = c.createRadialGradient(0, 0, 1, 0, 0, r); hg.addColorStop(0, '#2a4a9a'); hg.addColorStop(.7, '#0d1636'); hg.addColorStop(1, '#070b1c');
+        c.beginPath(); c.arc(0, 0, r, 0, TAU); c.fillStyle = hg; c.fill(); c.strokeStyle = '#c9d8f5'; c.lineWidth = 2; c.stroke();
+        c.beginPath(); c.arc(0, 0, r * 0.84, 0, TAU); c.lineWidth = 0.7; c.strokeStyle = 'rgba(201,216,245,.5)'; c.stroke();
+        const star = (s, inner, rot) => { c.beginPath(); for (let k = 0; k < 8; k++) { const rr = k % 2 ? s * inner : s, a = rot + k / 8 * TAU; c.lineTo(Math.sin(a) * rr, -Math.cos(a) * rr); } c.closePath(); };
+        c.shadowColor = '#8fc4ff'; c.shadowBlur = 18; star(r * 0.5, 0.3, TAU / 16); c.fillStyle = 'rgba(160,200,255,.55)'; c.fill();
+        star(r * 0.72, 0.22, 0); c.fillStyle = '#eef6ff'; c.fill(); c.shadowBlur = 0;
+        c.beginPath(); c.arc(0, 0, r * 0.1, 0, TAU); c.fillStyle = '#fff'; c.fill();
       } else if (th.kind === 'gothic') {
         c.beginPath(); for (let i = 0; i < 24; i++) { const a = i / 24 * TAU, rr = i % 2 ? r : r * 1.18; c.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); } c.closePath(); c.fillStyle = brass(c, r); c.fill();
         c.beginPath(); c.arc(0, 0, r * 0.72, 0, TAU); c.fillStyle = '#1d1e21'; c.fill();
@@ -217,6 +234,11 @@
         c.fillStyle = '#b8975a'; c.fillRect(-14 * u, top - 26 * u, 28 * u, 5 * u);
       } else if (th.kind === 'parchment') {
         c.beginPath(); c.moveTo(0, top + 20 * u); c.lineTo(-10 * u, top - 14 * u); c.lineTo(0, top - 6 * u); c.lineTo(10 * u, top - 14 * u); c.closePath(); c.fillStyle = '#b3261e'; c.fill(); c.strokeStyle = '#2b1d10'; c.lineWidth = 1.5; c.stroke();
+      } else if (th.kind === 'celestial') {
+        // a slender silver needle topped with a star
+        c.beginPath(); c.moveTo(0, top + 26 * u); c.lineTo(-6 * u, top - 4 * u); c.lineTo(0, top - 20 * u); c.lineTo(6 * u, top - 4 * u); c.closePath();
+        const sv = c.createLinearGradient(-6 * u, 0, 6 * u, 0); sv.addColorStop(0, '#8a96b8'); sv.addColorStop(.5, '#f4f8ff'); sv.addColorStop(1, '#7a86a8'); c.fillStyle = sv; c.fill(); c.strokeStyle = '#0a1030'; c.lineWidth = 1; c.stroke();
+        c.save(); c.translate(0, top - 24 * u); c.shadowColor = '#8fc4ff'; c.shadowBlur = 10 * u; c.beginPath(); for (let k = 0; k < 8; k++) { const rr = k % 2 ? 2.4 * u : 8 * u, a = k / 8 * TAU; c.lineTo(Math.sin(a) * rr, -Math.cos(a) * rr); } c.closePath(); c.fillStyle = '#eef6ff'; c.fill(); c.restore();
       } else if (th.kind === 'gothic') {
         c.beginPath(); c.moveTo(0, top + 28 * u); c.lineTo(-11 * u, top - 8 * u); c.lineTo(0, top - 30 * u); c.lineTo(11 * u, top - 8 * u); c.closePath(); c.fillStyle = brass(c, R); c.fill(); c.strokeStyle = '#3a2a10'; c.lineWidth = 1.5; c.stroke();
         c.beginPath(); c.arc(0, top - 8 * u, 4 * u, 0, TAU); c.fillStyle = '#b3121b'; c.fill();

@@ -24,7 +24,7 @@
     'Mortal': 'Mortal', 'Heroic': 'Heroica', 'Mythic': 'Mítica', 'Divine': 'Divina',
     'Fair odds. Most heroes are ordinary.': 'Probabilidades justas. La mayoría de los héroes son corrientes.', 'Rare slices swell. Legends happen.': 'Las porciones raras crecen. Nacen leyendas.',
     'Gods notice you. Cosmic tiers appear.': 'Los dioses se fijan en ti. Aparecen niveles cósmicos.', 'Reality bends - like the viral spins.': 'La realidad se dobla, como en los giros virales.',
-    'Ashen Crown': 'Corona de Ceniza', "Adventurer's Sheet": 'Hoja del Aventurero', 'Iron Litany': 'Letanía de Hierro', 'Blood Moon': 'Luna de Sangre',
+    'Ashen Crown': 'Corona de Ceniza', "Adventurer's Sheet": 'Hoja del Aventurero', 'Astral Oracle': 'Oráculo Astral', 'Celestial fantasy': 'Fantasía celestial', 'Iron Litany': 'Letanía de Hierro', 'Blood Moon': 'Luna de Sangre',
     'Dark fantasy': 'Fantasía oscura', 'Tabletop RPG': 'Rol de mesa', 'Grimdark sci-fi': 'Ciencia ficción grimdark', 'Gothic horror': 'Terror gótico',
     /* spin screen */
     'SPIN': 'GIRAR', 'Re-spin': 'Volver a girar', 'Next': 'Siguiente', 'Back to card': 'Volver a la carta', 'Auto: off': 'Auto: no', 'Auto: on': 'Auto: sí', 'Speed: normal': 'Velocidad: normal', 'Speed: fast': 'Velocidad: rápida',

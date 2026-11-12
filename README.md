@@ -156,7 +156,7 @@ its own page style, wheel art and character-card frame:
 | Theme | Genre | Wheel |
 | --- | --- | --- |
 | Ashen Crown | Dark fantasy | Iron rim with glowing runes, ember hub, sword pointer |
-| Adventurer's Sheet | Tabletop RPG | Hand-inked parchment, d20 hub, ink arrow |
+| Astral Oracle | Celestial high fantasy | Night-blue star ring, glowing star hub, silver needle |
 | Iron Litany | Grimdark gothic sci-fi | Brass cog rim with rivets, red gem hub, brass spike |
 | Blood Moon | Gothic horror | Silver filigree, a watching eye in the hub, silver claw |
 
@@ -166,8 +166,8 @@ The fonts are bundled in `app/fonts` so every theme works offline and in the des
 ## Sound and music
 
 Every theme has its own sound effects (wheel ticks, reveals, rare results, bad news) and its own
-ambient music, all made live in code: an ember-lit drone with crackling fire (Ashen Crown), a lute in a
-tavern (Adventurer's Sheet), an organ drone with machinery (Iron Litany), wind and a heartbeat (Blood
+ambient music, all made live in code: an ember-lit drone with crackling fire (Ashen Crown), shimmering
+starlight bells (Astral Oracle), an organ drone with machinery (Iron Litany), wind and a heartbeat (Blood
 Moon). Volumes for master, effects and music are in **Game options**; the speaker button mutes everything.
 Mods can replace any of these sounds with their own files.
 
@@ -195,7 +195,7 @@ Mods let players add their own **themes** (colours, fonts, CSS, wheel colours, c
   "packs": [ { "name": "My entries", "entries": { "race": [ { "name": "Grove Warden", "w": 2, "dsl": "dur+1 wild:all+2 life=l" } ] } } ] }
 ```
 
-- `base` is one of `ashen`, `tabletop`, `iron`, `bloodmoon`: the theme starts from it (wheel art, card frame,
+- `base` is one of `ashen`, `astral`, `iron`, `bloodmoon` (old mods that say `tabletop` get `astral`): the theme starts from it (wheel art, card frame,
   sound style) and you change what you like.
 - `vars` sets the page colours and fonts: `--bg --topbar --fg --muted --line --panel --panel-fg --chip-bg
   --chip-fg --chip-border --chip-radius --accent --accent2 --accent-fg --good --bad --btn-bg --btn-fg --radius
