@@ -125,6 +125,8 @@ ${m.css.replace(/FONTS/g, m.fonts)}</style></head>
 <script>window.DSTYLE = '${m.style}';</script><script src="desktop.js"></script>
 </body></html>
 `;
+module.exports = { BASE };
+if (require.main !== module) return;
 LOOKS.forEach(m => fs.writeFileSync(path.join(__dirname, m.file), page(m)));
 fs.writeFileSync(path.join(__dirname, 'index.html'), `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FateWheel - Desktop mockups</title>

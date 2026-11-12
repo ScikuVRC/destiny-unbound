@@ -4,8 +4,11 @@
   const FW = window.FW, M = window.MOD, st = window.DSTYLE;
   const L = M.legend(), c = FW.compute(L), e = M.esc, s = L.saga, stats = M.stats(L);
   const NAV = [['🎡', 'Spin a legend'], ['📖', 'Story'], ['⚔️', 'Arena'], ['🤺', 'Versus'], ['📅', 'Daily challenge'], ['🏛️', 'Hall of Legends'], ['🧩', 'Wheel packs'], ['🏅', 'Achievements'], ['⚙️', 'Game options']];
-  const label = { glass: 'FateWheel', minimal: 'FateWheel', hud: 'FATE//WHEEL', gacha: 'FateWheel' }[st];
-  const up = t => (st === 'hud' ? String(t).toUpperCase() : t);
+  const label = { hud: 'FATE//WHEEL', gothic: 'FATEWHEEL' }[st] || 'FateWheel';
+  const up = t => (st === 'hud' || st === 'gothic' ? String(t).toUpperCase() : t);
+  const ROMAN = n => [[10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']].reduce((o, r) => { while (n >= r[0]) { o += r[1]; n -= r[0]; } return o; }, '');
+  const THEMED = ['ember', 'parchment', 'gothic', 'eldritch'].indexOf(st) >= 0;
+  const chap = n => st === 'gothic' ? '+++ CHAPTER ' + ROMAN(n) + ' +++' : THEMED ? 'Chapter ' + ROMAN(n) : 'Chapter ' + n;
 
   const titlebar = title => `<div class="tb"><span class="tb-ic">◈</span><span class="tb-t">${title}</span><span class="tb-b"><i>—</i><i>▢</i><i>✕</i></span></div>`;
   const side = active => `<aside class="side"><div class="logo">${label}</div>
@@ -18,15 +21,16 @@
     if (st === 'gacha') { const n = l => Math.max(1, Math.min(5, Math.round(l / 20))); return stats.map(x => `<div class="sr"><b>${x.short}</b><span class="stars">${'★'.repeat(n(x.lvl))}${'☆'.repeat(5 - n(x.lvl))}</span><em>${e(x.tier)}</em></div>`).join(''); }
     if (st === 'minimal') return `<table class="tbl">${stats.map(x => `<tr><td>${x.label}</td><td>${e(x.tier)}</td><td>${x.lvl}</td></tr>`).join('')}</table>`;
     if (st === 'hud') return '<canvas class="radar" data-radar="1"></canvas>';
+    if (st === 'parchment') return `<div class="abil">${stats.map(x => { const m = Math.floor((x.lvl - 50) / 10); return `<div><span>${x.short}</span><b>${x.lvl}</b><i>${m >= 0 ? '+' : ''}${m}</i><small>${e(x.tier)}</small></div>`; }).join('')}</div>`;
     return stats.map(x => `<div class="sb"><span>${x.short}</span><div class="b"><i style="width:${Math.min(100, x.lvl)}%"></i></div><em>${e(x.tier)}</em></div>`).join('');
   }
-  const sagaList = n => `<div class="saga">${s.log.slice(-n).map(x => st === 'hud' ? `<div class="ev ${x.tone}"><b>[CH${String(x.ch).padStart(2, '0')}]</b> ${e(x.text)}</div>` : st === 'minimal' ? `<div class="ev"><b>${x.ch}</b><span>${e(x.text)}</span></div>` : `<div class="ev ${x.tone}"><i>${x.emoji}</i><div>${e(x.text)}<small>Chapter ${x.ch} · ${e(x.chapter)}</small></div></div>`).join('')}</div>`;
-  const wheelStyle = { glass: 'glass', minimal: 'flat', hud: 'ring', gacha: 'gacha' }[st];
+  const sagaList = n => `<div class="saga">${s.log.slice(-n).map(x => st === 'hud' ? `<div class="ev ${x.tone}"><b>[CH${String(x.ch).padStart(2, '0')}]</b> ${e(x.text)}</div>` : st === 'minimal' ? `<div class="ev"><b>${x.ch}</b><span>${e(x.text)}</span></div>` : `<div class="ev ${x.tone}"><i>${x.emoji}</i><div>${e(x.text)}<small>${chap(x.ch)} · ${e(x.chapter)}</small></div></div>`).join('')}</div>`;
+  const wheelStyle = { glass: 'glass', minimal: 'flat', hud: 'ring', gacha: 'gacha' }[st] || st;
 
   /* window 1: the story wheel */
   const story = `<div class="win">${titlebar('FateWheel — Story')}<div class="body">${side(1)}
    <main class="main">
-     <div class="top"><div><small>${up('Chapter ' + (s.ch + 1))}</small><h1>${up('What happens next?')}</h1></div><div class="prog"><div class="bar"><i style="width:${Math.round(s.ch / 15 * 100)}%"></i></div><span>🪙 ${up('3 Fate Tokens')}</span></div></div>
+     <div class="top"><div><small>${up(chap(s.ch + 1))}</small><h1>${up('What happens next?')}</h1></div><div class="prog"><div class="bar"><i style="width:${Math.round(s.ch / 15 * 100)}%"></i></div><span>🪙 ${up('3 Fate Tokens')}</span></div></div>
      <div class="stage">
        <div class="wheelbox"><canvas class="wheel" data-wheel='{"story":1,"pick":"conquerRace","style":"${wheelStyle}"}'></canvas></div>
        <div class="result">
