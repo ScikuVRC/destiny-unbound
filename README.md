@@ -222,6 +222,11 @@ Workshop removals, dynasty) and 5 checks for packs, achievements and translation
 | `mockups/` | Four design mockups (`index.html` gallery) and screenshot previews |
 | `tests/` | Node test suites (`npm test`) |
 
+## Support
+
+FateWheel is free. If you enjoy it and want to support its development, you can buy me a coffee on
+[Ko-fi](https://ko-fi.com/bzrkherja). The game also has a **Support on Ko-fi** link in the menu and on the home screen.
+
 ## Contributing
 
 Bug reports and pull requests are welcome. Run `npm test` before sending a change. New wheel entries go in

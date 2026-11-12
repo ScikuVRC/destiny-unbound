@@ -321,6 +321,7 @@
       '<button class="opt" data-act="workshop"><b>Wheel Workshop</b><span>Edit slice sizes, remove or add entries</span></button>' +
       '<button class="opt" data-act="import"><b>Import a Legend Code</b><span>Open a character someone shared</span></button>' +
       '<button class="opt" data-act="help"><b>How the rules work</b><span>Tiers, buffs, debuffs, luck and the arena</span></button>' +
+      '<a class="opt" href="https://ko-fi.com/bzrkherja" target="_blank" rel="noopener"><b>&#9749; Support on Ko-fi</b><span>Enjoying FateWheel? Buy the developer a coffee</span></a>' +
       '<button class="opt" data-act="reset"><b>Reset saved data</b><span>Clears settings, Hall and Workshop edits</span></button></div>');
     $('#modalRoot').querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', () => ({ hall: hallModal, workshop: workshopModal, import: importModal, help: helpModal, reset: resetData, options: () => hook('optionsModal'), packs: () => window.FWApp.packsModal(), ach: () => window.FWApp.achievementsModal(), versus: () => window.FWApp.versusModal() })[b.dataset.act]()));
   }
