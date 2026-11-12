@@ -25,7 +25,7 @@
 
   /* check a mod.json and return a cleaned copy (throws with a readable message) */
   M.validate = function (m) {
-    if (!m || m.format !== 'fatewheel-mod') throw new Error('Not a FateWheel mod: mod.json needs "format": "fatewheel-mod".');
+    if (!m || m.format !== 'fatewheel-mod') throw new Error('Not a Destiny Unbound mod: mod.json needs "format": "fatewheel-mod".');
     const id = slug(m.id || m.name); if (!id) throw new Error('The mod needs an "id" (letters, numbers and dashes).');
     const out = { format: 'fatewheel-mod', version: 1, id, name: String(m.name || id).slice(0, 60), author: String(m.author || '').slice(0, 60), description: String(m.description || '').slice(0, 300), themes: [], sounds: {}, packs: [] };
     const files = new Set();

@@ -3,7 +3,7 @@
   "version": 1,
   "id": "example-mod",
   "name": "Verdant Grove (example mod)",
-  "author": "FateWheel contributors",
+  "author": "Destiny Unbound contributors",
   "description": "An example to copy: a druid-circle theme with its own wheel colours, card colours, CSS, two sounds and two new wheel entries.",
   "themes": [
     {

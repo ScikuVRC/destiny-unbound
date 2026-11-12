@@ -1,4 +1,4 @@
-# FateWheel
+# Destiny Unbound
 
 A spin-the-wheel character generator. Spin wheels for race, birthplace, age, height, looks, background,
 personality, class, six stat ladders, weapon, enhancement, element, power, weakness, companion, title and
@@ -6,11 +6,11 @@ a mark of fate. Then live their story: spin chapters until your hero retires or 
 have an AI image generator paint the portrait.
 All content, names and art are original, and every spin carries buffs and debuffs.
 
-FateWheel is free software under the GNU General Public License v3.0 or later (see [LICENSE](LICENSE)).
+Destiny Unbound is free software under the GNU General Public License v3.0 or later (see [LICENSE](LICENSE)).
 
 ## Desktop app
 
-Download the Windows installer (`FateWheel-Setup-<version>.exe`), the portable `.exe`, the macOS `.dmg` or the
+Download the Windows installer (`DestinyUnbound-Setup-<version>.exe`), the portable `.exe`, the macOS `.dmg` or the
 Linux `.AppImage` from the project's releases and run it. The builds are not code-signed, so Windows SmartScreen may show "Windows protected
 your PC": choose **More info**, then **Run anyway**.
 
@@ -296,7 +296,7 @@ Workshop removals, dynasty), 5 checks for packs, achievements and translations, 
 
 ## Support
 
-FateWheel is free. If you enjoy it and want to support its development, you can buy me a coffee on
+Destiny Unbound is free. If you enjoy it and want to support its development, you can buy me a coffee on
 [Ko-fi](https://ko-fi.com/bzrkherja). The game also has a **Support on Ko-fi** link in the menu and on the home screen.
 
 ## Contributing
@@ -308,7 +308,7 @@ GPL-3.0-or-later.
 
 ## License
 
-Copyright (C) 2026 FateWheel contributors
+Copyright (C) 2026 Destiny Unbound contributors
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General
 Public License as published by the Free Software Foundation, either version 3 of the License, or (at your

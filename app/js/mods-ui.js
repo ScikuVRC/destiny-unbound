@@ -9,8 +9,8 @@
   M.load().then(() => {
     const want = App.state.wantTheme;
     App.setTheme(want && FW.THEMES[want] ? want : App.state.theme);   // also lists mod themes under Look
-    if (M.errors.length) console.warn('FateWheel mods:', M.errors);
-  }).catch(e => console.warn('FateWheel mods failed to load', e));
+    if (M.errors.length) console.warn('Destiny Unbound mods:', M.errors);
+  }).catch(e => console.warn('Destiny Unbound mods failed to load', e));
 
   /* ---------------- Mods screen ---------------- */
   function summary(m) {
@@ -54,7 +54,7 @@
   }
   D.onUpdate(s => {
     status = s;
-    if (s.state === 'ready') banner('FateWheel ' + s.version + ' is ready to install.', 'Restart and update');
+    if (s.state === 'ready') banner('Destiny Unbound ' + s.version + ' is ready to install.', 'Restart and update');
     const el = $('#updStatus'); if (el) el.textContent = statusText();
   });
   function statusText() {

@@ -127,7 +127,7 @@ const row = (k, v, hint) => `<div class="r"><span>${k}</span><div>${v}${hint ? `
 const page = m => {
   const pages = { Continue: 'vii', 'New Legend': '1', Story: '12', Arena: '27', 'Daily Challenge': '33', 'Hall of Legends': '41', Mods: '58', Options: '63', Quit: '—' };
   const title = `<div class="scr"><div class="scene"></div><canvas class="emblem" data-wheel='{"story":1,"pick":"conquerRace","style":"${m.wheel}"}'></canvas>
-    <div class="logo"><h2>FateWheel</h2><p>${m.theme === 'tabletop' ? 'A game of wheels, fate and legends' : m.theme === 'bloodmoon' ? 'Every legend is written in blood' : m.theme === 'iron' ? '+++ THE WHEEL DECREES +++' : 'SPIN · FORGE · ENDURE'}</p></div>
+    <div class="logo"><h2>Destiny Unbound</h2><p>${m.theme === 'tabletop' ? 'A game of wheels, fate and legends' : m.theme === 'bloodmoon' ? 'Every legend is written in blood' : m.theme === 'iron' ? '+++ THE WHEEL DECREES +++' : 'SPIN · FORGE · ENDURE'}</p></div>
     <nav class="menu">${MENU.map((x, i) => `<a class="${i === 0 ? 'on' : ''}" data-p="${pages[x]}">${x}${SUB[x] ? `<small>${SUB[x]}</small>` : ''}</a>`).join('')}</nav>
     <div class="foot"><span>v1.0.0 · Mods: Verdant Grove</span><span>↑↓ Select · Enter Confirm · Esc Back</span><b>☕ Support on Ko-fi</b></div></div>`;
   const options = `<div class="scr"><div class="opt"><h2>Options</h2>
@@ -171,7 +171,7 @@ ${m.css}</style></head><body>
 module.exports = { BASE, LOOKS, slider, seg, sel, tg, row };
 if (require.main !== module) return;
 LOOKS.forEach(m => fs.writeFileSync(path.join(__dirname, m.file), page(m)));
-fs.writeFileSync(path.join(__dirname, 'index.html'), `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FateWheel - Main menu mockups</title><link rel="stylesheet" href="../../app/css/fonts.css">
+fs.writeFileSync(path.join(__dirname, 'index.html'), `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Destiny Unbound - Main menu mockups</title><link rel="stylesheet" href="../../app/css/fonts.css">
 <style>body{margin:0;background:#0b0908;color:#e9dcc4;font-family:"EB Garamond",Georgia,serif}main{max-width:1240px;margin:0 auto;padding:36px 18px 60px}h1{font-family:Cinzel,serif;font-size:44px;margin:0 0 8px}p{color:#b9aa91;max-width:780px;line-height:1.6;font-size:17px}.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(520px,1fr));gap:20px;margin-top:20px}a{display:block;color:inherit;text-decoration:none;border:1px solid #3b3022;background:#14100e}a img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}a div{padding:12px 16px}a b{font-family:Cinzel,serif;font-size:19px}a span{display:block;color:#b9aa91;margin-top:4px}</style></head>
 <body><main><h1>Main menu mockups</h1><p>A proper title screen and an Options screen with Graphics and Audio settings, in each of the four themes.</p><div class="g">${LOOKS.map(m => `<a href="${m.file}"><img src="previews/${m.file.replace('.html', '')}-title.jpg" alt=""><div><b>${m.n} · ${m.name}</b><span>${m.genre}</span></div></a>`).join('')}</div></main></body></html>
 `);

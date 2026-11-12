@@ -46,7 +46,7 @@
     const best = daily()[L.daily];
     el.hidden = false;
     el.innerHTML = '<b>📅 Daily challenge ' + L.daily + '</b> · score ' + score + (done ? '' : ' so far (finish the story to record it)') + (best ? ' · your best today: ' + best.score : '') + ' <button class="btn small ghost" id="btnDailyShare">Copy result</button>';
-    $('#btnDailyShare').onclick = () => App.copy('FateWheel daily ' + L.daily + ': ' + L.displayName() + ' (' + L.raceName() + '), score ' + score + '. ' + (L.saga ? S.summary(L) : 'Story not started') + '. Same seed for everyone today - can you beat it?', 'Result copied');
+    $('#btnDailyShare').onclick = () => App.copy('Destiny Unbound daily ' + L.daily + ': ' + L.displayName() + ' (' + L.raceName() + '), score ' + score + '. ' + (L.saga ? S.summary(L) : 'Story not started') + '. Same seed for everyone today - can you beat it?', 'Result copied');
   }
   function homeDaily() { const b = daily()[today()]; $('#btnDaily').textContent = '📅 Daily challenge' + (b ? ' (best ' + b.score + ')' : ''); }
 
@@ -129,7 +129,7 @@
       picks.forEach((p, i) => { const y = 1560 + i * 64; c.globalAlpha = 0.6; c.font = '700 30px "Segoe UI", sans-serif'; c.fillText(p[0], 90, y); c.globalAlpha = 1; fitText(c, String(p[1]), 620, 38, '600'); c.fillText(String(p[1]), 380, y); });
       c.textAlign = 'center';
     } else {
-      c.fillStyle = fg; fitText(c, 'FateWheel', W - 200, 140, '800'); c.fillText('FateWheel', W / 2, Hh / 2 - 40);
+      c.fillStyle = fg; fitText(c, 'Destiny Unbound', W - 200, 140, '800'); c.fillText('Destiny Unbound', W / 2, Hh / 2 - 40);
       c.globalAlpha = 0.7; fitText(c, 'Spin a legend', W - 200, 54, '500'); c.fillText('Spin a legend', W / 2, Hh / 2 + 50); c.globalAlpha = 1;
     }
     R.raf = requestAnimationFrame(drawFrame);

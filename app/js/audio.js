@@ -136,7 +136,7 @@
   A.loadCustom = async function (themeId, files) {
     A.init(); if (!A.ctx) return;
     const set = A.custom[themeId] = A.custom[themeId] || {};
-    for (const k of Object.keys(files)) { try { set[k] = await A.ctx.decodeAudioData(files[k].slice(0)); } catch (e) { console.warn('FateWheel: could not decode sound', k, e); } }
+    for (const k of Object.keys(files)) { try { set[k] = await A.ctx.decodeAudioData(files[k].slice(0)); } catch (e) { console.warn('Destiny Unbound: could not decode sound', k, e); } }
     if (set.music && (themeId === A.theme || themeId === '*')) { A.stopMusic(); A.startMusic(); }
   };
 })(typeof window !== 'undefined' ? window : globalThis);

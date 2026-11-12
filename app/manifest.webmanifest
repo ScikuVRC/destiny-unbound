@@ -1,6 +1,6 @@
 {
-  "name": "FateWheel - Spin a Legend",
-  "short_name": "FateWheel",
+  "name": "Destiny Unbound - Spin a Legend",
+  "short_name": "Destiny Unbound",
   "description": "Spin the wheels of fate to forge a fictional character, with buffs, debuffs and an arena.",
   "start_url": "./index.html",
   "scope": "./",

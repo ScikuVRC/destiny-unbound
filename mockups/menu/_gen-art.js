@@ -75,10 +75,18 @@ const T = {
 const PAGES = { Continue: 'vii', 'New Legend': '1', Story: '12', Arena: '27', 'Daily Challenge': '33', 'Hall of Legends': '41', Mods: '58', Options: '63', Quit: '—' };
 const TITLE_BASE = `.bgart,.wheelart{position:absolute}.bgart{inset:0}.title,.panel{position:absolute}.title .crest{display:block;margin:0 auto}.panel{list-style:none}`;
 
+// Grok-painted "Destiny Unbound" logos: box height, zoom into the lettering, and per-theme placement tweaks.
+const LOGO = {
+  ashen: { h: 178, zoom: 100, css: '.title{top:2px}' },
+  tabletop: { h: 150, zoom: 100, css: '.title{top:92px;width:290px;left:332px;mix-blend-mode:multiply}' },
+  iron: { h: 214, zoom: 100, css: '.title{top:6px;left:50%;right:auto;width:480px;margin-left:-240px}' },
+  bloodmoon: { h: 230, zoom: 100, css: '.title{top:14px}.wheelart{display:none}' }
+};
+
 LOOKS.forEach((m, i) => {
   const t = T[m.theme];
   const title = `<div class="scr titlescr"><div class="bgart"></div><div class="wheelart"></div>${m.theme === 'ashen' ? '<div class="embers"></div>' : ''}
-    <div class="title">${CREST}<h2>FateWheel</h2><p>${t.tag}</p></div>
+    <div class="title">${CREST}<h2 class="logoart" role="img" aria-label="Destiny Unbound">Destiny Unbound</h2><p>${t.tag}</p></div>
     <nav class="panel">${MENU.map((k, j) => `<div class="item${j === 0 ? ' on' : ''}" data-p="${PAGES[k]}">${icon(k)}<div>${k}${SUB[k] && m.theme !== 'iron' && m.theme !== 'bloodmoon' ? `<small>${SUB[k]}</small>` : ''}</div></div>`).join('')}</nav>
     <div class="foot"><span>v1.0.0 · Mods: Verdant Grove</span><span>↑↓ Select · Enter Confirm · Esc Back</span><b>☕ Support on Ko-fi</b></div></div>`;
   const options = `<div class="scr"><div class="optart" style="position:absolute;inset:-20px;background:url(art/${t.opt}.jpg) center/cover;filter:blur(14px) brightness(.32) saturate(.9)"></div><div class="opt" style="background:rgba(0,0,0,.25)"><h2>Options</h2>
@@ -94,6 +102,8 @@ ${m.css}
 ${TITLE_BASE}
 .titlescr .logo,.titlescr .menu,.titlescr .emblem{display:none}
 ${t.css}
+.title .crest{display:none}.title h2.logoart{display:block;margin:0 auto;width:100%;height:${LOGO[m.theme].h}px;background:url(art/${m.theme}-logo.jpg) center/${LOGO[m.theme].zoom}% auto no-repeat;-webkit-background-clip:border-box;background-clip:border-box;color:transparent;filter:none;text-shadow:none;mix-blend-mode:${m.theme === 'tabletop' ? 'multiply' : 'screen'};-webkit-mask:radial-gradient(closest-side,#000 86%,transparent);mask:radial-gradient(closest-side,#000 86%,transparent)}
+${LOGO[m.theme].css}
 .opt,.opt *{position:relative}.opt{position:absolute}</style></head><body>
 <div class="head"><small>Detailed main menu ${i + 1} of 4 · ${m.genre}</small><h1>${m.name}</h1><p>Painted background and wheel made with Grok; the menu, title, icons and options are built in code, so they stay sharp at any resolution and work with keyboard and mouse.</p></div>
 <div id="screens"><div class="cap">Title screen</div>${title}<div class="cap">Options</div>${options}</div>

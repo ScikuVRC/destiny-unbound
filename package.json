@@ -1,10 +1,10 @@
 {
   "name": "fatewheel",
-  "productName": "FateWheel",
+  "productName": "Destiny Unbound",
   "version": "1.0.0",
   "description": "Spin-the-wheel fantasy character generator with buffs, debuffs, arena fights and optional AI portraits.",
   "license": "GPL-3.0-or-later",
-  "author": "FateWheel contributors",
+  "author": "Destiny Unbound contributors",
   "main": "electron/main.js",
   "private": true,
   "scripts": {
@@ -17,8 +17,8 @@
   },
   "build": {
     "appId": "io.github.fatewheel.app",
-    "productName": "FateWheel",
-    "copyright": "FateWheel contributors, GPL-3.0-or-later",
+    "productName": "Destiny Unbound",
+    "copyright": "Destiny Unbound contributors, GPL-3.0-or-later",
     "directories": {
       "output": "dist",
       "buildResources": "build"
@@ -40,10 +40,10 @@
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "license": "LICENSE",
-      "artifactName": "FateWheel-Setup-${version}.${ext}"
+      "artifactName": "DestinyUnbound-Setup-${version}.${ext}"
     },
     "portable": {
-      "artifactName": "FateWheel-${version}-portable.${ext}"
+      "artifactName": "DestinyUnbound-${version}-portable.${ext}"
     },
     "mac": {
       "icon": "build/icon.png",
@@ -61,10 +61,10 @@
       ]
     },
     "dmg": {
-      "artifactName": "FateWheel-${version}-mac-${arch}.${ext}"
+      "artifactName": "DestinyUnbound-${version}-mac-${arch}.${ext}"
     },
     "appImage": {
-      "artifactName": "FateWheel-${version}-linux.${ext}"
+      "artifactName": "DestinyUnbound-${version}-linux.${ext}"
     },
     "publish": [
       {

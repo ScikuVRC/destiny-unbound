@@ -25,7 +25,7 @@ t('the example mod is valid and lists every file it uses', () => {
 t('unsafe or broken mods are refused with a readable reason', () => {
   const base = () => ({ format: 'fatewheel-mod', id: 'x', themes: [{ id: 'a', name: 'A' }] });
   const cases = [
-    [{}, /Not a FateWheel mod/],
+    [{}, /Not a Destiny Unbound mod/],
     [{ format: 'fatewheel-mod', id: 'x' }, /empty/],
     [Object.assign(base(), { themes: [{ id: 'a', vars: { '--bg': 'url(http://evil.example/x.png)' } }] }), /not allowed/],
     [Object.assign(base(), { themes: [{ id: 'a', vars: { '--bg': 'red;} body{display:none' } }] }), /not allowed/],

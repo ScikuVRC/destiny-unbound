@@ -3,7 +3,7 @@
   "version": 1,
   "name": "Sky Pirates",
   "description": "Airships, cloud islands and storm magic. An example pack: copy it to make your own.",
-  "author": "FateWheel contributors",
+  "author": "Destiny Unbound contributors",
   "entries": {
     "race": [
       { "name": "Cloudborn", "w": 3, "dsl": "spd+1 storm:all+1 dur-1 life=l", "perk": "Born on a drifting island", "flaw": "Never learned to walk on solid ground", "art": "cloudborn with pale blue skin and hair like drifting mist" },

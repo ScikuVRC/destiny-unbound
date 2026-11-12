@@ -1,4 +1,4 @@
-// FateWheel desktop shell (Electron). The game itself is the plain web app in ../app.
+// Destiny Unbound desktop shell (Electron). The game itself is the plain web app in ../app.
 // SPDX-License-Identifier: GPL-3.0-or-later
 const { app, BrowserWindow, protocol, net, shell, Menu, session, ipcMain } = require('electron');
 const path = require('path');
@@ -9,6 +9,9 @@ const ROOT = path.join(__dirname, '..', 'app');
 const ORIGIN = 'app://fatewheel';
 const SMOKE = !!process.env.FATEWHEEL_SMOKE;
 
+// Keep saves, settings and mods in the folder used before the rename to Destiny Unbound.
+app.setPath('userData', path.join(app.getPath('appData'), 'FateWheel'));
+
 // A private, secure address for the app: storage (Hall of Legends, settings, portraits) stays in one place
 // and browser features that need a secure page (clipboard, IndexedDB) work as they do on https.
 protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { standard: true, secure: true, supportFetchAPI: true, corsEnabled: true, stream: true } }]);
@@ -17,7 +20,7 @@ if (!app.requestSingleInstanceLock()) app.quit();
 
 /* ---------------- mods folder ---------------- */
 let MODS = '';
-const MODS_README = `FateWheel mods
+const MODS_README = `Destiny Unbound mods
 ==============
 Put each mod in its own folder here, for example:
 
@@ -25,9 +28,9 @@ Put each mod in its own folder here, for example:
   mods\\my-mod\\theme.css
   mods\\my-mod\\tick.wav
 
-then restart FateWheel (or press "Restart to apply" in Menu > Mods).
+then restart Destiny Unbound (or press "Restart to apply" in Menu > Mods).
 Mods can add themes, sounds, music and wheel entries. They cannot run code.
-How to write mod.json: see the "Mods" section of the FateWheel README.
+How to write mod.json: see the "Mods" section of the Destiny Unbound README.
 `;
 function setupMods() {
   MODS = process.env.FATEWHEEL_MODS_DIR || path.join(app.getPath('userData'), 'mods');
@@ -92,7 +95,7 @@ function isHttp(u) { try { return /^https?:$/.test(new URL(u).protocol); } catch
 function createWindow() {
   const win = new BrowserWindow({
     width: 1280, height: 860, minWidth: 380, minHeight: 600,
-    backgroundColor: '#0b0908', title: 'FateWheel', autoHideMenuBar: true,
+    backgroundColor: '#0b0908', title: 'Destiny Unbound', autoHideMenuBar: true,
     icon: path.join(ROOT, 'icons', 'icon-512.png'),
     show: !SMOKE, ...(SMOKE ? { x: -5000, y: -5000, skipTaskbar: true, focusable: false } : {}),
     webPreferences: { contextIsolation: true, nodeIntegration: false, sandbox: true, spellcheck: false, backgroundThrottling: !SMOKE,

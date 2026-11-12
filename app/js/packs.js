@@ -13,7 +13,7 @@
 
   /* check a pack and return a cleaned copy; throws with a readable message */
   FW.validatePack = function (p) {
-    if (!p || p.format !== 'fatewheel-pack') throw new Error('This is not a FateWheel pack (missing "format": "fatewheel-pack").');
+    if (!p || p.format !== 'fatewheel-pack') throw new Error('This is not a Destiny Unbound pack (missing "format": "fatewheel-pack").');
     const name = String(p.name || '').trim().slice(0, 60); if (!name) throw new Error('The pack needs a name.');
     const out = { format: 'fatewheel-pack', version: 1, name, description: String(p.description || '').slice(0, 300), author: String(p.author || '').slice(0, 60), entries: {}, workshop: {} };
     let count = 0;
@@ -106,7 +106,7 @@
     };
     document.getElementById('pkExport').onclick = () => {
       const ws = App.state.overrides || {}; if (!Object.keys(ws).length) { document.getElementById('pkErr').textContent = 'You have no Workshop edits yet.'; return; }
-      const pack = { format: 'fatewheel-pack', version: 1, name: 'My Workshop pack', description: 'Workshop edits exported from FateWheel', entries: {}, workshop: {} };
+      const pack = { format: 'fatewheel-pack', version: 1, name: 'My Workshop pack', description: 'Workshop edits exported from Destiny Unbound', entries: {}, workshop: {} };
       Object.keys(ws).forEach(k => { pack.workshop[k] = { weights: ws[k].weights || {}, removed: ws[k].removed || [] }; const add = (ws[k].added || []).filter(a => KEYS[k]); if (add.length) pack.entries[k] = add.map(a => ({ name: a.name, w: a.w, dsl: '' })); });
       download(JSON.stringify(pack, null, 2), 'my_workshop.fatewheel.json');
     };

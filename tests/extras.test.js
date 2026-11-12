@@ -27,7 +27,7 @@ t('the example pack is valid and its entries work in real legends and codes', ()
 });
 
 t('broken packs are rejected with a readable reason', () => {
-  const bad = [[{}, /not a FateWheel pack/], [{ format: 'fatewheel-pack' }, /needs a name/], [{ format: 'fatewheel-pack', name: 'x', entries: { dragons: [] } }, /Unknown wheel/],
+  const bad = [[{}, /not a Destiny Unbound pack/], [{ format: 'fatewheel-pack' }, /needs a name/], [{ format: 'fatewheel-pack', name: 'x', entries: { dragons: [] } }, /Unknown wheel/],
     [{ format: 'fatewheel-pack', name: 'x', entries: { race: [{ name: 'Y', dsl: 'str+banana' }] } }, /"Y": bad DSL/], [{ format: 'fatewheel-pack', name: 'x', entries: { race: [{ name: 'Y', w: -1 }] } }, /weight/],
     [{ format: 'fatewheel-pack', name: 'x' }, /empty/]];
   bad.forEach(([p, re]) => assert.throws(() => FW.validatePack(p), re));
