@@ -168,6 +168,8 @@ ${m.css}</style></head><body>
 </body></html>
 `;
 };
+module.exports = { BASE, LOOKS, slider, seg, sel, tg, row };
+if (require.main !== module) return;
 LOOKS.forEach(m => fs.writeFileSync(path.join(__dirname, m.file), page(m)));
 fs.writeFileSync(path.join(__dirname, 'index.html'), `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FateWheel - Main menu mockups</title><link rel="stylesheet" href="../../app/css/fonts.css">
 <style>body{margin:0;background:#0b0908;color:#e9dcc4;font-family:"EB Garamond",Georgia,serif}main{max-width:1240px;margin:0 auto;padding:36px 18px 60px}h1{font-family:Cinzel,serif;font-size:44px;margin:0 0 8px}p{color:#b9aa91;max-width:780px;line-height:1.6;font-size:17px}.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(520px,1fr));gap:20px;margin-top:20px}a{display:block;color:inherit;text-decoration:none;border:1px solid #3b3022;background:#14100e}a img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}a div{padding:12px 16px}a b{font-family:Cinzel,serif;font-size:19px}a span{display:block;color:#b9aa91;margin-top:4px}</style></head>
