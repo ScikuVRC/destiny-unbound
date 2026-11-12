@@ -71,5 +71,20 @@ t('every script the page loads exists and is cached for offline play', () => {
   refs.forEach(r => { assert(fs.existsSync(path.join(root, 'app', r)), 'missing ' + r); if (!/^icons\//.test(r) || /favicon|192/.test(r)) assert(sw.indexOf("'" + r + "'") >= 0, 'not cached offline: ' + r); });
 });
 
+t('the arena gives weak heroes fewer hopeless fights but never hides a foe', () => {
+  ['data.js', 'data-more.js', 'data-extra.js', 'engine.js'].forEach(f => require(path.join(root, 'app', 'js', f)));
+  const L = new FW.Legend({ luck: 'mortal', seed: 'mm' }), rng = FW.makeRng('mm'); let i = -1;
+  while ((i = FW.nextStageIndex(L, i)) < FW.STAGES.length) { const st = FW.buildStage(FW.STAGES[i].id, L); FW.commitPick(L, st, FW.weightedIndex(st.entries, rng), rng); }
+  const r = FW.compute(L).baseRating;
+  FW.UNIVERSES.forEach(u => {
+    const plain = FW.oppEntries(u), fair = FW.oppEntries(u, L);
+    assert.strictEqual(fair.length, u.opps.length);
+    fair.forEach((o, k) => {
+      assert(o.w > 0 && o.w >= plain[k].w * 0.35 - 1e-9, 'a foe vanished or shrank too far: ' + o.name);
+      if (FW.P(o).lv <= r + 8) assert(Math.abs(o.w - plain[k].w) < 1e-9, 'a fair foe changed: ' + o.name);
+    });
+  });
+});
+
 console.log('\n' + pass + ' of ' + (pass + fail) + ' checks passed');
 process.exit(fail ? 1 : 0);

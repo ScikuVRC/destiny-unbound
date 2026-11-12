@@ -1,4 +1,4 @@
-/* FATEWHEEL mods: themes, sounds and wheel packs that players add themselves. No code runs from a mod.
+/* Destiny Unbound mods: themes, sounds and wheel packs that players add themselves. No code runs from a mod.
    A mod is a folder with a mod.json (see mods/example-mod and the README):
    { "format": "fatewheel-mod", "version": 1, "id": "my-mod", "name": "...", "author": "...", "description": "...",
      "themes": [ { "id": "verdant", "name": "Verdant Grove", "blurb": "Druid circle", "base": "astral",
@@ -20,7 +20,8 @@
   const SOUNDS = ['tick', 'reveal', 'rare', 'bad', 'click', 'music'];
   const SOUND_EXT = /\.(mp3|ogg|oga|wav|m4a|aac|flac|webm)$/i, FONT_EXT = /\.(woff2|woff|ttf|otf)$/i, CSS_EXT = /\.css$/i;
   const slug = s => String(s || '').toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40);
-  const safeValue = v => typeof v === 'string' && v.length <= 200 && !/url\s*\(|expression\s*\(|javascript:|[;{}<>@\\]/i.test(v);
+  // nothing in a value may load from outside the mod: no url(), image-set(), image(), cross-fade() or src()
+  const safeValue = v => typeof v === 'string' && v.length <= 200 && !/url\s*\(|image-set|image\s*\(|cross-fade|src\s*\(|expression\s*\(|javascript:|[;{}<>@\\]/i.test(v);
   const safeFile = f => typeof f === 'string' && f.length <= 120 && !/(^|[\\/])\.\.([\\/]|$)|^[\\/]|^[a-z]+:/i.test(f);
   const color = v => typeof v === 'string' && /^(#[0-9a-f]{3,8}|rgba?\([\d\s.,%]+\)|hsla?\([\d\s.,%deg]+\))$/i.test(v.trim());
 
@@ -64,7 +65,14 @@
   /* mod CSS only applies while its theme is active, may not load anything from outside the mod, and cannot import */
   M.scopeCss = function (css, themeId, resolve) {
     let s = String(css || '').slice(0, 100000).replace(/\/\*[\s\S]*?\*\//g, '');
+    s = s.replace(/\\/g, '');   // no CSS escapes: they could spell url( or a closing brace in disguise
     s = s.replace(/@import[^;]*;?/gi, '').replace(/expression\s*\(/gi, 'x(').replace(/javascript:/gi, '').replace(/behavior\s*:/gi, 'x:').replace(/<\/?style/gi, '');
+    s = s.replace(/(-webkit-)?image-set\s*\(|\bimage\s*\(|cross-fade\s*\(|\bsrc\s*\(/gi, 'x(');   // these load pictures without url()
+    s = s.replace(/url\([^)]*\)|\b[a-z][a-z0-9+.-]*:\/\/[^\s)'";]*/gi, m => (/^url\(/i.test(m) ? m : ''));   // no web addresses outside url() (url() is checked below)
+    // keep every rule inside the theme: cut the CSS where a stray } would close the wrapper early
+    let depth = 0, cut = s.length;
+    for (let i = 0; i < s.length; i++) { const ch = s[i]; if (ch === '{') depth++; else if (ch === '}' && --depth < 0) { cut = i; break; } }
+    s = s.slice(0, cut); if (depth > 0) s += '}'.repeat(depth);
     s = s.replace(/url\(\s*(['"]?)([^'")]*)\1\s*\)/gi, (all, q, u) => { const r = safeFile(u) ? resolve(u) : null; return r ? 'url("' + r + '")' : 'none'; });
     return 'body[data-theme="' + themeId + '"]{' + s + '}';
   };
@@ -123,9 +131,17 @@
     style.textContent = css;
     return M.loaded;
   };
+  const MAX_SOUND = 30 * 1024 * 1024;
   async function loadSounds(themeId, map, resolve) {
     const files = {};
-    for (const k of Object.keys(map || {})) { try { const r = await fetch(resolve(map[k])); if (r.ok) files[k] = await r.arrayBuffer(); } catch (e) { M.errors.push('Sound ' + map[k] + ': ' + e.message); } }
+    for (const k of Object.keys(map || {})) {
+      try {
+        const r = await fetch(resolve(map[k])); if (!r.ok) continue;
+        if (+(r.headers.get('content-length') || 0) > MAX_SOUND) { M.errors.push('Sound ' + map[k] + ' is larger than 30 MB'); continue; }
+        const buf = await r.arrayBuffer(); if (buf.byteLength > MAX_SOUND) { M.errors.push('Sound ' + map[k] + ' is larger than 30 MB'); continue; }
+        files[k] = buf;
+      } catch (e) { M.errors.push('Sound ' + map[k] + ': ' + e.message); }
+    }
     if (Object.keys(files).length && FW.Audio.loadCustom) await FW.Audio.loadCustom(themeId, files);
   }
 

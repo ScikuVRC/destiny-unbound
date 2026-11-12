@@ -55,6 +55,16 @@ t('mod CSS is scoped to its theme and cannot import or reach outside the mod', (
   assert(!/url\(/.test(M.scopeCss('.x{background:url(../../../etc/x.png)}', 't', f => f)), 'parent paths are dropped');
 });
 
+t('mod CSS cannot break out of its theme or load pictures from the internet in disguise', () => {
+  const out = M.scopeCss('.a{color:red} } body{display:none} .b{color:blue}', 'mod-x', f => f);
+  assert(!/display:none/.test(out), 'a stray } let rules escape the theme');
+  assert.strictEqual((out.match(/\{/g) || []).length, (out.match(/\}/g) || []).length, 'braces stay balanced');
+  const sneaky = M.scopeCss('.a{background:image-set("https://evil.example/a.png" 1x)} .b{background:-webkit-image-set(url(https://evil.example/b.png) 1x)} .c{background:\\75 rl(https://evil.example/c.png)} .d{background:cross-fade(url(x.png),url(y.png))}', 'mod-x', f => 'mods/m/' + f);
+  assert(!/evil\.example/.test(sneaky), 'an outside address survived: ' + sneaky);
+  assert(/\}$/.test(M.scopeCss('.a{color:red', 't', f => f)), 'unclosed rules are closed');
+  assert.throws(() => M.validate({ format: 'fatewheel-mod', id: 'v', themes: [{ id: 't', vars: { '--bg': 'image-set("https://evil.example/x.png" 1x)' } }] }), /not allowed/);
+});
+
 t('a registered mod theme gets wheel art, card style and sound from its base theme', () => {
   const m = M.validate(example()), th = m.themes[0];
   const css = M.registerTheme(th, f => 'mods/example-mod/' + f);

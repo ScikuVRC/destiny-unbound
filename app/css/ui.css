@@ -65,7 +65,7 @@ body:has(#screen-options.active) .top{display:none}
 .ach div,.ach b,.ach small,.coach,.coach p,.o-body,.o-row,.credits,.credits p{text-align:left!important}.ach b{display:block;font-size:14.5px}.ach small{display:block;font-size:12.5px;color:var(--muted);line-height:1.35}
 .ach.got{border-color:var(--accent)}.ach.got>span{filter:none;opacity:1;box-shadow:0 0 16px color-mix(in srgb,var(--accent) 50%,transparent)}
 .ach .when{color:var(--accent2);font-weight:700}
-.ach-pop{position:fixed;top:16px;right:16px;z-index:85;display:flex;gap:12px;align-items:center;padding:10px 16px 10px 10px;background:var(--panel);color:var(--panel-fg);border:1px solid var(--accent);border-radius:calc(var(--radius) + 6px);box-shadow:0 14px 40px rgba(0,0,0,.55);text-align:left;animation:achIn .35s ease}
+.ach-pop{position:fixed;top:72px;right:16px;z-index:85;display:flex;gap:12px;align-items:center;padding:10px 16px 10px 10px;background:var(--panel);color:var(--panel-fg);border:1px solid var(--accent);border-radius:calc(var(--radius) + 6px);box-shadow:0 14px 40px rgba(0,0,0,.55);text-align:left;animation:achIn .35s ease}
 .ach-pop span{font-size:30px;width:48px;height:48px;display:grid;place-items:center;border-radius:50%;background:rgba(0,0,0,.3)}
 .ach-pop small{display:block;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}.ach-pop b{font-size:15px}
 @keyframes achIn{from{opacity:0;transform:translateX(30px)}}

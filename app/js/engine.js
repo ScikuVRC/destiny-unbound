@@ -494,7 +494,12 @@
     let lose = 1 - win - draw; if (lose < 0.0099) { lose = 0.0099; win = 1 - lose - draw; }
     return { hero: total, base, opp: oppLv, adj, pWin: win, pLose: lose, pDraw: draw, behind, ahead, c };
   };
-  FW.oppEntries = function (uni) { return uni.opps.map(o => Object.assign({}, o, { w: o.w })); };
+  /* the opponent wheel: with a legend, foes far above its power rating get thinner slices (never below ~35%), so a
+     weak hero is less often handed a hopeless fight while every foe can still be drawn. Slice size stays the true odds. */
+  FW.oppEntries = function (uni, legend) {
+    const r = legend ? FW.compute(legend).baseRating : null;
+    return uni.opps.map(o => { const gap = r == null ? 0 : Math.max(0, FW.P(o).lv - r - 8); return Object.assign({}, o, { w: o.w * (0.35 + 0.65 * Math.exp(-gap / 16)) }); });
+  };
   FW.outcomeEntries = function (legend) {
     const per = legend.entry('per'); const mult = per ? FW.P(per).o : {};
     return FW.OUTCOMES.map(o => ({ key: o.key, name: o.name, w: o.w * (mult[o.key] != null ? mult[o.key] : 1), base: o.w, mult: mult[o.key] != null ? mult[o.key] : 1, blurb: o.blurb, reward: o.reward }));

@@ -69,6 +69,8 @@ function serveApp() {
     const isMod = /^mods[\\/]/.test(rel) && MODS;
     const base = isMod ? MODS : ROOT, file = path.resolve(base, isMod ? rel.slice(5) : rel);
     if (!inside(base, file) || (isMod && file === base)) return new Response('Forbidden', { status: 403 });
+    // a shortcut (symlink or junction) inside the Mods folder must not lead outside it
+    if (isMod) { try { if (!inside(fs.realpathSync(MODS), fs.realpathSync(file))) return new Response('Forbidden', { status: 403 }); } catch (e) { return new Response('Not found', { status: 404 }); } }
     return net.fetch(pathToFileURL(file).toString()).catch(() => new Response('Not found', { status: 404 }));
   });
 }
@@ -220,7 +222,7 @@ function smokeTest(win) {
       out = await win.webContents.executeJavaScript(`(async () => {
         const saved = Object.keys(localStorage).filter(k => k.indexOf('fw.') === 0).sort(), hall = (() => { try { return JSON.parse(localStorage.getItem('fw.hall') || '[]').length; } catch (e) { return -1; } })();
         const r = { saved, hall, races: FW.RACES.length, strTiers: FW.LADDERS.str.names.length, origin: location.origin, desktop: !!window.fatewheelDesktop, version: (window.fatewheelDesktop || {}).version };
-        r.outside = [(await fetch('app://fatewheel/%2e%2e/package.json')).status, (await fetch('app://fatewheel/%252e%252e/package.json')).status, (await fetch('app://fatewheel/..%5cpackage.json')).status, (await fetch('app://fatewheel/mods/..%5c..%5cpackage.json')).status];
+        r.outside = [(await fetch('app://fatewheel/%2e%2e/package.json')).status, (await fetch('app://fatewheel/%252e%252e/package.json')).status, (await fetch('app://fatewheel/..%5cpackage.json')).status, (await fetch('app://fatewheel/mods/..%5c..%5cpackage.json')).status, (await fetch('app://fatewheel/mods/link/package.json')).status];
         localStorage.setItem('fw.smoke', '1'); r.storage = localStorage.getItem('fw.smoke') === '1'; localStorage.removeItem('fw.smoke');
         for (let i = 0; i < 40 && !(FW.Mods.loaded.length || FW.Mods.errors.length); i++) await new Promise(s => setTimeout(s, 100));
         r.mods = FW.Mods.loaded.map(m => m.name + (m.enabled ? '' : ' (off)')); r.modErrors = FW.Mods.errors; r.themes = Object.keys(FW.THEMES);

@@ -264,7 +264,7 @@
         onResult: idx => ({ sub: H.esc(FW.UNIVERSES[idx].blurb) }) });
       const uni = FW.UNIVERSES[ui]; state.fight.uni = uni;
       renderSteps(steps, 1);
-      const oi = await playStep({ emoji: '🗡️', title: 'Who do you fight?', entries: uni.opps.map(o => ({ name: o.name, w: o.w, dsl: o.dsl })), mode: 'stripe', hue: uni.hue, mystery: true,
+      const oi = await playStep({ emoji: '🗡️', title: 'Who do you fight?', entries: FW.oppEntries(uni, L).map(o => ({ name: o.name, w: o.w, dsl: o.dsl })), mode: 'stripe', hue: uni.hue, mystery: true,
         onResult: idx => { const o = uni.opps[idx], p = FW.P(o); const chips = [{ t: 'Level ' + p.lv, k: 'info' }].concat(p.atk.map(a => ({ t: FW.cap(a) + ' attacks', k: 'info' })), p.weak.map(a => ({ t: 'Weak to ' + FW.cap(a), k: 'buff' })), p.res.map(a => ({ t: 'Resists ' + FW.cap(a), k: 'debuff' }))); return { sub: H.esc(o.perk), fx: H.fxCard(o.name, o.perk, '', chips) }; } });
       const opp = uni.opps[oi]; state.fight.opp = opp; refreshFightSheet();
       renderSteps(steps, 2);
