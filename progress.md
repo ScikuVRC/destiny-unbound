@@ -23,8 +23,8 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
 ## Right now
 
-- 🔄 Rename the GitHub repo to `destiny-unbound` and make it public (needs the owner signed in to GitHub)
-- ⬜ Push the latest commits after the rename
+- ✅ Rename the GitHub repo to `destiny-unbound` and make it public (done 2026-11-12)
+- ✅ Push the latest commits after the rename
 - ⬜ Publish 0.1.0-alpha.1 as a GitHub pre-release (push the tag `v0.1.0-alpha.1`)
 - ⬜ Choose the tester feedback channel (Discord, email or GitHub Issues) and send invites (see `docs/alpha-testing.md`)
 
