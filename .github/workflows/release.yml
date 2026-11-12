@@ -55,7 +55,12 @@ jobs:
           v=$(node -p "require('./package.json').version")
           if [ "v$v" != "${GITHUB_REF_NAME}" ]; then echo "Tag ${GITHUB_REF_NAME} does not match package.json version $v"; exit 1; fi
       - run: npm ci
-      - run: npm run ${{ matrix.script }}
+      # An empty CSC_LINK makes electron-builder treat the project folder as the certificate, so drop empty ones.
+      - name: Build
+        shell: bash
+        run: |
+          if [ -z "$CSC_LINK" ]; then unset CSC_LINK CSC_KEY_PASSWORD; fi
+          npm run ${{ matrix.script }}
       - uses: actions/upload-artifact@v4
         with:
           name: destiny-unbound-${{ matrix.os }}
