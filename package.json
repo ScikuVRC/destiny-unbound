@@ -1,7 +1,7 @@
 {
   "name": "fatewheel",
   "productName": "Destiny Unbound",
-  "version": "1.0.0",
+  "version": "0.1.0-alpha.1",
   "description": "Spin-the-wheel fantasy character generator with buffs, debuffs, arena fights and optional AI portraits.",
   "license": "GPL-3.0-or-later",
   "author": "Destiny Unbound contributors",
@@ -9,7 +9,7 @@
   "private": true,
   "scripts": {
     "start": "electron .",
-    "test": "node tests/engine.test.js && node tests/art.test.js && node tests/story.test.js && node tests/extras.test.js && node tests/mods.test.js",
+    "test": "node tests/engine.test.js && node tests/art.test.js && node tests/story.test.js && node tests/extras.test.js && node tests/mods.test.js && node tests/system.test.js",
     "icons": "node scripts/make-icons.js",
     "dist": "npm run icons && electron-builder --win nsis portable --publish never",
     "dist:mac": "npm run icons && electron-builder --mac dmg zip --publish never",

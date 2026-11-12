@@ -94,6 +94,10 @@ function getUpdater() {
   try {
     const { autoUpdater } = require('electron-updater');
     autoUpdater.autoDownload = true; autoUpdater.autoInstallOnAppQuit = true;
+    autoUpdater.allowPrerelease = /-/.test(app.getVersion());   // alpha and beta builds follow pre-releases
+    autoUpdater.logger = { info: m => log('info', 'updater: ' + m), warn: m => log('info', 'updater: ' + m), error: m => log('error', 'updater: ' + m), debug: () => {} };
+    // FATEWHEEL_UPDATE_URL: read updates from a plain web folder instead of GitHub (used to test the update path)
+    if (process.env.FATEWHEEL_UPDATE_URL) autoUpdater.setFeedURL({ provider: 'generic', url: process.env.FATEWHEEL_UPDATE_URL });
     autoUpdater.on('checking-for-update', () => sendStatus({ state: 'checking' }));
     autoUpdater.on('update-available', i => sendStatus({ state: 'available', version: i.version }));
     autoUpdater.on('update-not-available', () => sendStatus({ state: 'none' }));
@@ -214,7 +218,8 @@ function smokeTest(win) {
     let out;
     try {
       out = await win.webContents.executeJavaScript(`(async () => {
-        const r = { races: FW.RACES.length, strTiers: FW.LADDERS.str.names.length, origin: location.origin, desktop: !!window.fatewheelDesktop, version: (window.fatewheelDesktop || {}).version };
+        const saved = Object.keys(localStorage).filter(k => k.indexOf('fw.') === 0).sort(), hall = (() => { try { return JSON.parse(localStorage.getItem('fw.hall') || '[]').length; } catch (e) { return -1; } })();
+        const r = { saved, hall, races: FW.RACES.length, strTiers: FW.LADDERS.str.names.length, origin: location.origin, desktop: !!window.fatewheelDesktop, version: (window.fatewheelDesktop || {}).version };
         r.outside = [(await fetch('app://fatewheel/%2e%2e/package.json')).status, (await fetch('app://fatewheel/%252e%252e/package.json')).status, (await fetch('app://fatewheel/..%5cpackage.json')).status, (await fetch('app://fatewheel/mods/..%5c..%5cpackage.json')).status];
         localStorage.setItem('fw.smoke', '1'); r.storage = localStorage.getItem('fw.smoke') === '1'; localStorage.removeItem('fw.smoke');
         for (let i = 0; i < 40 && !(FW.Mods.loaded.length || FW.Mods.errors.length); i++) await new Promise(s => setTimeout(s, 100));
@@ -242,7 +247,19 @@ function smokeTest(win) {
 
 app.on('second-instance', () => { const w = BrowserWindow.getAllWindows()[0]; if (w) { if (w.isMinimized()) w.restore(); w.focus(); } });
 
+// FATEWHEEL_UPDATE_TEST=1 (installed app only): check for an update, print each step, install it and restart
+function updateTest() {
+  const u = getUpdater(); const say = s => process.stdout.write('UPDATE ' + JSON.stringify(s) + '\n');
+  if (!u) { say({ state: 'unsupported', message: updaterWhyNot }); return app.exit(2); }
+  say({ state: 'start', version: app.getVersion() });
+  ['checking-for-update', 'update-available', 'update-not-available', 'update-downloaded', 'error'].forEach(ev => u.on(ev, i => say({ state: ev, version: i && i.version, message: i && i.message })));
+  u.on('update-not-available', () => app.exit(3)); u.on('error', () => app.exit(4));
+  u.on('update-downloaded', () => setTimeout(() => u.quitAndInstall(true, false), 500));
+  u.checkForUpdates().catch(e => { say({ state: 'error', message: e.message }); app.exit(4); });
+}
+
 app.whenReady().then(() => {
+  if (process.env.FATEWHEEL_UPDATE_TEST) return updateTest();
   setupMods();
   serveApp();
   // the app needs no camera, microphone, location or notifications; only writing to the clipboard (Copy buttons)

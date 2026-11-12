@@ -2,7 +2,10 @@
 # Start it by pushing a version tag:
 #   git tag v1.0.1
 #   git push origin v1.0.1
-# The tag must match "version" in package.json (without the v). Builds are not code-signed.
+# The tag must match "version" in package.json (without the v). A tag with a dash (v0.1.0-alpha.2) becomes a
+# pre-release, which alpha and beta builds update to and normal builds ignore.
+# Code signing: add the repository secrets WIN_CSC_LINK (the .pfx file, base64) and WIN_CSC_KEY_PASSWORD and the
+# Windows build is signed; without them it is built unsigned (Windows SmartScreen then warns on first launch).
 # latest*.yml and *.blockmap are uploaded too: the installed desktop app reads them to update itself.
 name: Release
 
@@ -38,6 +41,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      CSC_LINK: ${{ matrix.os == 'windows-latest' && secrets.WIN_CSC_LINK || '' }}
+      CSC_KEY_PASSWORD: ${{ matrix.os == 'windows-latest' && secrets.WIN_CSC_KEY_PASSWORD || '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -53,7 +58,7 @@ jobs:
       - run: npm run ${{ matrix.script }}
       - uses: actions/upload-artifact@v4
         with:
-          name: fatewheel-${{ matrix.os }}
+          name: destiny-unbound-${{ matrix.os }}
           path: |
             dist/*.exe
             dist/*.dmg
@@ -75,3 +80,4 @@ jobs:
         with:
           files: files/*
           generate_release_notes: true
+          prerelease: ${{ contains(github.ref_name, '-') }}
