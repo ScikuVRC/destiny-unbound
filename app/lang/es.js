@@ -278,6 +278,7 @@
     "+++ The wheel decrees +++": "+++ La ruleta decreta +++",
     "Every legend is written in blood": "Toda leyenda se escribe con sangre",
     "Got it": "Entendido",
-    "Your browser may ask first; Esc leaves fullscreen.": "Tu navegador puede pedir permiso; Esc sale de la pantalla completa."
+    "Your browser may ask first; Esc leaves fullscreen.": "Tu navegador puede pedir permiso; Esc sale de la pantalla completa.",
+    "Check for updates automatically": "Buscar actualizaciones automáticamente"
   } };
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -61,16 +61,5 @@
     return ({ idle: '', checking: 'Checking for updates...', none: 'You have the latest version.', available: 'Downloading version ' + (status.version || '') + '...', progress: 'Downloading... ' + (status.percent || 0) + '%', ready: 'Version ' + status.version + ' is ready: restart to install.', error: 'Could not check for updates (' + (status.message || 'offline') + ').', unsupported: status.message || 'Updates are not available for this copy.' })[status.state] || '';
   }
   if (upd().auto) setTimeout(() => D.checkForUpdates(), 4000);
-  // the update settings live at the bottom of Game options
-  const prev = App.hooks.optionsModal;
-  App.hooks.optionsModal = function () {
-    prev && prev();
-    const m = $('#modalRoot .modal'); if (!m) return;
-    const sec = document.createElement('div');
-    sec.innerHTML = '<h3 class="opt-h">Updates</h3><label class="check opt-row"><input type="checkbox" id="updAuto"' + (upd().auto ? ' checked' : '') + '><span><b>Check for updates automatically</b><br><small>New versions download in the background; you choose when to restart. Version ' + H.esc(D.version || '') + '.</small></span></label><div class="cta" style="justify-content:flex-start;margin:8px 0"><button class="btn small" id="updNow">Check now</button><span id="updStatus" class="legend-key" style="align-self:center"></span></div>';
-    m.appendChild(sec);
-    $('#updStatus').textContent = statusText();
-    $('#updAuto').onchange = e => App.store.set('fw.updates', { auto: e.target.checked });
-    $('#updNow').onclick = () => { status = { state: 'checking' }; $('#updStatus').textContent = statusText(); D.checkForUpdates(); };
-  };
+  // the update switch and "Check for updates" live in Options > Data (options.js)
 })();

@@ -8,10 +8,40 @@ All content, names and art are original, and every spin carries buffs and debuff
 
 Destiny Unbound is free software under the GNU General Public License v3.0 or later (see [LICENSE](LICENSE)).
 
+**Status: alpha (0.1.0-alpha.1).** The alpha test plan, with known issues, is in
+[docs/alpha-testing.md](docs/alpha-testing.md); store-page text, screenshots and a teaser are in
+[docs/store](docs/store/store-page.md).
+
+## Main menu and Options
+
+The game opens on a painted title screen that matches the chosen theme (Continue, New Legend, Story, Arena,
+Daily Challenge, Hall of Legends, Mods, Options, Quit). A four-step guide explains it on the first launch.
+
+**Options** has seven tabs:
+
+- **Graphics:** display mode (windowed, maximized, borderless fullscreen), window size, interface scale, frame
+  limit, VSync (after a restart), animations (full, reduced, off), wheel sharpness, glows and particles, theme.
+- **Audio:** master, music, effects and interface volume, mute in the background, sound captions.
+- **Gameplay:** spin speed and direction, luck, story features on or off, show the guide again.
+- **Accessibility:** text size, high contrast, colour-blind-safe wheels, reduce motion and flashing, sound
+  captions. Menus and results are labelled for screen readers.
+- **Controls:** rebind every key. Xbox, PlayStation and Switch controllers work everywhere, and the on-screen
+  prompts change to match the controller.
+- **Language**.
+- **Data:** daily save backups with restore, save export and import (to move to another PC; API keys and
+  painted portraits are left out), local play stats, error log, feedback reports, update checks, resets.
+
+**Feedback and logs.** Options > Data > Send feedback saves a folder with the player's note, a screenshot,
+the error log and (only if ticked) their play stats. The desktop app writes errors and crashes to
+`%APPDATA%\FateWheel\logs`. Nothing is ever sent anywhere automatically.
+
+**Saves** live in `%APPDATA%\FateWheel` (the game's earlier name, kept so older saves carry over). Backups are in
+its `backups` folder; uninstalling keeps both.
+
 ## Desktop app
 
 Download the Windows installer (`DestinyUnbound-Setup-<version>.exe`), the portable `.exe`, the macOS `.dmg` or the
-Linux `.AppImage` from the project's releases and run it. The builds are not code-signed, so Windows SmartScreen may show "Windows protected
+Linux `.AppImage` from the project's releases and run it. The builds are not code-signed yet, so Windows SmartScreen may show "Windows protected
 your PC": choose **More info**, then **Run anyway**.
 
 Build it yourself (needs Node.js 20 or newer):
@@ -31,13 +61,22 @@ npm run dist
 `npm start` opens the app from source; `npm run dist` writes the installer and the portable `.exe` to `dist/`.
 `npm run dist:mac` and `npm run dist:linux` build for those systems (run them on that system).
 
-**Updates.** The installed desktop app checks GitHub releases at startup (switch this off in **Game
-options**), downloads a new version in the background and offers **Restart and update**. This needs a
-public repository with a release; the portable `.exe` does not update itself.
+**Updates.** The installed desktop app checks GitHub releases at startup (switch this off in **Options >
+Data**), downloads a new version in the background and offers **Restart and update**. This needs a
+public repository with a release; the portable `.exe` does not update itself. Alpha and beta builds (a
+version with a dash, like `0.1.0-alpha.1`) follow pre-releases; normal builds ignore them. To test the update
+path locally, serve a folder with a newer `latest.yml` and installer and start the installed app with
+`FATEWHEEL_UPDATE_URL=http://127.0.0.1:5180/` (add `FATEWHEEL_UPDATE_TEST=1` to print each step and install it).
 
 **Releases are automatic.** Set the new `version` in `package.json`, commit, then push a matching tag
 (for version 1.1.0: `git tag v1.1.0` and `git push origin v1.1.0`). GitHub Actions runs the tests, builds
-Windows, macOS and Linux, and attaches the files to a new release (`.github/workflows/release.yml`).
+Windows, macOS and Linux, and attaches the files to a new release (`.github/workflows/release.yml`). A tag
+with a dash (`v0.1.0-alpha.2`) becomes a pre-release.
+
+**Code signing.** Buy a Windows code-signing certificate, then add two repository secrets: `WIN_CSC_LINK` (the
+`.pfx` file, base64-encoded) and `WIN_CSC_KEY_PASSWORD`. The release build signs the installer and the
+portable `.exe` with them; without them it builds unsigned. Locally, set `CSC_LINK` and `CSC_KEY_PASSWORD`
+before `npm run dist`.
 Every push and pull request also runs the tests (`.github/workflows/ci.yml`).
 
 In the desktop app, links to ChatGPT, Grok and Gemini open in your normal browser. Your legends, settings
@@ -104,7 +143,7 @@ religion, ascending to godhood, losing everything, years passing, your nemesis, 
   child of the same race who inherits the house name, the throne, an heirloom artifact, a family talent
   and any living nemesis.
 
-**Game options** (home screen or menu) switch features on or off: chapter requirements, death, aging,
+**Options > Gameplay** (main menu, home screen or top-bar menu) switches features on or off: chapter requirements, death, aging,
 nemesis, kingdom events, companion loyalty, dynasty and achievements. Single chapters can be removed or
 made rarer in the Wheel Workshop under "Story chapters" (Retire always stays).
 
@@ -168,7 +207,7 @@ The fonts are bundled in `app/fonts` so every theme works offline and in the des
 Every theme has its own sound effects (wheel ticks, reveals, rare results, bad news) and its own
 ambient music, all made live in code: an ember-lit drone with crackling fire (Ashen Crown), shimmering
 starlight bells (Astral Oracle), an organ drone with machinery (Iron Litany), wind and a heartbeat (Blood
-Moon). Volumes for master, effects and music are in **Game options**; the speaker button mutes everything.
+Moon). Volumes for master, effects and music are in **Options > Audio**; the speaker button mutes everything.
 Mods can replace any of these sounds with their own files.
 
 ## Mods
@@ -269,7 +308,13 @@ npm test
 old age names and old tier numbers, arena maths, new outcomes), 18 art checks (art prompt, every
 generator and language-model connector against a mock server, error messages, cancelling), 8 story
 checks (500 full sagas with random options, grey slices, requirements, every option switched off,
-Workshop removals, dynasty), 5 checks for packs, achievements and translations, and 6 for mods and themes.
+Workshop removals, dynasty), 5 checks for packs, achievements and translations, 8 for mods and themes
+(including CSS that tries to escape its theme or load outside pictures), and 8 system checks (version,
+preferences, save import checks, no API keys in exported saves, title-screen art, offline caching, arena
+matchmaking).
+
+`node scripts/balance-report.js` plays thousands of legends, arena fights and sagas per luck level and prints
+the rank spread, arena odds and how sagas end.
 
 ## Layout
 
@@ -285,13 +330,19 @@ Workshop removals, dynasty), 5 checks for packs, achievements and translations, 
 | `app/js/packs.js`, `achievements.js`, `i18n.js`, `app/lang/` | Wheel packs, achievements, translations |
 | `app/js/audio.js` | Themed sound effects and ambient music (WebAudio) |
 | `app/js/mods.js`, `mods-ui.js` | Mod loading and checks; the Mods screen and desktop updates |
-| `electron/preload.js` | The few desktop features the game can reach: the Mods folder and updates |
+| `electron/preload.js` | The few desktop features the game can reach: the Mods folder, updates, window and display settings, logs, feedback and backups |
 | `mods/example-mod` | An example mod to copy |
 | `packs/` | Example wheel pack |
 | `.github/workflows/` | Tests on every push; builds and releases on version tags |
 | `electron/main.js` | Desktop shell: serves `app/` on a private `app://` address, sends web links to your browser |
-| `scripts/make-icons.js` | Renders the app icon to PNG for the desktop builds |
-| `mockups/` | Design mockups: `themed/` (the four current themes), `desktop/` and `modern/` (other directions); the top-level pages are the first, retired themes |
+| `app/js/menu.js`, `menu-data.js`, `css/menu.css` | The themed title screen, keyboard and controller navigation, first-run guide, credits. `menu.css` and `menu-data.js` are generated from the approved mockups by `scripts/make-menu-css.js` |
+| `app/js/options.js`, `prefs.js`, `css/ui.css` | The Options screen and the preferences every part of the game reads |
+| `app/js/system.js`, `version.js` | Error log, backups, save export and import, local play stats, feedback reports; the version number |
+| `app/art/` | The painted title-screen art (Grok Imagine) |
+| `scripts/make-icons.js` | Makes every icon size from `app/icons/icon-source.png` |
+| `scripts/make-trailer.js` | Builds `docs/store/trailer.mp4` from the store screenshots (needs ffmpeg) |
+| `docs/` | Alpha test plan and the store-page kit |
+| `mockups/` | Design mockups: `menu/` (the painted main menus the game uses, plus earlier drafts), `themed/`, `desktop/` and `modern/` (earlier directions; some still show the old name and the retired Adventurer's Sheet theme) |
 | `tests/` | Node test suites (`npm test`) |
 
 ## Support

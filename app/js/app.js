@@ -317,7 +317,7 @@
   function menuModal() {
     openModal('<button class="btn small ghost close">Close ✕</button><h2>Menu</h2><div class="opt-grid">' +
       '<button class="opt" data-act="hall"><b>Hall of Legends</b><span>Your saved characters</span></button>' +
-      '<button class="opt" data-act="options"><b>Game options</b><span>Switch story features on or off</span></button>' +
+      '<button class="opt" data-act="options"><b>Options</b><span>Graphics, sound, gameplay, accessibility, controls and saves</span></button>' +
       '<button class="opt" data-act="mods"><b>Mods</b><span>Your own themes, sounds, music and wheel entries</span></button>' +
       '<button class="opt" data-act="packs"><b>Wheel packs</b><span>Install or share packs of new wheel entries</span></button>' +
       '<button class="opt" data-act="ach"><b>Achievements</b><span>Badges and the rare entries they unlock</span></button>' +

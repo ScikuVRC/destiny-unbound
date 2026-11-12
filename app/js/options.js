@@ -116,7 +116,8 @@
       h += '<div class="o-grp"><h3>' + H.esc(t('Move your save')) + '</h3><p class="o-note">' + H.esc(t('Export everything (Hall of Legends, settings, Workshop edits, achievements) to one file and load it on another PC. API keys and painted portraits are not included.')) + '</p><p>' + btn('export', 'Export save', 'primary') + ' ' + btn('import', 'Import save') + '</p></div>';
       h += '<div class="o-grp"><h3>' + H.esc(t('Play stats')) + '</h3><p class="o-note">' + H.esc(t('Kept only on this device. They are added to a feedback report only if you tick the box.')) + '</p><div class="o-stats">' +
         [['Sessions', st.sessions], ['Minutes played', st.minutes], ['Legends started', st.legendsStarted], ['Legends finished', st.legendsFinished], ['Stories begun', st.stories], ['Chapters played', st.chapters], ['Deaths', st.deaths], ['Retirements', st.retirements], ['Arena fights', st.arenaFights], ['Daily challenges', st.dailies]].map(r => '<div><b>' + (r[1] || 0) + '</b><span>' + H.esc(t(r[0])) + '</span></div>').join('') + '</div><p>' + btn('resetStats', 'Reset stats', 'ghost') + '</p></div>';
-      h += '<div class="o-grp"><h3>' + H.esc(t('Help and reports')) + '</h3><p>' + btn('feedback', 'Send feedback', 'primary') + ' ' + (D ? btn('logs', 'Open logs folder') : btn('dlLog', 'Download error log')) + (D ? ' ' + btn('updates', 'Check for updates') : '') + ' ' + btn('credits', 'Credits', 'ghost') + '</p><p class="o-note" id="oUpd"></p></div>';
+      h += '<div class="o-grp"><h3>' + H.esc(t('Help and reports')) + '</h3><p>' + btn('feedback', 'Send feedback', 'primary') + ' ' + (D ? btn('logs', 'Open logs folder') : btn('dlLog', 'Download error log')) + (D ? ' ' + btn('updates', 'Check for updates') : '') + ' ' + btn('credits', 'Credits', 'ghost') + '</p><p class="o-note" id="oUpd"></p>' +
+        (D ? row('Check for updates automatically', tog('autoUpd', App.store.get('fw.updates', { auto: true }).auto !== false, 'Check for updates automatically'), 'New versions download in the background; you choose when to restart. This is version ' + FW.VERSION + '.') : '') + '</div>';
       h += '<div class="o-grp danger"><h3>' + H.esc(t('Reset')) + '</h3><p>' + btn('resetAll', 'Reset all saved data', 'ghost') + ' ' + btn('resetPrefs', 'Reset all options', 'ghost') + '</p></div>';
       return h;
     }
@@ -163,6 +164,7 @@
     if (id === 'sound') { App.state.sound = on; App.syncSound(); App.persist(); FW.Audio.init(); }
     else if (id === 'vsync') { D.setVsync(on); if (win) win.vsync = on; restartNote = true; }
     else if (id === 'fullscreen') { (on ? document.documentElement.requestFullscreen() : document.exitFullscreen()).catch(() => App.toast(t('Your browser blocked fullscreen'))).then(() => setTimeout(render, 150)); return; }
+    else if (id === 'autoUpd') App.store.set('fw.updates', { auto: on });
     else if (id.indexOf('story:') === 0) { const k = id.slice(6), cur = App.store.get('fw.options', {}); cur[k] = on; App.store.set('fw.options', cur); if (window.FWAchieve) window.FWAchieve.sync(); }
     else { FW.setPref(id, on); if (id === 'cbSafe' || id === 'glow') rebuildWheel(); if (id === 'muteBg' && SYS.syncBackgroundMute) SYS.syncBackgroundMute(); }
     render(); keepFocus('[data-tog="' + id + '"]');
