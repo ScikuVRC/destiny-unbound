@@ -48,6 +48,7 @@
     "mac": {
       "icon": "build/icon.png",
       "category": "public.app-category.games",
+      "artifactName": "DestinyUnbound-${version}-mac-${arch}.${ext}",
       "target": [
         "dmg",
         "zip"
