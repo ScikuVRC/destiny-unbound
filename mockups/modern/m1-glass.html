@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Modern 1 - Glass</title>
+<style>
+ :root{--ink:#f5f7ff;--mut:rgba(235,240,255,.66);--glass:rgba(255,255,255,.09);--line:rgba(255,255,255,.18);--acc1:#7c5cff;--acc2:#ff5fa2;--acc3:#2ee6d6}
+ *{box-sizing:border-box} body{margin:0;font-family:"Segoe UI Variable Text","Segoe UI",Inter,system-ui,sans-serif;color:var(--ink);background:#0b0a1f;min-height:100vh}
+ body:before{content:"";position:fixed;inset:0;background:radial-gradient(60% 50% at 15% 10%,#5b3df5aa,transparent 70%),radial-gradient(50% 45% at 90% 20%,#ff4f9a88,transparent 70%),radial-gradient(60% 50% at 50% 100%,#17d4c766,transparent 70%);z-index:-1}
+ .head{max-width:1200px;margin:0 auto;padding:30px 20px 4px}.head small{letter-spacing:.2em;text-transform:uppercase;color:var(--acc3);font-weight:700;font-size:12px}
+ .head h1{font-size:clamp(30px,5vw,48px);margin:6px 0;font-family:"Segoe UI Variable Display","Segoe UI",sans-serif;font-weight:800}.head p{color:var(--mut);max-width:780px;line-height:1.55}
+ .head ul{color:var(--mut);line-height:1.7;padding-left:18px;max-width:820px}
+ .row{display:flex;flex-wrap:wrap;gap:34px;justify-content:center;padding:22px 16px 70px}
+ .cap{text-align:center;color:var(--mut);font-size:12px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:10px}
+ .phone{width:360px;height:740px;border-radius:46px;overflow:hidden;position:relative;background:linear-gradient(160deg,#1a1440,#120f2c 55%,#0d1c2c);border:1px solid var(--line);box-shadow:0 30px 80px rgba(0,0,0,.55),inset 0 0 0 6px rgba(255,255,255,.03)}
+ .phone:before{content:"";position:absolute;inset:0;background:radial-gradient(70% 40% at 20% 0%,#6d4dff55,transparent 70%),radial-gradient(60% 40% at 100% 40%,#ff4f9a33,transparent 70%);pointer-events:none}
+ .in{position:relative;padding:54px 18px 90px;height:100%}
+ .notch{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:110px;height:28px;border-radius:20px;background:#000;z-index:3}
+ .g{background:var(--glass);border:1px solid var(--line);border-radius:22px;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+ .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.top b{font-size:18px;letter-spacing:.02em}
+ .av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--acc1),var(--acc2));display:grid;place-items:center;font-weight:800;font-size:13px}
+ .hero{padding:20px;margin-bottom:14px}.hero h2{margin:0 0 4px;font-size:26px;line-height:1.1}.hero p{margin:0 0 16px;color:var(--mut);font-size:13.5px}
+ .btn{border:0;border-radius:16px;padding:14px 16px;font-weight:700;font-size:15px;color:#fff;width:100%;background:linear-gradient(90deg,var(--acc1),var(--acc2));box-shadow:0 10px 30px #7c5cff55}
+ .btn.ghost{background:rgba(255,255,255,.1);box-shadow:none;border:1px solid var(--line)}
+ .seg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:4px;margin-bottom:14px}.seg span{text-align:center;font-size:12px;padding:9px 0;border-radius:14px;color:var(--mut);font-weight:600}.seg .on{background:rgba(255,255,255,.18);color:#fff}
+ .cont{display:flex;gap:12px;align-items:center;padding:14px;margin-bottom:14px}.cont .ic{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,#2ee6d6,#7c5cff);display:grid;place-items:center;font-size:22px}
+ .cont div small{display:block;color:var(--mut);font-size:12px}.cont div b{font-size:15px}
+ .tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tile{padding:14px}.tile i{font-style:normal;font-size:22px}.tile b{display:block;margin-top:6px;font-size:14px}.tile small{color:var(--mut);font-size:11.5px}
+ .tabs{position:absolute;left:14px;right:14px;bottom:16px;display:grid;grid-template-columns:repeat(4,1fr);padding:10px 4px;text-align:center;font-size:11px;color:var(--mut)}.tabs .on{color:#fff}.tabs i{display:block;font-style:normal;font-size:19px}
+ .prog{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--mut);margin-bottom:10px}.bar{height:6px;border-radius:9px;background:rgba(255,255,255,.12);overflow:hidden;flex:1;margin:0 10px}.bar i{display:block;height:100%;width:30%;background:linear-gradient(90deg,var(--acc3),var(--acc1))}
+ .q{text-align:center;font-size:14px;color:var(--mut);margin:6px 0 2px}.res{text-align:center;font-size:32px;font-weight:800;margin:0 0 10px;background:linear-gradient(90deg,#fff,#c9b8ff);-webkit-background-clip:text;color:transparent}
+ .wheel{width:262px;height:262px;display:block;margin:0 auto;filter:drop-shadow(0 18px 40px rgba(124,92,255,.45))}
+ .rcard{padding:12px 14px;margin:10px 0 10px}.rcard b{font-size:15px}.rcard p{margin:4px 0 8px;color:var(--mut);font-size:12.5px}
+ .chips{display:flex;flex-wrap:wrap;gap:6px}.chip{font-size:11.5px;padding:5px 10px;border-radius:999px;background:rgba(46,230,214,.16);border:1px solid rgba(46,230,214,.4)}.chip.bad{background:rgba(255,95,162,.15);border-color:rgba(255,95,162,.45)}
+ .duo{display:grid;grid-template-columns:1fr 1.4fr;gap:10px}
+ .port{height:210px;border-radius:26px;margin-bottom:12px;position:relative;overflow:hidden;background:radial-gradient(70% 60% at 50% 30%,#c7b6ff,#5b3df5 55%,#1a1440);display:flex;align-items:flex-end;padding:16px}
+ .port:after{content:"";position:absolute;left:50%;top:38px;width:120px;height:150px;transform:translateX(-50%);border-radius:60px 60px 30px 30px;background:linear-gradient(#ffffff33,#ffffff08);box-shadow:0 0 60px #fff6}
+ .port div{position:relative;z-index:1}.port h3{margin:0;font-size:24px}.port small{color:#ece6ff}
+ .rate{position:absolute;right:14px;top:14px;z-index:1;padding:6px 12px;border-radius:999px;background:rgba(0,0,0,.35);font-weight:800;font-size:13px}
+ .st{display:grid;grid-template-columns:44px 1fr 74px;gap:8px;align-items:center;font-size:12px;margin:7px 0}.st span{color:var(--mut)}.st em{font-style:normal;text-align:right;font-size:11px}
+ .st .b{height:7px;border-radius:9px;background:rgba(255,255,255,.12);overflow:hidden}.st .b i{display:block;height:100%;background:linear-gradient(90deg,var(--acc3),var(--acc1),var(--acc2))}
+ .tl{margin-top:10px;padding:12px 14px}.tl h4{margin:0 0 8px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+ .ev{display:grid;grid-template-columns:26px 1fr;gap:8px;font-size:12px;padding:5px 0;border-left:2px solid rgba(255,255,255,.14);margin-left:12px;padding-left:10px;position:relative}.ev:before{content:"";position:absolute;left:-6px;top:9px;width:10px;height:10px;border-radius:50%;background:var(--acc3)}.ev.bad:before{background:var(--acc2)}.ev small{display:block;color:var(--mut)}
+ .back{display:block;text-align:center;color:var(--mut);margin:0 0 50px}.back a{color:#fff}
+</style></head>
+<body>
+<div class="head"><small>Modern mockup 1 of 4</small><h1>Glass</h1>
+<p>Soft aurora gradients and frosted glass cards, like a current mobile app. The wheel becomes a glossy, gently lit object, results appear in floating cards, and navigation moves to a bottom tab bar.</p>
+<ul><li>Frosted cards with blur, one gradient for every primary action</li><li>Bottom tabs: Spin, Story, Hall, Profile, so the story is always one tap away</li><li>Story wheel: done chapters fade to glass, the landed chapter glows</li><li>Character card with a portrait area, gradient stat bars and a saga timeline</li></ul></div>
+<div class="row" id="row"></div>
+<p class="back"><a href="index.html">All modern mockups</a></p>
+<script src="../../app/js/data.js"></script><script src="../../app/js/data-more.js"></script><script src="../../app/js/data-extra.js"></script><script src="../../app/js/engine.js"></script><script src="../../app/js/story.js"></script><script src="modern.js"></script>
+<script>
+const L = MOD.legend(), c = FW.compute(L), e = MOD.esc, s = L.saga;
+const frame = (cap, body, tab) => `<div><div class="cap">${cap}</div><div class="phone"><div class="notch"></div><div class="in">${body}</div>${tab != null ? `<div class="tabs g">${['🎡 Spin', '📖 Story', '🏛️ Hall', '👤 Profile'].map((t, i) => `<div class="${i === tab ? 'on' : ''}"><i>${t.split(' ')[0]}</i>${t.split(' ')[1]}</div>`).join('')}</div>` : ''}</div></div>`;
+const home = `<div class="top"><b>FateWheel</b><div class="av">SA</div></div>
+ <div class="g hero"><h2>Spin your legend</h2><p>26 wheels decide who you are. Then the story decides who you become.</p><button class="btn">Spin a legend</button></div>
+ <div class="g seg"><span>Mortal</span><span>Heroic</span><span class="on">Mythic</span><span>Divine</span></div>
+ <div class="g cont"><div class="ic">📖</div><div><small>Continue your saga</small><b>${e(L.name)} · Chapter ${s.ch}</b><small>Ruler of ${e(s.kingdom.name)} · ${e(s.dyn.house)}</small></div></div>
+ <div class="tiles"><div class="g tile"><i>📅</i><b>Daily challenge</b><small>Best today: 74</small></div><div class="g tile"><i>⚔️</i><b>Versus</b><small>Pit two legends</small></div><div class="g tile"><i>🧩</i><b>Wheel packs</b><small>2 installed</small></div><div class="g tile"><i>🏅</i><b>Achievements</b><small>9 of 22</small></div></div>`;
+const spin = `<div class="prog"><span>Chapter ${s.ch + 1}</span><div class="bar"><i></i></div><span>🪙 3</span></div>
+ <div class="q">What happens next?</div><div class="res">Conquer a race</div>
+ <canvas class="wheel" data-wheel='{"story":1,"pick":"conquerRace","style":"glass"}'></canvas>
+ <div class="g rcard"><b>⚔️ Conquer a race</b><p>Your kingdom of ${e(s.kingdom.name)} marches to war. Next: which race do you fight?</p><div class="chips"><span class="chip">Army of ${e(s.kingdom.name)} +6</span><span class="chip">Allies +3</span><span class="chip bad">Death possible</span></div></div>
+ <div class="duo"><button class="btn ghost">↺ Re-spin</button><button class="btn">Continue</button></div>`;
+const stats = MOD.stats(L).map(x => `<div class="st"><span>${x.short}</span><div class="b"><i style="width:${Math.min(100, x.lvl)}%"></i></div><em>${e(x.tier)}</em></div>`).join('');
+const card = `<div class="port"><span class="rate">${c.rating.toFixed(1)} · ${e(c.rank)}</span><div><h3>${e(L.name)}</h3><small>${e(L.pickName('title'))} · Nine-tailed Kitsune ${e(L.pickName('cls'))}</small></div></div>
+ <div class="g" style="padding:10px 14px">${stats}</div>
+ <div class="g tl"><h4>Saga · ${s.ch} chapters</h4>${s.log.slice(-3).map(x => `<div class="ev ${x.tone}"><span>${x.emoji}</span><div>${e(x.text)}<small>Chapter ${x.ch} · ${e(x.chapter)}</small></div></div>`).join('')}</div>`;
+document.getElementById('row').innerHTML = frame('Home', home, 0) + frame('Story wheel', spin, 1) + frame('Character', card, 3);
+MOD.drawAll();
+</script>
+</body></html>

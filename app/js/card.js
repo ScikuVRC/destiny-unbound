@@ -118,6 +118,27 @@
     }
   }
 
+  /* an AI or uploaded portrait fills the whole card with no seams: a blurred, darkened copy of the picture behind
+     everything, the sharp picture starting just below the name (so the title never covers the face), softly faded in
+     at the top, and darkened towards the bottom so the stat panel reads cleanly */
+  const PORTRAIT_TOP = 230;
+  function portrait(c, im) {
+    const sb = Math.max(W / im.width, H / im.height) * 1.08;
+    c.save(); c.fillStyle = '#050507'; c.fillRect(0, 0, W, H);
+    c.filter = 'blur(34px) brightness(0.42) saturate(1.15)';
+    c.drawImage(im, (W - im.width * sb) / 2, (H - im.height * sb) / 2, im.width * sb, im.height * sb);
+    c.restore();
+    const AH = H - PORTRAIT_TOP, s = Math.max(W / im.width, AH / im.height), dw = im.width * s, dh = im.height * s;
+    const o = document.createElement('canvas'); o.width = W; o.height = H; const oc = o.getContext('2d');
+    oc.drawImage(im, (W - dw) / 2, PORTRAIT_TOP + (AH - dh) * 0.2, dw, dh);       // keep the upper part: faces sit near the top
+    oc.globalCompositeOperation = 'destination-in';
+    const m = oc.createLinearGradient(0, PORTRAIT_TOP - 60, 0, PORTRAIT_TOP + 150); m.addColorStop(0, 'rgba(0,0,0,0)'); m.addColorStop(1, 'rgba(0,0,0,1)');
+    oc.fillStyle = m; oc.fillRect(0, 0, W, H);
+    c.drawImage(o, 0, 0);
+    const low = c.createLinearGradient(0, 560, 0, 900); low.addColorStop(0, 'rgba(0,0,0,0)'); low.addColorStop(1, 'rgba(0,0,0,.82)');
+    c.fillStyle = low; c.fillRect(0, 560, W, 340); c.fillStyle = 'rgba(0,0,0,.82)'; c.fillRect(0, 900, W, H - 900);
+  }
+
   FW.drawCard = function (canvas, legend, opts) {
     opts = opts || {};
     const name = opts.theme && CT[opts.theme] ? opts.theme : 'classic';
@@ -128,13 +149,8 @@
     const race = legend.raceName();
     const hue = HUE[race] != null ? HUE[race] : (FW.RACE_HUE && FW.RACE_HUE[race] != null) ? FW.RACE_HUE[race] : hash(race) % 360;
     const rng = FW.makeRng('card' + legend.seed);
-    if (opts.image) {
-      art(c, legend, th, hue, rng);
-      const im = opts.image, s = Math.max(W / im.width, 860 / im.height), dw = im.width * s, dh = im.height * s;
-      c.save(); c.beginPath(); c.rect(0, 0, W, 860); c.clip(); c.drawImage(im, (W - dw) / 2, (860 - dh) * 0.3, dw, dh); c.restore();   // keep the upper part: faces sit near the top
-      const fade = c.createLinearGradient(0, 560, 0, 880); fade.addColorStop(0, 'rgba(0,0,0,0)'); fade.addColorStop(1, 'rgba(0,0,0,.92)'); c.fillStyle = fade; c.fillRect(0, 560, W, 320);
-      const topFade = c.createLinearGradient(0, 0, 0, 270); topFade.addColorStop(0, 'rgba(0,0,0,.78)'); topFade.addColorStop(1, 'rgba(0,0,0,0)'); c.fillStyle = topFade; c.fillRect(0, 0, W, 270);   // keeps the name readable over any picture
-    } else { art(c, legend, th, hue, rng); figure(c, legend, hue); }
+    if (opts.image) portrait(c, opts.image);
+    else { art(c, legend, th, hue, rng); figure(c, legend, hue); }
     const bottomFade = c.createLinearGradient(0, 640, 0, 900); bottomFade.addColorStop(0, 'rgba(0,0,0,0)'); bottomFade.addColorStop(1, 'rgba(0,0,0,.65)'); c.fillStyle = bottomFade; c.fillRect(0, 640, W, 260);
 
     // title block
@@ -143,9 +159,11 @@
     c.fillStyle = 'rgba(255,255,255,.55)'; c.font = '600 22px ' + th.font; c.fillText('F A T E W H E E L   L E G E N D', W / 2, 78);
     const tt = th.caps ? title.toUpperCase() : title;
     const ts = fit(c, tt, W - 160, 78, '800', th.head);
-    c.shadowColor = 'rgba(0,0,0,.8)'; c.shadowBlur = 18; c.fillStyle = '#fff'; c.fillText(tt, W / 2, 160); c.shadowBlur = 0;
+    c.shadowColor = 'rgba(0,0,0,.9)'; c.shadowBlur = opts.image ? 26 : 18; c.fillStyle = '#fff'; c.fillText(tt, W / 2, 160);
     const subName = (legend.name && legend.pickName('title') ? legend.pickName('title') + '  ·  ' : '') + (legend.has('sub') ? legend.pickName('sub') + ' ' + race : race);
-    c.fillStyle = name === 'grimoire' ? '#f4e6c4' : th.accent; fit(c, th.caps ? subName.toUpperCase() : subName, W - 140, 36, '600', th.font); c.fillText((th.caps ? subName.toUpperCase() : subName), W / 2, 210);
+    c.shadowBlur = opts.image ? 16 : 0;
+    c.fillStyle = name === 'grimoire' ? '#f4e6c4' : opts.image && name === 'classic' ? '#a9c8ff' : th.accent; fit(c, th.caps ? subName.toUpperCase() : subName, W - 140, 36, '600', th.font); c.fillText((th.caps ? subName.toUpperCase() : subName), W / 2, 210);
+    c.shadowBlur = 0;
 
     // panel
     const px = 54, py = 800, pw = W - 108, ph = 690;

@@ -40,7 +40,7 @@
       this.cv = canvas; this.ctx = canvas.getContext('2d');
       this.theme = FW.THEMES[themeName || 'classic'];
       this.entries = []; this.style = { mode: 'cat', hue: 0 };
-      this.rot = 0; this.focus = -1; this.kick = 0; this.spinning = false;
+      this.rot = 0; this.focus = -1; this.kick = 0; this.spinning = false; this.dir = -1;   // -1 = counter-clockwise, 1 = clockwise
       this.onTick = null; this.onLabel = null; this.size = 0; this.dpr = 1;
       this.off = document.createElement('canvas');
       this.cum = [0, 1];
@@ -146,7 +146,7 @@
       ctx.lineWidth = Math.max(1.5, G.hubR * 0.08); ctx.strokeStyle = 'rgba(255,255,255,.05)'; ctx.stroke();
       ctx.beginPath(); ctx.arc(G.cx, G.cy, G.hubR * 0.52, 0, TAU); ctx.lineWidth = G.hubR * 0.16; ctx.strokeStyle = th.hubRing; ctx.stroke();
       // pointer (teardrop on the hub, tip pointing up into the wheel)
-      ctx.save(); ctx.translate(G.cx, G.cy); ctx.rotate(this.kick * 0.28);
+      ctx.save(); ctx.translate(G.cx, G.cy); ctx.rotate(this.kick * 0.07 * this.dir);
       const tipY = -(G.hubR + G.R * 0.14), baseW = G.hubR * 0.62;
       ctx.beginPath(); ctx.moveTo(0, tipY); ctx.bezierCurveTo(baseW * 0.25, tipY + G.R * 0.07, baseW, -G.hubR * 0.7, baseW, -G.hubR * 0.35); ctx.lineTo(-baseW, -G.hubR * 0.35); ctx.bezierCurveTo(-baseW, -G.hubR * 0.7, -baseW * 0.25, tipY + G.R * 0.07, 0, tipY); ctx.closePath();
       ctx.fillStyle = th.pointer; ctx.fill(); ctx.lineWidth = Math.max(1, G.S * 0.004); ctx.strokeStyle = th.pointerEdge; ctx.stroke();
@@ -169,9 +169,10 @@
       const turns = opts.turns != null ? opts.turns : (5 + Math.floor(rng() * 3));
       const frac = 0.1 + rng() * 0.8;
       const alpha = (this.cum[idx] + (this.cum[idx + 1] - this.cum[idx]) * frac) * TAU;
-      const r0 = this.rot;
-      const delta = ((((-alpha - r0) % TAU) + TAU) % TAU);
-      const r1 = r0 + turns * TAU + delta;
+      const r0 = this.rot, dir = this.dir >= 0 ? 1 : -1;
+      // land with slice idx under the pointer after whole turns, in the chosen direction
+      const delta = dir > 0 ? ((((-alpha - r0) % TAU) + TAU) % TAU) : ((((r0 + alpha) % TAU) + TAU) % TAU);
+      const r1 = r0 + dir * (turns * TAU + delta);
       this.focus = -1; this.spinning = true; this._skip = false;
       const t0 = performance.now();
       const ease = x => 1 - Math.pow(1 - x, 3.8);
@@ -184,9 +185,10 @@
           if (i !== this._lastIdx) {
             this._lastIdx = i;
             if (this.onLabel) this.onLabel(this.entries[i], i, false);
-            if (now - this._lastTick > 26 && !this._skip) { this._lastTick = now; this.kick = 1; if (this.onTick) this.onTick(i, 1 - x); }
+            // a gentle flick at most every 70 ms, softer while the wheel is still fast
+            if (now - this._lastTick > 70 && !this._skip) { this._lastTick = now; this.kick = 0.35 + 0.65 * x; if (this.onTick) this.onTick(i, 1 - x); }
           }
-          this.kick *= 0.82;
+          this.kick *= 0.7;
           if (x < 1) { this.draw(); this._raf = requestAnimationFrame(step); }
           else {
             this.rot = r1 % TAU; this.spinning = false; this.focus = idx; this.kick = 0; this._lastIdx = idx;

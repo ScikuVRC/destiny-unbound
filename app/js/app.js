@@ -14,7 +14,7 @@
   const state = {
     theme: FW.THEMES[saved.theme] ? saved.theme : 'classic',
     luck: FW.LUCK.some(l => l.id === saved.luck) ? saved.luck : 'heroic',
-    sound: saved.sound !== false, speed: saved.speed === 'fast' ? 'fast' : 'normal',
+    sound: saved.sound !== false, speed: saved.speed === 'fast' ? 'fast' : 'normal', spinDir: saved.spinDir === 'cw' ? 'cw' : 'ccw',
     auto: false, legend: null, image: null, rng: FW.makeRng(), seed: '',
     runId: 0, phase: 0, waiter: null, mode: 'ready', tokensUsed: 0,
     wheel: null, hall: store.get('fw.hall', []), overrides: store.get('fw.overrides', {}),
@@ -24,7 +24,7 @@
   if (!state.person.presets || typeof state.person.presets !== 'object') state.person.presets = {};
   const hooks = {};   // filled in by studio.js
   const hook = (name, a) => { try { return hooks[name] && hooks[name](a); } catch (e) { /* optional feature */ } };
-  const persist = () => store.set('fw.settings', { theme: state.theme, luck: state.luck, sound: state.sound, speed: state.speed });
+  const persist = () => store.set('fw.settings', { theme: state.theme, luck: state.luck, sound: state.sound, speed: state.speed, spinDir: state.spinDir });
   FW.Audio.on = state.sound;
 
   /* ---------- small helpers ---------- */
@@ -46,6 +46,7 @@
   }
   function ensureWheel() {
     if (!state.wheel) { state.wheel = new FW.Wheel($('#wheel'), state.theme); }
+    state.wheel.dir = state.spinDir === 'cw' ? 1 : -1;
     return state.wheel;
   }
 
@@ -397,6 +398,7 @@
   /* ---------- wiring ---------- */
   function syncAutoBtn() { $('#btnAutoToggle').textContent = 'Auto: ' + (state.auto ? 'on' : 'off'); }
   function syncSpeedBtn() { $('#btnSpeed').textContent = 'Speed: ' + state.speed; }
+  function syncDirBtn() { $('#btnDir').textContent = state.spinDir === 'cw' ? '↻ Clockwise' : '↺ Counter-clockwise'; if (state.wheel) state.wheel.dir = state.spinDir === 'cw' ? 1 : -1; }
   function syncSound() { $('#btnSound').innerHTML = state.sound ? '&#128266;' : '&#128263;'; FW.Audio.on = state.sound; }
 
   $('#btnStart').onclick = () => { FW.Audio.init(); runLegend(false); };
@@ -410,6 +412,7 @@
   $('#wheel').addEventListener('click', () => { if (state.wheel && state.wheel.spinning) state.wheel.skip(); else if (state.mode === 'ready') fire('spin'); });
   $('#btnAutoToggle').onclick = () => { state.auto = !state.auto; syncAutoBtn(); if (state.auto && state.waiter) { if (state.mode === 'ready') autoFire('spin', 300); else if (state.mode === 'result') autoFire('next', 600); } };
   $('#btnSpeed').onclick = () => { state.speed = state.speed === 'normal' ? 'fast' : 'normal'; syncSpeedBtn(); persist(); };
+  $('#btnDir').onclick = () => { state.spinDir = state.spinDir === 'cw' ? 'ccw' : 'cw'; syncDirBtn(); persist(); };
   $('#btnSound').onclick = () => { state.sound = !state.sound; syncSound(); persist(); FW.Audio.init(); FW.Audio.click(); };
   $('#btnLuck').onclick = () => { const i = FW.LUCK.findIndex(l => l.id === state.luck); setLuck(FW.LUCK[(i + 1) % FW.LUCK.length].id); if (state.screen !== 'home') toast('Luck applies to your next legend'); };
   $('#btnTheme').onclick = () => { const k = Object.keys(FW.THEMES); setTheme(k[(k.indexOf(state.theme) + 1) % k.length]); };
@@ -440,7 +443,7 @@
 
   document.body.dataset.theme = state.theme;
   $('#btnTheme').textContent = FW.THEMES[state.theme].name; $('#btnLuck').textContent = 'Luck: ' + luckInfo().name;
-  renderHomeOpts(); syncAutoBtn(); syncSpeedBtn(); syncSound();
+  renderHomeOpts(); syncAutoBtn(); syncSpeedBtn(); syncDirBtn(); syncSound();
   if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol) && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') navigator.serviceWorker.register('sw.js').catch(() => { });
 
   window.FWApp = { state, store, hooks, runLegend, runFight, showCard, setTheme, setLuck, fire, toast, copy, openModal, closeModal, drawCardNow, loadCode, saveToHall,
