@@ -5,7 +5,7 @@
   'use strict';
   const FW = window.FW, App = window.FWApp, D = window.fatewheelDesktop || null;
   const SYS = FW.System = {};
-  FW.BUG_URL = 'https://github.com/ScikuVRC/fatewheel/issues/new';
+  FW.BUG_URL = 'https://github.com/ScikuVRC/destiny-unbound/issues/new';
 
   /* ---------------- error log (last 200 lines on this device; the desktop app also writes a log file) ---------------- */
   const LOG_KEY = 'du.log';
