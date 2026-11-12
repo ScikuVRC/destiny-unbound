@@ -25,7 +25,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
 - ✅ Rename the GitHub repo to `destiny-unbound` and make it public (done 2026-11-12)
 - ✅ Push the latest commits after the rename
-- ⬜ Publish 0.1.0-alpha.1 as a GitHub pre-release (push the tag `v0.1.0-alpha.1`)
+- ✅ Publish 0.1.0-alpha.1 as a GitHub pre-release (done 2026-11-12: Windows, macOS and Linux builds)
 - ⬜ Choose the tester feedback channel (Discord, email or GitHub Issues) and send invites (see `docs/alpha-testing.md`)
 
 ## Before the beta
