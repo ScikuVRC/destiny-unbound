@@ -1,4 +1,4 @@
-/* FATEWHEEL art: turns a finished legend into an image prompt, and talks to image generators
+/* Destiny Unbound art: turns a finished legend into an image prompt, and talks to image generators
    and (optionally) a language model that rewrites the prompt. No DOM here: works in the browser and in node 18+.
    Keys are only ever sent to the address the player configured. */
 (function (g) {
@@ -210,7 +210,7 @@
         '6': { class_type: 'CLIPTextEncode', inputs: { text: req.prompt, clip: ['4', 1] } },
         '7': { class_type: 'CLIPTextEncode', inputs: { text: req.negative || '', clip: ['4', 1] } },
         '8': { class_type: 'VAEDecode', inputs: { samples: ['3', 0], vae: ['4', 2] } },
-        '9': { class_type: 'SaveImage', inputs: { filename_prefix: 'FateWheel', images: ['8', 0] } }
+        '9': { class_type: 'SaveImage', inputs: { filename_prefix: 'DestinyUnbound', images: ['8', 0] } }
       };
       const q = await (await call(this.name, base + '/prompt', jsonInit({ prompt: graph, client_id: 'fatewheel' }), signal)).json();
       const id = q && q.prompt_id; if (!id) throw new ArtError('ComfyUI did not accept the workflow.', q && q.error ? JSON.stringify(q.error).slice(0, 300) : '');

@@ -1,4 +1,4 @@
-/* FATEWHEEL HTML render helpers (shared by the app and the mockups) */
+/* Destiny Unbound HTML render helpers (shared by the app and the mockups) */
 (function (g) {
   const FW = g.FW = g.FW || {};
   const H = FW.html = {};

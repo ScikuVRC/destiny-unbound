@@ -1,4 +1,4 @@
-/* FATEWHEEL personalisation panel + Art Studio (AI portrait). Loaded after app.js. */
+/* Destiny Unbound personalisation panel + Art Studio (AI portrait). Loaded after app.js. */
 (function () {
   'use strict';
   const FW = window.FW, H = FW.html, App = window.FWApp, state = App.state, store = App.store;

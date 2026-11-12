@@ -32,8 +32,8 @@ const server = http.createServer((req, res) => {
     if (u === '/sdapi/v1/txt2img') return json({ images: [B64] });
     if (u === '/object_info/CheckpointLoaderSimple') return json({ CheckpointLoaderSimple: { input: { required: { ckpt_name: [['dream.safetensors', 'other.ckpt']] } } } });
     if (u === '/prompt') return json({ prompt_id: 'abc123' });
-    if (u === '/history/abc123') { server.polls = (server.polls || 0) + 1; return json(server.polls < 2 ? {} : { abc123: { outputs: { '9': { images: [{ filename: 'FateWheel_1.png', subfolder: '', type: 'output' }] } } } }); }
-    if (u.indexOf('/view?filename=FateWheel_1.png') === 0) { res.writeHead(200, { 'Content-Type': 'image/png' }); return res.end(PNG); }
+    if (u === '/history/abc123') { server.polls = (server.polls || 0) + 1; return json(server.polls < 2 ? {} : { abc123: { outputs: { '9': { images: [{ filename: 'DestinyUnbound_1.png', subfolder: '', type: 'output' }] } } } }); }
+    if (u.indexOf('/view?filename=DestinyUnbound_1.png') === 0) { res.writeHead(200, { 'Content-Type': 'image/png' }); return res.end(PNG); }
     if (u === '/v2beta/stable-image/generate/core') { res.writeHead(200, { 'Content-Type': 'image/png' }); return res.end(PNG); }
     if (u === '/v1beta/interactions') return json({ id: 'i1', steps: [{ type: 'model_output', content: [{ type: 'text', text: 'here' }, { type: 'image', mime_type: 'image/png', data: B64 }] }] });
     if (u === '/v1/chat/completions') return json({ choices: [{ message: { role: 'assistant', content: '<think>plan</think>\n"A towering knight in the rain, oil painting"' } }] });

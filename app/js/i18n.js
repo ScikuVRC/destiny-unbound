@@ -1,4 +1,4 @@
-/* FATEWHEEL translations. Each language is a dictionary from the English text to the translated text (see app/lang/).
+/* Destiny Unbound translations. Each language is a dictionary from the English text to the translated text (see app/lang/).
    Any text on the page that has an entry is translated as it appears, including menus and pop-ups built later;
    wheel labels and the card call FW.t() directly. Text without an entry stays in English.
    SPDX-License-Identifier: GPL-3.0-or-later */

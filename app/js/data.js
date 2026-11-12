@@ -1,4 +1,4 @@
-/* FATEWHEEL data - every wheel's entries.
+/* Destiny Unbound data - every wheel's entries.
    Row format:  Name|weight|dsl|perk text|flaw text
    DSL tokens (space separated):
      str+2 spd-1 dur+1 int+1 fgt+1 wpn+1 pwr+1 all+1   stat tier shifts

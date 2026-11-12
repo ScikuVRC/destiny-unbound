@@ -1,4 +1,4 @@
-/* FATEWHEEL story mode screens: the Story wheel, chapter wheels, saga panel, dynasty and Game options.
+/* Destiny Unbound story mode screens: the Story wheel, chapter wheels, saga panel, dynasty and Game options.
    SPDX-License-Identifier: GPL-3.0-or-later */
 (function () {
   'use strict';

@@ -1,4 +1,4 @@
-/* FATEWHEEL sound: themed effects and ambient music, all synthesized with WebAudio (no audio files needed).
+/* Destiny Unbound sound: themed effects and ambient music, all synthesized with WebAudio (no audio files needed).
    Mods can replace any sound with their own file (tick, reveal, rare, bad, click, music) - see mods.js.
    Same API as before: FW.Audio.init(), .tick(speed), .reveal(rare), .bad(), .click(), .on, .recDest
    SPDX-License-Identifier: GPL-3.0-or-later */

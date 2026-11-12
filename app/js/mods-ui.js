@@ -1,4 +1,4 @@
-/* FATEWHEEL Mods screen, mod loading at startup, and desktop updates.
+/* Destiny Unbound Mods screen, mod loading at startup, and desktop updates.
    SPDX-License-Identifier: GPL-3.0-or-later */
 (function () {
   'use strict';

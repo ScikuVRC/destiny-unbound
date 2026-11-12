@@ -1,4 +1,4 @@
-/* FATEWHEEL content pack 2: a finer age wheel and more entries for every wheel.
+/* Destiny Unbound content pack 2: a finer age wheel and more entries for every wheel.
    Loaded after data-more.js, before engine.js. Old names are kept (or aliased) so old Legend Codes still load. */
 (function (g) {
   const FW = g.FW, table = FW.table;

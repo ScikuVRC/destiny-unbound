@@ -1,4 +1,4 @@
-/* FATEWHEEL extras: AI saga writer, daily challenge, versus mode and the vertical video recorder.
+/* Destiny Unbound extras: AI saga writer, daily challenge, versus mode and the vertical video recorder.
    SPDX-License-Identifier: GPL-3.0-or-later */
 (function () {
   'use strict';

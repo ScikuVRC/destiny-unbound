@@ -1,4 +1,4 @@
-/* FATEWHEEL expansion content: more races, sub-wheels, new wheels (class, element, companion, looks)
+/* Destiny Unbound expansion content: more races, sub-wheels, new wheels (class, element, companion, looks)
    and the visual descriptions used by the art prompt. Loaded after data.js, before engine.js. */
 (function (g) {
   const FW = g.FW, table = FW.table;

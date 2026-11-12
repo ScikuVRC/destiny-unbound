@@ -1,4 +1,4 @@
-/* FATEWHEEL character card renderer (1080x1620 canvas, exportable as PNG) */
+/* Destiny Unbound character card renderer (1080x1620 canvas, exportable as PNG) */
 (function (g) {
   const FW = g.FW = g.FW || {};
   const W = 1080, H = 1620, TAU = Math.PI * 2;

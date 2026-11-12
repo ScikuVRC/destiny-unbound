@@ -149,3 +149,16 @@ ${LOGO[m.theme].css}
   fs.writeFileSync(path.join(__dirname, file), html);
   console.log('wrote', file);
 });
+
+// the gallery page: the detailed set (what the game uses) first, the earlier simple drafts below
+if (require.main === module) {
+  const card = (href, img, n, name, genre) => `<a href="${href}"><img src="${img}" alt=""><div><b>${n} · ${name}</b><span>${genre}</span></div></a>`;
+  const detailed = SET.map((m, i) => { const f = 'a' + (i + 1) + '-' + m.file.replace(/^m\d-/, '').replace('.html', ''); return card(f + '.html', 'previews/' + f + '-title.jpg', i + 1, m.name, m.genre); }).join('');
+  const drafts = LOOKS.map((m, i) => card(m.file, 'previews/' + m.file.replace('.html', '') + '-title.jpg', i + 1, m.name, m.genre)).join('');
+  fs.writeFileSync(path.join(__dirname, 'index.html'), `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Destiny Unbound - Main menu mockups</title><link rel="stylesheet" href="../../app/css/fonts.css">
+<style>body{margin:0;background:#0b0908;color:#e9dcc4;font-family:"EB Garamond",Georgia,serif}main{max-width:1240px;margin:0 auto;padding:36px 18px 60px}h1{font-family:Cinzel,serif;font-size:44px;margin:0 0 8px}h2{font-family:Cinzel,serif;margin:40px 0 0}p{color:#b9aa91;max-width:780px;line-height:1.6;font-size:17px}.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(520px,1fr));gap:20px;margin-top:20px}.g.small{grid-template-columns:repeat(auto-fill,minmax(260px,1fr));opacity:.8}a{display:block;color:inherit;text-decoration:none;border:1px solid #3b3022;background:#14100e}a img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}a div{padding:12px 16px}a b{font-family:Cinzel,serif;font-size:19px}a span{display:block;color:#b9aa91;margin-top:4px}</style></head>
+<body><main><h1>Main menu mockups</h1><p>The painted title screens and Options screens, one per theme. These are the designs the game's real main menu is built from (scripts/make-menu-css.js).</p><div class="g">${detailed}</div>
+<h2>Earlier drafts</h2><p>The first, code-only versions. Adventurer's Sheet was later replaced by Astral Oracle.</p><div class="g small">${drafts}</div></main></body></html>
+`);
+  console.log('wrote index.html');
+}

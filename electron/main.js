@@ -266,6 +266,7 @@ app.whenReady().then(() => {
   serveApp();
   // the app needs no camera, microphone, location or notifications; only writing to the clipboard (Copy buttons)
   session.defaultSession.setPermissionRequestHandler((wc, perm, cb) => cb(perm === 'clipboard-sanitized-write'));
+  if (process.env.FATEWHEEL_OFFLINE) session.defaultSession.enableNetworkEmulation({ offline: true });   // test: no internet at all
   if (process.platform !== 'darwin') Menu.setApplicationMenu(null);
   createWindow();
   app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });

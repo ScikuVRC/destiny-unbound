@@ -1,4 +1,4 @@
-/* FATEWHEEL wheel packs: shareable JSON files that add wheel entries (with buffs and debuffs) and Workshop edits.
+/* Destiny Unbound wheel packs: shareable JSON files that add wheel entries (with buffs and debuffs) and Workshop edits.
    Pack format (see packs/example-sky-pirates.json):
      { "format": "fatewheel-pack", "version": 1, "name": "...", "description": "...", "author": "...",
        "entries": { "race": [ { "name": "...", "w": 3, "dsl": "spd+1", "perk": "...", "flaw": "...", "art": "how it looks" } ], "wpn": [...], ... },

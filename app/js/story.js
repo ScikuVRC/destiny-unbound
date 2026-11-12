@@ -1,4 +1,4 @@
-/* FATEWHEEL story mode - the saga that follows a finished character. Pure logic (no DOM): works in the browser and in node.
+/* Destiny Unbound story mode - the saga that follows a finished character. Pure logic (no DOM): works in the browser and in node.
    A chapter is an async script that asks `io.spin(cfg)` for wheel results; the app shows real wheels, the tests pick at random.
    SPDX-License-Identifier: GPL-3.0-or-later */
 (function (g) {

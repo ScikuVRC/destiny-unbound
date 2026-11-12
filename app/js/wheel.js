@@ -1,4 +1,4 @@
-/* FATEWHEEL wheel renderer + spin physics + audio. Browser only. */
+/* Destiny Unbound wheel renderer + spin physics + audio. Browser only. */
 (function (g) {
   const FW = g.FW = g.FW || {};
   const TAU = Math.PI * 2;

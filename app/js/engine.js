@@ -1,4 +1,4 @@
-/* FATEWHEEL engine - pure logic (no DOM). Works in browser and node. */
+/* Destiny Unbound engine - pure logic (no DOM). Works in browser and node. */
 (function (g) {
   const FW = g.FW = g.FW || {};
   const STATS = FW.STATS, COMBAT = FW.COMBAT_STATS, LAD = FW.LADDERS;
