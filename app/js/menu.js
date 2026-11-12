@@ -213,6 +213,24 @@
   }
   Nav.resetGuide = () => App.store.set('fw.guide', false);
 
+  /* ---------------- a one-time thank-you, after the player's first finished legend ---------------- */
+  function thanks() {
+    App.openModal('<div class="thanks"><img src="icons/icon-192.png" alt="" width="84" height="84"><h2>' + H.esc(t('Thank you for trying Destiny Unbound')) + '</h2>' +
+      '<p>' + H.esc(t('This game is made by one person, in their spare time, and it is free and open source. If you enjoy it, please consider supporting me and my future projects. Every coffee helps more than you would think.')) + '</p>' +
+      '<div class="cta"><a class="btn primary" id="thKofi" href="https://ko-fi.com/bzrkherja" target="_blank" rel="noopener">☕ ' + H.esc(t('Support on Ko-fi')) + '</a><button class="btn ghost" id="thLater">' + H.esc(t('Maybe later')) + '</button></div>' +
+      '<small>' + H.esc(t('You will not see this again. The Ko-fi link is always in the main menu.')) + '</small></div>');
+    $('#thLater').onclick = App.closeModal; $('#thKofi').addEventListener('click', () => setTimeout(App.closeModal, 300));
+    setTimeout(() => { const b = $('#thLater'); if (b) b.focus(); }, 30);
+  }
+  const prevCard = App.hooks.cardShown;
+  App.hooks.cardShown = L => {
+    if (prevCard) prevCard(L);
+    if (App.store.get('fw.thanks', false) || !L || !L.picks || !L.picks.mark) return;
+    App.store.set('fw.thanks', true);
+    setTimeout(() => { if (!$('#modalRoot').firstChild) thanks(); else App.store.set('fw.thanks', false); }, 2600);   // after the card settles; retried next time if a dialog was open
+  };
+  App.thanksModal = thanks;
+
   /* ---------------- credits ---------------- */
   function credits() {
     const fonts = ['Cinzel', 'Cormorant Garamond', 'Cormorant SC', 'EB Garamond', 'IM Fell English', 'IM Fell English SC', 'Share Tech Mono', 'UnifrakturCook'];
@@ -220,6 +238,7 @@
       '<h3 class="opt-h">Destiny Unbound</h3><p>v' + H.esc(FW.VERSION) + ' · ' + H.esc(t('Made by the Destiny Unbound contributors.')) + '</p>' +
       '<p>' + H.esc(t('Free software under the GNU General Public License v3.0 or later: you may use, study, share and change it.')) + ' <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank" rel="noopener">GPL-3.0</a></p>' +
       '<h3 class="opt-h">' + H.esc(t('Art')) + '</h3><p>' + H.esc(t('The painted title-screen backgrounds, wheels and logos were generated with Grok Imagine (xAI) for this game. Wheels, character cards, icons and interface are drawn in code.')) + '</p>' +
+      '<h3 class="opt-h">' + H.esc(t('Made with AI help')) + '</h3><p>' + H.esc(t('This game is made by one person without funding for a team. Much of the code was written with an AI coding assistant (Claude, by Anthropic), and many wheel entries, story texts and the Spanish translation were drafted with AI help, then edited and tested by hand.')) + '</p>' +
       '<h3 class="opt-h">' + H.esc(t('Sound and music')) + '</h3><p>' + H.esc(t('All sound effects and music are synthesized live in code. Mods may add their own sounds; their authors keep their rights.')) + '</p>' +
       '<h3 class="opt-h">' + H.esc(t('Fonts')) + '</h3><p>' + fonts.map(H.esc).join(', ') + '. ' + H.esc(t('Each under the SIL Open Font License 1.1 (the license files are in the fonts folder).')) + '</p>' +
       '<h3 class="opt-h">' + H.esc(t('Built with')) + '</h3><p>Electron (MIT), electron-updater (MIT).</p>' +

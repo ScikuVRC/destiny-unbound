@@ -279,6 +279,12 @@
     "Every legend is written in blood": "Toda leyenda se escribe con sangre",
     "Got it": "Entendido",
     "Your browser may ask first; Esc leaves fullscreen.": "Tu navegador puede pedir permiso; Esc sale de la pantalla completa.",
-    "Check for updates automatically": "Buscar actualizaciones automáticamente"
+    "Check for updates automatically": "Buscar actualizaciones automáticamente",
+    "Thank you for trying Destiny Unbound": "Gracias por probar Destiny Unbound",
+    "This game is made by one person, in their spare time, and it is free and open source. If you enjoy it, please consider supporting me and my future projects. Every coffee helps more than you would think.": "Este juego lo hace una sola persona en su tiempo libre, y es gratuito y de código abierto. Si lo disfrutas, considera apoyarme a mí y a mis próximos proyectos. Cada café ayuda más de lo que crees.",
+    "Maybe later": "Quizá más tarde",
+    "You will not see this again. The Ko-fi link is always in the main menu.": "No volverás a ver esto. El enlace de Ko-fi siempre está en el menú principal.",
+    "Made with AI help": "Hecho con ayuda de IA",
+    "This game is made by one person without funding for a team. Much of the code was written with an AI coding assistant (Claude, by Anthropic), and many wheel entries, story texts and the Spanish translation were drafted with AI help, then edited and tested by hand.": "Este juego lo hace una sola persona sin fondos para un equipo. Gran parte del código se escribió con un asistente de programación con IA (Claude, de Anthropic), y muchas entradas de las ruletas, textos de la historia y la traducción al español se redactaron con ayuda de IA y luego se editaron y probaron a mano."
   } };
 })(typeof window !== 'undefined' ? window : globalThis);

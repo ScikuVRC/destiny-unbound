@@ -61,6 +61,9 @@ Singleplayer, Free to Play, Open Source, Moddable, Casual, Controller.
 
 ## AI content disclosure (Steam asks for this; itch.io has a similar field)
 
+- **Code and text:** the game is made by one person without funding for a team. Much of the code was written
+  with an AI coding assistant (Claude, by Anthropic), and many wheel entries, story texts and the Spanish
+  translation were drafted with AI help, then edited and tested by hand.
 - **Pre-generated art:** the painted title-screen backgrounds, wheel paintings, the four logos and the app icon
   were generated with Grok Imagine (xAI) and then placed and composed in the game by hand. Everything else (the
   playable wheels, cards, icons and interface) is drawn in code.
