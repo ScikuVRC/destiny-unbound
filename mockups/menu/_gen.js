@@ -90,25 +90,33 @@ const LOOKS = [
 .btn{border:1px solid #8a5f1f;background:linear-gradient(#2b2f35,#1b1c20);color:#e8d9b0;text-transform:uppercase;letter-spacing:.16em;font-size:13px}.btn.p{background:linear-gradient(#7a1414,#3a0808);border-color:#d9a94a;color:#ffe3a0}` },
 
   { file: 'm4-blood-moon.html', theme: 'bloodmoon', wheel: 'eldritch', n: 4, name: 'Blood Moon', genre: 'Gothic horror',
-    desc: 'A hunter\'s night: a huge blood moon behind a gothic skyline, the watching wheel-eye inside the moon, and a quiet italic menu on the right with silver fleurons. Options sit in a lace-framed panel.',
-    layout: 'right',
-    css: `body{background:#050407;color:#dcd6e6;font-family:"Cormorant Garamond",Georgia,serif}.head small{color:#c41e3a;font-family:"Cormorant SC",serif;font-size:14px}.head h1{font-family:"Cormorant SC",serif;font-size:60px;color:#f1ecf7}.head p,.head ul{color:#a9a2b8;font-size:19px}.back a{color:#c9cede}
-.scr{border:1px solid rgba(201,206,222,.35)}
-.scene{background:radial-gradient(22% 39% at 32% 42%,#d42a48,#8a1028 55%,#3a0712 72%,transparent 74%),radial-gradient(50% 70% at 32% 42%,rgba(196,30,58,.25),transparent 70%),linear-gradient(#120a10,#050407)}
-.scene:before{content:"";position:absolute;left:0;right:0;bottom:0;height:260px;background:#050407;clip-path:polygon(0 60%,6% 60%,6% 30%,8% 10%,10% 30%,10% 55%,18% 55%,18% 40%,21% 40%,22% 20%,23% 40%,26% 40%,26% 60%,34% 60%,35% 8%,36% 60%,44% 58%,44% 35%,47% 25%,50% 35%,50% 62%,62% 62%,62% 45%,66% 45%,66% 66%,76% 66%,78% 30%,80% 66%,100% 70%,100% 100%,0 100%)}
-.scene:after{content:"";position:absolute;left:0;right:0;bottom:0;height:120px;background:linear-gradient(transparent,rgba(40,34,52,.55))}
-.emblem{left:248px;top:150px;width:330px;height:330px;opacity:.6;mix-blend-mode:screen}
-.logo{right:90px;top:80px;text-align:right}.logo h2{font-family:"Cormorant SC",serif;font-weight:700;font-size:80px;color:#f1ecf7;letter-spacing:.06em;text-shadow:0 0 30px rgba(196,30,58,.5)}.logo p{font-style:italic;font-size:22px;color:#c9cede}
-.menu{right:90px;top:250px;align-items:flex-end;gap:0}.menu a{font-size:25px;font-style:italic;padding:4px 0;color:#a39cb4}.menu a.on{color:#fff;text-shadow:0 0 20px rgba(196,30,58,.8)}.menu a.on:after{content:"❧";color:#c41e3a;margin-left:2px}.menu a small{font-size:15px;color:#8d86a0;margin-right:10px;order:-1}
-.foot b{color:#ff8fa3}
-.opt{background:radial-gradient(18% 30% at 90% 8%,#7a0f22,transparent 70%),linear-gradient(#0e0c13,#060508)}.opt:before{content:"";position:absolute;inset:16px;border:1px solid rgba(201,206,222,.3);pointer-events:none}.opt h2{font-family:"Cormorant SC",serif;font-size:44px;color:#f1ecf7}
-.tabs span{font-style:italic;font-size:18px;color:#a39cb4}.tabs .on{color:#fff;border-bottom:1px solid #c41e3a}
-.grp{border:1px solid rgba(201,206,222,.25);background:linear-gradient(#100e16,#0b0a10);padding:16px 20px;position:relative}.grp:after{content:"❧";position:absolute;right:12px;top:8px;color:#c41e3a}.grp h3{font-family:"Cormorant SC",serif;color:#c41e3a;font-size:15px}
-.r{font-size:17px}.r>span{font-style:italic}
-.seg i{border:1px solid rgba(201,206,222,.3);font-size:14px;font-style:italic}.seg i+i{border-left:0}.seg i.on{background:#7a0f22;color:#fff}
-.sel{border:1px solid rgba(201,206,222,.3);background:#0b0a10;font-size:15px}.sl .t{background:#1a1622;height:3px}.sl .t i{background:linear-gradient(90deg,#4a0614,#c41e3a)}.sl .t b{background:#f1ecf7;border-radius:50%;width:12px;height:12px;box-shadow:0 0 12px #c41e3a}
-.tg{border:1px solid rgba(201,206,222,.3);border-radius:12px}.tg:after{border-radius:50%;background:#4a4458}.tg.on:after{background:#c41e3a;box-shadow:0 0 10px #c41e3a}
-.btn{font-family:"Cormorant SC",serif;font-size:17px;border:1px solid rgba(201,206,222,.35);background:transparent;color:#dcd6e6}.btn.p{background:linear-gradient(#a3122e,#4a0614);color:#fff}` }
+    desc: 'A hunter\'s night in a cursed city. The wheel is the moon: a dark iron clock-face hanging over the cathedral spires, its green eye open. The menu waits inside a tall gothic window of black lace and silver, lit by candles.',
+    layout: 'left',
+    css: `body{background:#040306;color:#d9d3e3;font-family:"Cormorant Garamond",Georgia,serif}.head small{color:#b3192f;font-family:"Cormorant SC",serif;font-size:14px}.head h1{font-family:"Cormorant SC",serif;font-size:60px;color:#efeaf5}.head p,.head ul{color:#a29bb2;font-size:19px}.back a{color:#c9cede}
+.scr{border:1px solid rgba(201,206,222,.25);background:#040306}
+.scene{background:radial-gradient(circle at 69.6% 39.5%,#9a1430 0,#6e0c22 170px,#4a0818 262px,#2a0510 282px,transparent 284px),radial-gradient(circle at 69.6% 39.5%,rgba(196,30,58,.4) 280px,rgba(120,12,30,.18) 360px,transparent 470px),linear-gradient(#07060c 0%,#0c0811 45%,#3a0a16 76%,#14050a 88%,#050407 100%)}
+.scene:before{content:"";position:absolute;left:0;right:0;bottom:0;height:300px;background:#020103;clip-path:polygon(0 72%,3% 72%,3% 52%,4.5% 34%,6% 52%,6% 70%,11% 70%,11% 58%,13% 58%,14% 22%,15% 58%,17% 58%,17% 74%,24% 74%,24% 48%,25% 48%,26% 28%,27% 48%,28% 48%,28% 66%,36% 66%,36% 56%,39% 56%,41% 6%,43% 56%,46% 56%,46% 70%,52% 70%,52% 50%,54% 40%,56% 50%,56% 68%,63% 68%,63% 44%,64% 44%,65% 14%,66% 44%,67% 44%,67% 60%,72% 60%,72% 36%,74% 18%,76% 36%,76% 64%,82% 64%,82% 52%,84% 52%,85% 30%,86% 52%,88% 52%,88% 70%,94% 70%,94% 56%,96% 42%,98% 56%,98% 72%,100% 72%,100% 100%,0 100%)}
+.scene:after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 70%,rgba(120,110,140,.12) 80%,rgba(30,26,40,.5) 90%,rgba(8,6,10,.9) 100%)}
+.emblem{left:640px;top:36px;width:500px;height:500px;opacity:.92;filter:drop-shadow(0 0 60px rgba(196,30,58,.55)) saturate(.8) brightness(.8)}
+.logo{left:110px;top:66px;width:400px;text-align:center}.logo h2{font-family:"Cormorant SC",serif;font-weight:700;font-size:68px;letter-spacing:.08em;color:#efeaf5;text-shadow:0 0 24px rgba(179,25,47,.45)}.logo p{font-style:italic;font-size:20px;color:#b9b1c8}
+.logo:after{content:"— ❦ —";display:block;color:#b3192f;margin-top:6px;letter-spacing:.3em}
+.menu{left:110px;top:205px;width:400px;height:470px;padding:62px 46px 30px;align-items:center;gap:0;background:linear-gradient(rgba(10,8,14,.88),rgba(6,5,9,.94));border:1px solid rgba(201,206,222,.45);border-radius:200px 200px 4px 4px;box-shadow:inset 0 0 0 6px rgba(6,5,9,.95),inset 0 0 0 7px rgba(201,206,222,.22),0 0 60px rgba(0,0,0,.8)}
+.menu:before{content:"✠";position:absolute;top:16px;left:50%;transform:translateX(-50%);color:#c9cede;opacity:.6;font-size:22px}
+.menu:after{content:"";position:absolute;left:24px;right:24px;bottom:-14px;height:24px;background:radial-gradient(4px 9px at 12% 40%,#ffd27a,transparent 70%),radial-gradient(4px 9px at 88% 40%,#ffd27a,transparent 70%),radial-gradient(24px 18px at 12% 50%,rgba(255,170,60,.35),transparent 70%),radial-gradient(24px 18px at 88% 50%,rgba(255,170,60,.35),transparent 70%)}
+.menu a{justify-content:center;width:100%;font-size:21px;font-style:italic;padding:5px 0;color:#9d96ad;border-bottom:1px solid rgba(201,206,222,.09)}.menu a:last-child{border-bottom:0}
+.menu a.on{color:#fff;text-shadow:0 0 18px rgba(196,30,58,.9);background:linear-gradient(90deg,transparent,rgba(122,15,34,.35),transparent)}.menu a.on:before{content:"❧";color:#b3192f;transform:scaleX(-1);display:inline-block}.menu a.on:after{content:"❧";color:#b3192f}
+.menu a small{display:none}
+.foot{color:#a29bb2}.foot b{color:#ff8fa3}
+.opt{background:radial-gradient(30% 40% at 90% 0%,rgba(122,15,34,.45),transparent 70%),linear-gradient(#0c0a11,#050407);padding:30px 60px 34px}.opt:before{content:"";position:absolute;inset:14px;border:1px solid rgba(201,206,222,.28);box-shadow:inset 0 0 0 5px #070609,inset 0 0 0 6px rgba(201,206,222,.12);pointer-events:none}
+.opt h2{font-family:"Cormorant SC",serif;font-size:38px;color:#efeaf5;text-align:center;letter-spacing:.1em}.opt h2:after{content:"— ❦ —";display:block;font-size:16px;color:#b3192f;letter-spacing:.3em;margin-top:2px}
+.tabs{justify-content:center}.tabs span{font-style:italic;font-size:19px;color:#9d96ad}.tabs .on{color:#fff;text-shadow:0 0 12px rgba(196,30,58,.8);border-bottom:1px solid #b3192f}
+.grp{border:1px solid rgba(201,206,222,.22);border-radius:120px 120px 4px 4px;background:linear-gradient(rgba(16,13,22,.9),rgba(9,8,13,.95));padding:22px 26px 10px;position:relative;box-shadow:inset 0 0 0 5px #08070b,inset 0 0 0 6px rgba(201,206,222,.1)}
+.grp h3{font-family:"Cormorant SC",serif;color:#b3192f;font-size:17px;text-align:center;letter-spacing:.2em}
+.r{font-size:17px;min-height:34px}.tabs{margin:6px 0 12px}.r>span{font-style:italic;color:#c8c1d6}
+.seg i{border:1px solid rgba(201,206,222,.25);font-size:14px;font-style:italic;color:#9d96ad}.seg i+i{border-left:0}.seg i.on{background:linear-gradient(#7a0f22,#3a0712);color:#fff}
+.sel{border:1px solid rgba(201,206,222,.25);background:#08070b;font-size:15px;font-style:italic}.sl .t{background:#1a1622;height:2px}.sl .t i{background:linear-gradient(90deg,#4a0614,#b3192f)}.sl .t b{background:#efeaf5;border-radius:50%;width:11px;height:11px;box-shadow:0 0 12px #b3192f}
+.tg{border:1px solid rgba(201,206,222,.3);border-radius:12px}.tg:after{border-radius:50%;background:#4a4458}.tg.on{background:#2a0a12}.tg.on:after{background:#b3192f;box-shadow:0 0 10px #b3192f}
+.btn{font-family:"Cormorant SC",serif;font-size:17px;border:1px solid rgba(201,206,222,.3);background:transparent;color:#d9d3e3;letter-spacing:.06em}.btn.p{background:linear-gradient(#8e1028,#3a0712);color:#fff;border-color:rgba(201,206,222,.5);box-shadow:0 0 22px rgba(179,25,47,.4)}` }
 ];
 
 const slider = (v) => `<div class="sl"><div class="t"><i style="width:${v}%"></i><b style="left:${v}%"></b></div><em>${v}%</em></div>`;
