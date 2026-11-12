@@ -1,4 +1,4 @@
-/* FATEWHEEL achievements: badges for great (and terrible) sagas. Some unlock rare wheel entries.
+/* Destiny Unbound achievements: badges for great (and terrible) sagas. Some unlock rare wheel entries.
    SPDX-License-Identifier: GPL-3.0-or-later */
 (function () {
   'use strict';
@@ -48,7 +48,7 @@
       FW.ACHIEVEMENTS.forEach(a => { if (have[a.id]) return; let ok = false; try { ok = a.test(L); } catch (e) { ok = false; } if (ok) { have[a.id] = new Date().toISOString().slice(0, 10); fresh.push(a); } });
       if (fresh.length) {
         App.store.set('fw.achievements', have); syncRewards();
-        fresh.forEach((a, i) => setTimeout(() => App.toast('🏅 ' + a.icon + ' ' + a.name + (a.reward ? ' - unlocked: ' + a.reward.entry.name : '')), i * 2300));
+        fresh.forEach((a, i) => setTimeout(() => pop(a), i * 3200));
       }
       return fresh;
     },
@@ -57,9 +57,17 @@
   syncRewards();
   if (!App) return;
   const prev = App.hooks.cardShown; App.hooks.cardShown = L => { if (prev) prev(L); window.FWAchieve.check(L); };
+  /* an unlock banner in the corner, like a game platform's (also read out by screen readers) */
+  function pop(a) {
+    const el = document.createElement('div'); el.className = 'ach-pop'; el.setAttribute('role', 'status');
+    el.innerHTML = '<span>' + a.icon + '</span><div><small>Achievement unlocked</small><b>' + H.esc(a.name) + '</b>' + (a.reward ? '<br><small style="letter-spacing:0;text-transform:none">New on the wheel: ' + H.esc(a.reward.entry.name) + '</small>' : '') + '</div>';
+    document.body.appendChild(el); if (FW.Audio && FW.Audio.reveal) FW.Audio.reveal(true);
+    setTimeout(() => el.remove(), 4200);
+  }
   App.achievementsModal = function () {
-    const have = got(), n = Object.keys(have).filter(k => BY_ID[k]).length;
-    App.openModal('<button class="btn small ghost close">Close ✕</button><h2>Achievements ' + n + ' / ' + FW.ACHIEVEMENTS.length + '</h2>' + (enabled() ? '' : '<p class="legend-key">Achievements are switched off in Game options.</p>') +
-      '<div class="ach-grid">' + FW.ACHIEVEMENTS.map(a => '<div class="ach' + (have[a.id] ? ' got' : '') + '"><span>' + a.icon + '</span><div><b>' + H.esc(a.name) + '</b><small>' + H.esc(a.desc) + (a.reward ? ' Reward: ' + H.esc(a.reward.entry.name) + '.' : '') + (have[a.id] ? ' · ' + have[a.id] : '') + '</small></div></div>').join('') + '</div>');
+    const have = got(), n = Object.keys(have).filter(k => BY_ID[k]).length, pct = Math.round(n / FW.ACHIEVEMENTS.length * 100);
+    const order = FW.ACHIEVEMENTS.slice().sort((a, b) => (have[b.id] ? 1 : 0) - (have[a.id] ? 1 : 0) || String(have[b.id] || '').localeCompare(String(have[a.id] || '')));
+    App.openModal('<button class="btn small ghost close">Close ✕</button><h2>Achievements</h2><div class="ach-head"><b>' + n + ' / ' + FW.ACHIEVEMENTS.length + '</b><div class="ach-bar" role="progressbar" aria-valuenow="' + pct + '" aria-valuemin="0" aria-valuemax="100"><i style="width:' + pct + '%"></i></div><b>' + pct + '%</b></div>' + (enabled() ? '' : '<p class="legend-key">Achievements are switched off in Options &gt; Gameplay.</p>') +
+      '<div class="ach-grid">' + order.map(a => '<div class="ach' + (have[a.id] ? ' got' : '') + '" aria-label="' + H.esc(a.name + (have[a.id] ? ', unlocked' : ', locked')) + '"><span aria-hidden="true">' + a.icon + '</span><div><b>' + H.esc(a.name) + '</b><small>' + H.esc(a.desc) + (a.reward ? ' Reward: ' + H.esc(a.reward.entry.name) + '.' : '') + '</small>' + (have[a.id] ? '<small class="when">Unlocked ' + H.esc(have[a.id]) + '</small>' : '<small>Locked</small>') + '</div></div>').join('') + '</div>');
   };
 })();

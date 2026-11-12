@@ -6,7 +6,7 @@
   const $ = s => document.querySelector(s);
 
   /* ---------------- startup ---------------- */
-  M.load().then(() => {
+  M.ready = M.load().then(() => {
     const want = App.state.wantTheme;
     App.setTheme(want && FW.THEMES[want] ? want : App.state.theme);   // also lists mod themes under Look
     if (M.errors.length) console.warn('Destiny Unbound mods:', M.errors);

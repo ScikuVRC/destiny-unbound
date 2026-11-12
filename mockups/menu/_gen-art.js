@@ -118,7 +118,9 @@ const LOGO = {
   bloodmoon: { h: 230, zoom: 100, css: '.title{top:14px}.wheelart{display:none}' }
 };
 
-SET.forEach((m, i) => {
+// The game's real title screen is built from these same designs (scripts/make-menu-css.js).
+module.exports = { T, LOGO, ICON, MENU, SUB, TITLE_BASE };
+if (require.main === module) SET.forEach((m, i) => {
   const t = T[m.theme];
   const title = `<div class="scr titlescr"><div class="bgart"></div><div class="wheelart"></div>${m.theme === 'ashen' ? '<div class="embers"></div>' : m.theme === 'astral' ? '<div class="stars"></div>' : ''}
     <div class="title">${CREST}<h2 class="logoart" role="img" aria-label="Destiny Unbound">Destiny Unbound</h2><p>${t.tag}</p></div>

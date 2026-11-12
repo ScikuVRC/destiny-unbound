@@ -38,7 +38,7 @@
       const c = ladderColor(theme.lad, n > 1 ? i / (n - 1) : 0);
       return { inner: c, outer: c, light: lum(c) > 0.55 };
     }
-    const p = theme.pal[i % theme.pal.length];
+    const pal = FW.prefs && FW.prefs.cbSafe ? FW.CB_PAL : theme.pal, p = pal[i % pal.length];   // colour-blind-safe slices when chosen
     return { inner: p[0], outer: p[1], light: lum(p[0]) > 0.55 };
   };
 
@@ -69,7 +69,7 @@
     }
     resize() {
       const w = this.cv.clientWidth || (this.cv.parentElement && this.cv.parentElement.clientWidth) || 320;
-      const dpr = Math.min(3, g.devicePixelRatio || 1);
+      const dpr = Math.min(FW.maxDpr ? FW.maxDpr() : 3, g.devicePixelRatio || 1);
       if (Math.abs(w - this.size) < 1 && dpr === this.dpr && this.cv.width) return;
       this.size = w; this.dpr = dpr;
       this.cv.width = Math.round(w * dpr); this.cv.height = Math.round(w * dpr);
@@ -174,7 +174,7 @@
           ctx.beginPath(); ctx.arc(0, 0, G.R, 0, TAU); ctx.moveTo(0, 0); ctx.arc(0, 0, G.R, a0, a1); ctx.closePath();
           ctx.fillStyle = 'rgba(0,0,0,' + th.dim + ')'; ctx.fill('evenodd');
           ctx.save(); ctx.beginPath(); ctx.moveTo(0, 0); ctx.arc(0, 0, G.R, a0, a1); ctx.closePath();
-          if (th.glow) { ctx.shadowColor = th.glow; ctx.shadowBlur = G.S * 0.05; }
+          if (th.glow && (!FW.glowOn || FW.glowOn())) { ctx.shadowColor = th.glow; ctx.shadowBlur = G.S * 0.05; }
           ctx.globalCompositeOperation = th.kind === 'parchment' ? 'multiply' : 'screen'; ctx.fillStyle = th.hit; ctx.fill(); ctx.restore();
         }
         ctx.restore();
@@ -285,7 +285,7 @@
             if (now - this._lastTick > 70 && !this._skip) { this._lastTick = now; this.kick = 0.35 + 0.65 * x; if (this.onTick) this.onTick(i, 1 - x); }
           }
           this.kick *= 0.7;
-          if (x < 1) { this.draw(); this._raf = requestAnimationFrame(step); }
+          if (x < 1) { const gap = FW.frameGap ? FW.frameGap() : 0; if (!gap || now - (this._lastDraw || 0) >= gap) { this._lastDraw = now; this.draw(); } this._raf = requestAnimationFrame(step); }   // frame limit from Options
           else {
             this.rot = r1 % TAU; this.spinning = false; this.focus = idx; this.kick = 0; this._lastIdx = idx;
             if (this.onLabel) this.onLabel(this.entries[idx], idx, true);

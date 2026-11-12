@@ -20,7 +20,7 @@
   };
   A.applyVolume = function () {
     if (!A.ctx) return; const t = A.ctx.currentTime;
-    master.gain.setTargetAtTime(A.on ? A.vol.master : 0, t, 0.05); sfx.gain.setTargetAtTime(A.vol.sfx, t, 0.05); mus.gain.setTargetAtTime(A.vol.music, t, 0.3);
+    master.gain.setTargetAtTime(A.on && !A.bgMuted ? A.vol.master : 0, t, A.bgMuted ? 0.15 : 0.05);   // bgMuted: window in the background (Options > Audio) sfx.gain.setTargetAtTime(A.vol.sfx, t, 0.05); mus.gain.setTargetAtTime(A.vol.music, t, 0.3);
     if (A.recDest) { try { master.disconnect(A.recDest); } catch (e) { /* not connected */ } master.connect(A.recDest); }
   };
   A.setVolume = function (v) { Object.assign(A.vol, v); A.applyVolume(); if (A.vol.music > 0 && !A._music) A.startMusic(); };
@@ -76,9 +76,11 @@
   const fx = () => FX[A.theme] || FX[(FW.THEMES && FW.THEMES[A.theme] && FW.THEMES[A.theme].sound) || ''] || FX.ashen;
   let lastTick = 0;
   A.tick = function (speed) { if (!ready()) return; const now = A.ctx.currentTime; if (now - lastTick < 0.03) return; lastTick = now; if (!custom('tick')) fx().tick(speed == null ? 1 : speed); };
-  A.reveal = function (rare) { if (!ready()) return; if (!custom(rare ? 'rare' : 'reveal') && !(rare && custom('reveal'))) fx().reveal(!!rare); };
-  A.bad = function () { if (!ready()) return; if (!custom('bad')) fx().bad(); };
-  A.click = function () { if (!ready()) return; if (!custom('click')) osc('triangle', 660, T(), 0.05, 0.04); };
+  A.reveal = function (rare) { A.caption(rare ? 'Rare result: bright fanfare' : 'Result revealed'); if (!ready()) return; if (!custom(rare ? 'rare' : 'reveal') && !(rare && custom('reveal'))) fx().reveal(!!rare); };
+  A.bad = function () { A.caption('Bad news: low, falling tone'); if (!ready()) return; if (!custom('bad')) fx().bad(); };
+  A.click = function () { if (!ready()) return; const u = FW.prefs ? FW.prefs.uiVol : 0.6; if (u <= 0) return; if (!custom('click')) osc('triangle', 660, T(), 0.05, 0.065 * u); };
+  /* sound captions (Options > Accessibility): a short line saying what a sound means */
+  A.caption = function (text) { if (!FW.prefs || !FW.prefs.captions || !g.document) return; let el = g.document.getElementById('captions'); if (!el) { el = g.document.createElement('div'); el.id = 'captions'; el.setAttribute('aria-hidden', 'true'); g.document.body.appendChild(el); } el.textContent = '[' + text + ']'; el.classList.add('on'); clearTimeout(A._capT); A._capT = setTimeout(() => el.classList.remove('on'), 1800); };
   A.tone = function (f, d, type, vol) { if (ready()) osc(type || 'square', f, T(), d, vol || 0.05); };   // kept for compatibility
 
   /* ---------- ambient music (generative, per theme) ---------- */

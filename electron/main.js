@@ -1,6 +1,6 @@
 // Destiny Unbound desktop shell (Electron). The game itself is the plain web app in ../app.
 // SPDX-License-Identifier: GPL-3.0-or-later
-const { app, BrowserWindow, protocol, net, shell, Menu, session, ipcMain } = require('electron');
+const { app, BrowserWindow, protocol, net, shell, Menu, session, ipcMain, screen, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { pathToFileURL } = require('url');
@@ -10,7 +10,29 @@ const ORIGIN = 'app://fatewheel';
 const SMOKE = !!process.env.FATEWHEEL_SMOKE;
 
 // Keep saves, settings and mods in the folder used before the rename to Destiny Unbound.
-app.setPath('userData', path.join(app.getPath('appData'), 'FateWheel'));
+// FATEWHEEL_USERDATA points it somewhere else (used to test a clean first launch).
+app.setPath('userData', process.env.FATEWHEEL_USERDATA || path.join(app.getPath('appData'), 'FateWheel'));
+
+/* ---------------- logs: errors and crashes go to a file testers can send ---------------- */
+const LOG_DIR = path.join(app.getPath('userData'), 'logs');
+const LOG_FILE = path.join(LOG_DIR, 'destiny-unbound.log');
+function log(level, msg) {
+  try {
+    fs.mkdirSync(LOG_DIR, { recursive: true });
+    try { if (fs.statSync(LOG_FILE).size > 1024 * 1024) fs.renameSync(LOG_FILE, path.join(LOG_DIR, 'destiny-unbound.old.log')); } catch (e) { /* no log yet */ }
+    fs.appendFileSync(LOG_FILE, new Date().toISOString() + ' [' + level + '] ' + String(msg).slice(0, 4000).replace(/\r?\n/g, '\n    ') + '\n');
+  } catch (e) { /* the disk is not writable: nothing else to do */ }
+}
+process.on('uncaughtException', e => log('crash', (e && e.stack) || e));
+process.on('unhandledRejection', e => log('error', (e && e.stack) || e));
+app.on('render-process-gone', (e, wc, d) => log('crash', 'game page stopped: ' + d.reason + ' (exit ' + d.exitCode + ')'));
+app.on('child-process-gone', (e, d) => { if (d.reason !== 'clean-exit') log('crash', d.type + ' process stopped: ' + d.reason); });
+
+/* ---------------- window settings (read before the window opens) ---------------- */
+const WIN_FILE = path.join(app.getPath('userData'), 'window.json');
+let winCfg = {}; try { winCfg = JSON.parse(fs.readFileSync(WIN_FILE, 'utf8')) || {}; } catch (e) { winCfg = {}; }
+const saveWinCfg = () => { try { fs.writeFileSync(WIN_FILE, JSON.stringify(winCfg)); } catch (e) { log('error', 'could not save window settings: ' + e.message); } };
+if (winCfg.vsync === false) { app.commandLine.appendSwitch('disable-gpu-vsync'); app.commandLine.appendSwitch('disable-frame-rate-limit'); }
 
 // A private, secure address for the app: storage (Hall of Legends, settings, portraits) stays in one place
 // and browser features that need a secure page (clipboard, IndexedDB) work as they do on https.
@@ -89,12 +111,83 @@ ipcMain.handle('update:check', async () => {
 });
 ipcMain.handle('update:install', () => { const u = getUpdater(); if (u) u.quitAndInstall(); });
 
+/* ---------------- window, display and app controls for the Options screen ---------------- */
+const winOf = e => BrowserWindow.fromWebContents(e.sender);
+const modeOf = w => (w.isFullScreen() ? 'fullscreen' : w.isMaximized() ? 'maximized' : 'windowed');
+ipcMain.handle('win:info', e => {
+  const w = winOf(e); if (!w) return null;
+  const d = screen.getDisplayMatching(w.getBounds());
+  return { mode: modeOf(w), size: w.getContentSize(), work: [d.workAreaSize.width, d.workAreaSize.height], screen: [d.size.width, d.size.height], scale: d.scaleFactor, vsync: winCfg.vsync !== false };
+});
+ipcMain.handle('win:set', (e, o) => {
+  const w = winOf(e); if (!w || !o) return false;
+  const mode = ['windowed', 'maximized', 'fullscreen'].indexOf(o.mode) >= 0 ? o.mode : modeOf(w);
+  if (mode !== 'fullscreen' && w.isFullScreen()) w.setFullScreen(false);
+  if (mode === 'fullscreen') w.setFullScreen(true);
+  else if (mode === 'maximized') w.maximize();
+  else {
+    if (w.isMaximized()) w.unmaximize();
+    const width = Math.round(+o.w), height = Math.round(+o.h);
+    if (width >= 640 && height >= 480) {
+      const d = screen.getDisplayMatching(w.getBounds()).workAreaSize;
+      w.setContentSize(Math.min(width, d.width), Math.min(height, d.height)); w.center();
+    }
+  }
+  return true;
+});
+ipcMain.handle('win:zoom', (e, z) => { const f = Math.max(0.5, Math.min(2, +z || 1)); e.sender.setZoomFactor(f); return f; });
+ipcMain.handle('app:vsync', (e, on) => { winCfg.vsync = !!on; saveWinCfg(); return true; });
+ipcMain.handle('app:relaunch', () => { app.relaunch(); app.exit(0); });
+ipcMain.handle('app:quit', () => app.quit());
+ipcMain.handle('log:write', (e, level, msg) => log(level === 'error' ? 'error' : 'info', 'game: ' + msg));
+ipcMain.handle('log:open', () => { fs.mkdirSync(LOG_DIR, { recursive: true }); return shell.openPath(LOG_DIR); });
+ipcMain.handle('feedback:save', async (e, o) => {
+  // a folder with the player's note, a screenshot, their play stats and the current log; shown in Explorer
+  const dir = path.join(LOG_DIR, 'feedback-' + new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19));
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, 'feedback.txt'), String((o && o.text) || '').slice(0, 20000));
+  fs.writeFileSync(path.join(dir, 'details.json'), JSON.stringify(Object.assign({ version: app.getVersion(), os: process.platform + ' ' + require('os').release(), electron: process.versions.electron }, (o && o.extra) || {}), null, 2).slice(0, 200000));
+  try { const w = winOf(e); if (w && o && o.screenshot !== false) fs.writeFileSync(path.join(dir, 'screenshot.png'), (await w.webContents.capturePage()).toPNG()); } catch (err) { log('error', 'feedback screenshot failed: ' + err.message); }
+  try { fs.copyFileSync(LOG_FILE, path.join(dir, 'destiny-unbound.log')); } catch (err) { /* no log yet */ }
+  if (!SMOKE) shell.showItemInFolder(path.join(dir, 'feedback.txt'));
+  return dir;
+});
+
+/* ---------------- save backups and moving saves between PCs ---------------- */
+const BACKUP_DIR = path.join(app.getPath('userData'), 'backups');
+const BACKUP_NAME = /^save-\d{8}-\d{6}(-manual)?\.json$/;
+ipcMain.handle('backup:write', (e, json, manual) => {
+  if (typeof json !== 'string' || json.length > 20 * 1024 * 1024) return null;
+  fs.mkdirSync(BACKUP_DIR, { recursive: true });
+  const name = 'save-' + new Date().toISOString().replace(/[-:]/g, '').replace('T', '-').slice(0, 15) + (manual ? '-manual' : '') + '.json';
+  fs.writeFileSync(path.join(BACKUP_DIR, name), json);
+  const all = fs.readdirSync(BACKUP_DIR).filter(f => BACKUP_NAME.test(f)).sort().reverse();
+  all.slice(10).forEach(f => { try { fs.unlinkSync(path.join(BACKUP_DIR, f)); } catch (err) { /* in use */ } });   // keep the newest 10
+  return name;
+});
+ipcMain.handle('backup:list', () => { try { return fs.readdirSync(BACKUP_DIR).filter(f => BACKUP_NAME.test(f)).sort().reverse().map(f => ({ name: f, size: fs.statSync(path.join(BACKUP_DIR, f)).size })); } catch (e) { return []; } });
+ipcMain.handle('backup:read', (e, name) => (BACKUP_NAME.test(String(name)) ? fs.readFileSync(path.join(BACKUP_DIR, name), 'utf8') : null));
+ipcMain.handle('backup:open', () => { fs.mkdirSync(BACKUP_DIR, { recursive: true }); return shell.openPath(BACKUP_DIR); });
+ipcMain.handle('save:export', async (e, json, fileName) => {
+  const r = await dialog.showSaveDialog(winOf(e), { title: 'Export your save', defaultPath: path.join(app.getPath('documents'), String(fileName || 'destiny-unbound-save.json').replace(/[^\w.-]+/g, '_')), filters: [{ name: 'Destiny Unbound save', extensions: ['json'] }] });
+  if (r.canceled || !r.filePath) return null;
+  fs.writeFileSync(r.filePath, String(json)); return r.filePath;
+});
+ipcMain.handle('save:import', async e => {
+  const r = await dialog.showOpenDialog(winOf(e), { title: 'Import a save', properties: ['openFile'], filters: [{ name: 'Destiny Unbound save', extensions: ['json'] }] });
+  if (r.canceled || !r.filePaths[0]) return null;
+  if (fs.statSync(r.filePaths[0]).size > 20 * 1024 * 1024) throw new Error('That file is too big to be a save.');
+  return fs.readFileSync(r.filePaths[0], 'utf8');
+});
+
 /* ---------------- window ---------------- */
 function isHttp(u) { try { return /^https?:$/.test(new URL(u).protocol); } catch (e) { return false; } }
 
 function createWindow() {
+  // reopen where the player left it, if that spot is still on a connected screen
+  const b = winCfg.bounds, onScreen = !SMOKE && b && screen.getAllDisplays().some(d => b.x < d.bounds.x + d.bounds.width - 80 && b.x + b.width > d.bounds.x + 80 && b.y >= d.bounds.y - 20 && b.y < d.bounds.y + d.bounds.height - 80);
   const win = new BrowserWindow({
-    width: 1280, height: 860, minWidth: 380, minHeight: 600,
+    width: onScreen ? b.width : 1280, height: onScreen ? b.height : 800, ...(onScreen ? { x: b.x, y: b.y } : {}), minWidth: 380, minHeight: 600,
     backgroundColor: '#0b0908', title: 'Destiny Unbound', autoHideMenuBar: true,
     icon: path.join(ROOT, 'icons', 'icon-512.png'),
     show: !SMOKE, ...(SMOKE ? { x: -5000, y: -5000, skipTaskbar: true, focusable: false } : {}),
@@ -103,6 +196,9 @@ function createWindow() {
   });
   // "Open ChatGPT / Grok / Gemini", Ko-fi and other links go to the user's own browser, never inside the app
   win.webContents.setWindowOpenHandler(({ url }) => { if (isHttp(url)) shell.openExternal(url); return { action: 'deny' }; });
+  if (!SMOKE) { if (winCfg.mode === 'fullscreen') win.setFullScreen(true); else if (winCfg.mode === 'maximized') win.maximize(); }
+  win.on('close', () => { if (SMOKE) return; winCfg.bounds = win.getNormalBounds(); winCfg.mode = modeOf(win); saveWinCfg(); });
+  win.webContents.on('console-message', ev => { if (ev.level === 'error') log('error', 'page: ' + ev.message + (ev.sourceId ? ' (' + String(ev.sourceId).replace(ORIGIN, '') + ':' + ev.lineNumber + ')' : '')); });
   win.webContents.on('will-navigate', (e, url) => { if (!url.startsWith(ORIGIN + '/')) { e.preventDefault(); if (isHttp(url)) shell.openExternal(url); } });
   if (!app.isPackaged) win.webContents.on('before-input-event', (e, input) => { if (input.type === 'keyDown' && input.key === 'F12') win.webContents.toggleDevTools(); });
   win.loadURL(ORIGIN + '/index.html');

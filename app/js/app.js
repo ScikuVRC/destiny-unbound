@@ -1,4 +1,4 @@
-/* FATEWHEEL app - screens, spin flow, arena, dialogs */
+/* Destiny Unbound app - screens, spin flow, arena, dialogs */
 (function () {
   'use strict';
   const FW = window.FW, H = FW.html, LAD = FW.LADDERS;
@@ -18,7 +18,7 @@
     auto: false, legend: null, image: null, rng: FW.makeRng(), seed: '',
     runId: 0, phase: 0, waiter: null, mode: 'ready', tokensUsed: 0,
     wheel: null, hall: store.get('fw.hall', []), overrides: store.get('fw.overrides', {}),
-    fight: null, screen: 'home', imageBlob: null,
+    fight: null, screen: 'title', imageBlob: null,
     person: Object.assign({ name: '', pres: '', spinLooks: true, presets: {} }, store.get('fw.person', {}))
   };
   if (!state.person.presets || typeof state.person.presets !== 'object') state.person.presets = {};
@@ -41,8 +41,10 @@
   function show(name) {
     state.screen = name;
     document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === 'screen-' + name));
+    document.body.classList.toggle('on-title', name === 'title');
     window.scrollTo(0, 0);
     if (name === 'spin') ensureWheel().resize();
+    hook('screenShown', name);
   }
   function ensureWheel() {
     if (!state.wheel) { state.wheel = new FW.Wheel($('#wheel'), state.theme); }
@@ -122,7 +124,7 @@
       const idx = FW.weightedIndex(cfg.entries, state.rng);
       wheel.onLabel = (e, i, final) => { if (!final && !cfg.mystery) setResult(e.name); };
       wheel.onTick = (i, sp) => FW.Audio.tick(sp);
-      await wheel.spinTo(idx, { duration: state.speed === 'fast' ? 2300 : 4600, rng: state.rng }); chk();
+      await wheel.spinTo(idx, { duration: FW.spinDuration ? FW.spinDuration(state.speed) : (state.speed === 'fast' ? 2300 : 4600), rng: state.rng }); chk();
       const e = cfg.entries[idx];
       const rare = e.w / total < 0.025 && cfg.entries.length > 4;
       setResult(cfg.display ? cfg.display(idx) : e.name, { rare, pop: true });
@@ -432,10 +434,11 @@
     hook('portraitFile', f); e.target.value = '';
   });
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') closeModal();
+    const K = FW.prefs ? FW.prefs.keys : { advance: ' ', next: 'Enter', back: 'Escape' };
+    if ((e.key === 'Escape' || e.key === K.back) && $('#modalRoot').firstChild) { closeModal(); return; }
     if ($('#modalRoot').firstChild || /INPUT|TEXTAREA|SELECT/.test((document.activeElement || {}).tagName || '')) return;
     if (state.screen !== 'spin') return;
-    if (e.key === ' ' || e.key === 'Enter') {
+    if (e.key === K.advance || e.key === K.next) {
       if (document.activeElement && document.activeElement.tagName === 'BUTTON') return;
       e.preventDefault();
       if (state.wheel && state.wheel.spinning) state.wheel.skip(); else if (state.mode === 'ready') fire('spin'); else if (state.mode === 'result') fire('next');
@@ -448,6 +451,6 @@
   renderHomeOpts(); syncAutoBtn(); syncSpeedBtn(); syncDirBtn(); syncSound();
   if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol) && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') navigator.serviceWorker.register('sw.js').catch(() => { });
 
-  window.FWApp = { state, store, hooks, runLegend, runFight, showCard, setTheme, setLuck, fire, toast, copy, openModal, closeModal, drawCardNow, loadCode, saveToHall,
+  window.FWApp = { state, store, hooks, runLegend, runFight, showCard, setTheme, setLuck, fire, toast, copy, openModal, closeModal, drawCardNow, loadCode, saveToHall, resetData, hallModal, syncSound, syncSpeedBtn, syncDirBtn, persist,
     flow: { playStep, show, abortRun, ABORT, renderSteps, syncAutoBtn, setChip, setResult, setControls, updateTokens, newRun: () => ++state.runId, runId: () => state.runId, finishWait } };
 })();
