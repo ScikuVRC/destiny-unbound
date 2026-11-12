@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=1340"><title>Menu 2 - Adventurer's Sheet</title>
+<link rel="stylesheet" href="../../app/css/fonts.css"><style>*{box-sizing:border-box}body{margin:0;min-height:100vh}
+.head{max-width:1320px;margin:0 auto;padding:28px 24px 0}.head small{letter-spacing:.2em;text-transform:uppercase;font-weight:700;font-size:12px}.head h1{margin:6px 0;font-size:44px}.head p{max-width:900px;line-height:1.6;margin:0 0 8px}.head ul{line-height:1.7;padding-left:18px;max-width:980px;margin:0}
+#screens{max-width:1320px;margin:0 auto;padding:6px 24px 60px}.cap{font-size:12px;letter-spacing:.18em;text-transform:uppercase;margin:24px 0 10px;opacity:.75}
+.scr{width:1280px;height:720px;position:relative;overflow:hidden;border-radius:10px;box-shadow:0 30px 90px rgba(0,0,0,.6)}
+.scene{position:absolute;inset:0}.emblem{position:absolute;opacity:.32}
+.logo{position:absolute;text-align:center}.logo h2{margin:0;line-height:.95}.logo p{margin:8px 0 0}
+.menu{position:absolute;display:flex;flex-direction:column}.menu a{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}.menu a small{display:block;opacity:.7}
+.foot{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:center;padding:12px 22px;font-size:13px}.foot span{opacity:.75}.foot b{font-weight:600}
+.opt{position:absolute;inset:0;display:flex;flex-direction:column;padding:34px 48px}.opt h2{margin:0 0 4px}.tabs{display:flex;gap:6px;margin:12px 0 18px}.tabs span{padding:9px 18px;font-size:15px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:26px;flex:1;min-height:0}.grp h3{margin:0 0 10px;font-size:13px;letter-spacing:.18em;text-transform:uppercase}
+.r{display:grid;grid-template-columns:170px 1fr;align-items:center;gap:14px;min-height:42px;font-size:15px}.r>span{opacity:.85}
+.seg{display:flex}.seg i{flex:1;text-align:center;font-style:normal;padding:7px 4px;font-size:13px}
+.sel{display:flex;justify-content:space-between;align-items:center;padding:7px 12px;font-size:14px}.sel:after{content:"▾";opacity:.7}
+.sl{display:grid;grid-template-columns:1fr 44px;align-items:center;gap:12px}.sl .t{height:6px;position:relative}.sl .t i{position:absolute;left:0;top:0;bottom:0}.sl .t b{position:absolute;top:50%;width:16px;height:16px;transform:translate(-50%,-50%)}.sl em{font-style:normal;text-align:right;font-size:14px}
+.tg{width:46px;height:24px;position:relative}.tg:after{content:"";position:absolute;top:3px;width:18px;height:18px}.tg.on:after{right:3px}.tg:not(.on):after{left:3px}
+.hint{font-size:12.5px;opacity:.65;margin-top:2px}
+.btns{display:flex;justify-content:space-between;align-items:center;margin-top:14px}.btns div{display:flex;gap:10px}.btn{padding:11px 22px;font-size:15px}
+.back{text-align:center;margin:0 0 50px}
+body{background:#2a1a0e;color:#2b1d10;font-family:"IM Fell English",Georgia,serif}.head{color:#f1e2c0}.head small{color:#e8b25c;font-family:"IM Fell English SC",serif}.head h1{font-family:"IM Fell English SC",serif;font-weight:400;color:#f5e6c4}.head p,.head ul{color:#e3cfa6;font-size:17px}.cap{color:#e3cfa6}.back a{color:#f5e6c4}
+.scr{border:2px solid #1a0f07}
+.scene{background:radial-gradient(70% 60% at 50% 45%,transparent,#0d0805 100%),repeating-linear-gradient(90deg,#3a2414 0 38px,#33200f 38px 80px,#3d2716 80px 120px)}
+.scene:before{content:"";position:absolute;left:110px;right:110px;top:46px;bottom:70px;background:linear-gradient(90deg,#e6d4ab,#f3e8cc 46%,#d9c49a 50%,#f3e8cc 54%,#e6d4ab);border-radius:6px;box-shadow:0 18px 50px rgba(0,0,0,.7),inset 0 0 0 10px rgba(255,255,255,.06),0 0 0 8px #4a2c18,0 0 0 10px #2a1a0e}
+.scene:after{content:"🎲 🎲";position:absolute;right:36px;bottom:24px;font-size:34px;filter:drop-shadow(0 6px 8px #000)}
+.emblem{left:210px;top:300px;width:300px;height:300px;opacity:.85}
+.logo{left:150px;top:95px;width:440px}.logo h2{font-family:"IM Fell English SC",serif;font-weight:400;font-size:70px;color:#2b1d10}.logo p{font-style:italic;font-size:19px;color:#8e1b16}
+.menu{left:690px;top:100px;width:440px;gap:0}.menu:before{content:"Contents";font-family:"IM Fell English SC",serif;font-size:26px;color:#8e1b16;margin-bottom:10px;text-align:center}
+.menu a{font-size:21px;padding:6px 0;border-bottom:1px dotted rgba(59,42,26,.5)}.menu a:after{content:attr(data-p);margin-left:auto;font-family:"IM Fell English SC",serif;color:#8e1b16}
+.menu a.on{color:#8e1b16;font-style:italic}.menu a.on:before{content:"☞";margin-right:-4px}.menu a small{font-size:14px;font-style:italic;color:#6b5640;margin-left:8px}
+.foot{color:#e3cfa6}.foot b{color:#f5e0a8}
+.opt{background:radial-gradient(40% 30% at 85% 15%,rgba(217,192,138,.4),transparent),radial-gradient(70% 60% at 50% 50%,#f3e8cc,#e3cf9f);box-shadow:inset 0 0 0 14px #4a2c18,inset 0 0 0 16px #2a1a0e}
+.opt h2{font-family:"IM Fell English SC",serif;font-weight:400;font-size:38px;color:#8e1b16;text-align:center}.tabs{justify-content:center}.tabs span{font-family:"IM Fell English SC",serif;border:1.5px solid #3b2a1a;border-radius:6px 6px 0 0;background:#e6d4ab}.tabs .on{background:#8e1b16;color:#fbe9d0}
+.grp{border:1.5px solid #3b2a1a;border-radius:4px;background:rgba(245,234,208,.7);padding:14px 20px;box-shadow:3px 3px 0 rgba(59,42,26,.25)}.grp h3{font-family:"IM Fell English SC",serif;font-weight:400;font-size:18px;letter-spacing:.06em;color:#8e1b16;text-transform:none}
+.seg i{border:1.5px solid #3b2a1a;background:#f5ead0}.seg i+i{border-left:0}.seg i.on{background:#8e1b16;color:#fbe9d0}
+.sel{border:1.5px solid #3b2a1a;background:#f8efd9;border-radius:3px}.sl .t{border:1.5px solid #3b2a1a;background:#f5ead0;height:8px}.sl .t i{background:repeating-linear-gradient(45deg,#8e1b16 0 4px,#b3261e 4px 8px)}.sl .t b{border-radius:50%;background:radial-gradient(circle at 35% 30%,#d2483d,#8e1b16 60%,#5a0f0b);width:20px;height:20px}
+.tg{border:1.5px solid #3b2a1a;border-radius:12px;background:#f5ead0}.tg:after{border-radius:50%;background:#6b5640}.tg.on{background:#e3cf9f}.tg.on:after{background:radial-gradient(circle at 35% 30%,#d2483d,#8e1b16)}
+.btn{font-family:"IM Fell English SC",serif;border:1.5px solid #3b2a1a;background:#f5ead0;border-radius:5px;box-shadow:2px 2px 0 rgba(26,15,7,.4)}.btn.p{background:radial-gradient(circle at 35% 30%,#d2483d,#8e1b16 60%,#5a0f0b);color:#fbe9d0;border-color:#3b0a07}</style></head><body>
+<div class="head"><small>Main menu mockup 2 of 4 · Tabletop RPG</small><h1>Adventurer's Sheet</h1><p>The game opens like a book on a game table: the title page on the left, the menu as a table of contents on the right with dotted leaders, dice and a candle on the table. Options are a stat sheet with ink boxes.</p><ul><li>Title screen: full-screen scene, the themed wheel as an emblem, a game-style menu with keyboard hints</li><li>Options: Graphics (display mode, resolution, UI scale, frame limit, VSync, animations, wheel quality, effects) and Audio (master, music, effects, interface, ambience, background mute, output device)</li></ul></div>
+<div id="screens"><div class="cap">Title screen</div><div class="scr"><div class="scene"></div><canvas class="emblem" data-wheel='{"story":1,"pick":"conquerRace","style":"parchment"}'></canvas>
+    <div class="logo"><h2>FateWheel</h2><p>A game of wheels, fate and legends</p></div>
+    <nav class="menu"><a class="on" data-p="vii">Continue<small>Sera Ashgrove · Chapter 7</small></a><a class="" data-p="1">New Legend<small>Spin a new hero</small></a><a class="" data-p="12">Story</a><a class="" data-p="27">Arena</a><a class="" data-p="33">Daily Challenge<small>Today's seed · best 74</small></a><a class="" data-p="41">Hall of Legends<small>12 legends</small></a><a class="" data-p="58">Mods<small>2 installed</small></a><a class="" data-p="63">Options</a><a class="" data-p="—">Quit</a></nav>
+    <div class="foot"><span>v1.0.0 · Mods: Verdant Grove</span><span>↑↓ Select · Enter Confirm · Esc Back</span><b>☕ Support on Ko-fi</b></div></div><div class="cap">Options</div><div class="scr"><div class="opt"><h2>Options</h2>
+    <div class="tabs"><span class="on">Graphics</span><span>Audio</span><span>Gameplay</span><span>Controls</span><span>Language</span></div>
+    <div class="cols">
+      <div class="grp"><h3>Graphics</h3>
+        <div class="r"><span>Display mode</span><div><div class="seg"><i class="">Windowed</i><i class="on">Borderless</i><i class="">Fullscreen</i></div></div></div>
+        <div class="r"><span>Resolution</span><div><div class="sel">1920 × 1080 (16:9)</div><div class="hint">Also 1280×720, 1600×900, 2560×1440, 3840×2160, or your monitor's own</div></div></div>
+        <div class="r"><span>UI scale</span><div><div class="sl"><div class="t"><i style="width:100%"></i><b style="left:100%"></b></div><em>100%</em></div></div></div>
+        <div class="r"><span>Frame limit</span><div><div class="seg"><i class="">30</i><i class="on">60</i><i class="">120</i><i class="">144</i><i class="">Off</i></div></div></div>
+        <div class="r"><span>VSync</span><div><div class="tg on"></div></div></div>
+        <div class="r"><span>Animations</span><div><div class="seg"><i class="on">Full</i><i class="">Reduced</i><i class="">Off</i></div></div></div>
+        <div class="r"><span>Wheel quality</span><div><div class="seg"><i class="">Low</i><i class="">Medium</i><i class="on">High</i></div></div></div>
+        <div class="r"><span>Particles and glow</span><div><div class="tg on"></div></div></div>
+        <div class="r"><span>Theme</span><div><div class="sel">Adventurer's Sheet</div></div></div>
+      </div>
+      <div class="grp"><h3>Audio</h3>
+        <div class="r"><span>Master volume</span><div><div class="sl"><div class="t"><i style="width:80%"></i><b style="left:80%"></b></div><em>80%</em></div></div></div>
+        <div class="r"><span>Music</span><div><div class="sl"><div class="t"><i style="width:35%"></i><b style="left:35%"></b></div><em>35%</em></div></div></div>
+        <div class="r"><span>Sound effects</span><div><div class="sl"><div class="t"><i style="width:90%"></i><b style="left:90%"></b></div><em>90%</em></div></div></div>
+        <div class="r"><span>Interface</span><div><div class="sl"><div class="t"><i style="width:60%"></i><b style="left:60%"></b></div><em>60%</em></div></div></div>
+        <div class="r"><span>Ambience</span><div><div class="sl"><div class="t"><i style="width:50%"></i><b style="left:50%"></b></div><em>50%</em></div></div></div>
+        <div class="r"><span>Mute in background</span><div><div class="tg on"></div><div class="hint">Silence the game when its window is not in focus</div></div></div>
+        <div class="r"><span>Output device</span><div><div class="sel">System default</div></div></div>
+        <div class="r"><span>Subtitles for sounds</span><div><div class="tg "></div></div></div>
+      </div>
+    </div>
+    <div class="btns"><button class="btn">Reset to defaults</button><div><button class="btn">Back</button><button class="btn p">Apply</button></div></div></div></div></div>
+<p class="back"><a href="index.html">All main menu mockups</a></p>
+<script src="../../app/js/data.js"></script><script src="../../app/js/data-more.js"></script><script src="../../app/js/data-extra.js"></script><script src="../../app/js/engine.js"></script><script src="../../app/js/story.js"></script><script src="../modern/modern.js"></script><script src="../themed/wheels.js"></script>
+<script>document.fonts.ready.then(() => MOD.drawAll());</script>
+</body></html>

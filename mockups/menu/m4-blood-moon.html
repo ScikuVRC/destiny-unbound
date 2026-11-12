@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=1340"><title>Menu 4 - Blood Moon</title>
+<link rel="stylesheet" href="../../app/css/fonts.css"><style>*{box-sizing:border-box}body{margin:0;min-height:100vh}
+.head{max-width:1320px;margin:0 auto;padding:28px 24px 0}.head small{letter-spacing:.2em;text-transform:uppercase;font-weight:700;font-size:12px}.head h1{margin:6px 0;font-size:44px}.head p{max-width:900px;line-height:1.6;margin:0 0 8px}.head ul{line-height:1.7;padding-left:18px;max-width:980px;margin:0}
+#screens{max-width:1320px;margin:0 auto;padding:6px 24px 60px}.cap{font-size:12px;letter-spacing:.18em;text-transform:uppercase;margin:24px 0 10px;opacity:.75}
+.scr{width:1280px;height:720px;position:relative;overflow:hidden;border-radius:10px;box-shadow:0 30px 90px rgba(0,0,0,.6)}
+.scene{position:absolute;inset:0}.emblem{position:absolute;opacity:.32}
+.logo{position:absolute;text-align:center}.logo h2{margin:0;line-height:.95}.logo p{margin:8px 0 0}
+.menu{position:absolute;display:flex;flex-direction:column}.menu a{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}.menu a small{display:block;opacity:.7}
+.foot{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:center;padding:12px 22px;font-size:13px}.foot span{opacity:.75}.foot b{font-weight:600}
+.opt{position:absolute;inset:0;display:flex;flex-direction:column;padding:34px 48px}.opt h2{margin:0 0 4px}.tabs{display:flex;gap:6px;margin:12px 0 18px}.tabs span{padding:9px 18px;font-size:15px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:26px;flex:1;min-height:0}.grp h3{margin:0 0 10px;font-size:13px;letter-spacing:.18em;text-transform:uppercase}
+.r{display:grid;grid-template-columns:170px 1fr;align-items:center;gap:14px;min-height:42px;font-size:15px}.r>span{opacity:.85}
+.seg{display:flex}.seg i{flex:1;text-align:center;font-style:normal;padding:7px 4px;font-size:13px}
+.sel{display:flex;justify-content:space-between;align-items:center;padding:7px 12px;font-size:14px}.sel:after{content:"▾";opacity:.7}
+.sl{display:grid;grid-template-columns:1fr 44px;align-items:center;gap:12px}.sl .t{height:6px;position:relative}.sl .t i{position:absolute;left:0;top:0;bottom:0}.sl .t b{position:absolute;top:50%;width:16px;height:16px;transform:translate(-50%,-50%)}.sl em{font-style:normal;text-align:right;font-size:14px}
+.tg{width:46px;height:24px;position:relative}.tg:after{content:"";position:absolute;top:3px;width:18px;height:18px}.tg.on:after{right:3px}.tg:not(.on):after{left:3px}
+.hint{font-size:12.5px;opacity:.65;margin-top:2px}
+.btns{display:flex;justify-content:space-between;align-items:center;margin-top:14px}.btns div{display:flex;gap:10px}.btn{padding:11px 22px;font-size:15px}
+.back{text-align:center;margin:0 0 50px}
+body{background:#050407;color:#dcd6e6;font-family:"Cormorant Garamond",Georgia,serif}.head small{color:#c41e3a;font-family:"Cormorant SC",serif;font-size:14px}.head h1{font-family:"Cormorant SC",serif;font-size:60px;color:#f1ecf7}.head p,.head ul{color:#a9a2b8;font-size:19px}.back a{color:#c9cede}
+.scr{border:1px solid rgba(201,206,222,.35)}
+.scene{background:radial-gradient(22% 39% at 32% 42%,#d42a48,#8a1028 55%,#3a0712 72%,transparent 74%),radial-gradient(50% 70% at 32% 42%,rgba(196,30,58,.25),transparent 70%),linear-gradient(#120a10,#050407)}
+.scene:before{content:"";position:absolute;left:0;right:0;bottom:0;height:260px;background:#050407;clip-path:polygon(0 60%,6% 60%,6% 30%,8% 10%,10% 30%,10% 55%,18% 55%,18% 40%,21% 40%,22% 20%,23% 40%,26% 40%,26% 60%,34% 60%,35% 8%,36% 60%,44% 58%,44% 35%,47% 25%,50% 35%,50% 62%,62% 62%,62% 45%,66% 45%,66% 66%,76% 66%,78% 30%,80% 66%,100% 70%,100% 100%,0 100%)}
+.scene:after{content:"";position:absolute;left:0;right:0;bottom:0;height:120px;background:linear-gradient(transparent,rgba(40,34,52,.55))}
+.emblem{left:248px;top:150px;width:330px;height:330px;opacity:.6;mix-blend-mode:screen}
+.logo{right:90px;top:80px;text-align:right}.logo h2{font-family:"Cormorant SC",serif;font-weight:700;font-size:80px;color:#f1ecf7;letter-spacing:.06em;text-shadow:0 0 30px rgba(196,30,58,.5)}.logo p{font-style:italic;font-size:22px;color:#c9cede}
+.menu{right:90px;top:250px;align-items:flex-end;gap:0}.menu a{font-size:25px;font-style:italic;padding:4px 0;color:#a39cb4}.menu a.on{color:#fff;text-shadow:0 0 20px rgba(196,30,58,.8)}.menu a.on:after{content:"❧";color:#c41e3a;margin-left:2px}.menu a small{font-size:15px;color:#8d86a0;margin-right:10px;order:-1}
+.foot b{color:#ff8fa3}
+.opt{background:radial-gradient(18% 30% at 90% 8%,#7a0f22,transparent 70%),linear-gradient(#0e0c13,#060508)}.opt:before{content:"";position:absolute;inset:16px;border:1px solid rgba(201,206,222,.3);pointer-events:none}.opt h2{font-family:"Cormorant SC",serif;font-size:44px;color:#f1ecf7}
+.tabs span{font-style:italic;font-size:18px;color:#a39cb4}.tabs .on{color:#fff;border-bottom:1px solid #c41e3a}
+.grp{border:1px solid rgba(201,206,222,.25);background:linear-gradient(#100e16,#0b0a10);padding:16px 20px;position:relative}.grp:after{content:"❧";position:absolute;right:12px;top:8px;color:#c41e3a}.grp h3{font-family:"Cormorant SC",serif;color:#c41e3a;font-size:15px}
+.r{font-size:17px}.r>span{font-style:italic}
+.seg i{border:1px solid rgba(201,206,222,.3);font-size:14px;font-style:italic}.seg i+i{border-left:0}.seg i.on{background:#7a0f22;color:#fff}
+.sel{border:1px solid rgba(201,206,222,.3);background:#0b0a10;font-size:15px}.sl .t{background:#1a1622;height:3px}.sl .t i{background:linear-gradient(90deg,#4a0614,#c41e3a)}.sl .t b{background:#f1ecf7;border-radius:50%;width:12px;height:12px;box-shadow:0 0 12px #c41e3a}
+.tg{border:1px solid rgba(201,206,222,.3);border-radius:12px}.tg:after{border-radius:50%;background:#4a4458}.tg.on:after{background:#c41e3a;box-shadow:0 0 10px #c41e3a}
+.btn{font-family:"Cormorant SC",serif;font-size:17px;border:1px solid rgba(201,206,222,.35);background:transparent;color:#dcd6e6}.btn.p{background:linear-gradient(#a3122e,#4a0614);color:#fff}</style></head><body>
+<div class="head"><small>Main menu mockup 4 of 4 · Gothic horror</small><h1>Blood Moon</h1><p>A hunter's night: a huge blood moon behind a gothic skyline, the watching wheel-eye inside the moon, and a quiet italic menu on the right with silver fleurons. Options sit in a lace-framed panel.</p><ul><li>Title screen: full-screen scene, the themed wheel as an emblem, a game-style menu with keyboard hints</li><li>Options: Graphics (display mode, resolution, UI scale, frame limit, VSync, animations, wheel quality, effects) and Audio (master, music, effects, interface, ambience, background mute, output device)</li></ul></div>
+<div id="screens"><div class="cap">Title screen</div><div class="scr"><div class="scene"></div><canvas class="emblem" data-wheel='{"story":1,"pick":"conquerRace","style":"eldritch"}'></canvas>
+    <div class="logo"><h2>FateWheel</h2><p>Every legend is written in blood</p></div>
+    <nav class="menu"><a class="on" data-p="vii">Continue<small>Sera Ashgrove · Chapter 7</small></a><a class="" data-p="1">New Legend<small>Spin a new hero</small></a><a class="" data-p="12">Story</a><a class="" data-p="27">Arena</a><a class="" data-p="33">Daily Challenge<small>Today's seed · best 74</small></a><a class="" data-p="41">Hall of Legends<small>12 legends</small></a><a class="" data-p="58">Mods<small>2 installed</small></a><a class="" data-p="63">Options</a><a class="" data-p="—">Quit</a></nav>
+    <div class="foot"><span>v1.0.0 · Mods: Verdant Grove</span><span>↑↓ Select · Enter Confirm · Esc Back</span><b>☕ Support on Ko-fi</b></div></div><div class="cap">Options</div><div class="scr"><div class="opt"><h2>Options</h2>
+    <div class="tabs"><span class="on">Graphics</span><span>Audio</span><span>Gameplay</span><span>Controls</span><span>Language</span></div>
+    <div class="cols">
+      <div class="grp"><h3>Graphics</h3>
+        <div class="r"><span>Display mode</span><div><div class="seg"><i class="">Windowed</i><i class="on">Borderless</i><i class="">Fullscreen</i></div></div></div>
+        <div class="r"><span>Resolution</span><div><div class="sel">1920 × 1080 (16:9)</div><div class="hint">Also 1280×720, 1600×900, 2560×1440, 3840×2160, or your monitor's own</div></div></div>
+        <div class="r"><span>UI scale</span><div><div class="sl"><div class="t"><i style="width:100%"></i><b style="left:100%"></b></div><em>100%</em></div></div></div>
+        <div class="r"><span>Frame limit</span><div><div class="seg"><i class="">30</i><i class="on">60</i><i class="">120</i><i class="">144</i><i class="">Off</i></div></div></div>
+        <div class="r"><span>VSync</span><div><div class="tg on"></div></div></div>
+        <div class="r"><span>Animations</span><div><div class="seg"><i class="on">Full</i><i class="">Reduced</i><i class="">Off</i></div></div></div>
+        <div class="r"><span>Wheel quality</span><div><div class="seg"><i class="">Low</i><i class="">Medium</i><i class="on">High</i></div></div></div>
+        <div class="r"><span>Particles and glow</span><div><div class="tg on"></div></div></div>
+        <div class="r"><span>Theme</span><div><div class="sel">Blood Moon</div></div></div>
+      </div>
+      <div class="grp"><h3>Audio</h3>
+        <div class="r"><span>Master volume</span><div><div class="sl"><div class="t"><i style="width:80%"></i><b style="left:80%"></b></div><em>80%</em></div></div></div>
+        <div class="r"><span>Music</span><div><div class="sl"><div class="t"><i style="width:35%"></i><b style="left:35%"></b></div><em>35%</em></div></div></div>
+        <div class="r"><span>Sound effects</span><div><div class="sl"><div class="t"><i style="width:90%"></i><b style="left:90%"></b></div><em>90%</em></div></div></div>
+        <div class="r"><span>Interface</span><div><div class="sl"><div class="t"><i style="width:60%"></i><b style="left:60%"></b></div><em>60%</em></div></div></div>
+        <div class="r"><span>Ambience</span><div><div class="sl"><div class="t"><i style="width:50%"></i><b style="left:50%"></b></div><em>50%</em></div></div></div>
+        <div class="r"><span>Mute in background</span><div><div class="tg on"></div><div class="hint">Silence the game when its window is not in focus</div></div></div>
+        <div class="r"><span>Output device</span><div><div class="sel">System default</div></div></div>
+        <div class="r"><span>Subtitles for sounds</span><div><div class="tg "></div></div></div>
+      </div>
+    </div>
+    <div class="btns"><button class="btn">Reset to defaults</button><div><button class="btn">Back</button><button class="btn p">Apply</button></div></div></div></div></div>
+<p class="back"><a href="index.html">All main menu mockups</a></p>
+<script src="../../app/js/data.js"></script><script src="../../app/js/data-more.js"></script><script src="../../app/js/data-extra.js"></script><script src="../../app/js/engine.js"></script><script src="../../app/js/story.js"></script><script src="../modern/modern.js"></script><script src="../themed/wheels.js"></script>
+<script>document.fonts.ready.then(() => MOD.drawAll());</script>
+</body></html>
