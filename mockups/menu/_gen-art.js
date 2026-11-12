@@ -1,4 +1,4 @@
-// Writes the four detailed main menu mockups that use the painted art in mockups/menu/art (made with Grok):
+// Writes the four detailed (Astral Oracle replaced Adventurer's Sheet) main menu mockups that use the painted art in mockups/menu/art (made with Grok):
 // node mockups/menu/_gen-art.js
 const fs = require('fs'), path = require('path');
 const { BASE, LOOKS, slider, seg, sel, tg, row } = require('./_gen.js');
@@ -72,6 +72,40 @@ const T = {
     opt: 'bloodmoon-bg' }
 };
 
+/* Astral Oracle replaces the Adventurer's Sheet (tabletop) look in this set. */
+T.astral = { bg: 'astral-bg', wheel: 'astral-wheel', tag: 'Read the stars. Then defy them.',
+  css: `.bgart{background:url(art/astral-bg.jpg) 65% 40%/cover}.bgart:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(3,5,16,.9) 0,rgba(3,5,16,.62) 32%,rgba(3,5,16,.08) 58%,transparent),linear-gradient(transparent 72%,rgba(3,5,16,.75))}
+.wheelart{left:-70px;top:170px;width:620px;height:620px;background:url(art/astral-wheel.jpg) center/contain no-repeat;mix-blend-mode:screen;opacity:.2;filter:saturate(1.2);-webkit-mask:radial-gradient(closest-side,#000 80%,transparent 100%);mask:radial-gradient(closest-side,#000 80%,transparent 100%)}
+.stars{position:absolute;inset:0;pointer-events:none;background:radial-gradient(1.5px 1.5px at 8% 12%,#fff,transparent),radial-gradient(1px 1px at 22% 30%,#cfe3ff,transparent),radial-gradient(1.5px 1.5px at 35% 8%,#fff,transparent),radial-gradient(1px 1px at 14% 52%,#a9c8ff,transparent),radial-gradient(1px 1px at 41% 44%,#fff,transparent),radial-gradient(1.5px 1.5px at 4% 78%,#cfe3ff,transparent)}
+.title{left:40px;top:6px;width:460px;text-align:center}
+.title p{font-family:"Cormorant Garamond",serif;font-style:italic;font-size:19px;letter-spacing:.06em;color:#b9c9ec;margin:0}.title p:after{content:"✦  ·  ✧  ·  ✦";display:block;font-style:normal;font-size:10px;letter-spacing:.3em;color:#8fb8ff;margin-top:4px}
+.panel{left:80px;top:250px;width:380px;display:flex;flex-direction:column;gap:2px}
+.panel:before{content:"";position:absolute;left:-18px;top:6px;bottom:6px;width:1px;background:linear-gradient(transparent,rgba(170,200,255,.55) 15%,rgba(170,200,255,.55) 85%,transparent)}
+.item{display:flex;align-items:center;gap:14px;padding:8px 16px;font-family:Cinzel,serif;font-size:16px;letter-spacing:.16em;text-transform:uppercase;color:#aebbd9;position:relative}
+.item:before{content:"";position:absolute;left:-21px;top:50%;width:7px;height:7px;transform:translateY(-50%) rotate(45deg);border:1px solid rgba(170,200,255,.6);background:#060a1c}
+.item .ic{width:20px;height:20px;color:#7f9cd6;flex:none}
+.item.on{margin:2px 0 10px;padding:13px 18px;font-size:21px;color:#fff;text-shadow:0 0 16px rgba(130,190,255,.9);background:linear-gradient(90deg,rgba(80,130,255,.28),rgba(80,130,255,.06) 70%,transparent);border-left:2px solid #9fd0ff;box-shadow:inset 0 1px 0 rgba(170,210,255,.25),inset 0 -1px 0 rgba(170,210,255,.12)}
+.item.on:before{width:11px;height:11px;left:-23px;background:#cfe8ff;border-color:#fff;box-shadow:0 0 12px #8fc4ff,0 0 26px #5a8cff}
+.item.on .ic{width:30px;height:30px;color:#d6ecff;filter:drop-shadow(0 0 6px #6fb0ff)}
+.item small{display:block;font-family:"Cormorant Garamond",serif;font-style:italic;font-size:15px;letter-spacing:.03em;text-transform:none;color:#9fc0f0;margin-top:1px;text-shadow:none}
+.foot{background:linear-gradient(transparent,rgba(3,5,16,.9));color:#8f9cbc;font-family:"Cormorant Garamond",serif}.foot b{color:#cfe3ff;font-family:Cinzel,serif}`,
+  opt: 'astral-bg' };
+const ASTRAL = { file: 'm2-astral-oracle.html', theme: 'astral', wheel: 'celestial', n: 2, name: 'Astral Oracle', genre: 'Celestial high fantasy',
+  css: `body{background:#03050f;color:#dfe6f7;font-family:"Cormorant Garamond",Georgia,serif}.head small{color:#8fb8ff;font-family:Cinzel,serif;font-size:13px;letter-spacing:.2em;text-transform:uppercase}.head h1{font-family:Cinzel,serif;font-size:56px;color:#eef3ff}.head p{color:#9aa8c8;font-size:19px}.back a{color:#b9c9ec}
+.scr{border:1px solid rgba(170,200,255,.25);background:#03050f}
+.opt{padding:30px 60px}.opt:before{content:"";position:absolute;inset:14px;border:1px solid rgba(170,200,255,.22);border-radius:6px;pointer-events:none}
+.opt h2{font-family:Cinzel,serif;font-weight:700;font-size:38px;color:#eef3ff;letter-spacing:.12em;text-align:center;text-shadow:0 0 22px rgba(120,170,255,.45)}.opt h2:after{content:"✦  ·  ✧  ·  ✦";display:block;font-size:11px;color:#8fb8ff;letter-spacing:.3em;margin-top:4px}
+.tabs{justify-content:center}.tabs span{font-family:Cinzel,serif;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:#8e9bbd}.tabs .on{color:#fff;text-shadow:0 0 12px rgba(130,190,255,.9);border-bottom:1px solid #9fd0ff}
+.grp{border:1px solid rgba(170,200,255,.22);border-radius:8px;background:linear-gradient(rgba(10,16,40,.82),rgba(5,8,22,.9));padding:18px 26px 10px;box-shadow:inset 0 1px 0 rgba(170,210,255,.15),0 20px 50px rgba(0,0,0,.5)}
+.grp h3{font-family:Cinzel,serif;color:#9fc8ff;font-size:15px;letter-spacing:.24em;text-transform:uppercase}
+.r{font-size:17px;min-height:36px}.r>span{color:#c9d4ee}
+.seg i{border:1px solid rgba(170,200,255,.25);font-family:Cinzel,serif;font-size:12px;letter-spacing:.08em;font-style:normal;color:#8e9bbd}.seg i+i{border-left:0}.seg i.on{background:linear-gradient(#3a5cc4,#1a2a6a);color:#fff;box-shadow:0 0 14px rgba(90,140,255,.45)}
+.sel{border:1px solid rgba(170,200,255,.28);background:#060a1c;font-size:16px;color:#dfe6f7}
+.sl .t{background:#18213f;height:3px;border-radius:2px}.sl .t i{background:linear-gradient(90deg,#2a4aa8,#8fc4ff)}.sl .t b{background:#eef6ff;border-radius:50%;width:12px;height:12px;box-shadow:0 0 12px #6fb0ff}
+.tg{border:1px solid rgba(170,200,255,.3);border-radius:12px}.tg:after{border-radius:50%;background:#4a5677}.tg.on{background:#1a2a6a}.tg.on:after{background:#cfe8ff;box-shadow:0 0 10px #8fc4ff}
+.btn{font-family:Cinzel,serif;font-size:15px;letter-spacing:.1em;border:1px solid rgba(170,200,255,.3);background:rgba(6,10,28,.8);color:#dfe6f7;border-radius:4px}.btn.p{background:linear-gradient(#3a5cc4,#1a2a6a);color:#fff;border-color:#9fd0ff;box-shadow:0 0 20px rgba(90,140,255,.45)}` };
+const SET = LOOKS.map(m => m.theme === 'tabletop' ? ASTRAL : m);
+
 const PAGES = { Continue: 'vii', 'New Legend': '1', Story: '12', Arena: '27', 'Daily Challenge': '33', 'Hall of Legends': '41', Mods: '58', Options: '63', Quit: '—' };
 const TITLE_BASE = `.bgart,.wheelart{position:absolute}.bgart{inset:0}.title,.panel{position:absolute}.title .crest{display:block;margin:0 auto}.panel{list-style:none}`;
 
@@ -79,13 +113,14 @@ const TITLE_BASE = `.bgart,.wheelart{position:absolute}.bgart{inset:0}.title,.pa
 const LOGO = {
   ashen: { h: 178, zoom: 100, css: '.title{top:2px}' },
   tabletop: { h: 150, zoom: 100, css: '.title{top:92px;width:290px;left:332px;mix-blend-mode:multiply}' },
+  astral: { h: 190, zoom: 100, css: '.title{width:480px;left:30px}' },
   iron: { h: 214, zoom: 100, css: '.title{top:6px;left:50%;right:auto;width:480px;margin-left:-240px}' },
   bloodmoon: { h: 230, zoom: 100, css: '.title{top:14px}.wheelart{display:none}' }
 };
 
-LOOKS.forEach((m, i) => {
+SET.forEach((m, i) => {
   const t = T[m.theme];
-  const title = `<div class="scr titlescr"><div class="bgart"></div><div class="wheelart"></div>${m.theme === 'ashen' ? '<div class="embers"></div>' : ''}
+  const title = `<div class="scr titlescr"><div class="bgart"></div><div class="wheelart"></div>${m.theme === 'ashen' ? '<div class="embers"></div>' : m.theme === 'astral' ? '<div class="stars"></div>' : ''}
     <div class="title">${CREST}<h2 class="logoart" role="img" aria-label="Destiny Unbound">Destiny Unbound</h2><p>${t.tag}</p></div>
     <nav class="panel">${MENU.map((k, j) => `<div class="item${j === 0 ? ' on' : ''}" data-p="${PAGES[k]}">${icon(k)}<div>${k}${SUB[k] && m.theme !== 'iron' && m.theme !== 'bloodmoon' ? `<small>${SUB[k]}</small>` : ''}</div></div>`).join('')}</nav>
     <div class="foot"><span>v1.0.0 · Mods: Verdant Grove</span><span>↑↓ Select · Enter Confirm · Esc Back</span><b>☕ Support on Ko-fi</b></div></div>`;
