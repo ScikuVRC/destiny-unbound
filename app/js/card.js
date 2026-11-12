@@ -6,7 +6,7 @@
   const HUE = { Shadowborn: 268, Angel: 48, Demon: 355, Vampire: 346, Dragonborn: 18, Elf: 135, 'Dark Elf': 275, Fairy: 300, Mermaid: 192, Skeleton: 200, Reaper: 262, God: 50, 'Cosmic Entity': 248, Spirit: 178, Leviathan: 212, Phoenixkin: 24, Celestial: 56, Eternal: 40, Titan: 30, Human: 215, Orc: 100, Goblin: 85, Werewolf: 28, Succubus: 322, Kitsune: 12, Slime: 150, Golem: 35, 'Eldritch Horror': 285, 'Frost Giant': 195, Halfling: 95, Gnome: 170, Kobold: 20, Ogre: 80, Troll: 110, Centaur: 32, Minotaur: 8, Harpy: 205, Satyr: 120, Naga: 160, Dryad: 128, Hellblood: 350, Gargoyle: 220, Tengu: 265, Arachne: 290, Yeti: 198, Automaton: 38, Mothfolk: 44, Mycelid: 305, Changeling: 185, Revenant: 150, Elemental: 190, Djinn: 205, Valkyrie: 52, Lich: 140, Nephilim: 46, Sphinx: 42, Starchild: 232, Voidling: 278, Primordial: 14 };
   function hash(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
 
-  const CT = {
+  const CT = FW.CARD_THEMES = {
     ashen:     { font: '"EB Garamond", Georgia, serif', head: '"Cinzel", "Palatino Linotype", serif', panel: 'rgba(16,12,10,.86)', stroke: '#6b5636', key: '#e0662d', val: '#f3e2c3', sub: '#a89a82', accent: '#e0b46a', bgTop: 10, caps: true, radius: 4 },
     tabletop:  { font: '"IM Fell English", Georgia, serif', head: '"IM Fell English SC", "IM Fell English", Georgia, serif', panel: 'rgba(239,226,192,.95)', stroke: '#3b2a1a', key: '#8e1b16', val: '#2b1d10', sub: '#5a4330', accent: '#a3221b', bgTop: 14, caps: false, radius: 6, light: true },
     iron:      { font: '"Share Tech Mono", Consolas, monospace', head: '"UnifrakturCook", "Cinzel", serif', panel: 'rgba(18,19,22,.9)', stroke: '#b8862b', key: '#c9302c', val: '#efe2bf', sub: '#a99e86', accent: '#e8c46a', bgTop: 10, caps: false, radius: 0 },
@@ -206,7 +206,7 @@
     c.textAlign = 'center'; c.font = '500 22px ' + th.font; c.fillStyle = th.light ? '#d9c79c' : 'rgba(255,255,255,.55)';
     const ex = [legend.pickName('birth'), legend.pickName('per'), FW.P(legend.entry('mark')).none ? null : legend.pickName('mark')].filter(Boolean).join('  •  ');
     const exs = fit(c, ex, W - 140, 22, '500', th.font); c.fillText(ex, W / 2, fy + 62);
-    frame(c, name, hue);
+    frame(c, th.frame || name, hue);
   };
 
   FW.canvasToBlob = function (canvas) { return new Promise(res => canvas.toBlob(res, 'image/png')); };

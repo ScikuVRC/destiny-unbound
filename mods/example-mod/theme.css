@@ -1,0 +1,7 @@
+/* This CSS only applies while the Verdant Grove theme is selected.
+   Write normal rules; use & for the page itself. url() may only point to files inside this mod. */
+& { background: radial-gradient(70% 45% at 50% -10%, #1f3f22, #08120b 70%) fixed, #08120b; }
+.hero h1 { background: linear-gradient(180deg, #eaf7d6, #6fc25a 60%, #2f6a2a); -webkit-background-clip: text; background-clip: text; }
+.card-panel, .sheet, .fx-card, .modal { border-color: #2c4a30; box-shadow: inset 0 0 0 3px #0b160d, inset 0 0 0 4px #1d3a22; }
+.btn.primary { background: linear-gradient(#4f9a3e, #23501d); color: #f0ffe6; border-color: #a6e08a; }
+.result { color: #dcf7c4; text-shadow: 0 0 26px rgba(125, 255, 106, .45); }

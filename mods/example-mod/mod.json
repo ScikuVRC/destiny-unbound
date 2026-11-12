@@ -1,0 +1,51 @@
+{
+  "format": "fatewheel-mod",
+  "version": 1,
+  "id": "example-mod",
+  "name": "Verdant Grove (example mod)",
+  "author": "FateWheel contributors",
+  "description": "An example to copy: a druid-circle theme with its own wheel colours, card colours, CSS, two sounds and two new wheel entries.",
+  "themes": [
+    {
+      "id": "verdant",
+      "name": "Verdant Grove",
+      "blurb": "Druid circle",
+      "base": "ashen",
+      "vars": {
+        "--bg": "#08120b",
+        "--topbar": "rgba(8,18,11,.92)",
+        "--fg": "#e3f0d6",
+        "--muted": "#9fb894",
+        "--line": "#2c4a30",
+        "--panel": "#0f1d12",
+        "--panel-fg": "#e3f0d6",
+        "--chip-fg": "#c9f0a8",
+        "--chip-border": "#4f8a4a",
+        "--accent": "#6fc25a",
+        "--accent2": "#d9c36a",
+        "--accent-fg": "#071006",
+        "--btn-bg": "#102016"
+      },
+      "css": "theme.css",
+      "wheel": {
+        "pal": [["#14301a", "#22502b"], ["#2d2a14", "#4a4420"]],
+        "lad": ["#eaf7d6", "#8fcf6a", "#2f6a2a", "#0b1f0c"],
+        "line": "rgba(190,230,150,.35)",
+        "ink": "#eaf7d6",
+        "hit": "rgba(150,255,110,.5)",
+        "glow": "#7dff6a"
+      },
+      "card": { "key": "#6fc25a", "accent": "#d9c36a", "stroke": "#4f8a4a", "panel": "rgba(8,18,11,.88)" },
+      "sounds": { "tick": "knock.wav", "reveal": "chime.wav" }
+    }
+  ],
+  "packs": [
+    {
+      "name": "Grove entries",
+      "entries": {
+        "race": [{ "name": "Grove Warden", "w": 2, "dsl": "dur+1 wild:all+2 w=fire life=l", "perk": "Speaks for the old oaks", "flaw": "Fire is the enemy", "art": "grove warden with bark-like skin, mossy hair and antlers of living wood" }],
+        "pet": [{ "name": "Moss Badger", "w": 3, "dsl": "dur+1 wild:fgt+1", "perk": "Small, green and furious" }]
+      }
+    }
+  ]
+}

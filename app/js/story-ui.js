@@ -116,9 +116,13 @@
   /* ---------------- Game options ---------------- */
   App.hooks.optionsModal = function () {
     const o = opts();
-    App.openModal('<button class="btn small ghost close">Close ✕</button><h2>Game options</h2><p>Switch story features on or off. Chapters themselves can be removed or made rarer in the Wheel Workshop (Story chapters).</p>' +
+    const v = FW.Audio.vol, sl = (k, label) => '<label class="vol-row"><span>' + label + '</span><input type="range" min="0" max="100" value="' + Math.round(v[k] * 100) + '" data-vol="' + k + '"><b>' + Math.round(v[k] * 100) + '</b></label>';
+    App.openModal('<button class="btn small ghost close">Close ✕</button><h2>Game options</h2><h3 class="opt-h">Sound</h3>' + sl('master', 'Master') + sl('sfx', 'Effects') + sl('music', 'Music') + '<p class="legend-key">Each theme has its own sounds and music. Mods can replace them with their own files.</p><h3 class="opt-h">Story</h3><p>Switch story features on or off. Chapters themselves can be removed or made rarer in the Wheel Workshop (Story chapters).</p>' +
       S.OPTIONS.map(x => '<label class="check opt-row"><input type="checkbox" data-o="' + x.id + '"' + (o[x.id] ? ' checked' : '') + '><span><b>' + H.esc(x.name) + '</b><br><small>' + H.esc(x.blurb) + '</small></span></label>').join('') +
       '<p class="legend-key">Changes apply from the next chapter.</p>');
+    document.querySelectorAll('#modalRoot [data-vol]').forEach(r => r.addEventListener('input', () => {
+      const val = r.value / 100; r.nextElementSibling.textContent = r.value; FW.Audio.init(); FW.Audio.setVolume({ [r.dataset.vol]: val }); App.store.set('fw.audio', FW.Audio.vol);
+    }));
     document.querySelectorAll('#modalRoot [data-o]').forEach(cb => cb.addEventListener('change', () => {
       const cur = App.store.get('fw.options', {}); cur[cb.dataset.o] = cb.checked; App.store.set('fw.options', cur);
       App.toast(S.OPTIONS.find(x => x.id === cb.dataset.o).name + (cb.checked ? ' on' : ' off'));

@@ -276,17 +276,4 @@
   }
   FW.Wheel = Wheel;
 
-  /* ---------------- audio (WebAudio, no files) ---------------- */
-  const A = FW.Audio = { on: true, ctx: null };
-  A.init = function () { if (!A.ctx) { try { A.ctx = new (g.AudioContext || g.webkitAudioContext)(); } catch (e) { A.ctx = null; } } if (A.ctx && A.ctx.state === 'suspended') A.ctx.resume(); };
-  A.tone = function (f, d, type, vol, when) {
-    if (!A.on || !A.ctx) return; const c = A.ctx; const t = c.currentTime + (when || 0);
-    const o = c.createOscillator(), gn = c.createGain(); o.type = type || 'square'; o.frequency.setValueAtTime(f, t);
-    gn.gain.setValueAtTime(0.0001, t); gn.gain.exponentialRampToValueAtTime(vol || 0.05, t + 0.005); gn.gain.exponentialRampToValueAtTime(0.0001, t + d);
-    o.connect(gn); gn.connect(c.destination); if (A.recDest) gn.connect(A.recDest); o.start(t); o.stop(t + d + 0.02);
-  };
-  A.tick = function (speed) { A.tone(900 + 700 * (speed == null ? 1 : speed), 0.035, 'square', 0.025); };
-  A.reveal = function (rare) { const base = rare ? 523 : 392; [0, 0.09, 0.18].forEach((w, i) => A.tone(base * Math.pow(1.26, i), 0.28, 'triangle', 0.06, w)); if (rare) A.tone(1568, 0.6, 'sine', 0.05, 0.28); };
-  A.bad = function () { A.tone(180, 0.35, 'sawtooth', 0.05); A.tone(130, 0.5, 'sawtooth', 0.05, 0.12); };
-  A.click = function () { A.tone(660, 0.05, 'triangle', 0.04); };
 })(typeof window !== 'undefined' ? window : globalThis);

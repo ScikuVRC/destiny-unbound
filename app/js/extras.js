@@ -140,13 +140,13 @@
     R.cv = document.createElement('canvas'); R.cv.width = 1080; R.cv.height = 1920;
     const stream = R.cv.captureStream(30);
     FW.Audio.init(); const A = FW.Audio;
-    if (A.ctx && A.ctx.createMediaStreamDestination) { A.recDest = A.ctx.createMediaStreamDestination(); A.recDest.stream.getAudioTracks().forEach(t => stream.addTrack(t)); }
+    if (A.ctx && A.ctx.createMediaStreamDestination) { const dest = A.ctx.createMediaStreamDestination(); A.setRecDest(dest); dest.stream.getAudioTracks().forEach(t => stream.addTrack(t)); }
     R.chunks = []; R.rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 6000000 });
     R.rec.ondataavailable = e => { if (e.data && e.data.size) R.chunks.push(e.data); };
     R.rec.onstop = () => {
       const blob = new Blob(R.chunks, { type: mime.split(';')[0] }); const ext = /mp4/.test(mime) ? 'mp4' : 'webm';
       if (blob.size) { download(blob, 'fatewheel_' + fileName(st.legend) + '.' + ext); App.toast('Video saved (' + ext.toUpperCase() + ', 1080×1920)'); }
-      FW.Audio.recDest = null; R.rec = null;
+      FW.Audio.setRecDest(null); R.rec = null;
     };
     R.rec.start(500); R.t0 = Date.now(); drawFrame();
     R.timer = setInterval(syncRecBtn, 500); syncRecBtn(); App.toast('Recording: play your spins, then press Stop');

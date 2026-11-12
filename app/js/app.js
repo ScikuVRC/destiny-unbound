@@ -12,7 +12,7 @@
   };
   const saved = store.get('fw.settings', {});
   const state = {
-    theme: FW.THEMES[saved.theme] ? saved.theme : (FW.THEME_ALIAS[saved.theme] || 'ashen'),
+    theme: FW.THEMES[saved.theme] ? saved.theme : (FW.THEME_ALIAS[saved.theme] || 'ashen'), wantTheme: saved.theme || '',
     luck: FW.LUCK.some(l => l.id === saved.luck) ? saved.luck : 'heroic',
     sound: saved.sound !== false, speed: saved.speed === 'fast' ? 'fast' : 'normal', spinDir: saved.spinDir === 'cw' ? 'cw' : 'ccw',
     auto: false, legend: null, image: null, rng: FW.makeRng(), seed: '',
@@ -24,8 +24,8 @@
   if (!state.person.presets || typeof state.person.presets !== 'object') state.person.presets = {};
   const hooks = {};   // filled in by studio.js
   const hook = (name, a) => { try { return hooks[name] && hooks[name](a); } catch (e) { /* optional feature */ } };
-  const persist = () => store.set('fw.settings', { theme: state.theme, luck: state.luck, sound: state.sound, speed: state.speed, spinDir: state.spinDir });
-  FW.Audio.on = state.sound;
+  const persist = () => store.set('fw.settings', { theme: state.wantTheme && !FW.THEMES[state.wantTheme] ? state.wantTheme : state.theme, luck: state.luck, sound: state.sound, speed: state.speed, spinDir: state.spinDir });
+  FW.Audio.on = state.sound; FW.Audio.theme = state.theme; Object.assign(FW.Audio.vol, store.get('fw.audio', {}));
 
   /* ---------- small helpers ---------- */
   function toast(msg) {
@@ -53,7 +53,7 @@
   /* ---------- theme / luck / sound ---------- */
   function setTheme(name) {
     if (!FW.THEMES[name]) return;
-    state.theme = name; document.body.dataset.theme = name; persist();
+    state.theme = name; state.wantTheme = name; document.body.dataset.theme = name; persist(); FW.Audio.setTheme(name);
     $('#btnTheme').textContent = FW.THEMES[name].name;
     if (state.wheel) state.wheel.setTheme(name);
     renderHomeOpts();
@@ -63,7 +63,7 @@
   function setLuck(id) { state.luck = id; persist(); $('#btnLuck').textContent = 'Luck: ' + luckInfo().name; renderHomeOpts(); }
   function renderHomeOpts() {
     $('#luckOpts').innerHTML = FW.LUCK.map(l => '<button class="opt ' + (l.id === state.luck ? 'sel' : '') + '" data-luck="' + l.id + '"><b>' + l.name + '</b><span>' + (FW.t ? FW.t(l.blurb) : l.blurb) + ' &middot; ' + l.tokens + ' Fate Token' + (l.tokens > 1 ? 's' : '') + '</span></button>').join('');
-    $('#themeOpts').innerHTML = Object.keys(FW.THEMES).map(k => '<button class="opt ' + (k === state.theme ? 'sel' : '') + '" data-theme="' + k + '"><b>' + FW.THEMES[k].name + '</b><span>' + (FW.t ? FW.t : x => x)(({ ashen: 'Dark fantasy', tabletop: 'Tabletop RPG', iron: 'Grimdark sci-fi', bloodmoon: 'Gothic horror' })[k]) + '</span></button>').join('');
+    $('#themeOpts').innerHTML = Object.keys(FW.THEMES).map(k => '<button class="opt ' + (k === state.theme ? 'sel' : '') + '" data-theme="' + k + '"><b>' + H.esc(FW.THEMES[k].name) + '</b><span>' + H.esc((FW.t ? FW.t : x => x)(FW.THEMES[k].blurb || ({ ashen: 'Dark fantasy', tabletop: 'Tabletop RPG', iron: 'Grimdark sci-fi', bloodmoon: 'Gothic horror' })[k] || '')) + (FW.THEMES[k].mod ? ' · mod' : '') + '</span></button>').join('');
   }
 
   /* ---------- steps / chips / result ---------- */
@@ -316,6 +316,7 @@
     openModal('<button class="btn small ghost close">Close ✕</button><h2>Menu</h2><div class="opt-grid">' +
       '<button class="opt" data-act="hall"><b>Hall of Legends</b><span>Your saved characters</span></button>' +
       '<button class="opt" data-act="options"><b>Game options</b><span>Switch story features on or off</span></button>' +
+      '<button class="opt" data-act="mods"><b>Mods</b><span>Your own themes, sounds, music and wheel entries</span></button>' +
       '<button class="opt" data-act="packs"><b>Wheel packs</b><span>Install or share packs of new wheel entries</span></button>' +
       '<button class="opt" data-act="ach"><b>Achievements</b><span>Badges and the rare entries they unlock</span></button>' +
       '<button class="opt" data-act="versus"><b>Versus</b><span>Pit two legends against each other</span></button>' +
@@ -324,7 +325,7 @@
       '<button class="opt" data-act="help"><b>How the rules work</b><span>Tiers, buffs, debuffs, luck and the arena</span></button>' +
       '<a class="opt" href="https://ko-fi.com/bzrkherja" target="_blank" rel="noopener"><b>&#9749; Support on Ko-fi</b><span>Enjoying FateWheel? Buy the developer a coffee</span></a>' +
       '<button class="opt" data-act="reset"><b>Reset saved data</b><span>Clears settings, Hall and Workshop edits</span></button></div>');
-    $('#modalRoot').querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', () => ({ hall: hallModal, workshop: workshopModal, import: importModal, help: helpModal, reset: resetData, options: () => hook('optionsModal'), packs: () => window.FWApp.packsModal(), ach: () => window.FWApp.achievementsModal(), versus: () => window.FWApp.versusModal() })[b.dataset.act]()));
+    $('#modalRoot').querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', () => ({ hall: hallModal, workshop: workshopModal, import: importModal, help: helpModal, reset: resetData, options: () => hook('optionsModal'), packs: () => window.FWApp.packsModal(), mods: () => window.FWApp.modsModal(), ach: () => window.FWApp.achievementsModal(), versus: () => window.FWApp.versusModal() })[b.dataset.act]()));
   }
   function resetData() {
     openModal('<h2>Reset everything?</h2><p>This clears your settings, every saved legend and portrait, your Art Studio setup (including remembered keys) and all Workshop edits on this device. It cannot be undone.</p><div class="cta" style="justify-content:flex-start"><button class="btn primary" id="rsYes">Yes, reset</button><button class="btn ghost" id="rsNo">Cancel</button></div>');
@@ -399,7 +400,7 @@
   function syncAutoBtn() { $('#btnAutoToggle').textContent = 'Auto: ' + (state.auto ? 'on' : 'off'); }
   function syncSpeedBtn() { $('#btnSpeed').textContent = 'Speed: ' + state.speed; }
   function syncDirBtn() { $('#btnDir').textContent = state.spinDir === 'cw' ? '↻ Clockwise' : '↺ Counter-clockwise'; if (state.wheel) state.wheel.dir = state.spinDir === 'cw' ? 1 : -1; }
-  function syncSound() { $('#btnSound').innerHTML = state.sound ? '&#128266;' : '&#128263;'; FW.Audio.on = state.sound; }
+  function syncSound() { $('#btnSound').innerHTML = state.sound ? '&#128266;' : '&#128263;'; FW.Audio.on = state.sound; FW.Audio.applyVolume(); }
 
   $('#btnStart').onclick = () => { FW.Audio.init(); runLegend(false); };
   $('#btnAuto').onclick = () => { FW.Audio.init(); runLegend(true); };
@@ -442,6 +443,7 @@
   });
 
   document.body.dataset.theme = state.theme;
+  ['pointerdown', 'keydown'].forEach(ev => document.addEventListener(ev, () => FW.Audio.init(), { once: true }));
   $('#btnTheme').textContent = FW.THEMES[state.theme].name; $('#btnLuck').textContent = 'Luck: ' + luckInfo().name;
   renderHomeOpts(); syncAutoBtn(); syncSpeedBtn(); syncDirBtn(); syncSound();
   if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol) && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') navigator.serviceWorker.register('sw.js').catch(() => { });

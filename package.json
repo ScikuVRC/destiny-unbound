@@ -9,7 +9,7 @@
   "private": true,
   "scripts": {
     "start": "electron .",
-    "test": "node tests/engine.test.js && node tests/art.test.js && node tests/story.test.js && node tests/extras.test.js",
+    "test": "node tests/engine.test.js && node tests/art.test.js && node tests/story.test.js && node tests/extras.test.js && node tests/mods.test.js",
     "icons": "node scripts/make-icons.js",
     "dist": "npm run icons && electron-builder --win nsis portable --publish never",
     "dist:mac": "npm run icons && electron-builder --mac dmg zip --publish never",
@@ -65,7 +65,15 @@
     },
     "appImage": {
       "artifactName": "FateWheel-${version}-linux.${ext}"
-    }
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "ScikuVRC",
+        "repo": "fatewheel",
+        "releaseType": "release"
+      }
+    ]
   },
   "devDependencies": {
     "@resvg/resvg-js": "^2.6.2",
@@ -75,5 +83,8 @@
   "funding": {
     "type": "ko-fi",
     "url": "https://ko-fi.com/bzrkherja"
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.11"
   }
 }

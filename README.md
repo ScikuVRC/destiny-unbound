@@ -31,6 +31,10 @@ npm run dist
 `npm start` opens the app from source; `npm run dist` writes the installer and the portable `.exe` to `dist/`.
 `npm run dist:mac` and `npm run dist:linux` build for those systems (run them on that system).
 
+**Updates.** The installed desktop app checks GitHub releases at startup (switch this off in **Game
+options**), downloads a new version in the background and offers **Restart and update**. This needs a
+public repository with a release; the portable `.exe` does not update itself.
+
 **Releases are automatic.** Set the new `version` in `package.json`, commit, then push a matching tag
 (for version 1.1.0: `git tag v1.1.0` and `git push origin v1.1.0`). GitHub Actions runs the tests, builds
 Windows, macOS and Linux, and attaches the files to a new release (`.github/workflows/release.yml`).
@@ -159,6 +163,55 @@ its own page style, wheel art and character-card frame:
 The fonts are bundled in `app/fonts` so every theme works offline and in the desktop app
 (`node scripts/fetch-fonts.js` downloads them again).
 
+## Sound and music
+
+Every theme has its own sound effects (wheel ticks, reveals, rare results, bad news) and its own
+ambient music, all made live in code: an ember-lit drone with crackling fire (Ashen Crown), a lute in a
+tavern (Adventurer's Sheet), an organ drone with machinery (Iron Litany), wind and a heartbeat (Blood
+Moon). Volumes for master, effects and music are in **Game options**; the speaker button mutes everything.
+Mods can replace any of these sounds with their own files.
+
+## Mods
+
+Mods let players add their own **themes** (colours, fonts, CSS, wheel colours, card colours),
+**sounds and music**, and **wheel entries** with their own buffs and debuffs. A mod is a folder with a
+`mod.json`; copy [`mods/example-mod`](mods/example-mod) to start.
+
+- **Desktop app:** Menu > **Mods** > **Open mods folder**, put each mod in its own folder there, then press
+  **Restart to apply**.
+- **Browser:** Menu > **Mods** > **Import a mod folder** (it is stored in that browser).
+- Mods can be switched on and off, and imported mods removed, from the same screen.
+
+```json
+{ "format": "fatewheel-mod", "version": 1, "id": "my-mod", "name": "My Mod", "author": "Me", "description": "...",
+  "themes": [ { "id": "verdant", "name": "Verdant Grove", "blurb": "Druid circle", "base": "ashen",
+      "vars": { "--bg": "#08120b", "--accent": "#6fc25a" },
+      "css": "theme.css",
+      "fonts": [ { "family": "My Font", "file": "my-font.woff2", "weight": 400, "style": "normal" } ],
+      "wheel": { "pal": [["#14301a", "#22502b"]], "lad": ["#eaf7d6", "#0b1f0c"], "hit": "rgba(150,255,110,.5)", "glow": "#7dff6a", "font": "\"My Font\", serif" },
+      "card": { "key": "#6fc25a", "accent": "#d9c36a", "panel": "rgba(8,18,11,.88)", "frame": "ashen" },
+      "sounds": { "tick": "knock.wav", "reveal": "chime.wav", "music": "grove.ogg" } } ],
+  "sounds": { "bad": "thud.wav" },
+  "packs": [ { "name": "My entries", "entries": { "race": [ { "name": "Grove Warden", "w": 2, "dsl": "dur+1 wild:all+2 life=l" } ] } } ] }
+```
+
+- `base` is one of `ashen`, `tabletop`, `iron`, `bloodmoon`: the theme starts from it (wheel art, card frame,
+  sound style) and you change what you like.
+- `vars` sets the page colours and fonts: `--bg --topbar --fg --muted --line --panel --panel-fg --chip-bg
+  --chip-fg --chip-border --chip-radius --accent --accent2 --accent-fg --good --bad --btn-bg --btn-fg --radius
+  --font --font-display --font-chip --font-result --result-weight`.
+- `css` is a normal stylesheet that only applies while the theme is selected (use `&` for the page itself).
+  `url()` may only point to files in the mod folder; `@import` and outside addresses are removed.
+- `wheel`: `pal` (pairs of inner/outer slice colours), `lad` (stat ladder colours, lowest to highest), `gray`,
+  `line`, `ink`, `inkDark`, `inkLight`, `hit`, `glow`, `font`, `upper`, `italic`.
+- `card`: `panel stroke key val sub accent font head caps frame`.
+- `sounds` (for one theme, or for every theme at the top level): `tick reveal rare bad click music`.
+  Audio files: mp3, ogg, wav, m4a, aac, flac or webm. Music loops.
+- `packs`: the same format as wheel packs (see below).
+
+Mods cannot run code. Everything in `mod.json` is checked when it loads, and a mod with a problem is
+listed with the reason in the Mods screen. Use mods at your own discretion and only install mods you trust.
+
 ## Make it yours
 
 The home screen has a "Make it yours" panel: hero name, presentation, whether the appearance wheels
@@ -216,7 +269,7 @@ npm test
 old age names and old tier numbers, arena maths, new outcomes), 18 art checks (art prompt, every
 generator and language-model connector against a mock server, error messages, cancelling), 8 story
 checks (500 full sagas with random options, grey slices, requirements, every option switched off,
-Workshop removals, dynasty) and 5 checks for packs, achievements and translations.
+Workshop removals, dynasty), 5 checks for packs, achievements and translations, and 6 for mods and themes.
 
 ## Layout
 
@@ -230,6 +283,10 @@ Workshop removals, dynasty) and 5 checks for packs, achievements and translation
 | `app/js/story.js`, `story-ui.js` | Story mode rules (chapters, factions, nemesis, kingdom events, dynasty, options) and its screens |
 | `app/js/extras.js` | Saga writer, daily challenge, versus and the video recorder |
 | `app/js/packs.js`, `achievements.js`, `i18n.js`, `app/lang/` | Wheel packs, achievements, translations |
+| `app/js/audio.js` | Themed sound effects and ambient music (WebAudio) |
+| `app/js/mods.js`, `mods-ui.js` | Mod loading and checks; the Mods screen and desktop updates |
+| `electron/preload.js` | The few desktop features the game can reach: the Mods folder and updates |
+| `mods/example-mod` | An example mod to copy |
 | `packs/` | Example wheel pack |
 | `.github/workflows/` | Tests on every push; builds and releases on version tags |
 | `electron/main.js` | Desktop shell: serves `app/` on a private `app://` address, sends web links to your browser |
