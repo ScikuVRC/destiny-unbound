@@ -1,0 +1,7 @@
+node_modules/
+dist/
+build/
+*.zip
+.claude/
+# private study notes and third-party screenshots: not part of the published project
+research/

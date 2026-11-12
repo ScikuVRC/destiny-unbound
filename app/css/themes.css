@@ -1,0 +1,55 @@
+/* FATEWHEEL themes - the four mockup directions */
+
+/* 1. Classic Night - faithful to the original video look */
+:root,[data-theme="classic"]{
+  --bg:#000;--topbar:rgba(0,0,0,.86);--fg:#f2f2f2;--muted:#9a9a9a;--line:#2b2b2b;
+  --panel:#121212;--panel-fg:#ececec;--chip-bg:#1b1b1d;--chip-fg:#4d8dff;--chip-border:#26262a;--chip-radius:22px;
+  --accent:#4d8dff;--accent2:#9a6bff;--accent-fg:#fff;--good:#58e07a;--bad:#ff6b6b;
+  --btn-bg:#1d1d20;--btn-fg:#f2f2f2;--radius:12px;
+  --font:"Segoe UI",Inter,system-ui,-apple-system,sans-serif;--font-display:"Segoe UI",Inter,system-ui,sans-serif;--font-chip:var(--font);--font-result:var(--font);--result-weight:600;
+}
+
+/* 2. Gilded Arcana - ornate fantasy, matches the S2 final-card look */
+[data-theme="gilded"]{
+  --bg:#0c0905;--topbar:rgba(12,9,5,.9);--fg:#f3e7c9;--muted:#b09a69;--line:#4a3716;
+  --panel:#16100a;--panel-fg:#f1e3c0;--chip-bg:#21160a;--chip-fg:#e8c872;--chip-border:#8d6a22;--chip-radius:6px;
+  --accent:#e3bd62;--accent2:#b8862b;--accent-fg:#241705;--good:#8fe28a;--bad:#ff8c78;
+  --btn-bg:#241a0c;--btn-fg:#f3e7c9;--radius:6px;
+  --font:"Palatino Linotype","Book Antiqua",Georgia,serif;--font-display:"Palatino Linotype",Georgia,serif;--font-chip:var(--font);--font-result:var(--font);--result-weight:700;
+}
+[data-theme="gilded"] body,body[data-theme="gilded"]{background:radial-gradient(ellipse at 50% -10%,#2a1c08 0,#0c0905 60%)}
+[data-theme="gilded"] .chip,[data-theme="gilded"] .fx-card,[data-theme="gilded"] .sheet,[data-theme="gilded"] .card-panel{box-shadow:inset 0 0 0 1px #0c0905,inset 0 0 0 2px #6b4f17}
+[data-theme="gilded"] .result{letter-spacing:.03em;text-shadow:0 2px 14px rgba(227,189,98,.25)}
+[data-theme="gilded"] .chip{letter-spacing:.06em;text-transform:uppercase;font-size:clamp(14px,3.8vw,18px)}
+
+/* 3. Neon Arcade - game-show energy */
+[data-theme="neon"]{
+  --bg:#05050f;--topbar:rgba(5,5,15,.88);--fg:#f4f4ff;--muted:#8d8db8;--line:#26264a;
+  --panel:#0b0b1f;--panel-fg:#eaeaff;--chip-bg:#101030;--chip-fg:#00e5ff;--chip-border:#00e5ff;--chip-radius:999px;
+  --accent:#ff2bd6;--accent2:#00e5ff;--accent-fg:#10001a;--good:#38ffb0;--bad:#ff5577;
+  --btn-bg:#12123a;--btn-fg:#eaeaff;--radius:14px;
+  --font:Bahnschrift,"Segoe UI",system-ui,sans-serif;--font-display:Bahnschrift,"Segoe UI",system-ui,sans-serif;--font-chip:var(--font);--font-result:var(--font);--result-weight:800;
+}
+body[data-theme="neon"]{background:radial-gradient(circle at 20% 0,#1b0a3a 0,#05050f 45%),radial-gradient(circle at 90% 100%,#06263a 0,transparent 40%),#05050f}
+[data-theme="neon"] .chip{box-shadow:0 0 18px rgba(0,229,255,.45),inset 0 0 12px rgba(0,229,255,.15);text-transform:uppercase;letter-spacing:.08em}
+[data-theme="neon"] .result{text-transform:uppercase;letter-spacing:.04em;text-shadow:0 0 22px rgba(255,43,214,.55)}
+[data-theme="neon"] .btn.primary{box-shadow:0 0 24px rgba(255,43,214,.6)}
+[data-theme="neon"] .sheet,[data-theme="neon"] .fx-card,[data-theme="neon"] .card-panel{box-shadow:0 0 0 1px rgba(0,229,255,.25),0 0 30px rgba(255,43,214,.08)}
+
+/* 4. Old Grimoire - leather and parchment */
+[data-theme="grimoire"]{
+  --bg:#1a120b;--topbar:rgba(26,18,11,.92);--fg:#efe0bd;--muted:#b49c74;--line:#5c4326;
+  --panel:#e9dbbb;--panel-fg:#2b1d0f;--chip-bg:#e9dbbb;--chip-fg:#4a2a10;--chip-border:#a98a5b;--chip-radius:10px;
+  --accent:#9c2a22;--accent2:#c9a86b;--accent-fg:#fff3dc;--good:#2d6a2f;--bad:#9a1f1f;
+  --btn-bg:#3a2716;--btn-fg:#efe0bd;--radius:8px;
+  --font:Georgia,"Times New Roman",serif;--font-display:Georgia,"Times New Roman",serif;--font-chip:var(--font);--font-result:var(--font);--result-weight:700;
+}
+body[data-theme="grimoire"]{background:radial-gradient(ellipse at 50% 0,#2b1d10 0,#1a120b 70%)}
+[data-theme="grimoire"] .result{font-style:italic;color:#f4e6c4}
+[data-theme="grimoire"] .chip{font-style:italic;box-shadow:0 3px 0 #a98a5b,0 8px 20px rgba(0,0,0,.4)}
+[data-theme="grimoire"] .sheet,[data-theme="grimoire"] .fx-card,[data-theme="grimoire"] .card-panel,[data-theme="grimoire"] .modal{box-shadow:inset 0 0 40px rgba(120,80,20,.25),0 8px 24px rgba(0,0,0,.45)}
+[data-theme="grimoire"] .brand .logo{color:#fff3dc}
+[data-theme="grimoire"] .pill,[data-theme="grimoire"] .icon-btn{background:#e9dbbb;color:#2b1d0f}
+[data-theme="grimoire"] .btn.ghost{color:var(--fg);border-color:#a98a5b}
+[data-theme="grimoire"] .result.rare{color:#ffcf7a;text-shadow:0 0 18px rgba(255,160,40,.5)}
+[data-theme="grimoire"] .steps i.cur{background:#efe0bd}

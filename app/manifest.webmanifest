@@ -1,0 +1,15 @@
+{
+  "name": "FateWheel - Spin a Legend",
+  "short_name": "FateWheel",
+  "description": "Spin the wheels of fate to forge a fictional character, with buffs, debuffs and an arena.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}
