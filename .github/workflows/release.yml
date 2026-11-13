@@ -82,6 +82,14 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+      # The release notes are this version's section of CHANGELOG.md ("## 0.1.0-alpha.6 ..." up to the next "## ").
+      # Without a section the notes are just GitHub's "Full Changelog" link.
+      - name: Release notes from CHANGELOG.md
+        run: |
+          v="${GITHUB_REF_NAME#v}"
+          awk -v v="$v" '/^## / { on = (index($0, "## " v " ") == 1 || $0 == "## " v); next } on' CHANGELOG.md > release-notes.md
+          cat release-notes.md
       - uses: actions/download-artifact@v4
         with:
           path: files
@@ -89,6 +97,7 @@ jobs:
       - uses: softprops/action-gh-release@v2
         with:
           files: files/*
+          body_path: release-notes.md
           generate_release_notes: true
           prerelease: ${{ contains(github.ref_name, '-') }}
 

@@ -1,6 +1,6 @@
 # Destiny Unbound alpha test plan
 
-Current build: **0.1.0-alpha.5**. Ready-to-send invite texts are in [tester-invite.md](tester-invite.md).
+Current build: **0.1.0-alpha.6**. Ready-to-send invite texts are in [tester-invite.md](tester-invite.md).
 
 ## Goals
 
@@ -73,7 +73,8 @@ Second session (any time later):
 - The portable `.exe` never updates itself; the installer does.
 - Fullscreen is borderless fullscreen; there is no exclusive fullscreen mode.
 - Sound always uses the system's default output device.
-- Spanish covers the menus, Options and most of the game; story text is still in English.
+- Spanish, French, German and Japanese cover the menus, Options and most of the game; story text is still in
+  English. French, German and Japanese are AI drafts that no native speaker has checked yet.
 - macOS and Linux builds have not been tested.
 - AI portraits and tales need the player's own image generator or API key (optional).
 

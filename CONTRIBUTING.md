@@ -15,7 +15,8 @@ Come say hi on the Discord first if you like: <https://discord.gg/McDS5HVxzJ>
 - **Make a mod or wheel pack.** No coding needed for most of it. Get the mod kit from the
   [itch.io page](https://bzrkherja.itch.io/destiny-unbound) and read [docs/modding.md](docs/modding.md). Share it in
   #mods-and-packs.
-- **Translate.** The game has English and Spanish. Translations are plain text files in `app/lang/`; see
+- **Translate.** The game has English, Spanish, French, German and Japanese; the French,
+  German and Japanese packs are AI drafts, so corrections from native speakers are very welcome. Translations are plain text files in `app/lang/`; see
   [docs/modding.md](docs/modding.md) for how they work, and ask on the Discord before starting a new language.
 - **Write code.** Pick an issue labelled
   [good first issue](https://github.com/ScikuVRC/destiny-unbound/labels/good%20first%20issue), or ask on the Discord

@@ -4,7 +4,7 @@ globalThis.window = globalThis;
 const mem = { 'fw.lang': '"es"' };
 globalThis.localStorage = { getItem: k => (k in mem ? mem[k] : null), setItem: (k, v) => { mem[k] = String(v); }, removeItem: k => { delete mem[k]; } };
 ['data.js', 'data-more.js', 'data-extra.js'].forEach(f => require('../app/js/' + f));
-require('../app/lang/es.js'); require('../app/js/i18n.js');
+['es', 'fr', 'de', 'ja'].forEach(id => require('../app/lang/' + id + '.js')); require('../app/js/i18n.js');
 ['engine.js', 'story.js', 'packs.js', 'achievements.js'].forEach(f => require('../app/js/' + f));
 const FW = globalThis.FW;
 let pass = 0, fail = 0;
@@ -63,6 +63,26 @@ t('translations: Spanish lookups, symbols kept, unknown text stays English', () 
   FW.STAGES.forEach(s => assert.notStrictEqual(FW.t(s.title), s.title, 'missing: ' + s.title));
   Object.keys(FW.LADDERS).forEach(k => FW.LADDERS[k].names.forEach(n => assert(FW.LANG_PACKS.es.strings[n] != null, 'missing tier: ' + n)));
   FW.Story.CHAPTERS.forEach(c => assert(FW.LANG_PACKS.es.strings[c.name] != null, 'missing chapter: ' + c.name));
+  // every achievement name and description, and every reward entry it adds to a wheel, has a Spanish entry
+  FW.ACHIEVEMENTS.forEach(x => [x.name, x.desc].concat(x.reward ? [x.reward.entry.name, x.reward.entry.perk].filter(Boolean) : []).forEach(s => assert(FW.LANG_PACKS.es.strings[s] != null, 'missing achievement text: ' + s)));
+});
+
+t('translations: French, German and Japanese cover the wheels and story, and the picker lists every language', () => {
+  const es = FW.LANG_PACKS.es.strings;
+  ['fr', 'de', 'ja'].forEach(id => {
+    const p = FW.LANG_PACKS[id]; assert(p && p.name && p.strings, 'pack not loaded: ' + id);
+    Object.keys(p.strings).forEach(k => {
+      assert(es[k] != null, id + ' has a key the game does not use: ' + k);
+      assert(typeof p.strings[k] === 'string' && p.strings[k].trim(), id + ' empty value: ' + k);
+    });
+    FW.STAGES.forEach(s => assert(p.strings[s.title] != null, id + ' missing: ' + s.title));
+    Object.keys(FW.LADDERS).forEach(k => FW.LADDERS[k].names.forEach(n => assert(p.strings[n] != null, id + ' missing tier: ' + n)));
+    FW.Story.CHAPTERS.forEach(c => assert(p.strings[c.name] != null, id + ' missing chapter: ' + c.name));
+  });
+  const sel = {}; FW.fillLangSelect(sel);
+  const ids = [...sel.innerHTML.matchAll(/value="([^"]+)"/g)].map(m => m[1]);
+  assert.strictEqual(ids[0], 'en'); ['es', 'fr', 'de', 'ja'].forEach(id => assert(ids.includes(id), 'not in the picker: ' + id));
+  assert(/value="es" selected/.test(sel.innerHTML), 'current language not selected');
 });
 
 console.log('\n' + pass + ' of ' + (pass + fail) + ' checks passed');

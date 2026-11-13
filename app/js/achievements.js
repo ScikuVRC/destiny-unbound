@@ -3,6 +3,7 @@
 (function () {
   'use strict';
   const FW = window.FW, H = FW.html, App = window.FWApp, S = FW.Story;
+  const tr = s => (FW.t ? FW.t(s) : s);   // names, descriptions and rewards are looked up in the language pack (app/lang/)
   const log = L => (L.saga ? L.saga.log : []);
   const won = (L, chapter) => log(L).some(x => x.chapter === chapter && x.tone === 'good');
   const fights = L => (L.chron || []).filter(c => c.kind === 'win' || c.kind === 'lose' || c.kind === 'draw');
@@ -70,7 +71,7 @@
   /* an unlock banner in the corner, like a game platform's (also read out by screen readers) */
   function pop(a) {
     const el = document.createElement('div'); el.className = 'ach-pop'; el.setAttribute('role', 'status');
-    el.innerHTML = '<span>' + a.icon + '</span><div><small>Achievement unlocked</small><b>' + H.esc(a.name) + '</b>' + (a.reward ? '<br><small style="letter-spacing:0;text-transform:none">New on the wheel: ' + H.esc(a.reward.entry.name) + '</small>' : '') + '</div>';
+    el.innerHTML = '<span>' + a.icon + '</span><div><small>' + H.esc(tr('Achievement unlocked')) + '</small><b>' + H.esc(tr(a.name)) + '</b>' + (a.reward ? '<br><small style="letter-spacing:0;text-transform:none">' + H.esc(tr('New on the wheel:')) + ' ' + H.esc(tr(a.reward.entry.name)) + '</small>' : '') + '</div>';
     document.body.appendChild(el); if (FW.Audio && FW.Audio.reveal) FW.Audio.reveal(true);
     setTimeout(() => el.remove(), 4200);
   }
@@ -78,6 +79,6 @@
     const have = got(), n = Object.keys(have).filter(k => BY_ID[k]).length, pct = Math.round(n / FW.ACHIEVEMENTS.length * 100);
     const order = FW.ACHIEVEMENTS.slice().sort((a, b) => (have[b.id] ? 1 : 0) - (have[a.id] ? 1 : 0) || String(have[b.id] || '').localeCompare(String(have[a.id] || '')));
     App.openModal('<button class="btn small ghost close">Close ✕</button><h2>Achievements</h2><div class="ach-head"><b>' + n + ' / ' + FW.ACHIEVEMENTS.length + '</b><div class="ach-bar" role="progressbar" aria-label="Achievements unlocked" aria-valuenow="' + pct + '" aria-valuemin="0" aria-valuemax="100"><i style="width:' + pct + '%"></i></div><b>' + pct + '%</b></div>' + (enabled() ? '' : '<p class="legend-key">Achievements are switched off in Options &gt; Gameplay.</p>') +
-      '<div class="ach-grid">' + order.map(a => '<div class="ach' + (have[a.id] ? ' got' : '') + '" aria-label="' + H.esc(a.name + (have[a.id] ? ', unlocked' : ', locked')) + '"><span aria-hidden="true">' + a.icon + '</span><div><b>' + H.esc(a.name) + '</b><small>' + H.esc(a.desc) + (a.reward ? ' Reward: ' + H.esc(a.reward.entry.name) + '.' : '') + '</small>' + (have[a.id] ? '<small class="when">Unlocked ' + H.esc(have[a.id]) + '</small>' : '<small>Locked</small>') + '</div></div>').join('') + '</div>');
+      '<div class="ach-grid">' + order.map(a => '<div class="ach' + (have[a.id] ? ' got' : '') + '" aria-label="' + H.esc(tr(a.name) + ', ' + tr(have[a.id] ? 'unlocked' : 'locked')) + '"><span aria-hidden="true">' + a.icon + '</span><div><b>' + H.esc(tr(a.name)) + '</b><small>' + H.esc(tr(a.desc)) + (a.reward ? ' ' + H.esc(tr('Reward:')) + ' ' + H.esc(tr(a.reward.entry.name)) + '.' : '') + '</small>' + (have[a.id] ? '<small class="when">' + H.esc(tr('Unlocked')) + ' ' + H.esc(have[a.id]) + '</small>' : '<small>' + H.esc(tr('Locked')) + '</small>') + '</div></div>').join('') + '</div>');
   };
 })();

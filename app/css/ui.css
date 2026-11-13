@@ -111,6 +111,42 @@ body.anim-off *,body.calm *{animation:none!important;transition:none!important}
   .icon-btn{width:34px;height:34px}
 }
 
+/* the home screen's language picker matches the other fields instead of the browser's white box */
+.field:has(#langSel){align-items:center;justify-content:center}
+#langSel{background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:6px 10px;font:inherit;font-size:14px}
+
+/* Fuller phone pass: one-row top bar where it fits, touch-sized controls, a wheel sized to the screen's height,
+   and dialogs whose Close button stays in reach */
+@media (max-width:420px){
+  .top{column-gap:6px;padding:6px 8px}
+  .top-actions{gap:4px}
+  .pill{min-height:34px;padding:4px 7px;letter-spacing:0}
+  .brand .logo{width:34px;height:34px}
+  #btnRec:not(.rec-on){width:34px;padding:0;font-size:0}   /* icon only; the name is still read out */
+  #btnRec:not(.rec-on)::before{content:"\23FA";font-size:15px}
+}
+@media (max-width:640px),(pointer:coarse){
+  .tscr .foot .links{gap:0 2px}
+  .tscr .foot .links>button,.tscr .foot .links>a{display:inline-flex;align-items:center;min-height:40px;padding:4px 8px}
+  .o-seg button{min-height:40px}
+  .o-tog{min-height:40px}
+  .o-sl input{height:36px}
+  .o-sel,.field select,.modal select{min-height:40px}
+  .check{align-items:center}
+  .check input,.modal .check input{width:20px;height:20px;margin-top:0}
+  .fold summary{padding:10px 0}
+  .credits a,.support-line a{display:inline-block;padding:9px 2px}
+}
+@media (max-width:640px) and (orientation:portrait){
+  /* leave room above for the bar, question and result, and below for the Spin button */
+  .wheel-wrap{width:min(100%,520px,max(220px,calc(100dvh - 380px)))}
+}
+@media (max-width:640px){
+  .overlay{padding:10px}
+  .modal{max-height:calc(100dvh - 20px);padding:16px 14px}
+  .modal .close{position:sticky;top:-6px;z-index:3;margin:-6px -4px 0 8px;background:var(--panel);min-height:40px}
+}
+
 /* Short landscape windows (the itch.io player, laptops, phones turned sideways): put the wheel beside the question,
    result and buttons, sized to the window's height, so a whole spin fits on screen without scrolling. */
 @media (orientation:landscape) and (max-height:760px) and (min-width:700px){

@@ -2,7 +2,7 @@
 
 A running record of where the game stands. Update it when something ships, starts or gets decided.
 This file is public: server addresses, account, payment and moderation details go in `private-notes.md` (not on GitHub).
-Last updated: 2026-11-13 · Current version: **0.1.0-alpha.5**
+Last updated: 2026-11-13 · Current version: **0.1.0-alpha.6**
 
 Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
@@ -20,6 +20,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 | Play-through fixes, mod kit, itch.io layout | 0.1.0-alpha.3 | ✅ released 2026-11-13 |
 | Discord status (Rich Presence) | 0.1.0-alpha.4 | ✅ released 2026-11-13 |
 | Discord server links in the game | 0.1.0-alpha.5 | ✅ released 2026-11-13 |
+| New achievements, accessibility pass, phone layout, French, German and Japanese, Ember Dominion mod template | 0.1.0-alpha.6 | ✅ released 2026-11-13 |
 | Alpha test with 5-15 players | two weeks after release | ⬜ |
 | Beta (fixes from the alpha, signed build, store page) | 0.2.0-beta.1 | ⬜ |
 | 1.0 on itch.io | 1.0.0 | ⬜ |
@@ -37,18 +38,29 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 - ✅ Discord server, 2026-11-13: created ("Destiny Unbound", emblem icon). Channels: Start here (#welcome, #rules, #announcements, read-only for members), Community (#general, #share-your-legends, #mods-and-packs, General voice), Testing (#bug-reports and #suggestions forums, #feedback). Permanent invite: https://discord.gg/McDS5HVxzJ. Roles: Developer (owner), Moderator, Tester, Modder. Community mode and Onboarding on: new members answer "What brings you to Destiny Unbound?" (Help test the alpha → Tester, Make mods and wheel packs → Modder, Play and hang out), get a welcome sign and three to-dos. #bug-reports and #suggestions have posting guidelines and tags (Fixed and Planned are moderator-only). Tester invite texts and checklist: `docs/tester-invite.md`. Welcome and rules posted and pinned; linked from the README and the itch.io page. In the game (since 0.1.0-alpha.5): a Discord link in the title-screen footer, a "Talk on Discord" button in Send feedback, and a Community section in Credits (`FW.DISCORD_URL` in `app/js/system.js`)
 - ✅ Discord welcome post updated 2026-11-13: "Where to go" now lists #off-topic, #spin-the-wheel and #art-and-portraits, and tells Testers about #tester-chat (still pinned)
 - ✅ Release announcements, 2026-11-13: every release tag posts an embed in #announcements through a webhook (`scripts/discord-announce.js`, the `announce` job in `release.yml`, secret `DISCORD_WEBHOOK`). `announce-test.yml` sends a manual test post
-- 🔄 itch.io uploads from CI: the `itch` job in `release.yml` is ready but skips until the `BUTLER_API_KEY` secret is added (until then, upload with `node scripts/itch-push.js --web --modkit`)
+- ✅ itch.io uploads from CI: the `itch` job in `release.yml` uploads every release tag (`BUTLER_API_KEY` secret added 2026-11-13; first run with 0.1.0-alpha.6). By hand: `node scripts/itch-push.js --web --modkit`
 - ✅ Issue forms (bug report, suggestion) and `CONTRIBUTING.md`, 2026-11-13
 - ✅ Trailer and GIF from real gameplay, 2026-11-13 (`npm run trailer`; GIF in the README and a 2.2 MB one on itch.io). ⬜ Upload the trailer to YouTube or Vimeo so the itch.io page can embed it
 - ✅ Tester invites ready, 2026-11-13: texts in `docs/tester-invite.md` (Tester role and Testing channels, itch.io and Discord links, what to test, bug reports in #bug-reports or the GitHub issue forms), plan in `docs/alpha-testing.md`. Sent by the developer as an open call
 
 ## Ready for the next alpha (not released yet)
 
+- Nothing yet
+
+## Released
+
+### 0.1.0-alpha.6 (2026-11-13, notes in `CHANGELOG.md`)
+
 - ✅ Seven new achievements (29 in all): daily challenges on three days, first arena win, five arena wins with one hero ("The Arena Champion" title), win at under 15% odds, spare a beaten foe, recruit a beaten foe, lose a fight and fight again. `node scripts/achievement-report.js` shows how often each one is earned
 - ✅ Accessibility pass: page landmarks and headings, named dialogs that trap and return focus, a visible focus ring, keyboard support on the logo, labelled selects, better contrast on locked achievements; the axe audit finds 0 problems
 - ✅ Escape closes a dialog without also going back a screen
 - ✅ Phones: the top bar wraps instead of hiding buttons, and the title menu scrolls on short screens; no sideways scrolling at phone sizes; the wheel stays smooth with the CPU slowed 6×
+- ✅ Fuller phone layout: the top bar fits one row at 375 px in English, the wheel sizes to the screen height so SPIN stays on screen, 34-40 px tap targets on touch screens, a dialog's Close button stays visible while it scrolls, and a themed language select
+- ✅ Achievement names, descriptions and rewards are translated (they were always English before)
+- ✅ French, German and Japanese (AI drafts of all 707 menu and game texts; corrections from native speakers welcome). Story text stays in English
 - ✅ Mod kit: template 07, **The Ember Dominion**, an original grimdark sci-fi content pack (theme plus wheel entries); title tier docs fixed to `tt=1..3`
+
+### Earlier alphas
 
 - ✅ Mod kit (2026-11-13): guide, reference, JSON schemas and 7 templates in `modkit/`; `npm run modkit` builds the zip, which ships with every GitHub release and on itch.io
 
@@ -82,9 +94,8 @@ Newest first. Fixed bugs ship in the next alpha build.
 
 - 💭 A transparent-background logo for the store and the title screen of mod themes
 - 💭 Exclusive fullscreen and choosing the sound output device (Electron limits both today)
-- 💭 Fuller phone layout pass (the top bar and title menu are fixed; the painted menu still falls back to a simple list)
-- 💭 More languages (decided 2026-11-13 to wait a bit)
-- 💭 Spanish names for the achievements
+- 💭 The painted title menu on phones (it still falls back to a simple list), and SPIN sits below the fold at 1280×800 on desktop
+- 💭 Native-speaker review of the French, German and Japanese packs
 - 💭 Steam, later (decided 2026-11-13 to wait): store page, capsule images, achievements and cloud saves
 
 ---

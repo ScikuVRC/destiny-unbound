@@ -6,7 +6,7 @@
 
 **Spin the wheels of fate. Forge a legend. Live its story, or die trying.**
 
-[![Version](https://img.shields.io/badge/version-0.1.0--alpha.5-8a5fd6)](progress.md)
+[![Version](https://img.shields.io/badge/version-0.1.0--alpha.6-8a5fd6)](progress.md)
 [![License: GPL v3](https://img.shields.io/badge/license-GPL--3.0--or--later-blue)](LICENSE)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20web-444)
 [![Play on itch.io](https://img.shields.io/badge/play-itch.io-fa5c5c?logo=itch.io&logoColor=white)](https://bzrkherja.itch.io/destiny-unbound)
@@ -56,7 +56,7 @@ chapter, until they retire, ascend or fall.
 - **Keep playing.** A daily challenge, the Hall of Legends, 29 achievements, versus mode and a vertical video
   recorder for sharing.
 - **Built for everyone.** Full controller support, rebindable keys, colour-blind-safe wheels, high contrast,
-  text size, reduced motion and sound captions. English and Spanish.
+  text size, reduced motion and sound captions. English, Spanish, French, German and Japanese.
 - **Yours to change.** A Wheel Workshop to edit any wheel, plus wheel packs and mods for your own themes,
   sounds and entries.
 - **Shows up on Discord.** The desktop app shows what you're playing in your Discord status, from "Living a
@@ -124,7 +124,7 @@ this size possible on my own, I used AI tools. In the spirit of transparency, he
 | Area | How it was made |
 | --- | --- |
 | **Code** | Much of the code was written with an AI coding assistant (Claude, by Anthropic), directed, reviewed and play-tested by me. |
-| **Game text** | Many wheel entries, story texts and the Spanish translation were drafted with AI help and then edited. |
+| **Game text** | Many wheel entries, story texts and the translations were drafted with AI help and then edited. |
 | **Painted art** | Created with Grok. The title-screen backgrounds, wheel paintings, the four logos and the app icon were generated with Grok Imagine (xAI) and then composed into the game. Every image and its prompt is listed in [docs/art-credits.md](docs/art-credits.md). |
 | **Everything else you see** | The playable wheels, character cards, icons and interface are drawn in code. |
 | **Sound and music** | Synthesized in code. No AI audio. |

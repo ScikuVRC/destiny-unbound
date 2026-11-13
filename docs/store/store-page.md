@@ -40,10 +40,10 @@ A daily challenge with the same spins for everyone. Optional AI portraits with t
 - Story mode with sagas, nemeses, kingdoms, dynasties and heirs
 - Arena fights across thirteen worlds, 77 opponents
 - Four painted themes with their own wheels, sounds and music
-- Daily challenge, Hall of Legends, 22 achievements
+- Daily challenge, Hall of Legends, 29 achievements
 - Wheel Workshop and mod support (themes, sounds, wheel entries)
 - Full controller support, rebindable keys, colour-blind-safe wheels, high contrast, sound captions
-- English and Spanish
+- English, Spanish, French, German and Japanese
 
 ## Tags
 
@@ -62,8 +62,8 @@ Singleplayer, Free to Play, Open Source, Moddable, Casual, Controller.
 ## AI content disclosure (Steam asks for this; itch.io has a similar field)
 
 - **Code and text:** the game is made by one person without funding for a team. Much of the code was written
-  with an AI coding assistant (Claude, by Anthropic), and many wheel entries, story texts and the Spanish
-  translation were drafted with AI help, then edited and tested by hand.
+  with an AI coding assistant (Claude, by Anthropic), and many wheel entries, story texts and the
+  translations were drafted with AI help, then edited and tested by hand.
 - **Pre-generated art:** Created with Grok. The painted title-screen backgrounds, wheel paintings, the four logos
   and the app icon were generated with Grok Imagine (xAI) and then placed and composed in the game by hand.
   Everything else (the playable wheels, cards, icons and interface) is drawn in code.
