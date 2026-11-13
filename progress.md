@@ -40,6 +40,7 @@ Newest first. Fixed bugs ship in the next alpha build.
 
 | Status | Bug | Cause and fix |
 | --- | --- | --- |
+| ✅ Fixed 2026-11-13 (browser build updated on itch.io; desktop in next build) | itch.io: you can't see the whole game, it doesn't scale, and you can't scroll even in fullscreen | itch.io's "Enable scrollbars" embed option was off, which blocks scrolling inside the game frame, and the spin screen was too tall for the 960×540 frame. Scrollbars are now on, and short landscape windows put the wheel beside the question and buttons, sized to the window, so a whole spin fits (`app/css/ui.css`). The first-run guide moves aside on short windows. |
 | ✅ Fixed 2026-11-13 (next build) | Phones: the title screen's footer runs off the right edge and cuts off "Support on Ko-fi" | The footer never wrapped. On narrow screens it now wraps and centres, and hides the keyboard hint (`app/css/ui.css`). |
 | ✅ Fixed 2026-11-13 (next build) | The card says "0 ally allies" / "2 ally allies" | Broken plural in the card's rating line; also now translated (`app/js/app.js`). |
 | ✅ Fixed 2026-11-13 (next build) | "Fate Tokens" stays in English on the luck choices and the card in Spanish | The text was built in code without the translator; now translated, with the missing Spanish words added. |

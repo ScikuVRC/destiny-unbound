@@ -103,3 +103,23 @@ body.anim-off *,body.calm *{animation:none!important;transition:none!important}
   .tscr .foot .hint{display:none}
   .tscr .foot .links{flex-wrap:wrap;justify-content:center;gap:2px 6px}
 }
+
+/* Short landscape windows (the itch.io player, laptops, phones turned sideways): put the wheel beside the question,
+   result and buttons, sized to the window's height, so a whole spin fits on screen without scrolling. */
+@media (orientation:landscape) and (max-height:760px) and (min-width:700px){
+  .spin-layout{grid-template-columns:minmax(0,1fr)}
+  .stage{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:clamp(16px,3vw,40px);align-items:center;align-content:start}
+  .stage>*{grid-column:2}
+  .stage>.steps{grid-column:1/-1;grid-row:1}
+  .stage>.wheel-wrap{grid-column:1;grid-row:2/span 7;align-self:start;width:min(calc(100dvh - 130px),48vw,560px);margin:4px 0 0}
+  .chip-emoji{height:auto;font-size:36px}
+  .stage>.result{margin-top:8px}
+  .stage>.effects{align-self:start}
+}
+@media (orientation:landscape) and (max-height:760px) and (min-width:1280px){
+  .spin-layout{grid-template-columns:minmax(0,1fr) minmax(320px,380px)}
+}
+/* The first-run guide sits to the side on short windows instead of over the menu */
+@media (max-height:640px) and (min-width:760px){
+  .coach{left:auto;right:16px;transform:none;bottom:56px}
+}
