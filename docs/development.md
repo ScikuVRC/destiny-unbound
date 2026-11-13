@@ -69,6 +69,12 @@ The desktop app understands a few test switches (environment variables):
 | `FATEWHEEL_DISCORD_PIPE=<name>` | Sends the Discord status to a stand-in instead of the Discord app (also during `FATEWHEEL_SMOKE`) |
 | `FATEWHEEL_UPDATE_TEST=1` | With an installed build: checks for an update, prints each step, installs it |
 
+**Trailer and GIF.** `npm run trailer` plays the game in a hidden window with a throwaway profile (the four title
+themes, an auto-spun legend, its card and the start of its story), then makes
+`dist/trailer/destiny-unbound-trailer.mp4` (about 50 seconds, 1280×720, ending on a "play free" card) and
+`dist/trailer/destiny-unbound.gif` (about 9 seconds). It needs ffmpeg on the PATH and takes about 3 minutes. Each
+run spins a new legend, so the footage is different every time. The README's GIF is a copy in `docs/media/`.
+
 ## Releases and updates
 
 To release:

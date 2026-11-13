@@ -21,6 +21,10 @@ Destiny Unbound is a free, open-source character forge and story game. Every par
 wheel: race, birthplace, age, class, powers, weapon, weakness and more. Then you play out their saga, chapter by
 chapter, until they retire, ascend or fall.
 
+<div align="center">
+<img src="docs/media/destiny-unbound.gif" alt="The race wheel spins and lands on Shadowborn, the next wheel spins, then the finished hero card appears" width="720">
+</div>
+
 > **Status: early alpha.** The game is playable from start to finish, but expect rough edges. See
 > [progress.md](progress.md) for what is done and what is next, and [docs/alpha-testing.md](docs/alpha-testing.md)
 > for the alpha test plan and known issues.
