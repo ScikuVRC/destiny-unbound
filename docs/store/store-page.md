@@ -64,14 +64,15 @@ Singleplayer, Free to Play, Open Source, Moddable, Casual, Controller.
 - **Code and text:** the game is made by one person without funding for a team. Much of the code was written
   with an AI coding assistant (Claude, by Anthropic), and many wheel entries, story texts and the Spanish
   translation were drafted with AI help, then edited and tested by hand.
-- **Pre-generated art:** the painted title-screen backgrounds, wheel paintings, the four logos and the app icon
-  were generated with Grok Imagine (xAI) and then placed and composed in the game by hand. Everything else (the
-  playable wheels, cards, icons and interface) is drawn in code.
+- **Pre-generated art:** Created with Grok. The painted title-screen backgrounds, wheel paintings, the four logos
+  and the app icon were generated with Grok Imagine (xAI) and then placed and composed in the game by hand.
+  Everything else (the playable wheels, cards, icons and interface) is drawn in code.
 - **Live-generated content:** optional, off by default. Players can connect their own image generator or
   language model to paint a portrait or write a saga's tale. The game sends only the character's description.
   Nothing is generated unless the player sets it up and asks.
-- Before publishing, check xAI's current terms for commercial use of Grok images and keep a record of the
-  prompts. The images are in `app/art` and `mockups/menu/art`, and the prompts are summarized in the git history.
+- xAI's terms were checked on 2026-11-13, and every image and its prompt is recorded in
+  [`docs/art-credits.md`](../art-credits.md). xAI asks for the words "Created with Grok" wherever the art is
+  published, so keep that phrase in any store page's description. Check the terms again before a Steam release.
 
 ## Pictures a store page needs (not made yet)
 

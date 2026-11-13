@@ -128,7 +128,7 @@ Uninstalling keeps all of these.
 | `app/art/`, `app/icons/`, `app/fonts/` | Painted title art, icons, bundled fonts |
 | `electron/main.js`, `preload.js` | Desktop shell and the small set of desktop features the page can reach |
 | `mockups/` | Design mockups; `menu/` holds the painted main menus the game is built from |
-| `docs/` | This guide, modding, Art Studio, alpha test plan, store kit |
+| `docs/` | This guide, modding, Art Studio, alpha test plan, store kit, art credits (every AI image and its prompt) |
 | `tests/` | Test suites |
 
 ## Contributing

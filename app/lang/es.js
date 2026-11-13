@@ -204,7 +204,7 @@
     "That saga has ended: spin a new legend or continue as an heir": "Esa saga terminó: gira una nueva leyenda o continúa como heredero",
     "The Daily Challenge gives everyone the same spins each day. Save your favourite legends to the Hall of Legends.": "El Desafío diario da a todos los mismos giros cada día. Guarda tus leyendas favoritas en el Salón de Leyendas.",
     "The Wheel itself bowed to your line": "La Ruleta misma se inclinó ante tu linaje",
-    "The painted title-screen backgrounds, wheels and logos were generated with Grok Imagine (xAI) for this game. Wheels, character cards, icons and interface are drawn in code.": "Los fondos, ruletas y logotipos pintados de la pantalla de título se generaron con Grok Imagine (xAI) para este juego. Las ruletas, cartas, iconos e interfaz se dibujan con código.",
+    "Painted art: Created with Grok. The title-screen backgrounds, wheel paintings, logos and app icon were generated with Grok Imagine (xAI) for this game. The playable wheels, character cards, icons and interface are drawn in code.": "Arte pintado: Created with Grok. Los fondos de la pantalla de título, las ruletas pintadas, los logotipos y el icono de la app se generaron con Grok Imagine (xAI) para este juego. Las ruletas jugables, las cartas de personaje, los iconos y la interfaz se dibujan con código.",
     "Then live the story": "Luego vive la historia",
     "This tab is back to its defaults": "Esta pestaña vuelve a sus valores predeterminados",
     "Translations are files in app/lang; untranslated text stays in English. Want to help translate? See the README.": "Las traducciones son archivos en app/lang; el texto sin traducir queda en inglés. ¿Quieres ayudar a traducir? Consulta el README.",

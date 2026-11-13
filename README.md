@@ -115,7 +115,7 @@ this size possible on my own, I used AI tools. In the spirit of transparency, he
 | --- | --- |
 | **Code** | Much of the code was written with an AI coding assistant (Claude, by Anthropic), directed, reviewed and play-tested by me. |
 | **Game text** | Many wheel entries, story texts and the Spanish translation were drafted with AI help and then edited. |
-| **Painted art** | The title-screen backgrounds, wheel paintings, the four logos and the app icon were generated with Grok Imagine (xAI) and then composed into the game. |
+| **Painted art** | Created with Grok. The title-screen backgrounds, wheel paintings, the four logos and the app icon were generated with Grok Imagine (xAI) and then composed into the game. Every image and its prompt is listed in [docs/art-credits.md](docs/art-credits.md). |
 | **Everything else you see** | The playable wheels, character cards, icons and interface are drawn in code. |
 | **Sound and music** | Synthesized in code. No AI audio. |
 | **Optional AI features** | The Art Studio and the saga writer only run if you connect your own image generator or language model. They are off by default, and nothing is sent anywhere unless you set them up. |
@@ -161,5 +161,5 @@ hope that it will be useful, but **without any warranty**; see the license for d
 
 - **Fonts:** Cinzel, Cormorant Garamond, Cormorant SC, EB Garamond, IM Fell English, Share Tech Mono and
   UnifrakturCook, each under the SIL Open Font License 1.1 (license files in `app/fonts`).
-- **Painted art:** generated with Grok Imagine (xAI) for this game.
+- **Painted art:** Created with Grok (Grok Imagine, by xAI) for this game; see [docs/art-credits.md](docs/art-credits.md).
 - **Built with:** [Electron](https://www.electronjs.org/) and electron-updater (MIT).

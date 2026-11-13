@@ -42,9 +42,9 @@ Newest first. Fixed bugs ship in the next alpha build.
 ## Before the beta
 
 - ⬜ Code-signing certificate for Windows (stops the SmartScreen warning); add `WIN_CSC_LINK` and `WIN_CSC_KEY_PASSWORD` secrets
-- ⬜ Check xAI's terms for commercial use of the Grok art; keep a record of the prompts
-- ⬜ Store pictures: itch.io cover 630×500, Steam capsules, a transparent logo
-- ⬜ itch.io (and/or Steam) account and page, using `docs/store/store-page.md`
+- ✅ xAI's terms checked 2026-11-13: outputs are ours to use, but "Created with Grok" must be shown where the art is published (added to the credits, README, itch.io and store kit); every image and prompt is in `docs/art-credits.md`. Make future art by hand on grok.com or through the official API, since the usage policy forbids automated access
+- 🔄 Store pictures: itch.io cover ✅, Steam capsules and a transparent logo still to do
+- 🔄 Store pages: itch.io ✅ (published 2026-11-12); Steam not started
 - ⬜ Fix whatever the alpha testers find
 - ⬜ Test the macOS and Linux builds
 - ⬜ Translate the remaining story text into Spanish
