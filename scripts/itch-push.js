@@ -51,4 +51,8 @@ for (const [channel, dir] of pushes) {
   const r = spawnSync(butler, cmd, { stdio: 'inherit' });
   if (r.status !== 0) process.exit(r.status || 1);
 }
-if (!args.has('--dry')) for (const [channel] of pushes) console.log(execFileSync(butler, ['status', `${TARGET}:${channel}`], { encoding: 'utf8' }));
+// the status check is only a report: if itch.io's API is slow, say so instead of failing after a good upload
+if (!args.has('--dry')) for (const [channel] of pushes) {
+  try { console.log(execFileSync(butler, ['status', `${TARGET}:${channel}`], { encoding: 'utf8' })); }
+  catch (e) { console.log(`Could not read the status of ${channel} (${String(e.stdout || e.message).trim()}). Check later with: butler status ${TARGET}:${channel}`); }
+}
