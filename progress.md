@@ -1,7 +1,7 @@
 # Destiny Unbound: progress
 
 A running record of where the game stands. Update it when something ships, starts or gets decided.
-Last updated: 2026-11-12 · Current version: **0.1.0-alpha.1**
+Last updated: 2026-11-13 · Current version: **0.1.0-alpha.2**
 
 Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
@@ -14,7 +14,8 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 | Playable prototype (wheels, card, arena) | - | ✅ |
 | Story mode, dynasty, achievements, mods | - | ✅ |
 | Desktop app (Windows installer, portable, auto-update) | - | ✅ |
-| Alpha build ready for testers | 0.1.0-alpha.1 | ✅ built and tested, not yet released |
+| Alpha released (GitHub and itch.io) | 0.1.0-alpha.1 | ✅ released 2026-11-12 |
+| First bug-fix alpha | 0.1.0-alpha.2 | ✅ released 2026-11-13 (wheel bounce fix) |
 | Alpha test with 5-15 players | two weeks after release | ⬜ |
 | Beta (fixes from the alpha, signed build, store page) | 0.2.0-beta.1 | ⬜ |
 | 1.0 on itch.io and/or Steam | 1.0.0 | ⬜ |
@@ -32,11 +33,11 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
 ## Bugs (alpha patching)
 
-Newest first. Fixed bugs ship in the next alpha build (`0.1.0-alpha.2`).
+Newest first. Fixed bugs ship in the next alpha build.
 
 | Status | Bug | Cause and fix |
 | --- | --- | --- |
-| ✅ Fixed 2026-11-12 | The wheel bounces up and down while spinning | The result line above the wheel shows each name as it passes the pointer; long names used a smaller font and some wrapped, so the line's height jumped between 41 and 86 px and pushed the wheel. The line now has one fixed height with the text centred in it (`app/css/base.css`). |
+| ✅ Shipped in 0.1.0-alpha.2 (2026-11-13) | The wheel bounces up and down while spinning | The result line above the wheel shows each name as it passes the pointer; long names used a smaller font and some wrapped, so the line's height jumped between 41 and 86 px and pushed the wheel. The line now has one fixed height with the text centred in it (`app/css/base.css`). |
 
 ## Before the beta
 
