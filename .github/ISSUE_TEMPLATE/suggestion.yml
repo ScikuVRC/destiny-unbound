@@ -1,0 +1,36 @@
+name: Suggestion
+description: An idea for a new wheel, entry, story, feature or change.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        One idea per suggestion, please. Search first: if it's already suggested, add a 👍 instead.
+        Ideas are also welcome in the Discord's #suggestions forum: https://discord.gg/McDS5HVxzJ
+  - type: dropdown
+    id: area
+    attributes:
+      label: What is it about?
+      options:
+        - New wheel or entries
+        - Story and sagas
+        - Arena
+        - Interface
+        - Modding
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like to see?
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why would it make the game better?
+  - type: textarea
+    id: example
+    attributes:
+      label: An example, if you have one

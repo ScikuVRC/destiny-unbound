@@ -1,0 +1,55 @@
+name: Bug report
+description: Something broke, looks wrong or doesn't work as expected.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! One bug per report, please. You can also post bugs in the Discord's
+        #bug-reports forum: https://discord.gg/McDS5HVxzJ
+  - type: input
+    id: version
+    attributes:
+      label: Game version
+      description: Shown in Options and at the bottom of the title screen.
+      placeholder: 0.1.0-alpha.5
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Where do you play?
+      options:
+        - Windows app (installer)
+        - Windows app (portable)
+        - Browser on itch.io
+        - Browser, other
+        - Mac
+        - Linux
+        - Phone or tablet
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: What did you do?
+      description: Step by step, so someone else can make it happen again.
+      placeholder: |
+        1. Started a New Legend at Heroic luck
+        2. Spun the Class wheel
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: happened
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: extra
+    attributes:
+      label: Screenshot, clip or error log
+      description: |
+        Drag images in here. In the game, Options > Data > Send feedback saves your error log and a screenshot
+        you can attach.

@@ -35,7 +35,7 @@ the game install as a web app (PWA).
 npm test
 ```
 
-81 checks in 7 suites:
+82 checks in 7 suites:
 
 - **engine (26):** data validity, unique names, tier shifts, odds, conditional buffs, Legend Codes, arena maths.
 - **art (18):** every generator and language-model connector against a mock server.
@@ -44,8 +44,8 @@ npm test
 - **mods (10):** validation, CSS that tries to escape its theme or load outside pictures, every mod kit template loads, the kit's generated reference is up to date.
 - **system (8):** version, preferences, save import checks, no API keys in exported saves, title-screen art,
   offline caching, arena matchmaking.
-- **discord (6):** the Discord status against a stand-in Discord (handshake, activity, rate limit, switching off,
-  pings, Discord not running) and the text for each screen.
+- **discord (7):** the Discord status against a stand-in Discord (handshake, activity, rate limit, switching off,
+  pings, Discord not running), the text for each screen, and the release announcement.
 
 | Script | What it does |
 | --- | --- |
@@ -146,6 +146,6 @@ Uninstalling keeps all of these.
 
 ## Contributing
 
-Bug reports and pull requests are welcome. Run `npm test` before sending a change. New wheel entries go in
+See [CONTRIBUTING.md](../CONTRIBUTING.md). Bug reports and pull requests are welcome. Run `npm test` before sending a change. New wheel entries go in
 `app/js/data-extra.js` (or a new data file loaded after it); the tests check that names are unique and every
 buff/debuff code parses. By contributing you agree that your contribution is licensed under GPL-3.0-or-later.

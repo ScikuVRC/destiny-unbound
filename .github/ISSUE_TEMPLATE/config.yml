@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Chat on the Discord
+    url: https://discord.gg/McDS5HVxzJ
+    about: Questions, help with mods, sharing your legends, or a quick bug report.
+  - name: Modding guide
+    url: https://github.com/ScikuVRC/destiny-unbound/blob/main/docs/modding.md
+    about: How to make wheel packs and mods. The mod kit is on the itch.io page.
