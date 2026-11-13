@@ -52,7 +52,8 @@ npm test
 | `node scripts/balance-report.js` | Plays thousands of legends, fights and sagas per luck level; prints rank spread, arena odds and how sagas end |
 | `node scripts/make-menu-css.js` | Rebuilds the title-screen CSS and art from the approved mockups in `mockups/menu/_gen-art.js` |
 | `node scripts/make-icons.js` | Makes every icon size from `app/icons/icon-source.png` (runs before every build) |
-| `node scripts/make-trailer.js` | Builds `docs/store/trailer.mp4` from the store screenshots (needs ffmpeg) |
+| `node scripts/make-slideshow.js` | Builds `docs/store/trailer.mp4`, a slideshow of the store screenshots (needs ffmpeg) |
+| `npm run trailer` | Records real gameplay and makes the trailer and GIF in `dist/trailer/` (see below) |
 | `npm run modkit` | Builds `dist/DestinyUnbound-ModKit-<version>.zip` from `modkit/` and refreshes its generated reference (`reference/theme-variables.md`, `reference/wheels.md`) from the game's data. The release workflow builds and attaches it too; a test fails if the reference is out of date |
 | `npm run itch` | Uploads the Windows installer and portable `.exe` from `dist/` to itch.io with [butler](https://itch.io/docs/butler/) (`-- --web` adds the browser build, `-- --modkit` the mod kit, `-- --no-windows` skips the Windows builds, `-- --dry` only shows what it would do). Log butler in once with `butler login` |
 
