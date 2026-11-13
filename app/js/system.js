@@ -6,6 +6,7 @@
   const FW = window.FW, App = window.FWApp, D = window.fatewheelDesktop || null;
   const SYS = FW.System = {};
   FW.BUG_URL = 'https://github.com/ScikuVRC/destiny-unbound/issues/new';
+  FW.DISCORD_URL = 'https://discord.gg/McDS5HVxzJ';   // the community server: bug reports, ideas, legends and mods
 
   /* ---------------- error log (last 200 lines on this device; the desktop app also writes a log file) ---------------- */
   const LOG_KEY = 'du.log';
@@ -131,7 +132,7 @@
       '<textarea id="fbText" rows="6" maxlength="20000" placeholder="What happened? What were you doing just before?"></textarea>' +
       '<label class="check"><input type="checkbox" id="fbStats" checked> Include my play stats (counts like legends spun and chapters played; nothing personal)</label>' +
       (D ? '<label class="check"><input type="checkbox" id="fbShot" checked> Include a screenshot of the game</label>' : '') +
-      '<div class="cta"><button class="btn primary" id="fbGo">Save report</button><a class="btn ghost" id="fbBug" target="_blank" rel="noopener" href="' + H.esc(FW.BUG_URL + '?title=' + encodeURIComponent('[' + FW.VERSION + '] ') + '&body=' + encodeURIComponent('Game version: ' + FW.VERSION + '\n\nWhat happened:\n\nWhat I expected:\n')) + '">Report a bug online</a></div>');
+      '<div class="cta"><button class="btn primary" id="fbGo">Save report</button><a class="btn ghost" id="fbBug" target="_blank" rel="noopener" href="' + H.esc(FW.BUG_URL + '?title=' + encodeURIComponent('[' + FW.VERSION + '] ') + '&body=' + encodeURIComponent('Game version: ' + FW.VERSION + '\n\nWhat happened:\n\nWhat I expected:\n')) + '">Report a bug online</a><a class="btn ghost" id="fbDiscord" target="_blank" rel="noopener" href="' + H.esc(FW.DISCORD_URL) + '">Talk on Discord</a></div>');
     document.getElementById('fbGo').onclick = async () => {
       const text = document.getElementById('fbText').value.trim(); if (!text) return App.toast('Write a few words first');
       const extra = { screen: App.state.screen, theme: App.state.theme, prefs: FW.prefs, log: SYS.readLog().slice(-60) };

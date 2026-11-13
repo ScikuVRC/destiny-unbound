@@ -45,7 +45,7 @@
         return '<button class="item" role="menuitem" data-i="' + i + '"' + (it.hide && it.hide() ? ' hidden' : '') + '>' + icon(it.k) + '<div>' + H.esc(t(it.k)) + (sub ? '<small>' + H.esc(sub) + '</small>' : '') + '</div></button>';
       }).join('') + '</nav></div>' +
       '<div class="foot"><span>v' + H.esc(FW.VERSION) + (mods.length ? ' · ' + H.esc(t('Mods')) + ': ' + H.esc(mods.join(', ')).slice(0, 80) : '') + '</span><span class="hint" id="navHint"></span>' +
-      '<span class="links"><button data-l="ach">' + H.esc(t('Achievements')) + '</button>·<button data-l="credits">' + H.esc(t('Credits')) + '</button>·<button data-l="feedback">' + H.esc(t('Feedback')) + '</button>·<a href="https://ko-fi.com/bzrkherja" target="_blank" rel="noopener"><b>☕ ' + H.esc(t('Support on Ko-fi')) + '</b></a></span></div></div>';
+      '<span class="links"><button data-l="ach">' + H.esc(t('Achievements')) + '</button>·<button data-l="credits">' + H.esc(t('Credits')) + '</button>·<button data-l="feedback">' + H.esc(t('Feedback')) + '</button>·<a class="fl" href="' + H.esc(FW.DISCORD_URL) + '" target="_blank" rel="noopener">Discord</a>·<a href="https://ko-fi.com/bzrkherja" target="_blank" rel="noopener"><b>☕ ' + H.esc(t('Support on Ko-fi')) + '</b></a></span></div></div>';
     el.querySelectorAll('.item').forEach(b => {
       b.addEventListener('mouseenter', () => pick(+b.dataset.i, false));
       b.addEventListener('focus', () => pick(+b.dataset.i, false));
@@ -245,6 +245,7 @@
       '<h3 class="opt-h">' + H.esc(t('Sound and music')) + '</h3><p>' + H.esc(t('All sound effects and music are synthesized live in code. Mods may add their own sounds; their authors keep their rights.')) + '</p>' +
       '<h3 class="opt-h">' + H.esc(t('Fonts')) + '</h3><p>' + fonts.map(H.esc).join(', ') + '. ' + H.esc(t('Each under the SIL Open Font License 1.1 (the license files are in the fonts folder).')) + '</p>' +
       '<h3 class="opt-h">' + H.esc(t('Built with')) + '</h3><p>Electron (MIT), electron-updater (MIT).</p>' +
+      '<h3 class="opt-h">' + H.esc(t('Community')) + '</h3><p>' + H.esc(t('Report bugs, suggest ideas, and share your legends and mods on the Destiny Unbound Discord.')) + ' <a href="' + H.esc(FW.DISCORD_URL) + '" target="_blank" rel="noopener">' + H.esc(t('Join the Discord')) + '</a></p>' +
       '<h3 class="opt-h">' + H.esc(t('Thanks')) + '</h3><p>' + H.esc(t('Everyone who plays, tests, reports bugs, makes mods or supports the game on Ko-fi.')) + '</p></div>');
   }
   App.creditsModal = credits;

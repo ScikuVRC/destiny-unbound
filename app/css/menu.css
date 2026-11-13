@@ -16,6 +16,7 @@ body.on-title .top{display:none}
 .tscr .foot{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 22px;font-size:13px;z-index:2}
 .tscr .foot span{opacity:.8}.tscr .foot b{font-weight:600}
 .tscr .foot button{background:none;border:0;color:inherit;font:inherit;cursor:pointer;padding:2px 6px;opacity:.85}.tscr .foot button:hover{opacity:1;text-decoration:underline}
+.tscr .foot a.fl{color:inherit;text-decoration:none;padding:2px 6px;opacity:.85}.tscr .foot a.fl:hover{opacity:1;text-decoration:underline}
 .tscr .foot .links{display:flex;gap:6px;align-items:center}
 .tscr .title h2.logoart{display:block;margin:0 auto;width:100%;color:transparent!important;font-size:0!important;-webkit-background-clip:border-box!important;background-clip:border-box!important;filter:none!important;text-shadow:none!important;-webkit-mask:radial-gradient(closest-side,#000 86%,transparent);mask:radial-gradient(closest-side,#000 86%,transparent)}
 .tscr .title .crest{display:none}
