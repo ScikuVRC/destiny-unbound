@@ -1,7 +1,7 @@
 # Destiny Unbound: progress
 
 A running record of where the game stands. Update it when something ships, starts or gets decided.
-Last updated: 2026-11-13 · Current version: **0.1.0-alpha.2**
+Last updated: 2026-11-13 · Current version: **0.1.0-alpha.3**
 
 Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
@@ -16,6 +16,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 | Desktop app (Windows installer, portable, auto-update) | - | ✅ |
 | Alpha released (GitHub and itch.io) | 0.1.0-alpha.1 | ✅ released 2026-11-12 |
 | First bug-fix alpha | 0.1.0-alpha.2 | ✅ released 2026-11-13 (wheel bounce fix) |
+| Play-through fixes, mod kit, itch.io layout | 0.1.0-alpha.3 | ✅ released 2026-11-13 |
 | Alpha test with 5-15 players | two weeks after release | ⬜ |
 | Beta (fixes from the alpha, signed build, store page) | 0.2.0-beta.1 | ⬜ |
 | 1.0 on itch.io | 1.0.0 | ⬜ |
@@ -40,13 +41,13 @@ Newest first. Fixed bugs ship in the next alpha build.
 
 | Status | Bug | Cause and fix |
 | --- | --- | --- |
-| ✅ Fixed 2026-11-13 (browser build updated on itch.io; desktop in next build) | itch.io: you can't see the whole game, it doesn't scale, and you can't scroll even in fullscreen | itch.io's "Enable scrollbars" embed option was off, which blocks scrolling inside the game frame, and the spin screen was too tall for the 960×540 frame. Scrollbars are now on, and short landscape windows put the wheel beside the question and buttons, sized to the window, so a whole spin fits (`app/css/ui.css`). The first-run guide moves aside on short windows. |
-| ✅ Fixed 2026-11-13 (next build) | Phones: the title screen's footer runs off the right edge and cuts off "Support on Ko-fi" | The footer never wrapped. On narrow screens it now wraps and centres, and hides the keyboard hint (`app/css/ui.css`). |
-| ✅ Fixed 2026-11-13 (next build) | The card says "0 ally allies" / "2 ally allies" | Broken plural in the card's rating line; also now translated (`app/js/app.js`). |
-| ✅ Fixed 2026-11-13 (next build) | "Fate Tokens" stays in English on the luck choices and the card in Spanish | The text was built in code without the translator; now translated, with the missing Spanish words added. |
-| ✅ Fixed 2026-11-13 (next build) | After a story, the card offers "Another fight" for a hero who never fought | The label counted story chronicle entries as fights; now only arena fights count. |
-| ✅ Fixed 2026-11-13 (next build) | Wheel packs and Mods screens, and Options > Language, send players to "the README" for help that moved to `docs/modding.md` | Pointers updated (English and Spanish). Also "1 wheels" / "1 entries" plurals on the packs list. |
-| ✅ Fixed 2026-11-13 (next build) | First-run guide step 1 says "Start here with New Legend" but doesn't highlight it | Loading mods redrew the menu and dropped the highlight; a redraw now keeps it (`app/js/menu.js`). |
+| ✅ Shipped in 0.1.0-alpha.3 | itch.io: you can't see the whole game, it doesn't scale, and you can't scroll even in fullscreen | itch.io's "Enable scrollbars" embed option was off, which blocks scrolling inside the game frame, and the spin screen was too tall for the 960×540 frame. Scrollbars are now on, and short landscape windows put the wheel beside the question and buttons, sized to the window, so a whole spin fits (`app/css/ui.css`). The first-run guide moves aside on short windows. |
+| ✅ Shipped in 0.1.0-alpha.3 | Phones: the title screen's footer runs off the right edge and cuts off "Support on Ko-fi" | The footer never wrapped. On narrow screens it now wraps and centres, and hides the keyboard hint (`app/css/ui.css`). |
+| ✅ Shipped in 0.1.0-alpha.3 | The card says "0 ally allies" / "2 ally allies" | Broken plural in the card's rating line; also now translated (`app/js/app.js`). |
+| ✅ Shipped in 0.1.0-alpha.3 | "Fate Tokens" stays in English on the luck choices and the card in Spanish | The text was built in code without the translator; now translated, with the missing Spanish words added. |
+| ✅ Shipped in 0.1.0-alpha.3 | After a story, the card offers "Another fight" for a hero who never fought | The label counted story chronicle entries as fights; now only arena fights count. |
+| ✅ Shipped in 0.1.0-alpha.3 | Wheel packs and Mods screens, and Options > Language, send players to "the README" for help that moved to `docs/modding.md` | Pointers updated (English and Spanish). Also "1 wheels" / "1 entries" plurals on the packs list. |
+| ✅ Shipped in 0.1.0-alpha.3 | First-run guide step 1 says "Start here with New Legend" but doesn't highlight it | Loading mods redrew the menu and dropped the highlight; a redraw now keeps it (`app/js/menu.js`). |
 | ✅ Shipped in 0.1.0-alpha.2 (2026-11-13) | The wheel bounces up and down while spinning | The result line above the wheel shows each name as it passes the pointer; long names used a smaller font and some wrapped, so the line's height jumped between 41 and 86 px and pushed the wheel. The line now has one fixed height with the text centred in it (`app/css/base.css`). |
 
 ## Before the beta
