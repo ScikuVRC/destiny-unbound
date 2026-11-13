@@ -29,7 +29,8 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 - ✅ Publish 0.1.0-alpha.1 as a GitHub pre-release (done 2026-11-12: Windows, macOS and Linux builds)
 - ✅ itch.io page published 2026-11-12: https://bzrkherja.itch.io/destiny-unbound (playable in the browser, Windows builds via `npm run itch`, AI disclosure)
 - ⬜ Set up itch.io payments (PayPal or Stripe) so the "$0 or donate" option can take donations
-- ⬜ Choose the tester feedback channel (Discord, email or GitHub Issues) and send invites (see `docs/alpha-testing.md`)
+- ⏸ Discord server for testers: on hold (2026-11-13) until the owner can sign in to Discord. Until then feedback goes to GitHub Issues, itch.io comments and the in-game Send feedback
+- ⬜ Send tester invites (see `docs/alpha-testing.md`)
 
 ## Bugs (alpha patching)
 
