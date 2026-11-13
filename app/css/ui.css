@@ -103,6 +103,13 @@ body.anim-off *,body.calm *{animation:none!important;transition:none!important}
   .tscr .foot .hint{display:none}
   .tscr .foot .links{flex-wrap:wrap;justify-content:center;gap:2px 6px}
 }
+/* narrow phones: the top bar's buttons wrap onto a second row instead of running off the right edge */
+@media (max-width:420px){
+  .top{flex-wrap:wrap;row-gap:6px;padding:8px 10px}
+  .top-actions{flex-wrap:wrap!important;justify-content:flex-end;gap:5px;flex:1}
+  .pill{padding:5px 8px;font-size:11.5px}
+  .icon-btn{width:34px;height:34px}
+}
 
 /* Short landscape windows (the itch.io player, laptops, phones turned sideways): put the wheel beside the question,
    result and buttons, sized to the window's height, so a whole spin fits on screen without scrolling. */

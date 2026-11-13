@@ -127,3 +127,14 @@ body.no-glow .tscr .embers,body.no-glow .tscr .stars{display:none}
   .tscr .title h2.logoart{height:150px!important}
   .tscr .panel{margin-top:14px!important}
 }
+/* short phones: a smaller logo, and the whole title screen scrolls with the footer after the menu, so the footer
+   never covers the last items and every item can be reached */
+@media (max-aspect-ratio:1/1) and (max-height:760px){
+  .tscr{overflow-y:auto;display:flex;flex-direction:column}
+  .tscr .bgart,.tscr .fxlayer{position:fixed}
+  .tscr .stage{flex:1 0 auto;min-height:0;padding:14px 16px 16px}
+  .tscr .foot{position:relative;flex:none}
+  .tscr .title h2.logoart{height:108px!important}
+  .tscr .title p{font-size:12px}
+  .tscr .panel{margin-top:8px!important}
+}
