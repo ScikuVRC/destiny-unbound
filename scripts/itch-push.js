@@ -5,7 +5,9 @@
 //   node scripts/itch-push.js --no-windows --modkit   only the mod kit
 //   node scripts/itch-push.js --dry    show what would be pushed
 // Run `npm run dist` first. butler is itch.io's upload tool (https://itch.io/docs/butler/); it is looked for in
-// the BUTLER variable, then %USERPROFILE%\.butler\butler.exe, then on the PATH. Log it in once with `butler login`.
+// the BUTLER variable, then %USERPROFILE%\.butler\butler.exe, then on the PATH. Log it in once with `butler login`,
+// or set BUTLER_API_KEY (the release workflow does this from a repository secret, so tagged releases upload by
+// themselves).
 // Each build goes to its own channel; butler only uploads what changed since the last push.
 'use strict';
 const fs = require('fs');

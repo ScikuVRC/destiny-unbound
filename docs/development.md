@@ -86,7 +86,11 @@ To release:
    ```
 
 GitHub Actions then runs the tests, builds Windows, macOS and Linux, and attaches the files to a release
-(`.github/workflows/release.yml`). A tag with a dash becomes a pre-release. Once the release is up, it posts
+(`.github/workflows/release.yml`). A tag with a dash becomes a pre-release. It then uploads the Windows builds, the
+browser build and the mod kit to itch.io with butler, if the `BUTLER_API_KEY` secret is set. To set it up once:
+make a key at <https://itch.io/user/settings/api-keys> (**Generate new API key**), then run
+`gh secret set BUTLER_API_KEY --repo ScikuVRC/destiny-unbound` and paste the key when it asks. Without the secret, upload by hand with `node scripts/itch-push.js --web --modkit` after
+`npm run dist` and `npm run modkit`. Once the release is up, it posts
 "x.y.z is out" with the new commits to the Discord's #announcements channel, if the `DISCORD_WEBHOOK` secret is set
 (see [discord.md](discord.md#release-announcements-on-the-server)). Every push also runs the tests
 (`.github/workflows/ci.yml`).

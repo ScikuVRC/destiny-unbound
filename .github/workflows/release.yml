@@ -92,10 +92,38 @@ jobs:
           generate_release_notes: true
           prerelease: ${{ contains(github.ref_name, '-') }}
 
-  # Posts "Destiny Unbound x.y.z is out" with the new commits to the Discord's #announcements channel.
+  # Uploads the Windows installer, the portable version, the browser build and the mod kit to itch.io with butler
+  # (scripts/itch-push.js). Needs the repository secret BUTLER_API_KEY (an itch.io API key); without it this is
+  # skipped and the upload can still be done by hand.
+  itch:
+    needs: release
+    runs-on: ubuntu-latest
+    env:
+      BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Push to itch.io
+        shell: bash
+        run: |
+          if [ -z "$BUTLER_API_KEY" ]; then echo "No BUTLER_API_KEY secret set: skipping the itch.io upload."; exit 0; fi
+          curl -sSfL -o butler.zip https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default
+          unzip -q butler.zip -d butler && chmod +x butler/butler
+          ./butler/butler -V
+          BUTLER="$PWD/butler/butler" node scripts/itch-push.js --web --modkit
+
+  # Posts "Destiny Unbound x.y.z is out" with the new commits to the Discord's #announcements channel, once the
+  # GitHub release and the itch.io upload are done.
   # Needs the repository secret DISCORD_WEBHOOK (a webhook URL for that channel); without it this is skipped.
   announce:
-    needs: release
+    needs: [release, itch]
+    if: ${{ !cancelled() && needs.release.result == 'success' }}   # announce even if the itch.io upload failed
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
