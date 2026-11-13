@@ -1,7 +1,7 @@
 # Destiny Unbound: progress
 
 A running record of where the game stands. Update it when something ships, starts or gets decided.
-Last updated: 2026-11-13 · Current version: **0.1.0-alpha.4**
+Last updated: 2026-11-13 · Current version: **0.1.0-alpha.5**
 
 Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
@@ -18,6 +18,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 | First bug-fix alpha | 0.1.0-alpha.2 | ✅ released 2026-11-13 (wheel bounce fix) |
 | Play-through fixes, mod kit, itch.io layout | 0.1.0-alpha.3 | ✅ released 2026-11-13 |
 | Discord status (Rich Presence) | 0.1.0-alpha.4 | ✅ released 2026-11-13 |
+| Discord server links in the game | 0.1.0-alpha.5 | ✅ released 2026-11-13 |
 | Alpha test with 5-15 players | two weeks after release | ⬜ |
 | Beta (fixes from the alpha, signed build, store page) | 0.2.0-beta.1 | ⬜ |
 | 1.0 on itch.io | 1.0.0 | ⬜ |
@@ -31,7 +32,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 - ✅ Publish 0.1.0-alpha.1 as a GitHub pre-release (done 2026-11-12: Windows, macOS and Linux builds)
 - ✅ itch.io page published 2026-11-12: https://bzrkherja.itch.io/destiny-unbound (playable in the browser, Windows builds via `npm run itch`, AI disclosure)
 - ⬜ Set up itch.io payments (PayPal or Stripe) so the "$0 or donate" option can take donations
-- ✅ Discord server, 2026-11-13: created ("Destiny Unbound", emblem icon). Channels: Start here (#welcome, #rules, #announcements, read-only for members), Community (#general, #share-your-legends, #mods-and-packs, General voice), Testing (#bug-reports and #suggestions forums, #feedback). Permanent invite: https://discord.gg/McDS5HVxzJ. Welcome and rules posted and pinned; linked from the README and the itch.io page. In the game (next release): a Discord link in the title-screen footer, a "Talk on Discord" button in Send feedback, and a Community section in Credits (`FW.DISCORD_URL` in `app/js/system.js`)
+- ✅ Discord server, 2026-11-13: created ("Destiny Unbound", emblem icon). Channels: Start here (#welcome, #rules, #announcements, read-only for members), Community (#general, #share-your-legends, #mods-and-packs, General voice), Testing (#bug-reports and #suggestions forums, #feedback). Permanent invite: https://discord.gg/McDS5HVxzJ. Welcome and rules posted and pinned; linked from the README and the itch.io page. In the game (since 0.1.0-alpha.5): a Discord link in the title-screen footer, a "Talk on Discord" button in Send feedback, and a Community section in Credits (`FW.DISCORD_URL` in `app/js/system.js`)
 - ⬜ Send tester invites (see `docs/alpha-testing.md`)
 
 - ✅ Mod kit (2026-11-13): guide, reference, JSON schemas and 7 templates in `modkit/`; `npm run modkit` builds the zip, which ships with every GitHub release and on itch.io
