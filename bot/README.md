@@ -3,6 +3,9 @@
 `/spin` rolls a random legend with the game's real wheels and odds (it loads `app/js` directly) and posts its
 card: title, race, rank, power rating, class, weapon, power, weakness and stats, with a button to play.
 `/spin luck:Mythic` picks the luck level. Each person can spin once every 5 seconds, and it never pings anyone.
+In a server that has a channel named `#spin-the-wheel`, spins only work there; anywhere else the bot privately
+points to that channel (set `SPIN_CHANNEL` in the environment to use another name). On the Destiny Unbound server
+the command is also limited to that channel in Server Settings > Integrations.
 
 ## Running it on a server (Ubuntu)
 
