@@ -91,3 +91,20 @@ jobs:
           files: files/*
           generate_release_notes: true
           prerelease: ${{ contains(github.ref_name, '-') }}
+
+  # Posts "Destiny Unbound x.y.z is out" with the new commits to the Discord's #announcements channel.
+  # Needs the repository secret DISCORD_WEBHOOK (a webhook URL for that channel); without it this is skipped.
+  announce:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Announce on Discord
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: node scripts/discord-announce.js "${GITHUB_REF_NAME}"

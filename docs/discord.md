@@ -73,8 +73,39 @@ Rich Presence is separate from Discord's automatic game detection (its list of k
 is on that list, players can still add it by hand in Discord: **User Settings > Registered Games > Add it!**, and pick
 Destiny Unbound. Once the Application ID is set, Rich Presence shows "Playing Destiny Unbound" without that step.
 
+## Release announcements on the server
+
+When a version tag is pushed, the release workflow's last job (`announce` in `.github/workflows/release.yml`) runs
+`scripts/discord-announce.js`. It posts "Destiny Unbound x.y.z is out" to **#announcements** as a "Destiny Unbound"
+message with the emblem, a link to the GitHub release, the itch.io link and a "What's new" list. That list is made
+from the commit titles since the previous version tag, without version bumps and `progress.md` commits. Alpha and
+beta versions also point to #bug-reports. It never pings anyone.
+
+It needs a webhook, which is a secret link that lets the workflow post in that one channel. Set it up once:
+
+1. In Discord, open **#announcements > Edit Channel > Integrations > Webhooks > New Webhook**. Name it
+   "Destiny Unbound", give it `docs/discord/emblem.png` as its picture, and keep the channel as #announcements.
+   Press **Copy Webhook URL**.
+2. On GitHub, open the repository's **Settings > Secrets and variables > Actions > New repository secret**. Name it
+   `DISCORD_WEBHOOK`, paste the URL as the value, and save. Or, in a terminal:
+
+   ```bash
+   gh secret set DISCORD_WEBHOOK --repo ScikuVRC/destiny-unbound
+   ```
+
+   It asks for the value without showing it.
+
+Treat the webhook URL like a password: anyone who has it can post in #announcements. If it leaks, delete the
+webhook in Discord and make a new one. Without the secret the job does nothing, so releases still work.
+
+To see the message without posting it:
+
+```bash
+node scripts/discord-announce.js v0.1.0-alpha.5 --dry
+```
+
 ## Tests
 
 `tests/discord.test.js` runs the connection against a stand-in Discord: the handshake, the activity frames, the
 rate limit (at most one update every 4 seconds; Discord allows about 5 per 20 seconds), switching off, pings and what
-happens when Discord isn't running. It also checks the text for each screen.
+happens when Discord isn't running. It also checks the text for each screen, and the release announcement.

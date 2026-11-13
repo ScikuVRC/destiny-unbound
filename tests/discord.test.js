@@ -117,6 +117,19 @@ const prefix = process.platform === 'win32' ? '\\\\?\\pipe\\du-discord-test-' + 
     assert(p({ screen: 'card', legend: L }).details === 'Admiring a legend');
   });
 
+  await t('the release announcement links the release and itch.io, escapes markdown and never pings anyone', () => {
+    const { message } = require('../scripts/discord-announce.js');
+    const many = Array.from({ length: 10 }, (_, i) => 'Fix *number* ' + i);
+    const m = message('v0.2.0-alpha.1', many), e = m.embeds[0];
+    assert.strictEqual(e.title, 'Destiny Unbound 0.2.0-alpha.1 is out');
+    assert.strictEqual(e.url, 'https://github.com/ScikuVRC/destiny-unbound/releases/tag/v0.2.0-alpha.1');
+    assert(e.description.includes('https://bzrkherja.itch.io/destiny-unbound'));
+    assert(e.description.includes('Fix \\*number\\* 0') && e.description.includes('…and 2 more'));
+    assert(/<#\d+>/.test(e.description), 'pre-releases point to #bug-reports');
+    assert.deepStrictEqual(m.allowed_mentions, { parse: [] });
+    assert(!/<#\d+>/.test(message('v1.0.0', []).embeds[0].description), 'full releases skip the alpha note');
+  });
+
   console.log('\n' + pass + ' of ' + (pass + fail) + ' checks passed');
   process.exit(fail ? 1 : 0);
 })();

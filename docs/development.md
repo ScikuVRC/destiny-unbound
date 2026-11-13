@@ -86,7 +86,9 @@ To release:
    ```
 
 GitHub Actions then runs the tests, builds Windows, macOS and Linux, and attaches the files to a release
-(`.github/workflows/release.yml`). A tag with a dash becomes a pre-release. Every push also runs the tests
+(`.github/workflows/release.yml`). A tag with a dash becomes a pre-release. Once the release is up, it posts
+"x.y.z is out" with the new commits to the Discord's #announcements channel, if the `DISCORD_WEBHOOK` secret is set
+(see [discord.md](discord.md#release-announcements-on-the-server)). Every push also runs the tests
 (`.github/workflows/ci.yml`).
 
 The installed app checks GitHub releases at startup (players can switch this off in Options > Data), downloads
