@@ -271,7 +271,7 @@ A few wheels need one code, and the game adds a sensible one if you leave it out
 | --- | --- | --- |
 | `pow` (powers) | `rar=1` to `rar=6`: rarity | `rar=2` |
 | `wpn` (weapons) | `q=1` to `q=5`: quality | `q=2` |
-| `title` | `tt=1` to `tt=5`: title tier | `tt=1 rt+1` |
+| `title` | `tt=1` to `tt=3`: title tier | `tt=1 rt+1` |
 | `race` | `life=s`, `m`, `l` or `a`: lifespan (short, medium, long, ageless) | `life=m` |
 
 `templates/04-new-entries` adds an entry to every wheel, each with a different kind of buff or debuff.
@@ -332,6 +332,11 @@ A pack file is the same as one item of a mod's `packs`, plus a header:
 
 See `templates/05-wheel-pack`. Players can also make a pack from their Wheel Workshop edits with
 **Export my Workshop edits as a pack**.
+
+**A whole setting.** To add a complete setting (a "content pack") with its own look, make a mod with a theme and
+a big `packs` list. `templates/07-ember-dominion` does this: a grimdark far-future setting with the Void Cathedral
+theme and about forty entries across the wheels. Keep settings original. Names, factions and symbols from other
+games, books or films belong to their owners, and a mod that copies them can be taken down.
 
 ## 10. Limits and safety rules
 

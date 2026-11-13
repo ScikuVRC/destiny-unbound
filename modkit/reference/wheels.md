@@ -887,7 +887,7 @@ Animal or spirit companion.
 
 ## `title`: Titles
 
-The hero's title. Needs `tt=1` to `tt=5` (tier).
+The hero's title. Needs `tt=1` to `tt=3` (tier).
 
 | Name | w | dsl |
 | --- | --- | --- |

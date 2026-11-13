@@ -59,7 +59,7 @@ game attacks with them, so they would have no effect.
 | `life=s` / `m` / `l` / `a` | Lifespan: short (human), medium (dwarf), long, or ageless (vampire, kitsune). Changes the ages the age wheel offers. | races (default `m`) |
 | `q=1` to `q=5` | Weapon quality. | weapons (default `q=2`) |
 | `rar=1` to `rar=6` | Power rarity: 1 common, 6 cosmic. | powers (default `rar=2`) |
-| `tt=1` to `tt=5` | Title tier. | titles (default `tt=1 rt+1`) |
+| `tt=1` to `tt=3` | Title tier. | titles (default `tt=1 rt+1`) |
 | `o.kill*1.5` | Makes an arena outcome likelier (above 1) or rarer (below 1). Outcomes: `kill`, `spare`, `recruit`, `befriend`, `enslave`, `banish`, `absorb`. | personalities |
 | `none` | Marks the "No weapon"-style empty slice. You rarely need it. | any wheel |
 

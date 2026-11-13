@@ -29,7 +29,7 @@ Read next
   GUIDE.md                    The full guide, step by step.
   reference/                  Every setting, every buff and debuff code, every wheel and built-in entry.
   schemas/                    Optional: lets editors like VS Code check your mod.json as you type.
-  templates/                  Seven templates, from the simplest to a complete example.
+  templates/                  Eight templates, from the simplest to a complete content pack.
 
 Templates
   00-blank                    The smallest valid mod. Start from scratch.
@@ -39,6 +39,8 @@ Templates
   04-new-entries              New entries for every wheel, plus changed odds.
   05-wheel-pack               A wheel pack: entries only, one .json file, installed from Menu > Wheel packs.
   06-full-example             Verdant Grove: a complete theme with CSS, sounds and entries.
+  07-ember-dominion           The Ember Dominion: a whole grimdark sci-fi setting as a content pack, with its
+                              own theme and about forty new entries. Play it, or copy it for your own setting.
 
 Sharing your mod
   Zip the mod's folder and share it. Players unzip it into their Mods folder (desktop) or import the folder
