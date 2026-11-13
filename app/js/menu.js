@@ -39,7 +39,7 @@
     const mods = (FW.Mods && FW.Mods.loaded || []).filter(m => m.enabled !== false).map(m => m.name);
     el.innerHTML = '<div class="tscr" data-look="' + k + '"><div class="bgart"></div><div class="fxlayer">' + (k === 'ashen' ? '<div class="embers"></div>' : k === 'astral' ? '<div class="stars"></div>' : '') + '</div>' +
       '<div class="stage"><div class="wheelart" aria-hidden="true"></div>' +
-      '<div class="title"><h2 class="logoart" role="img" aria-label="Destiny Unbound">Destiny Unbound</h2><p>' + H.esc(t((FW.MENU_TAGS || {})[k] || '')) + '</p></div>' +
+      '<div class="title"><h2 class="logoart">Destiny Unbound</h2><p>' + H.esc(t((FW.MENU_TAGS || {})[k] || '')) + '</p></div>' +
       '<nav class="panel" role="menu" aria-label="' + H.esc(t('Main menu')) + '">' + ITEMS.map((it, i) => {
         const sub = it.sub ? it.sub() : '';
         return '<button class="item" role="menuitem" data-i="' + i + '"' + (it.hide && it.hide() ? ' hidden' : '') + '>' + icon(it.k) + '<div>' + H.esc(t(it.k)) + (sub ? '<small>' + H.esc(sub) + '</small>' : '') + '</div></button>';
@@ -145,6 +145,7 @@
     if (e.defaultPrevented || e.ctrlKey || e.altKey || e.metaKey) return;
     setDevice('kb');
     if (FW.Options && FW.Options.capturing) return;
+    if (e.defaultPrevented && (e.key === 'Escape' || e.key === K().back)) return;   // a dialog just closed on this key
     const k = e.key, kk = K();
     if (App.state.screen === 'title' && !modalOpen()) {
       if (k === 'ArrowUp' || k === 'w' || k === 'W') { e.preventDefault(); return Nav.act('up'); }

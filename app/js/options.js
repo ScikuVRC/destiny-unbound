@@ -27,7 +27,8 @@
   const seg = (id, opts, cur) => '<div class="o-seg" role="radiogroup" data-seg="' + id + '">' + opts.map(o => '<button role="radio" aria-checked="' + (String(o[0]) === String(cur)) + '" class="' + (String(o[0]) === String(cur) ? 'on' : '') + '" data-v="' + H.esc(String(o[0])) + '">' + H.esc(t(o[1])) + '</button>').join('') + '</div>';
   const slider = (id, val, label) => '<div class="o-sl"><input type="range" min="0" max="100" step="1" value="' + Math.round(val) + '" data-sl="' + id + '" aria-label="' + H.esc(t(label)) + '"><b>' + Math.round(val) + '%</b></div>';
   const tog = (id, on, label) => '<button class="o-tog' + (on ? ' on' : '') + '" role="switch" aria-checked="' + !!on + '" data-tog="' + id + '" aria-label="' + H.esc(t(label)) + '"><i></i><span>' + H.esc(t(on ? 'On' : 'Off')) + '</span></button>';
-  const sel = (id, opts, cur) => '<select class="o-sel" data-sel="' + id + '">' + opts.map(o => '<option value="' + H.esc(String(o[0])) + '"' + (String(o[0]) === String(cur) ? ' selected' : '') + '>' + H.esc(t(o[1])) + '</option>').join('') + '</select>';
+  const SEL_LABEL = { res: 'Window size', theme: 'Theme', lang: 'Language' };
+  const sel = (id, opts, cur) => '<select class="o-sel" data-sel="' + id + '" aria-label="' + H.esc(t(SEL_LABEL[id] || id)) + '">' + opts.map(o => '<option value="' + H.esc(String(o[0])) + '"' + (String(o[0]) === String(cur) ? ' selected' : '') + '>' + H.esc(t(o[1])) + '</option>').join('') + '</select>';
   const btn = (id, label, cls) => '<button class="btn small ' + (cls || '') + '" data-btn="' + id + '">' + H.esc(t(label)) + '</button>';
   const keyName = k => ({ ' ': 'Space', Escape: 'Esc', ArrowUp: '↑', ArrowDown: '↓', ArrowLeft: '←', ArrowRight: '→' })[k] || (k && k.length === 1 ? k.toUpperCase() : k || '-');
 

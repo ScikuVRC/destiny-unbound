@@ -309,11 +309,30 @@
   }
 
   /* ---------- modals ---------- */
-  function closeModal() { if ($('#modalRoot').firstChild) hook('modalClosed'); $('#modalRoot').innerHTML = ''; }
+  let modalReturn = null;   // where keyboard focus goes back to when a dialog closes
+  function closeModal() {
+    if ($('#modalRoot').firstChild) hook('modalClosed');
+    $('#modalRoot').innerHTML = '';
+    if (modalReturn && modalReturn.isConnected) { try { modalReturn.focus({ preventScroll: true }); } catch (e) { /* gone */ } }
+    modalReturn = null;
+  }
   function openModal(html) {
-    $('#modalRoot').innerHTML = '<div class="overlay" id="ov"><div class="modal" role="dialog" aria-modal="true">' + html + '</div></div>';
+    if (!$('#modalRoot').firstChild) modalReturn = document.activeElement;
+    $('#modalRoot').innerHTML = '<div class="overlay" id="ov"><div class="modal" role="dialog" aria-modal="true" tabindex="-1">' + html + '</div></div>';
+    const dlg = $('#modalRoot .modal'), head = dlg.querySelector('h2, h3');
+    if (head) { head.id = head.id || 'modalTitle'; dlg.setAttribute('aria-labelledby', head.id); } else dlg.setAttribute('aria-label', 'Dialog');
     $('#ov').addEventListener('mousedown', e => { if (e.target.id === 'ov') closeModal(); });
     const m = $('#modalRoot .close'); if (m) m.addEventListener('click', closeModal);
+    // move keyboard focus into the dialog (a field if it has one, else the dialog itself) and keep Tab inside it
+    setTimeout(() => { if (!dlg.isConnected || dlg.contains(document.activeElement)) return; const f = dlg.querySelector('input:not([type=hidden]):not([disabled]), textarea, select'); (f || dlg).focus({ preventScroll: true }); }, 0);
+    dlg.addEventListener('keydown', e => {
+      if (e.key !== 'Tab') return;
+      const items = [...dlg.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]):not([type=hidden]), select, textarea, [tabindex]:not([tabindex="-1"])')].filter(x => x.offsetParent !== null);
+      if (!items.length) return;
+      const first = items[0], last = items[items.length - 1];
+      if (e.shiftKey && (document.activeElement === first || document.activeElement === dlg)) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
   }
   function menuModal() {
     openModal('<button class="btn small ghost close">Close ✕</button><h2>Menu</h2><div class="opt-grid">' +
@@ -410,6 +429,7 @@
   $('#btnHall').onclick = hallModal; $('#btnImport').onclick = importModal; $('#btnWorkshop').onclick = workshopModal;
   $('#btnMenu').onclick = menuModal;
   $('#brand').onclick = () => { abortRun(); closeModal(); show('home'); };
+  $('#brand').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('#brand').click(); } });
   $('#btnSpin').onclick = () => fire('spin');
   $('#btnNext').onclick = () => fire('next');
   $('#btnRespin').onclick = () => { if (tokensLeft() > 0) fire('respin'); else toast('No Fate Tokens left'); };
@@ -436,7 +456,8 @@
   });
   document.addEventListener('keydown', e => {
     const K = FW.prefs ? FW.prefs.keys : { advance: ' ', next: 'Enter', back: 'Escape' };
-    if ((e.key === 'Escape' || e.key === K.back) && $('#modalRoot').firstChild) { closeModal(); return; }
+    // closing a dialog uses up the key press, so the menu doesn't also treat it as "go back a screen"
+    if ((e.key === 'Escape' || e.key === K.back) && $('#modalRoot').firstChild) { e.preventDefault(); closeModal(); return; }
     if ($('#modalRoot').firstChild || /INPUT|TEXTAREA|SELECT/.test((document.activeElement || {}).tagName || '')) return;
     if (state.screen !== 'spin') return;
     if (e.key === K.advance || e.key === K.next) {
