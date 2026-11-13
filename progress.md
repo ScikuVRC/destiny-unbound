@@ -1,7 +1,7 @@
 # Destiny Unbound: progress
 
 A running record of where the game stands. Update it when something ships, starts or gets decided.
-Last updated: 2026-11-13 · Current version: **0.1.0-alpha.3**
+Last updated: 2026-11-13 · Current version: **0.1.0-alpha.4**
 
 Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
@@ -17,6 +17,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 | Alpha released (GitHub and itch.io) | 0.1.0-alpha.1 | ✅ released 2026-11-12 |
 | First bug-fix alpha | 0.1.0-alpha.2 | ✅ released 2026-11-13 (wheel bounce fix) |
 | Play-through fixes, mod kit, itch.io layout | 0.1.0-alpha.3 | ✅ released 2026-11-13 |
+| Discord status (Rich Presence) | 0.1.0-alpha.4 | ✅ released 2026-11-13 |
 | Alpha test with 5-15 players | two weeks after release | ⬜ |
 | Beta (fixes from the alpha, signed build, store page) | 0.2.0-beta.1 | ⬜ |
 | 1.0 on itch.io | 1.0.0 | ⬜ |
@@ -35,7 +36,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
 - ✅ Mod kit (2026-11-13): guide, reference, JSON schemas and 7 templates in `modkit/`; `npm run modkit` builds the zip, which ships with every GitHub release and on itch.io
 
-- ✅ Discord status (Rich Presence), 2026-11-13: built and tested (`electron/discord.js`, `app/js/presence.js`, `docs/discord.md`). Discord application created (ID `1570658915233046528` in package.json `discordAppId`), icon and five art assets uploaded, checked against the real Discord app. Ships with the next release
+- ✅ Discord status (Rich Presence), 2026-11-13: built and tested (`electron/discord.js`, `app/js/presence.js`, `docs/discord.md`). Discord application created (ID `1570658915233046528` in package.json `discordAppId`), icon and five art assets uploaded, checked against the real Discord app. Shipped in 0.1.0-alpha.4
 
 ## Bugs (alpha patching)
 
