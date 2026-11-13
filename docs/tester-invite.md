@@ -10,7 +10,10 @@ Copy and send these yourself. The full plan is in [alpha-testing.md](alpha-testi
 > 1. Join the Discord: https://discord.gg/McDS5HVxzJ and pick **Help test the alpha** when it asks
 > 2. Play in your browser or download it: https://bzrkherja.itch.io/destiny-unbound
 >
-> About 30 minutes is plenty. Anything that breaks or confuses you goes in #bug-reports. Thank you!
+> Picking that gives you the **Tester** role, which opens the Testing channels: #bug-reports, #suggestions,
+> #feedback and #tester-chat. About 30 minutes is plenty: spin a legend, play its story to the end, try the arena.
+> Anything that breaks or confuses you goes in #bug-reports (or a GitHub issue:
+> https://github.com/ScikuVRC/destiny-unbound/issues/new/choose). Thank you!
 
 ## Longer invite (email, forum or a group chat)
 
@@ -24,7 +27,8 @@ Copy and send these yourself. The full plan is in [alpha-testing.md](alpha-testi
 >
 > **How to join**
 > 1. Join the Discord: https://discord.gg/McDS5HVxzJ. When it asks "What brings you to Destiny Unbound?", pick
->    **Help test the alpha** and you get the Tester role.
+>    **Help test the alpha** and you get the **Tester** role. That opens the Testing channels: #bug-reports,
+>    #suggestions, #feedback and #tester-chat (for chatting with the other testers).
 > 2. Get the game: https://bzrkherja.itch.io/destiny-unbound. Play in your browser, or download the Windows
 >    version. Mac and Linux builds are at https://github.com/ScikuVRC/destiny-unbound/releases (untested so far,
 >    so reports from those are extra welcome).
@@ -35,15 +39,17 @@ Copy and send these yourself. The full plan is in [alpha-testing.md](alpha-testi
 > **What to do** (about 30 minutes): the checklist is pinned in #feedback on the Discord. In short, spin a legend,
 > play its story to the end, try the arena and the Daily Challenge, and switch through the four themes.
 >
-> **Found something?** One post per bug in #bug-reports. In the game, Options > Data > Send feedback saves your
-> error log and a screenshot you can attach.
+> **Found something?** One post per bug in #bug-reports, or use the bug report form on GitHub if you prefer:
+> https://github.com/ScikuVRC/destiny-unbound/issues/new/choose. Ideas go in #suggestions (or the suggestion
+> form). In the game, Options > Data > Send feedback saves your error log and a screenshot you can attach.
 >
 > Thank you for helping!
 
 ## Checklist post (for #feedback on the Discord)
 
 > **Alpha tester checklist** 🧪
-> Thanks for testing! Post bugs in #bug-reports (one per post) and ideas in #suggestions.
+> Thanks for testing! Post bugs in #bug-reports (one per post) and ideas in #suggestions. Chat with the other
+> testers in #tester-chat. Prefer GitHub? https://github.com/ScikuVRC/destiny-unbound/issues/new/choose
 >
 > **Session 1 (about 30 minutes)**
 > ☐ Start the game and read the four-step guide. Was anything unclear?

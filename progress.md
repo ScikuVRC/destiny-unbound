@@ -40,7 +40,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 - 🔄 itch.io uploads from CI: the `itch` job in `release.yml` is ready but skips until the `BUTLER_API_KEY` secret is added (until then, upload with `node scripts/itch-push.js --web --modkit`)
 - ✅ Issue forms (bug report, suggestion) and `CONTRIBUTING.md`, 2026-11-13
 - ✅ Trailer and GIF from real gameplay, 2026-11-13 (`npm run trailer`; GIF in the README and a 2.2 MB one on itch.io). ⬜ Upload the trailer to YouTube or Vimeo so the itch.io page can embed it
-- ⬜ Send tester invites (texts in `docs/tester-invite.md`, plan in `docs/alpha-testing.md`)
+- ✅ Tester invites ready, 2026-11-13: texts in `docs/tester-invite.md` (Tester role and Testing channels, itch.io and Discord links, what to test, bug reports in #bug-reports or the GitHub issue forms), plan in `docs/alpha-testing.md`. Sent by the developer as an open call
 
 ## Ready for the next alpha (not released yet)
 
