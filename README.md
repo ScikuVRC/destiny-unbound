@@ -6,10 +6,11 @@
 
 **Spin the wheels of fate. Forge a legend. Live its story, or die trying.**
 
-[![Version](https://img.shields.io/badge/version-0.1.0--alpha.1-8a5fd6)](progress.md)
+[![Version](https://img.shields.io/badge/version-0.1.0--alpha.4-8a5fd6)](progress.md)
 [![License: GPL v3](https://img.shields.io/badge/license-GPL--3.0--or--later-blue)](LICENSE)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20web-444)
 [![Play on itch.io](https://img.shields.io/badge/play-itch.io-fa5c5c?logo=itch.io&logoColor=white)](https://bzrkherja.itch.io/destiny-unbound)
+[![Join the Discord](https://img.shields.io/badge/chat-Discord-5865f2?logo=discord&logoColor=white)](https://discord.gg/McDS5HVxzJ)
 [![Support on Ko-fi](https://img.shields.io/badge/support-Ko--fi-ff5e5b?logo=ko-fi&logoColor=white)](https://ko-fi.com/bzrkherja)
 
 <img src="docs/store/screenshots/02-title-astral.png" alt="The Astral Oracle title screen" width="860">
@@ -133,8 +134,9 @@ not support projects that use AI, I respect that choice.
 
 Destiny Unbound is free and always will be. If you enjoy it and want to support me and my future projects, you
 can buy me a coffee on **[Ko-fi](https://ko-fi.com/bzrkherja)**. Bug reports, ideas and kind words help just as
-much: open an [issue](https://github.com/ScikuVRC/destiny-unbound/issues), or use Options > Data > Send feedback
-in the game.
+much: join the **[Discord](https://discord.gg/McDS5HVxzJ)** (bug reports, suggestions, and a place to share your
+legends and mods), open an [issue](https://github.com/ScikuVRC/destiny-unbound/issues), or use Options > Data > Send
+feedback in the game.
 
 ## Building from source
 
