@@ -62,6 +62,12 @@ const gif = path.join(DIR, 'destiny-unbound.gif');
 ffmpeg(['-f', 'concat', '-safe', '0', '-i', gifList, '-vf',
   'fps=15,scale=720:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle', gif]);
 
+// a smaller copy for itch.io, whose screenshots must be under 3 MB
+const small = path.join(DIR, 'destiny-unbound-itch.gif');
+ffmpeg(['-f', 'concat', '-safe', '0', '-i', gifList, '-vf',
+  'fps=12,scale=600:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=96:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle', small]);
+
 const mb = f => (fs.statSync(f).size / 1048576).toFixed(1) + ' MB';
+console.log(`itch.io gif ${mb(small)}: ${small}`);
 console.log(`trailer ${total.toFixed(1)} s, ${mb(mp4)}: ${mp4}`);
 console.log(`gif ${mb(gif)}: ${gif}`);
