@@ -5,3 +5,5 @@ build/
 .claude/
 # private study notes and third-party screenshots: not part of the published project
 research/
+# private notes: server addresses, account and payment to-dos, moderation details
+private-notes.md
