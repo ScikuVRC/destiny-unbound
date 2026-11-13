@@ -55,6 +55,11 @@ jobs:
           v=$(node -p "require('./package.json').version")
           if [ "v$v" != "${GITHUB_REF_NAME}" ]; then echo "Tag ${GITHUB_REF_NAME} does not match package.json version $v"; exit 1; fi
       - run: npm ci
+      # The mod kit is the same on every system, so only the Linux job builds it (the check fails if its generated
+      # reference is out of date with the game's data).
+      - name: Mod kit
+        if: matrix.os == 'ubuntu-latest'
+        run: node scripts/make-modkit.js --check && node scripts/make-modkit.js
       # An empty CSC_LINK makes electron-builder treat the project folder as the certificate, so drop empty ones.
       - name: Build
         shell: bash

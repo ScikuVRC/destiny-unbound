@@ -1,0 +1,15 @@
+Destiny Unbound mod kit: licence
+================================
+
+The guide, reference, schemas and templates in this kit (including the example sounds, CSS and mod.json files)
+are dedicated to the public domain under CC0 1.0: https://creativecommons.org/publicdomain/zero/1.0/
+
+That means you can copy them, change them and use them in your own mods, for free or for money, under any licence
+you choose, without asking and without credit (credit is still appreciated).
+
+Exception: templates/02-styled-theme/fonts/UnifrakturCook-700.woff2 is a font by j. 'mach' wust and Peter Wiegel
+under the SIL Open Font License 1.1 (the licence text is next to it). You may use and share it, including in your
+mods, as long as its licence goes with it.
+
+The Destiny Unbound game itself is free software under the GNU General Public License v3.0 or later:
+https://github.com/ScikuVRC/destiny-unbound

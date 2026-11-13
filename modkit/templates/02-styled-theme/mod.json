@@ -1,0 +1,58 @@
+{
+  "$schema": "https://raw.githubusercontent.com/ScikuVRC/destiny-unbound/main/modkit/schemas/mod.schema.json",
+  "format": "fatewheel-mod",
+  "version": 1,
+  "id": "kit-frostbound",
+  "name": "Frostbound (template)",
+  "author": "Destiny Unbound mod kit",
+  "description": "A frozen-north theme with its own CSS file and its own font, starting from Astral Oracle.",
+  "themes": [
+    {
+      "id": "frostbound",
+      "name": "Frostbound",
+      "blurb": "Winter saga",
+      "base": "astral",
+      "css": "theme.css",
+      "fonts": [
+        { "family": "Frost Blackletter", "file": "fonts/UnifrakturCook-700.woff2", "weight": 700, "style": "normal" }
+      ],
+      "vars": {
+        "--bg": "#060c12",
+        "--fg": "#e4f1f7",
+        "--muted": "#93aebb",
+        "--line": "#22394a",
+        "--panel": "#0b1620",
+        "--panel-fg": "#e4f1f7",
+        "--chip-fg": "#dff6ff",
+        "--chip-border": "#5fa8c8",
+        "--accent": "#5fc3e8",
+        "--accent2": "#e8f7ff",
+        "--accent-fg": "#04121a",
+        "--btn-bg": "#0b1620",
+        "--font": "\"EB Garamond\", Georgia, serif",
+        "--font-display": "\"Frost Blackletter\", \"Cinzel\", serif",
+        "--font-result": "\"Frost Blackletter\", \"Cinzel\", serif",
+        "--result-weight": "700"
+      },
+      "wheel": {
+        "pal": [["#0f2a3a", "#1c4a63"], ["#0a1824", "#12293b"]],
+        "lad": ["#ffffff", "#bfe8f7", "#5fc3e8", "#1c4a63", "#071520"],
+        "line": "rgba(200,240,255,.35)",
+        "ink": "#eaf8ff",
+        "inkDark": "#04121a",
+        "hit": "rgba(150,230,255,.55)",
+        "glow": "#8fe3ff",
+        "font": "\"EB Garamond\", serif",
+        "upper": true
+      },
+      "card": {
+        "key": "#5fc3e8",
+        "accent": "#e8f7ff",
+        "stroke": "#2f6a87",
+        "panel": "rgba(6,12,18,.9)",
+        "head": "\"Frost Blackletter\", serif",
+        "frame": "astral"
+      }
+    }
+  ]
+}

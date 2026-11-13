@@ -1,0 +1,58 @@
+{
+  "$schema": "https://raw.githubusercontent.com/ScikuVRC/destiny-unbound/main/modkit/schemas/mod.schema.json",
+  "format": "fatewheel-mod",
+  "version": 1,
+  "id": "kit-ember-rose",
+  "name": "Ember Rose (template)",
+  "author": "Destiny Unbound mod kit",
+  "description": "A gothic-romance theme made only of colours: page, wheel and card. No other files needed.",
+  "themes": [
+    {
+      "id": "ember-rose",
+      "name": "Ember Rose",
+      "blurb": "Gothic romance",
+      "base": "bloodmoon",
+      "vars": {
+        "--bg": "#0d0609",
+        "--topbar": "rgba(16,7,11,.92)",
+        "--fg": "#f2e4ea",
+        "--muted": "#b89aa6",
+        "--line": "#3d1f2b",
+        "--panel": "#170a10",
+        "--panel-fg": "#f2e4ea",
+        "--chip-bg": "#170a10",
+        "--chip-fg": "#ffd1df",
+        "--chip-border": "#8a3a55",
+        "--accent": "#e8507a",
+        "--accent2": "#f0b8a0",
+        "--accent-fg": "#fff4f7",
+        "--good": "#a8d98a",
+        "--bad": "#ff7a6b",
+        "--btn-bg": "#1c0c13",
+        "--btn-fg": "#f2e4ea",
+        "--radius": "8px",
+        "--chip-radius": "8px"
+      },
+      "wheel": {
+        "pal": [["#3a0f20", "#5c1a33"], ["#1e0a12", "#33121f"], ["#4a1a14", "#6e2a1e"]],
+        "lad": ["#fff0f4", "#f0a0b8", "#c0406a", "#5c1a33", "#1e0a12"],
+        "gray": ["#2a2226", "#3a3035"],
+        "line": "rgba(255,190,210,.28)",
+        "ink": "#ffe9f0",
+        "inkDark": "#2a0a14",
+        "hit": "rgba(255,110,150,.55)",
+        "glow": "#ff6f9a",
+        "upper": false,
+        "italic": true
+      },
+      "card": {
+        "panel": "rgba(23,10,16,.9)",
+        "stroke": "#8a3a55",
+        "key": "#e8507a",
+        "val": "#f2e4ea",
+        "accent": "#f0b8a0",
+        "caps": false
+      }
+    }
+  ]
+}

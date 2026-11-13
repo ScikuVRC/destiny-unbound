@@ -1,0 +1,20 @@
+{
+  "$schema": "https://raw.githubusercontent.com/ScikuVRC/destiny-unbound/main/modkit/schemas/mod.schema.json",
+  "format": "fatewheel-mod",
+  "version": 1,
+  "id": "my-mod",
+  "name": "My Mod",
+  "author": "Your name",
+  "description": "One line about what your mod adds.",
+  "themes": [
+    {
+      "id": "my-theme",
+      "name": "My Theme",
+      "blurb": "A short tagline",
+      "base": "ashen",
+      "vars": {
+        "--accent": "#3fa7d6"
+      }
+    }
+  ]
+}

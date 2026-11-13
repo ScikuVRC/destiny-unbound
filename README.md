@@ -101,8 +101,11 @@ nemesis, kingdom events, companion loyalty, dynasty and achievements.
 ## Make it your own
 
 - **Wheel Workshop:** make any result likelier or rarer, remove it, or add your own.
-- **Wheel packs and mods:** add entries, themes, fonts, sounds and music. See the
-  [modding guide](docs/modding.md). Mods can't run code, and everything they contain is checked when it loads.
+- **Wheel packs and mods:** add entries, themes, fonts, sounds and music. Mods can't run code, and everything they
+  contain is checked when it loads. The **mod kit** (`DestinyUnbound-ModKit-<version>.zip` on the
+  [Releases](https://github.com/ScikuVRC/destiny-unbound/releases) and itch.io pages, or [`modkit/`](modkit)) has a
+  step-by-step guide, seven ready-to-copy templates and the full reference. The
+  [modding page](docs/modding.md) is the short version.
 - **Art Studio (optional):** paint a portrait of your hero with an image generator you already use, on your
   own PC or with your own API key. See [docs/art-studio.md](docs/art-studio.md).
 

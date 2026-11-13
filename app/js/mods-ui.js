@@ -4,6 +4,7 @@
   'use strict';
   const FW = window.FW, App = window.FWApp, H = FW.html, M = FW.Mods, D = window.fatewheelDesktop || null;
   const $ = s => document.querySelector(s);
+  const MODKIT_URL = 'https://bzrkherja.itch.io/destiny-unbound';   // the mod kit is one of the downloads there (and on GitHub releases)
 
   /* ---------------- startup ---------------- */
   M.ready = M.load().then(() => {
@@ -29,7 +30,8 @@
       '<div class="cta" style="justify-content:flex-start;flex-wrap:wrap">' + (D ? '<button class="btn primary small" id="modOpen">📂 Open mods folder</button>' : '') +
       '<button class="btn small" id="modImport">Import a mod folder</button><button class="btn small" id="modReload">↻ Restart to apply</button></div>' +
       '<input type="file" id="modDir" webkitdirectory multiple hidden><p id="modErr" style="color:var(--bad);min-height:1.2em"></p>' +
-      '<p class="legend-key">' + (D ? 'Put each mod in its own folder inside the Mods folder, then restart. ' : '') + 'How to make a mod: see docs/modding.md and the example in mods/example-mod, in the game\'s source on GitHub.</p>');
+      '<p class="legend-key">' + (D ? 'Put each mod in its own folder inside the Mods folder, then restart. ' : '') + 'Want to make your own? The free mod kit has a step-by-step guide, ready-to-copy templates and the full reference.</p>' +
+      '<div class="cta" style="justify-content:flex-start"><a class="btn small" href="' + MODKIT_URL + '" target="_blank" rel="noopener">📦 Get the mod kit</a></div>');
     const root = $('#modalRoot');
     root.querySelectorAll('[data-mod]').forEach(cb => cb.addEventListener('change', () => { M.setEnabled(cb.dataset.mod, cb.checked); changed = true; $('#modNote').textContent = 'Restart to apply your changes.'; }));
     root.querySelectorAll('[data-rm]').forEach(b => b.addEventListener('click', async () => { await M.remove(b.dataset.rm); M.loaded = M.loaded.filter(x => x.key !== b.dataset.rm); changed = true; modsModal(); }));

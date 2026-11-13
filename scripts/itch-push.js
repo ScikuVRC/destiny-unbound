@@ -1,6 +1,8 @@
 // Uploads the Windows builds (and optionally the browser build) to itch.io with butler.
 //   node scripts/itch-push.js          installer + portable from dist/
 //   node scripts/itch-push.js --web    also the browser build (a zip of app/)
+//   node scripts/itch-push.js --modkit also the mod kit (run npm run modkit first)
+//   node scripts/itch-push.js --no-windows --modkit   only the mod kit
 //   node scripts/itch-push.js --dry    show what would be pushed
 // Run `npm run dist` first. butler is itch.io's upload tool (https://itch.io/docs/butler/); it is looked for in
 // the BUTLER variable, then %USERPROFILE%\.butler\butler.exe, then on the PATH. Log it in once with `butler login`.
@@ -34,11 +36,12 @@ function stageFile(channel, file) {
   return dir;
 }
 
-const pushes = [
+const pushes = args.has('--no-windows') ? [] : [
   ['windows-installer', stageFile('windows-installer', `DestinyUnbound-Setup-${version}.exe`)],
   ['windows-portable', stageFile('windows-portable', `DestinyUnbound-${version}-portable.exe`)],
 ];
 if (args.has('--web')) pushes.push(['html5', path.join(root, 'app')]);
+if (args.has('--modkit')) pushes.push(['modkit', stageFile('modkit', `DestinyUnbound-ModKit-${version}.zip`)]);
 
 const butler = butlerPath();
 for (const [channel, dir] of pushes) {

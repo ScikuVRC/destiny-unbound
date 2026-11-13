@@ -1,0 +1,17 @@
+{
+  "$schema": "https://raw.githubusercontent.com/ScikuVRC/destiny-unbound/main/modkit/schemas/mod.schema.json",
+  "format": "fatewheel-mod",
+  "version": 1,
+  "id": "kit-music-box",
+  "name": "Music Box sounds (template)",
+  "author": "Destiny Unbound mod kit",
+  "description": "Replaces every sound with a music-box set and adds a looping background tune, in every theme.",
+  "sounds": {
+    "tick": "sounds/tick.wav",
+    "reveal": "sounds/reveal.wav",
+    "rare": "sounds/rare.wav",
+    "bad": "sounds/bad.wav",
+    "click": "sounds/click.wav",
+    "music": "sounds/music.wav"
+  }
+}

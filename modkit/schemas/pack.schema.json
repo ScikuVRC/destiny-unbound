@@ -1,0 +1,69 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/ScikuVRC/destiny-unbound/main/modkit/schemas/pack.schema.json",
+  "title": "Destiny Unbound wheel pack",
+  "description": "A wheel pack: new wheel entries with buffs and debuffs, and changed odds. Install from Menu > Wheel packs.",
+  "type": "object",
+  "required": ["format", "version", "name"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "format": { "const": "fatewheel-pack", "description": "Always \"fatewheel-pack\"." },
+    "version": { "const": 1 },
+    "name": { "type": "string", "minLength": 1, "maxLength": 60 },
+    "description": { "type": "string", "maxLength": 300 },
+    "author": { "type": "string", "maxLength": 60 },
+    "entries": { "$ref": "#/definitions/entries" },
+    "workshop": { "$ref": "#/definitions/workshop" }
+  },
+  "definitions": {
+    "entry": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 60, "description": "Shown on the wheel. Must not match a built-in entry." },
+        "w": { "type": "number", "exclusiveMinimum": 0, "maximum": 200, "default": 3, "description": "Slice size. Built-in entries are mostly 2 to 10." },
+        "dsl": { "type": "string", "description": "Buffs and debuffs, e.g. \"str+2 dark:all+1 w=fire\". See reference/dsl-codes.md." },
+        "perk": { "type": "string", "maxLength": 120, "description": "A short good line shown under the result." },
+        "flaw": { "type": "string", "maxLength": 120, "description": "A short bad line." },
+        "art": { "type": "string", "maxLength": 200, "description": "Races only: how the race looks, for AI portraits." }
+      },
+      "additionalProperties": false
+    },
+    "list": { "type": "array", "maxItems": 200, "items": { "$ref": "#/definitions/entry" } },
+    "entries": {
+      "type": "object",
+      "description": "New entries, per wheel.",
+      "properties": {
+        "race": { "$ref": "#/definitions/list", "description": "Races (dsl should include life=s|m|l|a; default m)" },
+        "birth": { "$ref": "#/definitions/list", "description": "Birthplaces" },
+        "bg": { "$ref": "#/definitions/list", "description": "Backgrounds" },
+        "per": { "$ref": "#/definitions/list", "description": "Personalities (o.kill*1.5-style outcome codes)" },
+        "cls": { "$ref": "#/definitions/list", "description": "Classes" },
+        "wpn": { "$ref": "#/definitions/list", "description": "Weapons (dsl should include q=1..5; default q=2)" },
+        "enh": { "$ref": "#/definitions/list", "description": "Enhancements" },
+        "elem": { "$ref": "#/definitions/list", "description": "Elements" },
+        "pow": { "$ref": "#/definitions/list", "description": "Powers (dsl should include rar=1..6; default rar=2)" },
+        "weak": { "$ref": "#/definitions/list", "description": "Weaknesses" },
+        "pet": { "$ref": "#/definitions/list", "description": "Companions" },
+        "title": { "$ref": "#/definitions/list", "description": "Titles (dsl should include tt=1..5; default tt=1 rt+1)" },
+        "mark": { "$ref": "#/definitions/list", "description": "Marks of Fate" },
+        "hair": { "$ref": "#/definitions/list", "description": "Hair" },
+        "eyes": { "$ref": "#/definitions/list", "description": "Eyes" },
+        "garb": { "$ref": "#/definitions/list", "description": "Outfits" }
+      },
+      "additionalProperties": false
+    },
+    "workshop": {
+      "type": "object",
+      "description": "Change the odds of built-in entries, per wheel (the same keys as entries, plus \"story\").",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "weights": { "type": "object", "additionalProperties": { "type": "number", "exclusiveMinimum": 0, "maximum": 1000 }, "description": "Entry name: new slice size." },
+          "removed": { "type": "array", "items": { "type": "string" }, "description": "Entry names to take off the wheel." }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

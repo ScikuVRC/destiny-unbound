@@ -14,7 +14,8 @@
     "dist": "npm run icons && electron-builder --win nsis portable --publish never",
     "dist:mac": "npm run icons && electron-builder --mac dmg zip --publish never",
     "dist:linux": "npm run icons && electron-builder --linux AppImage --publish never",
-    "itch": "node scripts/itch-push.js"
+    "itch": "node scripts/itch-push.js",
+    "modkit": "node scripts/make-modkit.js"
   },
   "build": {
     "appId": "io.github.fatewheel.app",

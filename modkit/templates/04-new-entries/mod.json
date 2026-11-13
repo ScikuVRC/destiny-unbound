@@ -1,0 +1,71 @@
+{
+  "$schema": "https://raw.githubusercontent.com/ScikuVRC/destiny-unbound/main/modkit/schemas/mod.schema.json",
+  "format": "fatewheel-mod",
+  "version": 1,
+  "id": "kit-frontier",
+  "name": "Frontier entries (template)",
+  "author": "Destiny Unbound mod kit",
+  "description": "One new entry on every wheel, each showing a different kind of buff or debuff, plus changed odds for two built-in wheels.",
+  "packs": [
+    {
+      "name": "Frontier",
+      "description": "Dust, iron rails and desert magic.",
+      "entries": {
+        "race": [
+          { "name": "Dustborn", "w": 3, "dsl": "dur+1 sun:all+1 w=water hs=0.95 life=m", "perk": "Thrives where others wither", "flaw": "Rain makes them ill", "art": "dustborn with sand-coloured skin, cracked like dry earth, and amber eyes" }
+        ],
+        "birth": [
+          { "name": "Railway Boomtown", "w": 4, "dsl": "urban:all+1 fate+1", "perk": "Grew up between the tracks" }
+        ],
+        "bg": [
+          { "name": "You were a stagecoach guard who lost the gold.", "w": 5, "dsl": "wpn+1 behind:all+1", "perk": "Knows every ambush trick", "flaw": "Wanted for a theft you didn't commit" }
+        ],
+        "per": [
+          { "name": "Drifter", "w": 5, "dsl": "spd+1 o.spare*1.3 o.recruit*0.6", "perk": "Moves on before trouble arrives" }
+        ],
+        "cls": [
+          { "name": "Frontier Gunhand", "w": 4, "dsl": "spd+1 wpn+1 dur-1", "perk": "Fastest draw in the territory", "flaw": "Never wears armour" }
+        ],
+        "enh": [
+          { "name": "Rattlesnake Reflexes", "w": 3, "dsl": "spd+2 r=poison", "perk": "Bitten so often they're immune" }
+        ],
+        "elem": [
+          { "name": "Dust", "w": 3, "dsl": "a=nature r=fire w=water wild:all+1", "perk": "Blinding sandstorms", "flaw": "Turns to mud in the rain" }
+        ],
+        "wpn": [
+          { "name": "Six-shooter", "w": 4, "dsl": "q=2 spd+1", "perk": "Six chances to get it right" },
+          { "name": "Thunder Rifle", "w": 0.8, "dsl": "q=4 a=lightning", "perk": "Each shot is a lightning bolt" }
+        ],
+        "pow": [
+          { "name": "Mirage Walking", "w": 3, "dsl": "rar=2", "perk": "Appears where the heat shimmers" },
+          { "name": "Desert Storm Calling", "w": 0.5, "dsl": "rar=5 a=nature storm:all+2", "perk": "Buries armies in sand" }
+        ],
+        "weak": [
+          { "name": "Thirst", "w": 4, "dsl": "sun:all-1 water:all+1", "flaw": "Weakens fast in the heat" }
+        ],
+        "pet": [
+          { "name": "Old Mule", "w": 5, "dsl": "dur+1", "perk": "Stubborn, but never leaves" }
+        ],
+        "title": [
+          { "name": "The Last Sheriff", "w": 2, "dsl": "tt=2 rt+2", "perk": "The law, when there's no one else" }
+        ],
+        "mark": [
+          { "name": "Lucky Horseshoe", "w": 5, "dsl": "fate+1", "perk": "Nailed above every door you've slept behind" }
+        ],
+        "hair": [
+          { "name": "Sun-bleached braid under a wide hat", "w": 5, "dsl": "" }
+        ],
+        "eyes": [
+          { "name": "Squinting grey eyes", "w": 5, "dsl": "" }
+        ],
+        "garb": [
+          { "name": "Long duster coat and spurs", "w": 5, "dsl": "wild:spd+1", "perk": "Looks like trouble from a mile off" }
+        ]
+      },
+      "workshop": {
+        "pet": { "weights": { "Raven": 10, "Loyal Hound": 9 } },
+        "weak": { "weights": { "Fire": 6 } }
+      }
+    }
+  ]
+}

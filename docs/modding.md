@@ -3,6 +3,13 @@
 Mods and wheel packs let players add their own content. Neither can run code: everything is checked when it
 loads, and anything with a problem is listed with the reason. Only install mods you trust.
 
+> **New to modding? Get the mod kit.** It has a step-by-step guide, seven ready-to-copy templates (from a
+> colours-only theme to a full mod with CSS, fonts, sounds and new entries), the full reference with every built-in
+> entry, and JSON schemas so your editor checks `mod.json` as you type. Download `DestinyUnbound-ModKit-<version>.zip`
+> from the [itch.io page](https://bzrkherja.itch.io/destiny-unbound) or the
+> [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases), or browse it in [`modkit/`](../modkit).
+> This page is the short reference.
+
 ## Mods
 
 A mod can add **themes** (colours, fonts, CSS, wheel and card colours), **sounds and music**, and **wheel

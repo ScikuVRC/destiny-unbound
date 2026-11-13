@@ -1,0 +1,41 @@
+/* Frostbound theme CSS.
+   This file only applies while the Frostbound theme is selected, so it can't affect other themes.
+   Write normal CSS. "&" means the page itself. url() may only point to files inside this mod.
+   Class names you can use: see reference/css-hooks.md in the mod kit. */
+
+/* The page: a cold glow from the top, over the dark background colour */
+& {
+  background:
+    radial-gradient(80% 40% at 50% -5%, #1c4a6366, transparent 70%),
+    radial-gradient(60% 50% at 50% 110%, #0f2a3a, #060c12 70%) fixed,
+    #060c12;
+}
+
+/* Main buttons: icy gradient with a thin bright border */
+.btn.primary {
+  background: linear-gradient(#5fc3e8, #1c6f93);
+  color: #04121a;
+  border-color: #dff6ff;
+  text-shadow: none;
+}
+.btn.primary:hover { filter: brightness(1.1); }
+
+/* The big result above the wheel: frosted glow */
+.result { color: #f2fbff; text-shadow: 0 0 22px rgba(143, 227, 255, .55), 0 0 2px #fff; }
+.result.rare { color: #ffffff; text-shadow: 0 0 30px #8fe3ff, 0 0 6px #ffffff; }
+
+/* The wheel's question */
+.chip { box-shadow: 0 0 0 1px #5fa8c8, 0 0 24px rgba(95, 195, 232, .25); }
+
+/* Boxes and dialogs: a double frost line */
+.card-panel, .sheet, .fx-card, .modal {
+  border-color: #22394a;
+  box-shadow: inset 0 0 0 3px #08121a, inset 0 0 0 4px #1c4a63;
+}
+
+/* Keep high contrast clean: drop the glows when the player turns it on */
+&.hc .result, &.hc .result.rare { text-shadow: none; }
+
+/* Example: a picture of your own behind the title screen (put the file in the mod and remove the comment marks)
+.tscr .bgart { background: url(art/my-background.jpg) center / cover; }
+*/

@@ -52,7 +52,8 @@ Put each mod in its own folder here, for example:
 
 then restart Destiny Unbound (or press "Restart to apply" in Menu > Mods).
 Mods can add themes, sounds, music and wheel entries. They cannot run code.
-How to write mod.json: see the "Mods" section of the Destiny Unbound README.
+To make your own, get the free mod kit (guide, templates and full reference) from
+https://bzrkherja.itch.io/destiny-unbound or the game's GitHub releases.
 `;
 function setupMods() {
   MODS = process.env.FATEWHEEL_MODS_DIR || path.join(app.getPath('userData'), 'mods');

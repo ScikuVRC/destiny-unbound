@@ -83,5 +83,36 @@ t('mod wheel entries join the wheels like a pack', () => {
   FW.removePackEntries('mod:test'); assert.strictEqual(FW.PETS.length, n);
 });
 
+/* ---------------- the mod kit (modkit/) ---------------- */
+const KIT = path.join(__dirname, '..', 'modkit');
+t('every mod kit template loads in the game: valid mod.json, its files exist, its entries are new and parse', () => {
+  const dir = path.join(KIT, 'templates'), names = new Set();
+  const builtIn = new Set(Object.keys(FW.LISTS).flatMap(k => FW.LISTS[k]().map(e => k + ':' + e.name)));
+  const mods = fs.readdirSync(dir).filter(d => fs.existsSync(path.join(dir, d, 'mod.json')));
+  assert(mods.length >= 6, 'templates found: ' + mods.join(', '));
+  mods.forEach(d => {
+    const m = M.validate(JSON.parse(fs.readFileSync(path.join(dir, d, 'mod.json'), 'utf8')));
+    assert(!names.has(m.id), d + ': id ' + m.id + ' is used by two templates'); names.add(m.id);
+    m.files.forEach(f => assert(fs.existsSync(path.join(dir, d, f)), d + ': missing ' + f));
+    m.packs.forEach(p => Object.keys(p.entries).forEach(k => p.entries[k].forEach(e => assert(!builtIn.has(k + ':' + e.name), d + ': "' + e.name + '" is already a built-in ' + k))));
+    m.themes.forEach(th => { if (th.css) M.scopeCss(fs.readFileSync(path.join(dir, d, th.css), 'utf8'), th.id, f => f); });
+  });
+  const tpl = JSON.parse(fs.readFileSync(path.join(KIT, 'templates', '04-new-entries', 'mod.json'), 'utf8'));
+  const wheels = Object.keys(tpl.packs[0].entries).sort();
+  assert.deepStrictEqual(wheels, ['bg', 'birth', 'cls', 'elem', 'enh', 'eyes', 'garb', 'hair', 'mark', 'per', 'pet', 'pow', 'race', 'title', 'weak', 'wpn'], 'template 04 covers every wheel');
+  Object.keys(tpl.packs[0].workshop).forEach(k => Object.keys(tpl.packs[0].workshop[k].weights).forEach(n => assert(builtIn.has(k + ':' + n), 'workshop names a real entry: ' + k + ' ' + n)));
+});
+
+t('the mod kit wheel pack template is a valid pack, and the generated reference matches the game', () => {
+  const p = FW.validatePack(JSON.parse(fs.readFileSync(path.join(KIT, 'templates', '05-wheel-pack', 'sky-pirates.json'), 'utf8')));
+  assert.strictEqual(p.name, 'Sky Pirates');
+  const gen = require('../scripts/make-modkit.js').generated();
+  Object.keys(gen).forEach(f => assert.strictEqual(fs.readFileSync(path.join(KIT, f), 'utf8').replace(/\r\n/g, '\n'), gen[f], f + ' is out of date: run node scripts/make-modkit.js'));
+  const zip = require('../scripts/make-modkit.js').zip, crc = require('../scripts/make-modkit.js').crc32;
+  assert.strictEqual(crc(Buffer.from('123456789')), 0xcbf43926, 'crc32');
+  const z = zip([{ name: 'a.txt', data: Buffer.from('hello hello hello hello') }]);
+  assert.strictEqual(z.readUInt32LE(0), 0x04034b50); assert.strictEqual(z.readUInt32LE(z.length - 22), 0x06054b50);
+});
+
 console.log('\n' + pass + ' of ' + (pass + fail) + ' checks passed');
 process.exit(fail ? 1 : 0);

@@ -35,13 +35,13 @@ the game install as a web app (PWA).
 npm test
 ```
 
-73 checks in 6 suites:
+75 checks in 6 suites:
 
 - **engine (26):** data validity, unique names, tier shifts, odds, conditional buffs, Legend Codes, arena maths.
 - **art (18):** every generator and language-model connector against a mock server.
 - **story (8):** 500 full sagas with random options, requirements, every option switched off, dynasty.
 - **extras (5):** packs, achievements, translations.
-- **mods (8):** validation, CSS that tries to escape its theme or load outside pictures.
+- **mods (10):** validation, CSS that tries to escape its theme or load outside pictures, every mod kit template loads, the kit's generated reference is up to date.
 - **system (8):** version, preferences, save import checks, no API keys in exported saves, title-screen art,
   offline caching, arena matchmaking.
 
@@ -51,7 +51,8 @@ npm test
 | `node scripts/make-menu-css.js` | Rebuilds the title-screen CSS and art from the approved mockups in `mockups/menu/_gen-art.js` |
 | `node scripts/make-icons.js` | Makes every icon size from `app/icons/icon-source.png` (runs before every build) |
 | `node scripts/make-trailer.js` | Builds `docs/store/trailer.mp4` from the store screenshots (needs ffmpeg) |
-| `npm run itch` | Uploads the Windows installer and portable `.exe` from `dist/` to itch.io with [butler](https://itch.io/docs/butler/) (`-- --web` adds the browser build, `-- --dry` only shows what it would do). Log butler in once with `butler login` |
+| `npm run modkit` | Builds `dist/DestinyUnbound-ModKit-<version>.zip` from `modkit/` and refreshes its generated reference (`reference/theme-variables.md`, `reference/wheels.md`) from the game's data. The release workflow builds and attaches it too; a test fails if the reference is out of date |
+| `npm run itch` | Uploads the Windows installer and portable `.exe` from `dist/` to itch.io with [butler](https://itch.io/docs/butler/) (`-- --web` adds the browser build, `-- --modkit` the mod kit, `-- --no-windows` skips the Windows builds, `-- --dry` only shows what it would do). Log butler in once with `butler login` |
 
 The desktop app understands a few test switches (environment variables):
 
@@ -127,6 +128,7 @@ Uninstalling keeps all of these.
 | `app/js/mods.js`, `mods-ui.js` | Mod loading and safety checks; Mods screen and desktop updates |
 | `app/art/`, `app/icons/`, `app/fonts/` | Painted title art, icons, bundled fonts |
 | `electron/main.js`, `preload.js` | Desktop shell and the small set of desktop features the page can reach |
+| `modkit/` | The mod kit: guide, reference, JSON schemas and templates (zipped by `npm run modkit`) |
 | `mockups/` | Design mockups; `menu/` holds the painted main menus the game is built from |
 | `docs/` | This guide, modding, Art Studio, alpha test plan, store kit, art credits (every AI image and its prompt) |
 | `tests/` | Test suites |

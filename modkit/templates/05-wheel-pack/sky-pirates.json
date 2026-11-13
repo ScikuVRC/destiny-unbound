@@ -1,0 +1,107 @@
+{
+  "$schema": "https://raw.githubusercontent.com/ScikuVRC/destiny-unbound/main/modkit/schemas/pack.schema.json",
+  "format": "fatewheel-pack",
+  "version": 1,
+  "name": "Sky Pirates",
+  "description": "Airships, cloud islands and storm magic. An example pack: copy it to make your own.",
+  "author": "Destiny Unbound contributors",
+  "entries": {
+    "race": [
+      {
+        "name": "Cloudborn",
+        "w": 3,
+        "dsl": "spd+1 storm:all+1 dur-1 life=l",
+        "perk": "Born on a drifting island",
+        "flaw": "Never learned to walk on solid ground",
+        "art": "cloudborn with pale blue skin and hair like drifting mist"
+      },
+      {
+        "name": "Sky Kraken-kin",
+        "w": 1,
+        "dsl": "str+2 storm:all+1 w=lightning life=a hs=1.4",
+        "perk": "Tentacled terror of the high winds",
+        "flaw": "Lightning hurts",
+        "art": "sky kraken-kin with tentacles instead of hair and stormy grey skin"
+      }
+    ],
+    "birth": [
+      {
+        "name": "Airship Deck",
+        "w": 4,
+        "dsl": "spd+1 storm:all+1",
+        "perk": "Raised among sails and ropes"
+      },
+      {
+        "name": "Floating Pirate Haven",
+        "w": 3,
+        "dsl": "fgt+1 fate+1",
+        "perk": "No laws, only codes"
+      }
+    ],
+    "cls": [
+      {
+        "name": "Sky Captain",
+        "w": 2,
+        "dsl": "int+1 fgt+1 rt+1",
+        "perk": "Commands a crew and a ship"
+      },
+      {
+        "name": "Cloud Gunner",
+        "w": 3,
+        "dsl": "wpn+1 spd+1",
+        "perk": "Never misses from the rigging"
+      }
+    ],
+    "wpn": [
+      {
+        "name": "Harpoon Pistol",
+        "w": 2,
+        "dsl": "q=3",
+        "perk": "Reels in whatever it hits"
+      },
+      {
+        "name": "Stormglass Cutlass",
+        "w": 0.8,
+        "dsl": "q=4 a=lightning",
+        "perk": "Crackles in the rain"
+      }
+    ],
+    "pow": [
+      {
+        "name": "Wind Riding",
+        "w": 2,
+        "dsl": "rar=2",
+        "perk": ""
+      },
+      {
+        "name": "Storm Captaincy",
+        "w": 0.6,
+        "dsl": "rar=4 a=lightning",
+        "perk": ""
+      }
+    ],
+    "pet": [
+      {
+        "name": "Parrot With Opinions",
+        "w": 4,
+        "dsl": "int+1",
+        "perk": "Knows every insult in nine languages"
+      }
+    ],
+    "title": [
+      {
+        "name": "The Cloud Corsair",
+        "w": 2,
+        "dsl": "tt=2 rt+2",
+        "perk": "Feared across every sky"
+      }
+    ]
+  },
+  "workshop": {
+    "pet": {
+      "weights": {
+        "Raven": 8
+      }
+    }
+  }
+}

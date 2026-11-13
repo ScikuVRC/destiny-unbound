@@ -32,6 +32,8 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 - ⏸ Discord server for testers: on hold (2026-11-13) until the owner can sign in to Discord. Until then feedback goes to GitHub Issues, itch.io comments and the in-game Send feedback
 - ⬜ Send tester invites (see `docs/alpha-testing.md`)
 
+- ✅ Mod kit (2026-11-13): guide, reference, JSON schemas and 7 templates in `modkit/`; `npm run modkit` builds the zip, which ships with every GitHub release and on itch.io
+
 ## Bugs (alpha patching)
 
 Newest first. Fixed bugs ship in the next alpha build.

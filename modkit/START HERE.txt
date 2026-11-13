@@ -1,0 +1,51 @@
+DESTINY UNBOUND MOD KIT
+=======================
+
+Everything you need to make your own mods for Destiny Unbound: a guide, ready-to-copy templates and the full
+reference. You don't need to know how to program. A mod is a folder with a text file (mod.json) and, if you
+like, a CSS file, fonts and sounds.
+
+What a mod can do
+  - Add new themes: colours, fonts, wheel and card colours, extra CSS.
+  - Replace sounds and music, for one theme or for every theme.
+  - Add new wheel entries (races, weapons, powers, titles...) with their own buffs and debuffs.
+  - Change how likely the built-in entries are.
+Mods can't run code, and everything in them is checked when the game loads them.
+
+Try a template in 2 minutes
+  1. Open the "templates" folder and pick one, for example 01-colours-only.
+  2. Desktop app: in the game open Mods > Open mods folder, and copy the whole template folder into it.
+     Then press "Restart to apply".
+     Browser: in the game open Mods > Import a mod folder and pick the template folder.
+  3. Pick the new theme from the theme button at the top of the screen (or in New Legend > Look).
+
+Make your own
+  1. Copy the template closest to what you want and rename the folder.
+  2. Open mod.json in any text editor. Change "id" (lowercase letters, numbers and dashes) and "name".
+  3. Change the colours, entries or sounds, save, and restart the game (desktop) or import it again (browser).
+  4. If something is wrong, the Mods screen lists the problem and the line it is about.
+
+Read next
+  GUIDE.md                    The full guide, step by step.
+  reference/                  Every setting, every buff and debuff code, every wheel and built-in entry.
+  schemas/                    Optional: lets editors like VS Code check your mod.json as you type.
+  templates/                  Seven templates, from the simplest to a complete example.
+
+Templates
+  00-blank                    The smallest valid mod. Start from scratch.
+  01-colours-only             A theme made only of colours. No other files.
+  02-styled-theme             A theme with its own CSS and its own font.
+  03-sounds                   Replaces every sound and adds music, for all themes.
+  04-new-entries              New entries for every wheel, plus changed odds.
+  05-wheel-pack               A wheel pack: entries only, one .json file, installed from Menu > Wheel packs.
+  06-full-example             Verdant Grove: a complete theme with CSS, sounds and entries.
+
+Sharing your mod
+  Zip the mod's folder and share it. Players unzip it into their Mods folder (desktop) or import the folder
+  (browser). Say what your mod contains, and only install mods from people you trust.
+
+Licence: the templates, examples and guide in this kit are free for you to copy, change and use in your own
+mods, under any licence you like (see LICENSE.txt). The fonts keep their own licence (OFL).
+
+Game: https://bzrkherja.itch.io/destiny-unbound
+Source and bug reports: https://github.com/ScikuVRC/destiny-unbound
