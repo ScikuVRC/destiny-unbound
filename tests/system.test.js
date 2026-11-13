@@ -80,8 +80,8 @@ t('the arena gives weak heroes fewer hopeless fights but never hides a foe', () 
     const plain = FW.oppEntries(u), fair = FW.oppEntries(u, L);
     assert.strictEqual(fair.length, u.opps.length);
     fair.forEach((o, k) => {
-      assert(o.w > 0 && o.w >= plain[k].w * 0.35 - 1e-9, 'a foe vanished or shrank too far: ' + o.name);
-      if (FW.P(o).lv <= r + 8) assert(Math.abs(o.w - plain[k].w) < 1e-9, 'a fair foe changed: ' + o.name);
+      assert(o.w > 0 && o.w >= plain[k].w * 0.1 - 1e-9, 'a foe vanished or shrank too far: ' + o.name);
+      if (FW.P(o).lv <= r + 4) assert(Math.abs(o.w - plain[k].w) < 1e-9, 'a fair foe changed: ' + o.name);
     });
   });
 });

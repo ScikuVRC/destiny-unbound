@@ -27,7 +27,7 @@
   /* ================= daily challenge ================= */
   FW.dailyScore = function (L) {
     const c = FW.compute(L), s = L.saga || { ch: 0 };
-    return Math.round(c.rating + 3 * s.ch + (s.world ? 15 : s.kingdom ? 5 : 0) + (s.end === 'ascended' ? 20 : 0) + 2 * (s.conquered ? s.conquered.length : 0));
+    return Math.round(c.rating + 3 * s.ch + (s.world ? 15 : s.kingdom ? 5 : 0) + (s.end === 'ascended' ? 20 : s.end === 'fulfilled' || s.end === 'legend' ? 10 : 0) + (s.flags && s.flags.evilSlain ? 10 : 0) + 2 * (s.conquered ? s.conquered.length : 0));
   };
   const daily = () => App.store.get('fw.daily', {});
   async function startDaily() {

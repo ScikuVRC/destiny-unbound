@@ -74,7 +74,7 @@ async function playSaga(seed, opts, ov) {
   await t('death off: nobody dies; aging off: no old-age wheel; kingdom events off: none', async () => {
     for (let i = 0; i < 150; i++) {
       const { L, io } = await playSaga('safe' + i, { death: false, aging: false, kingdomEvents: false });
-      assert.notStrictEqual(L.saga.end, 'dead', 'died with death off: ' + L.saga.endText);
+      assert(!S.MORTAL[L.saga.end], 'died with death off (' + L.saga.end + '): ' + L.saga.endText);
       assert(!io.seen.some(c => /Does your body hold/.test(c.title)), 'old age wheel shown');
       assert(!io.seen.some(c => /^News from/.test(c.title)), 'kingdom event shown');
     }
@@ -117,6 +117,25 @@ async function playSaga(seed, opts, ov) {
     }
     assert(checked >= 5, 'too few heirs to test: ' + checked);
     const { L } = await playSaga('dynoff', { dynasty: false }); assert(!S.canContinue(L, { dynasty: false }));
+  });
+
+  await t('story arcs happen in order, reach their finale, and every ending can happen', async () => {
+    const after = { omen: 'oracle', fate: 'omen', debt: 'pact', awaken: 'seal', lastStand: 'awaken' };
+    const reached = {}, ends = {};
+    for (let i = 0; i < 1500; i++) {
+      const L = makeLegend('arc' + i); const io = bot('arc' + i); S.newSaga(L, {}, io.rng);
+      const done = [];
+      while (!L.saga.end && done.length < 400) {
+        const ch = await S.playTurn(L, io, {}); done.push(ch.id); reached[ch.id] = true;
+        if (after[ch.id]) { const k = done.indexOf(after[ch.id]); assert(k >= 0 && k < done.length - 1, ch.id + ' before ' + after[ch.id]); }
+        if (ch.id === 'heirGrown' || ch.id === 'succession') assert(done.indexOf('heir') >= 0, ch.id + ' without an heir');
+      }
+      ends[L.saga.end] = (ends[L.saga.end] || 0) + 1;
+      if (S.NO_HEIR[L.saga.end]) assert(!S.canContinue(L, {}), L.saga.end + ' still lets an heir continue');
+    }
+    ['fate', 'debt', 'lastStand', 'heirGrown', 'siege', 'voyage', 'heist', 'haunted', 'mentor', 'duel', 'succession', 'found'].forEach(id => assert(reached[id], 'never reached: ' + id));
+    Object.keys(S.endLabel).forEach(e => { assert(S.endIcon[e], 'no icon for ' + e); assert(ends[e] || e === 'ascended', 'ending never happened: ' + e); });
+    console.log('       endings', JSON.stringify(ends));
   });
 
   console.log('\n' + pass + ' of ' + (pass + fail) + ' checks passed');

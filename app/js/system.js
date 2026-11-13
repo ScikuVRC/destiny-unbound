@@ -6,6 +6,7 @@
   const FW = window.FW, App = window.FWApp, D = window.fatewheelDesktop || null;
   const SYS = FW.System = {};
   FW.BUG_URL = 'https://github.com/ScikuVRC/destiny-unbound/issues/new';
+  FW.WORLD_URL = 'https://destiny-unbound-counter.destiny-unbound.workers.dev';   // the opt-in world counter (worker/); off until the player ticks Options > Data
   FW.DISCORD_URL = 'https://discord.gg/McDS5HVxzJ';   // the community server: bug reports, ideas, legends and mods
 
   /* ---------------- error log (last 200 lines on this device; the desktop app also writes a log file) ---------------- */
@@ -98,7 +99,7 @@
 
   /* ---------------- local play stats (only on this device; attached to feedback only if the player chooses) ---------------- */
   const ST_KEY = 'fw.stats';
-  const stats = Object.assign({ sessions: 0, minutes: 0, legendsStarted: 0, legendsFinished: 0, autoLegends: 0, dailies: 0, stories: 0, chapters: 0, deaths: 0, retirements: 0, ascensions: 0, arenaFights: 0, versus: 0, aiArt: 0, quitOn: {}, firstPlayed: fileDate(), lastPlayed: '' }, App.store.get(ST_KEY, {}));
+  const stats = Object.assign({ sessions: 0, minutes: 0, legendsStarted: 0, legendsFinished: 0, autoLegends: 0, dailies: 0, stories: 0, chapters: 0, deaths: 0, retirements: 0, ascensions: 0, arenaFights: 0, versus: 0, aiArt: 0, quitOn: {}, endings: {}, firstPlayed: fileDate(), lastPlayed: '' }, App.store.get(ST_KEY, {}));
   const saveStats = () => App.store.set(ST_KEY, stats);
   SYS.stats = stats;
   SYS.bump = (k, n) => { stats[k] = (stats[k] || 0) + (n || 1); saveStats(); };
@@ -113,9 +114,14 @@
     if (prevShown) prevShown(L);
     try {
       const id = L.toCode().slice(0, 60), s = seen[id] || (seen[id] = { fin: false, ch: L.saga ? L.saga.ch || 0 : 0, end: !!(L.saga && L.saga.end) });
-      if (!s.fin && L.picks && L.picks.mark) { s.fin = true; if (!L.saga) SYS.bump('legendsFinished'); }
+      if (!s.fin && L.picks && L.picks.mark) { s.fin = true; if (!L.saga) { SYS.bump('legendsFinished'); if (FW.World) FW.World.send('hero'); } }
       const ch = L.saga ? L.saga.ch || 0 : 0; if (ch > s.ch) { SYS.bump('chapters', ch - s.ch); s.ch = ch; }
-      if (L.saga && L.saga.end && !s.end) { s.end = true; SYS.bump({ dead: 'deaths', retired: 'retirements', ascended: 'ascensions' }[L.saga.end] || 'otherEndings'); }
+      if (L.saga && L.saga.end && !s.end) {
+        s.end = true; const e = L.saga.end;
+        stats.endings = stats.endings || {}; stats.endings[e] = (stats.endings[e] || 0) + 1;
+        SYS.bump(FW.Story && FW.Story.MORTAL && FW.Story.MORTAL[e] ? 'deaths' : ({ retired: 'retirements', ascended: 'ascensions' }[e] || 'otherEndings'));
+        if (FW.World) FW.World.send('end', e);
+      }
     } catch (e) { /* stats must never break the game */ }
   };
   window.addEventListener('pagehide', () => { const w = App.state.screen; stats.quitOn[w] = (stats.quitOn[w] || 0) + 1; saveStats(); });

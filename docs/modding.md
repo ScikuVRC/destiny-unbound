@@ -41,7 +41,7 @@ working.)
 | --- | --- |
 | `base` | `ashen`, `astral`, `iron` or `bloodmoon`. The theme starts from it (wheel art, card frame, sound style, title screen). Old mods that say `tabletop` get `astral`. |
 | `vars` | Page colours and fonts: `--bg --topbar --fg --muted --line --panel --panel-fg --chip-bg --chip-fg --chip-border --chip-radius --accent --accent2 --accent-fg --good --bad --btn-bg --btn-fg --radius --font --font-display --font-chip --font-result --result-weight`. Values may not load anything from outside the mod. |
-| `css` | A normal stylesheet that only applies while the theme is selected (use `&` for the page itself). `url()` may only point to files in the mod; `@import`, outside addresses and other ways of loading pictures are removed, and the CSS cannot reach outside its theme. |
+| `css` | A normal stylesheet that only applies while the theme is selected (use `&` for the page itself). `url()` may only point to files in the mod; `@import`, outside addresses and other ways of loading pictures are removed, and the CSS cannot reach outside its theme. Style colours, borders, fonts and backgrounds; leave sizes and positions to the game, which fits every screen to the window. |
 | `wheel` | `pal` (pairs of inner/outer slice colours), `lad` (stat ladder colours, lowest to highest), `gray`, `line`, `ink`, `inkDark`, `inkLight`, `hit`, `glow`, `font`, `upper`, `italic`. |
 | `card` | `panel stroke key val sub accent font head caps frame`. |
 | `sounds` | For one theme, or for every theme at the top level: `tick reveal rare bad click music`. Audio files: mp3, ogg, wav, m4a, aac, flac or webm, up to 30 MB each. Music loops. |

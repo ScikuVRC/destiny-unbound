@@ -37,6 +37,7 @@ body:has(#screen-options.active) .top{display:none}
 .o-fixed{font-size:13.5px;color:var(--muted)}
 .o-note{font-size:13px;color:var(--muted);line-height:1.45;margin:6px 0}
 .o-list .o-bk{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:5px 0;border-bottom:1px dashed var(--line);font-size:14px}.o-bk small{color:var(--muted)}
+.o-sub{margin:12px 0 0;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .o-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin:8px 0}
 .o-stats div{text-align:center;padding:8px 4px;border:1px solid var(--line);border-radius:var(--radius)}.o-stats b{display:block;font-size:20px;font-family:var(--font-display)}.o-stats span{font-size:11.5px;color:var(--muted)}
 .o-btns{display:flex;justify-content:space-between;align-items:center;gap:10px;padding-top:12px;border-top:1px solid var(--line);margin-top:6px}
@@ -147,20 +148,64 @@ body.anim-off *,body.calm *{animation:none!important;transition:none!important}
   .modal .close{position:sticky;top:-6px;z-index:3;margin:-6px -4px 0 8px;background:var(--panel);min-height:40px}
 }
 
-/* Short landscape windows (the itch.io player, laptops, phones turned sideways): put the wheel beside the question,
-   result and buttons, sized to the window's height, so a whole spin fits on screen without scrolling. */
-@media (orientation:landscape) and (max-height:760px) and (min-width:700px){
+/* ---------------- spin screen, lined up ----------------
+   One centre column of equal width (question, result, buttons, bonuses), buttons in an even grid, the rarely used
+   spin settings in a pop-up, and a legend panel that reads like a character sheet. Nothing is removed: speed,
+   direction and the Fate Tokens are in Spin settings, and "Show upcoming" lists the wheels still to come. */
+#screen-spin .stage>.chip,#screen-spin .stage>.result,#screen-spin .stage>.result-sub,#screen-spin .stage>.controls,#screen-spin .stage>.effects{width:min(100%,480px);justify-self:center;margin-left:auto;margin-right:auto;box-sizing:border-box}
+#screen-spin .stage>.chip{display:flex;justify-content:center;padding:12px 18px;text-align:center}
+#screen-spin .stage>.chip-emoji{line-height:1}
+#screen-spin .stage>.result-sub{min-height:1.4em}
+#screen-spin #controls{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+#screen-spin #controls>.btn{width:100%;min-height:50px;margin:0;justify-content:center}
+#screen-spin #controls>#btnSpin,#screen-spin #controls>.btn:only-of-type{grid-column:1/-1}
+#screen-spin .ctl-row2{display:flex;gap:10px;margin-top:10px;flex-wrap:nowrap}
+#screen-spin .ctl-row2>.btn,#screen-spin .ctl-row2>.spinset-wrap{flex:1 1 0;min-width:0}
+#screen-spin .ctl-row2 .btn{width:100%;margin:0;justify-content:center}
+#screen-spin .ctl-row2>[hidden]{display:none}
+#screen-spin .stage>.effects{margin-top:18px}
+#btnRespin .cnt,.sheet-more .cnt{display:inline-flex;align-items:center;justify-content:center;min-width:1.5em;height:1.5em;padding:0 .35em;margin-left:.35em;border-radius:999px;background:color-mix(in srgb,var(--accent) 22%,transparent);border:1px solid color-mix(in srgb,var(--accent) 55%,transparent);font-size:max(.85em,11px);line-height:1}
+.spinset-wrap{position:relative}
+.spinset{position:absolute;bottom:calc(100% + 8px);right:0;z-index:30;display:flex;flex-direction:column;gap:8px;min-width:230px;padding:12px;background:var(--panel);color:var(--panel-fg);border:1px solid var(--line);border-radius:calc(var(--radius) + 2px);box-shadow:0 14px 34px rgba(0,0,0,.55)}
+.spinset[hidden]{display:none}
+.spinset .btn{width:100%;justify-content:center}
+.spinset .tokens{justify-content:center;padding:2px 0 4px}
+/* the legend panel: label on the left, value and tags on the right, rows not rolled yet hidden unless asked for */
+#sheet:not(.all) .row.empty:not(.cur){display:none}
+#sheet .rows{gap:0}
+body #sheet .rows .row{grid-template-columns:24px auto minmax(0,1fr);justify-items:stretch;align-items:center;text-align:left;padding:9px 8px;column-gap:10px}
+body #sheet .row .k{text-align:left;font-size:12px;letter-spacing:.08em}
+body #sheet .row .v{text-align:right;justify-self:end;min-width:0;overflow-wrap:normal;word-break:normal}
+#sheet .row:last-child{border-bottom:0}
+.sheet-more{display:flex;width:100%;justify-content:center;margin-top:10px}
+body #sheet .tiny-mods{justify-content:flex-end}
+
+/* Big monitors (1920x1080 and up): use the width. The wheel area takes the free space and the legend sits at the
+   right edge instead of the whole screen staying 1180px wide in the middle. */
+@media (min-width:1400px){
+  #screen-spin{max-width:1760px}
+  .spin-layout{grid-template-columns:minmax(0,1fr) minmax(360px,440px);justify-content:stretch}
+  .stage>.effects{max-width:680px;margin-left:auto;margin-right:auto}
+}
+/* Landscape windows up to 1200px tall (the itch.io player, laptops, 1366x768 and 1600x900 screens, phones turned
+   sideways): put the wheel beside the question, result and buttons, sized to the window's height, so a whole spin
+   fits on screen without scrolling. Taller windows (2560x1440 and up) use the stacked layout. */
+@media (orientation:landscape) and (max-height:1200px) and (min-width:700px) and (min-aspect-ratio:13/10){
   .spin-layout{grid-template-columns:minmax(0,1fr)}
   .stage{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:clamp(16px,3vw,40px);align-items:center;align-content:start}
   .stage>*{grid-column:2}
   .stage>.steps{grid-column:1/-1;grid-row:1}
-  .stage>.wheel-wrap{grid-column:1;grid-row:2/span 7;align-self:start;width:min(calc(100dvh - 130px),48vw,560px);margin:4px 0 0}
+  .stage>.wheel-wrap{grid-column:1;grid-row:2/span 7;align-self:start;width:min(calc(100dvh - 130px),48vw,640px);margin:4px 0 0}
   .chip-emoji{height:auto;font-size:36px}
-  .stage>.result{margin-top:8px}
+  /* two lines' room at a size that follows the window, so long results ("Prophecy fulfilled") wrap instead of spilling */
+  .stage>.result{margin-top:16px;font-size:clamp(24px,2.4vw,42px);height:2.5em;line-height:1.08}
   .stage>.effects{align-self:start}
 }
-@media (orientation:landscape) and (max-height:760px) and (min-width:1280px){
-  .spin-layout{grid-template-columns:minmax(0,1fr) minmax(320px,380px)}
+@media (orientation:landscape) and (max-height:1200px) and (min-width:1280px) and (min-aspect-ratio:13/10){
+  .spin-layout{grid-template-columns:minmax(0,1fr) minmax(320px,min(440px,28vw))}
+  /* with the legend panel beside it, the wheel gives the question and buttons a wider middle column */
+  .stage>.wheel-wrap{width:min(calc(100dvh - 130px),40vw,720px)}
+  #screen-spin{max-width:1760px}   /* three columns need more than the usual 1180px */
 }
 /* The first-run guide sits to the side on short windows instead of over the menu */
 @media (max-height:640px) and (min-width:760px){

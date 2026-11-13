@@ -1,0 +1,18 @@
+# Destiny Unbound world counter. Deploy: see worker/README.md
+name = "destiny-unbound-counter"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+
+[vars]
+SINCE = "2026-11-13"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "destiny-unbound-counter"
+database_id = "ac13cef6-c128-485b-aba4-5ee4e5f46561"
+
+# at most 30 counts a minute from one address (Workers rate limiting, free plan)
+[[ratelimits]]
+name = "LIMITER"
+namespace_id = "1001"
+simple = { limit = 30, period = 60 }

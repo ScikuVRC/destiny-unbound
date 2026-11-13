@@ -7,3 +7,5 @@ build/
 research/
 # private notes: server addresses, account and payment to-dos, moderation details
 private-notes.md
+# the world counter's totals on the bot server
+bot/data/

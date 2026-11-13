@@ -37,3 +37,18 @@ Invite it to a server with this link (no special permissions are needed for slas
 ```bash
 cd bot && npm install && DISCORD_TOKEN=... node index.js
 ```
+
+## /stats and the world counter
+
+`/stats` shows how many heroes have been made and how sagas ended. The game's numbers come from the world counter
+(a Cloudflare Worker, see [../worker/README.md](../worker/README.md)), which only counts players who switch it on in
+Options > Data. The bot adds its own count of `/spin` heroes, kept in `bot/data/stats.json` on the server.
+
+Set the counter's address in `/etc/destiny-bot.env`:
+
+```bash
+WORLD_URL=https://destiny-unbound-counter.destiny-unbound.workers.dev
+```
+
+Without `WORLD_URL`, `/stats` shows only the Discord spins. (`stats.js` can also serve the counter itself over HTTP:
+set `STATS_PORT`, and put it behind HTTPS.)

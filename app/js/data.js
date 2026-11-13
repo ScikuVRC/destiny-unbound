@@ -38,9 +38,9 @@
 
   /* ---------------- luck levels ---------------- */
   FW.LUCK = [
-    { id: 'mortal', name: 'Mortal',  k: 0,   tokens: 3, blurb: 'Fair odds. Most heroes are ordinary.' },
-    { id: 'heroic', name: 'Heroic',  k: 2.2, tokens: 2, blurb: 'Rare slices swell. Legends happen.' },
-    { id: 'mythic', name: 'Mythic',  k: 4.5, tokens: 2, blurb: 'Gods notice you. Cosmic tiers appear.' },
+    { id: 'mortal', name: 'Mortal',  k: 0.8, tokens: 3, blurb: 'Fair odds. Most heroes are ordinary.' },
+    { id: 'heroic', name: 'Heroic',  k: 2.6, tokens: 2, blurb: 'Rare slices swell. Legends happen.' },
+    { id: 'mythic', name: 'Mythic',  k: 4.8, tokens: 2, blurb: 'Gods notice you. Cosmic tiers appear.' },
     { id: 'divine', name: 'Divine',  k: 7.5, tokens: 1, blurb: 'Reality bends - like the viral spins.' }
   ];
 

@@ -72,12 +72,12 @@
     finally { $('#btnStoryExit').hidden = true; }
   }
   async function ending(L, run) {
-    const s = L.saga, icon = { dead: '🪦', retired: '🌅', ascended: '✨', lost: '🌀' }[s.end] || '📖';
+    const s = L.saga, icon = S.endIcon[s.end] || '📖';
     F.setChip(icon, 'The end of ' + L.displayName(), 0);
-    F.setResult(S.endLabel[s.end] || 'The End', { pop: true, rare: s.end === 'ascended' });
+    F.setResult(S.endLabel[s.end] || 'The End', { pop: true, rare: !!S.RARE_END[s.end] });
     $('#resultSub').textContent = s.endText;
     $('#effects').innerHTML = '<div class="fx-card"><h3>' + H.esc(S.summary(L)) + '</h3>' + logHtml(s.log) + '</div>';
-    if (s.end === 'dead') FW.Audio.bad(); else FW.Audio.reveal(true);
+    if (S.MORTAL[s.end]) FW.Audio.bad(); else FW.Audio.reveal(true);
     if (window.FWAchieve) window.FWAchieve.check(L);
     sheet();
     $('#btnSpin').hidden = true; F.setControls('result'); $('#btnRespin').hidden = true;

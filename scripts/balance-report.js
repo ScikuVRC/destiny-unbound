@@ -26,14 +26,14 @@ for (const lk of FW.LUCK.map(l => l.id)) {
     wins.push(FW.matchup(L, opp, FW.pickArena(rng)).pWin);
   }
   const races = Object.keys(byRace).map(r => ({ r, n: byRace[r].length, avg: byRace[r].reduce((a, b) => a + b, 0) / byRace[r].length })).sort((a, b) => b.avg - a.avg);
-  const sagas = { ends: {}, ch: [], firstDeath: 0 };
+  const sagas = { ends: {}, ch: [], firstDeath: 0, battles: [], good: 0, bad: 0 };
   for (let i = 0; i < NS; i++) {
     const L = legend('saga-' + lk + i, lk), rng = FW.makeRng('saga-' + lk + i + ':story');
     const opts = {}; S.OPTIONS.forEach(o => opts[o.id] = o.def !== false);
     S.newSaga(L, opts, rng);
-    const io = { rng, spin: async cfg => FW.weightedIndex(cfg.entries, rng) };
+    const io = { rng, spin: async cfg => { if (cfg.kind === 'battle') sagas.battles.push(cfg.report.pWin); return FW.weightedIndex(cfg.entries, rng); } };
     // playTurn is async: run synchronously enough by awaiting in a loop below
-    sagas.pending = (sagas.pending || []); sagas.pending.push((async () => { let t = 0; while (!L.saga.end && t < 400) { await S.playTurn(L, io, opts); t++; } sagas.ends[L.saga.end] = (sagas.ends[L.saga.end] || 0) + 1; sagas.ch.push(L.saga.ch); if (L.saga.end === 'dead' && L.saga.ch <= 1) sagas.firstDeath++; })());
+    sagas.pending = (sagas.pending || []); sagas.pending.push((async () => { let t = 0; while (!L.saga.end && t < 400) { await S.playTurn(L, io, opts); t++; } sagas.ends[L.saga.end] = (sagas.ends[L.saga.end] || 0) + 1; sagas.ch.push(L.saga.ch); L.saga.log.forEach(x => { if (x.tone === 'good') sagas.good++; else if (x.tone === 'bad') sagas.bad++; }); if (L.saga.end === 'dead' && L.saga.ch <= 1) sagas.firstDeath++; })());
   }
   report.luck[lk] = { ranks, ratings, races, wins, sagas };
 }
@@ -48,5 +48,7 @@ for (const lk of FW.LUCK.map(l => l.id)) {
     console.log('Races   strongest: ' + R.races.slice(0, 4).map(x => x.r + ' ' + x.avg.toFixed(0) + ' (n' + x.n + ')').join(', ') + '   weakest: ' + R.races.slice(-4).map(x => x.r + ' ' + x.avg.toFixed(0) + ' (n' + x.n + ')').join(', '));
     const n = R.sagas.ch.length;
     console.log('Sagas   ' + Object.keys(R.sagas.ends).sort().map(k => k + ' ' + pct(R.sagas.ends[k], n)).join(' · ') + '   chapters median ' + quant(R.sagas.ch, .5) + ', p90 ' + quant(R.sagas.ch, .9) + ', max ' + Math.max(...R.sagas.ch) + '   died in chapter 1: ' + pct(R.sagas.firstDeath, n));
+    const b = R.sagas.battles, died = Object.keys(R.sagas.ends).filter(k => S.MORTAL[k]).reduce((t, k) => t + R.sagas.ends[k], 0);
+    console.log('Story   battles: average win chance ' + pct(b.reduce((a, x) => a + x, 0), b.length) + ' (' + pct(b.filter(x => x <= 0.25).length, b.length) + ' at 25% or less)   events good ' + pct(R.sagas.good, R.sagas.good + R.sagas.bad) + ' / bad ' + pct(R.sagas.bad, R.sagas.good + R.sagas.bad) + '   sagas ending in a death ' + pct(died, n));
   }
 })();

@@ -16,6 +16,11 @@
     { id: 'dynasty', name: 'Dynasty', blurb: 'If you have an heir, continue the story as your child.' },
     { id: 'achievements', name: 'Achievements', blurb: 'Unlock badges for great (and terrible) sagas.' }
   ];
+  // endings where the hero dies; with the Death option off they survive instead
+  S.MORTAL = { dead: true, martyr: true, sealed: true, damned: true, undying: true };
+  // second chances: in chapters 1-6 three in five deaths become narrow escapes, later almost half (sagas run longer)
+  S.REPEAT_FADE = 0.6;   // a repeatable chapter keeps 60% of its slice each time it happens (train twice: 36%)
+  S.YOUNG_SAGA = 6; S.YOUNG_SAVE = 0.6; S.LATE_SAVE = 0.45;
   S.defaults = () => { const o = {}; S.OPTIONS.forEach(x => o[x.id] = true); return o; };
   S.opts = o => Object.assign(S.defaults(), o || {});
 
@@ -105,8 +110,11 @@
   };
   const foe = (name, lv, dsl) => ({ name, w: 1, dsl: 'lv=' + Math.round(clamp(lv, 12, 99)) + (dsl ? ' ' + dsl : '') });
   S.foe = foe;
-  // level of an ordinary story foe: near your own power, give or take
-  const nearYou = (L, rng, lo, hi) => FW.compute(L).baseRating + lo + rng() * (hi - lo);
+  // level of an ordinary story foe: near your own power, give or take (FOE_EASE tilts ordinary foes slightly your way)
+  S.FOE_EASE = 5;
+  const nearYou = (L, rng, lo, hi) => FW.compute(L).baseRating - S.FOE_EASE + lo + rng() * (hi - lo);
+  // a wheel of fixed-power foes (bosses, dragons): foes far above you get thinner slices, like arena matchmaking
+  const matched = (L, list) => { const r = FW.compute(L).baseRating; return list.map(x => FW.matchWeight ? x.w * FW.matchWeight(FW.P(x).lv, r) : x.w); };
 
   async function fight(L, io, ctx, enemy, cfg) {
     cfg = cfg || {};
@@ -128,7 +136,8 @@
   S.apply = function (L, ent, ctx) {
     const s = L.saga, o = ctx.o;
     let e = ent;
-    if (e.end === 'dead' && !o.death) e = Object.assign({}, e, { end: null, dsl: 'dur-1', text: (e.alive || 'Death comes close, but you survive with a terrible scar.'), tone: 'bad' });
+    if (S.MORTAL[e.end] && o.death && ctx.rng && ctx.rng() < (s.ch <= S.YOUNG_SAGA ? S.YOUNG_SAVE : S.LATE_SAVE)) e = Object.assign({}, e, { end: null, dsl: 'dur-1', text: (e.alive || 'Death comes close, but you survive with a terrible scar.'), tone: 'bad' });
+    if (S.MORTAL[e.end] && !o.death) e = Object.assign({}, e, { end: null, dsl: 'dur-1', text: (e.alive || 'Death comes close, but you survive with a terrible scar.'), tone: 'bad' });
     if (e.dsl) L.chron.push({ label: ctx.chName + ': ' + e.name, dsl: e.dsl, text: '', kind: 'story', key: ctx.ch });
     if (e.fx) e.fx(s, L, ctx);
     if (e.years) s.years += e.years;
@@ -157,18 +166,18 @@
   /* ---------------- chapters ---------------- */
   const has = (s, k) => !!s[k];
   S.CHAPTERS = [
-    { id: 'train', name: 'Train', emoji: '🏋️', w: 6, repeat: true, run: async (L, io, c) => outcome(L, io, c, { title: 'How does training go?', hue: 10, entries: [
+    { id: 'train', name: 'Train', emoji: '🏋️', w: 4.5, repeat: true, run: async (L, io, c) => outcome(L, io, c, { title: 'How does training go?', hue: 10, entries: [
       good('Muscles of iron', 4, 'str+1', 'Months of training: +1 Strength.'), good('Lightning footwork', 4, 'spd+1', 'Your feet blur: +1 Speed.'), good('Hardened body', 4, 'dur+1', 'Blows bounce off: +1 Durability.'),
       good('Perfect form', 4, 'fgt+1', 'Every move clean: +1 Fighting skills.'), good('Weapon drills', 3, 'wpn+1', 'Steel feels like part of your arm.'), good('A master takes notice', 1, 'fgt+1 wpn+1', 'A legendary teacher trains you personally.'),
       bad('Training injury', 3, 'spd-1', 'You push too hard and tear something.'), E('Plateau', 3, '', 'You train hard. Nothing changes.')] }) },
-    { id: 'study', name: 'Study', emoji: '📚', w: 5, repeat: true, run: async (L, io, c) => outcome(L, io, c, { title: 'What do you learn?', hue: 210, entries: [
+    { id: 'study', name: 'Study', emoji: '📚', w: 4, repeat: true, run: async (L, io, c) => outcome(L, io, c, { title: 'What do you learn?', hue: 210, entries: [
       good('Ancient tome', 5, 'int+1', 'Old books, new ideas: +1 Intelligence.'), good('Arcane insight', 4, 'pwr+1', 'Your power answers more quickly.'), good('Battle strategy', 3, 'int+1 fgt+1', 'You learn to win before the fight.'),
       E('Forbidden spell', 2, 'pwr+2 fate-1', 'Power, at a price.', { tone: 'bad' }), bad('Too much knowledge', 2, 'int-1', 'Something you read keeps you awake at night.'), E('Nothing sticks', 3, '', 'The books win this time.')] }) },
-    { id: 'treasure', name: 'Find treasure', emoji: '💰', w: 5, repeat: true, run: async (L, io, c) => { c.newArt = newArtifact(io.rng, null, 'pwr+1'); return outcome(L, io, c, { title: 'What do you find?', hue: 45, entries: [
+    { id: 'treasure', name: 'Find treasure', emoji: '💰', w: 3.5, repeat: true, run: async (L, io, c) => { c.newArt = newArtifact(io.rng, null, 'pwr+1'); return outcome(L, io, c, { title: 'What do you find?', hue: 45, entries: [
       good('Dragon gold', 5, 'rt+1', 'A hoard fit for a king.'), good('A lucky charm', 4, 'fate+1', 'It hums when danger is near.'), good('An ancient artifact', 3, 'pwr+1', 'You found {art}.', { fx: (s) => s.artifacts.push(c.newArt) }),
       good('A legendary weapon', 2, 'wpn+1', 'An old blade that remembers its last owner.'), bad('Cursed gold', 3, 'fate-1 rt+1', 'Rich, and very, very unlucky.'), bad('It was a mimic', 3, 'dur-1', 'The chest bites back.'), E('Empty chest', 3, '', 'Someone got here first.'),
       bad('A deadly trap', 1, '', 'The vault seals behind you.', { end: 'dead', alive: 'A trap nearly kills you; you crawl out scarred.' })] }); } },
-    { id: 'quest', name: 'Do a quest', emoji: '🗺️', w: 6, repeat: true, run: async (L, io, c) => {
+    { id: 'quest', name: 'Do a quest', emoji: '🗺️', w: 4, repeat: true, run: async (L, io, c) => {
       const q = await outcome(L, io, c, { title: 'What is the quest?', hue: 160, entries: [E('Save a village from raiders', 5, '', 'A village begs for help.'), E('Escort a royal caravan', 4, '', 'A caravan needs a guard.'), E('Hunt a man-eating beast', 4, '', 'Something hunts in the woods.'), E('Recover a stolen relic', 3, '', 'A temple wants its relic back.'), E('Break a witch\'s curse', 3, '', 'A whole town is cursed.')] });
       c.foe = ({ 'Save a village from raiders': 'the raider chief', 'Escort a royal caravan': 'the ambushers', 'Hunt a man-eating beast': 'the beast', 'Recover a stolen relic': 'the relic thieves', 'Break a witch\'s curse': 'the witch' })[q.name] || 'the foe';
       const r = await fight(L, io, c, foe(c.foe, nearYou(L, io.rng, -12, 8)));
@@ -184,7 +193,7 @@
       if (r === 'lose') return outcome(L, io, c, { title: 'Trapped in the dark...', hue: 0, entries: [bad('Crawl out wounded', 6, 'dur-1', 'You crawl out of the dungeon bleeding.'), bad('Lost for a year', 3, '', 'You are lost in the dark for a year.', { years: 1 }), bad('The dungeon claims you', 4, '', 'Your bones join the others in the dark.', { end: 'dead' })] });
       return S.apply(L, E('Retreat', 1, '', 'You retreat before the last room.'), c); } },
     { id: 'boss', name: 'Fight a boss', emoji: '👹', w: 4, run: async (L, io, c) => {
-      const bosses = S.allBosses(); const bi = await io.spin({ emoji: '👹', title: 'Which boss do you face?', entries: bosses.map(b => E(b.name, b.w, b.dsl, b.uni + ': ' + (b.perk || ''))), mode: 'stripe', hue: 0 });
+      const bosses = S.allBosses(), bw = matched(L, bosses); const bi = await io.spin({ emoji: '👹', title: 'Which boss do you face?', entries: bosses.map((b, k) => E(b.name, bw[k], b.dsl, b.uni + ': ' + (b.perk || ''))), mode: 'stripe', hue: 0, hint: 'Bosses far above you get thinner slices' });
       const boss = bosses[bi]; c.foe = boss.name;
       const r = await fight(L, io, c, boss);
       if (r === 'win') { const oe = FW.outcomeEntries(L); const oi = await io.spin({ emoji: '🏆', title: 'What do you do to ' + boss.name + '?', entries: oe.map(x => E(x.name, x.w, '', x.blurb)), mode: 'cat', hue: 130, hint: 'Your personality changes the slice sizes' });
@@ -195,7 +204,7 @@
         const ch = FW.applyConsequence(L, 'lose', de[di].key, boss, io.rng, { arena: c.lastArena, uni: boss.uni }); return S.apply(L, bad(de[di].name, 1, '', 'Beaten by ' + boss.name + '. ' + ch.text), c); }
       return S.apply(L, E('Stalemate', 1, '', boss.name + ' withdraws. This is not over.'), c); } },
     { id: 'dragon', name: 'Slay a dragon', emoji: '🐉', w: 3, run: async (L, io, c) => {
-      const di = await io.spin({ emoji: '🐉', title: 'Which dragon?', entries: DRAGONS.map(d => E(d.name, 1, d.dsl, 'Power ' + FW.P(d).lv)), mode: 'stripe', hue: 15 }); const d = DRAGONS[di]; c.foe = d.name;
+      const dw = matched(L, DRAGONS); const di = await io.spin({ emoji: '🐉', title: 'Which dragon?', entries: DRAGONS.map((d, k) => E(d.name, dw[k], d.dsl, 'Power ' + FW.P(d).lv)), mode: 'stripe', hue: 15, hint: 'Dragons far above you get thinner slices' }); const d = DRAGONS[di]; c.foe = d.name;
       const r = await fight(L, io, c, d, { emoji: '🐉' });
       if (r === 'win') return outcome(L, io, c, { title: 'The dragon falls. Now what?', entries: [good('Dragonslayer', 5, 'rt+3', '{hero} slays {foe}. The realm will never forget.'), good('Bathe in its blood', 3, 'dur+2 r=fire', 'Dragon blood hardens your skin.'), good('Take its hoard', 3, 'rt+1 fate+2', 'The hoard of {foe} is yours.'), good('Spare it and ride it', 2, 'spd+1 rt+2', '{foe} becomes your mount.', { fx: () => addAlly(L, d.name, FW.P(d).lv, 'befriend', 65) })] });
       if (r === 'lose') return outcome(L, io, c, { title: 'Dragonfire...', hue: 0, entries: [bad('Burned', 5, 'dur-1 w=fire', 'You carry the burns forever.'), bad('Eaten', 4, '', '{foe} swallows {hero} whole.', { end: 'dead' }), bad('Flee in shame', 4, 'rt-1', 'You run. Everyone saw.')] });
@@ -288,10 +297,11 @@
     { id: 'rival', name: 'A rival appears', emoji: '😠', w: 3, notOpt: 'nemesis', run: async (L, io, c) => {
       c.foe = pick(NEMESES, io.rng); const r = await fight(L, io, c, foe(c.foe, nearYou(L, io.rng, -6, 10)));
       return S.apply(L, r === 'win' ? good('Rival beaten', 1, 'rt+1', 'You beat your rival {foe}.') : r === 'lose' ? bad('Rival wins', 1, 'fgt+1', '{foe} beats you. You train twice as hard.') : E('Even match', 1, '', 'You and {foe} are perfectly matched.'), c); } },
-    { id: 'curse', name: 'Cursed', emoji: '🧿', w: 3, run: async (L, io, c) => outcome(L, io, c, { title: 'What is the curse?', hue: 270, entries: [
+    { id: 'curse', name: 'Cursed', emoji: '🧿', w: 1.5, run: async (L, io, c) => outcome(L, io, c, { title: 'What is the curse?', hue: 270, entries: [
       bad('Curse of weakness', 3, 'str-1', 'Your strength drains away.'), bad('Curse of misfortune', 3, 'fate-1', 'Nothing goes right anymore.'), E('Lycanthropy', 2, 'dark:str+2 sun:all-1', 'You become a beast under the moon.', { tone: 'bad' }), E('Cursed blood', 2, 'pwr+1 w=holy', 'Dark power, holy pain.', { tone: 'bad' }),
-      good('Curse broken', 3, 'fate+1', 'You break the curse before it takes hold.'), good('The curse becomes power', 1, 'pwr+2', 'You turn the curse into a weapon.'), bad('Withering curse', 1, '', 'The curse eats you from the inside.', { end: 'dead', alive: 'The curse nearly kills you.' })] }) },
-    { id: 'exile', name: 'Exiled', emoji: '🚪', w: 2, run: async (L, io, c) => outcome(L, io, c, { title: 'Exiled! What happens?', hue: 25, entries: [
+      good('Curse broken', 3, 'fate+1', 'You break the curse before it takes hold.'), good('The curse becomes power', 1, 'pwr+2', 'You turn the curse into a weapon.'), bad('Withering curse', 1, '', 'The curse eats you from the inside.', { end: 'dead', alive: 'The curse nearly kills you.' }),
+      bad('Undying', 0.7, '', '{hero} dies, and the curse will not let them stay dead. They rise again, cold and changed.', { end: 'undying', alive: 'You die for a moment, and come back a little colder.' })] }) },
+    { id: 'exile', name: 'Exiled', emoji: '🚪', w: 1.2, run: async (L, io, c) => outcome(L, io, c, { title: 'Exiled! What happens?', hue: 25, entries: [
       bad('Lose your kingdom', 3, '', 'You are driven out of {kingdom}.', { if: s => !!s.kingdom, fx: s => { s.kingdom = null; } }), good('Hardened by the wastes', 3, 'dur+1', 'The wastes make you tougher.', { years: 2 }), good('An army of exiles', 2, 'rt+1', 'Other exiles gather around you.', { fx: () => addAlly(L, 'the exile army', 50, 'befriend', 70) }),
       E('Bitter and alone', 3, 'int+1 fate-1', 'You spend years alone with your thoughts.', { years: 4, tone: 'bad' }), good('A new home', 3, 'fate+1', 'You find a new home far away.')] }) },
     { id: 'plague', name: 'Plague', emoji: '☠️', w: 2, run: async (L, io, c) => outcome(L, io, c, { title: 'The plague comes...', hue: 90, entries: [
@@ -316,13 +326,152 @@
     { id: 'loseAll', name: 'Lose everything', emoji: '🌪️', w: 1.5, run: async (L, io, c) => S.apply(L, bad('Everything is gone', 1, 'behind:all+2', 'You lose your home, your treasures and your friends. Nothing left to lose.', { fx: s => { s.kingdom = null; s.artifacts = []; L.ally.splice(0); } }), c) },
     { id: 'timeSkip', name: 'Years pass', emoji: '⏳', w: 3, repeat: true, run: async (L, io, c) => outcome(L, io, c, { title: 'Ten quiet years. How do they change you?', hue: 100, entries: [
       good('Wiser', 3, 'int+1', 'You grow wiser.', { years: 10 }), bad('Rusty', 3, 'fgt-1', 'You grow rusty.', { years: 10 }), good('Settled', 3, 'fate+1', 'You settle down for a while.', { years: 10 }), good('Your legend grows', 2, 'rt+1', 'Stories about you keep spreading.', { years: 10 })] }) },
-    { id: 'retire', name: 'Retire', emoji: '🌅', w: 1, repeat: true, retire: true, run: async (L, io, c) => S.apply(L, good('Retired', 1, '', '{hero} lays down their weapons and retires.', { end: 'retired' }), c) }
+
+    /* ---- story arcs: a chapter starts a thread (saga.flags) and later chapters, hidden until then, carry it on ---- */
+    // the prophecy: oracle -> signs -> it comes true (or you defy it)
+    { id: 'oracle', name: 'Visit an oracle', emoji: '🔮', w: 3, run: async (L, io, c) => outcome(L, io, c, { title: 'What does the oracle foretell?', hue: 270, entries: [
+      E('A crown awaits you', 3, 'fate+1', '"You will wear a crown that no one gives you," says the oracle.', { fx: s => { s.flags.prophecy = { kind: 'crown', stage: 1 }; } }),
+      E('You will save the world', 3, 'rt+1', '"When the sky breaks, you alone will stand," says the oracle.', { fx: s => { s.flags.prophecy = { kind: 'savior', stage: 1 }; } }),
+      E('A friend will betray you', 2, 'int+1', '"The hand you trust most will hold the knife," says the oracle.', { tone: 'bad', fx: s => { s.flags.prophecy = { kind: 'betrayal', stage: 1 }; } }),
+      E('You will become a legend', 2, '', '"You will become a story, and the story will outlive you," says the oracle.', { fx: s => { s.flags.prophecy = { kind: 'legend', stage: 1 }; } }),
+      bad('The oracle sees nothing', 2, 'fate-1', 'The oracle looks at you, goes pale and says nothing at all.')] }) },
+    { hard: true, hideLocked: true, id: 'omen', name: 'Signs of the prophecy', emoji: '🌠', w: 20, req: s => !!(s.flags.prophecy && s.flags.prophecy.stage === 1), run: async (L, io, c) => {
+      const p = L.saga.flags.prophecy, next = () => { p.stage = 2; };
+      return outcome(L, io, c, { title: 'The prophecy stirs. What do you see?', hue: 270, entries: [
+        good('A sign in the sky', 3, 'fate+1', 'A comet crosses the sky, just as the oracle said.', { fx: next }), good('Strangers know your name', 3, 'rt+1', 'People you have never met whisper about the prophecy.', { fx: next }),
+        E('You try to run from it', 2, 'spd+1', 'You try to outrun your fate. Every road leads back.', { fx: next }), bad('A false prophet', 2, 'fate-1', 'Someone else claims your prophecy and raises an army.', { fx: () => { next(); p.rival = true; } })] }); } },
+    { hard: true, hideLocked: true, id: 'fate', name: 'The prophecy comes true', emoji: '📜', w: 25, req: s => !!(s.flags.prophecy && s.flags.prophecy.stage === 2), run: async (L, io, c) => {
+      const s = L.saga, p = s.flags.prophecy; p.stage = 3;
+      const done = () => { s.flags.fulfilled = true; };
+      const defy = good('Defy the prophecy', 2, 'fate+2', 'You refuse your fate and write your own.');
+      if (p.kind === 'betrayal') {
+        const a = lowestLoyal(L, io.rng);
+        if (!a) return S.apply(L, good('No one left to betray you', 1, 'fate+1', 'The prophecy waits for a friend you never made. It never comes true.'), c);
+        c.ally = a;
+        return outcome(L, io, c, { title: 'The knife comes from {ally}. What happens?'.replace('{ally}', a.name), hue: 0, entries: [
+          bad('The betrayal', 3, 'dur-1', '{ally} betrays you, just as the oracle said.', { fx: () => { removeAlly(L, a); done(); } }), good('You forgive them', 2, 'fate+1', 'You forgive {ally}. The prophecy breaks in your hands.', { fx: () => { a.loyalty = 100; } }),
+          E('You strike first', 2, 'rt+1 fate-1', 'You strike {ally} down before the knife can fall.', { tone: 'bad', fx: () => { removeAlly(L, a); } }), defy,
+          bad('The knife finds you', 0.6, '', '{ally} kills {hero}, just as the oracle said.', { end: 'dead', fx: done })] });
+      }
+      if (p.kind === 'legend') return outcome(L, io, c, { title: 'Your story is everywhere. Do you become it?', hue: 50, entries: [
+        good('Pass into legend', 2, 'rt+3', 'One morning {hero} is simply gone. The songs say they never died.', { end: 'legend', fx: done }), good('Live up to the songs', 3, 'rt+2 fate+1', 'You become the hero the songs describe.', { fx: done }), defy] });
+      c.foe = p.rival ? 'the false prophet' : p.kind === 'crown' ? 'the old dynasty' : 'the breaking sky';
+      const r = await fight(L, io, c, foe(c.foe, p.kind === 'savior' ? Math.max(70, nearYou(L, io.rng, 4, 14)) : nearYou(L, io.rng, -2, 12), p.kind === 'savior' ? 'a=void,lightning w=holy' : ''), { emoji: '📜', scale: p.kind === 'crown' ? 'war' : 'duel', title: 'Does the prophecy come true?' });
+      if (r === 'win') return outcome(L, io, c, { title: 'The prophecy is fulfilled. Now what?', hue: 50, entries: p.kind === 'crown' ? [
+        good('Crowned as foretold', 4, 'rt+2', 'You take the crown, as the oracle said.', { fx: s2 => { done(); if (!s2.kingdom) s2.kingdom = { name: pick(REALMS, io.rng), style: 'Prophesied', power: 55 }; } }),
+        good('Ride into legend', 1.5, 'rt+3', '{hero} takes the crown, rules for a day and rides away into legend.', { end: 'fulfilled', fx: done })] : [
+        good('The world is saved', 4, 'rt+3 fate+1', '{hero} stands alone when the sky breaks, and the world is saved.', { fx: done }),
+        good('Ride into legend', 1.5, 'rt+3', '{hero} saves the world and walks off into the sunrise, a prophecy fulfilled.', { end: 'fulfilled', fx: done })] });
+      if (r === 'lose') return outcome(L, io, c, { title: 'The prophecy goes wrong...', hue: 0, entries: [bad('A broken prophecy', 4, 'fate-2', 'The prophecy breaks, and so does something in you.'), bad('Fulfilled at a price', 2, 'dur-1', 'It comes true, but not the way anyone hoped.', { fx: done }),
+        bad('Die so it comes true', p.kind === 'savior' ? 2 : 0.6, '', '{hero} gives their life, and the prophecy comes true without them.', { end: 'martyr', fx: done })] });
+      return S.apply(L, E('Not yet', 1, '', 'The day comes and goes. Maybe the oracle was wrong.', { fx: () => { p.stage = 2; } }), c); } },
+    // the demon pact: power now, the bill later
+    { id: 'pact', name: 'Bargain with a demon', emoji: '🩸', w: 2, run: async (L, io, c) => {
+      const sign = s => { s.flags.pact = { stage: 1 }; };
+      return outcome(L, io, c, { title: 'A demon offers you a deal. What do you ask for?', hue: 0, entries: [
+        E('Power beyond measure', 3, 'pwr+2 all+1', 'You sign in blood. Power floods in.', { tone: 'bad', fx: sign }), E('A crown', 2, 'rt+2', 'You sign, and wake up on a throne.', { tone: 'bad', if: s => !s.kingdom, fx: s => { sign(s); s.kingdom = { name: pick(REALMS, io.rng), style: 'Demon-given', power: 50 }; } }),
+        E('Youth', 2, 'dur+1', 'You sign, and thirty years fall away from you.', { tone: 'bad', fx: s => { sign(s); s.years = Math.max(0, s.years - 30); } }), E('Luck', 2, 'fate+3', 'You sign. Coins land your way from now on.', { tone: 'bad', fx: sign }),
+        good('Refuse', 3, 'fate+1', 'You tear up the contract. The demon laughs and leaves.')] }); } },
+    { hard: true, hideLocked: true, repeat: true, id: 'debt', name: 'The demon comes to collect', emoji: '👿', w: 15, req: s => !!(s.flags.pact && s.flags.pact.stage === 1), run: async (L, io, c) => {
+      const d = L.saga.flags.pact; d.stage = 2; c.foe = 'the demon';
+      const how = await outcome(L, io, c, { title: 'The demon wants its due. What do you do?', hue: 0, entries: [
+        E('Fight the demon', 4, '', 'You refuse to pay.', { quiet: true }), bad('Pay with a treasure', 2, '', 'You pay with your finest artifact.', { if: s => s.artifacts.length > 0, fx: s => { s.artifacts.pop(); } }),
+        bad('Pay with years', 2, '', 'The demon takes twenty years of your life.', { years: 20 }), good('Find a loophole', 1.5, 'int+1 rt+1', 'You find a loophole in the contract. The demon howls.', { fx: s => { s.flags.cheated = true; } }),
+        bad('Pay with your soul', 1, '', 'The demon drags {hero} below.', { end: 'damned', alive: 'The demon tries to take your soul, and gets only part of it.' })] });
+      if (how.name !== 'Fight the demon') return how;
+      const r = await fight(L, io, c, foe('the demon', Math.max(60, nearYou(L, io.rng, 0, 14)), 'a=fire,shadow w=holy'), { emoji: '👿', title: 'Can you beat the demon?' });
+      if (r === 'win') return S.apply(L, good('Contract burned', 1, 'rt+2', 'You beat the demon and burn the contract.', { fx: s => { s.flags.cheated = true; } }), c);
+      if (r === 'lose') return outcome(L, io, c, { title: 'The demon wins...', hue: 0, entries: [bad('Dragged below', 2, '', 'The demon drags {hero} below.', { end: 'damned', alive: 'The demon drags you halfway below before you claw your way back.' }),
+        bad('The debt doubles', 3, 'fate-2', 'The demon lets you go, and doubles what you owe.', { fx: () => { d.stage = 1; } }), bad('Marked', 3, 'w=holy', 'The demon brands you as its own.')] });
+      return S.apply(L, E('It will be back', 1, '', 'The demon fades, smiling. It will be back.', { fx: () => { d.stage = 1; } }), c); } },
+    // the sealed evil: seal weakens -> it wakes -> the world needs a hero
+    { id: 'seal', name: 'The ancient seal weakens', emoji: '🗝️', w: 2, run: async (L, io, c) => {
+      const stir = s => { s.flags.seal = { stage: 1 }; };
+      return outcome(L, io, c, { title: 'Something old stirs beneath the world. How do you notice?', hue: 250, entries: [
+        bad('The dead walk', 3, 'dur-1', 'The dead rise from their graves and walk toward the old mountain.', { fx: stir }), E('Strange dreams', 3, 'int+1', 'Every night you dream of a door, and something knocking.', { fx: stir }),
+        bad('A cult rises', 2, 'fate-1', 'A cult gathers in the hills, chanting a name no one should know.', { fx: stir }), good('You mend the seal', 2, 'fate+1 pwr+1', 'You find the cracking seal and mend it before anything gets out.')] }); } },
+    { hard: true, hideLocked: true, id: 'awaken', name: 'The evil awakens', emoji: '👁️', w: 20, req: s => !!(s.flags.seal && s.flags.seal.stage === 1), run: async (L, io, c) => {
+      L.saga.flags.seal.stage = 2; c.foe = 'the Herald of the Sleeper';
+      const r = await fight(L, io, c, foe(c.foe, nearYou(L, io.rng, -2, 12), 'a=void,shadow w=holy'), { emoji: '👁️', title: 'The Herald comes for you. Do you win?' });
+      if (r === 'win') return S.apply(L, good('Herald slain', 1, 'rt+1 fgt+1', 'You cut down the Herald. The Sleeper stirs anyway.'), c);
+      if (r === 'lose') return outcome(L, io, c, { title: 'The Herald wins...', hue: 0, entries: [bad('Darkness spreads', 4, 'fate-1', 'The Herald walks on, and the sky grows dark.'), bad('Slain by the Herald', 2, '', 'The Herald of the Sleeper kills {hero}.', { end: 'dead' })] });
+      return S.apply(L, E('The Herald withdraws', 1, '', 'The Herald withdraws into the dark, to wake its master.'), c); } },
+    { hard: true, hideLocked: true, id: 'lastStand', name: 'The world needs a hero', emoji: '🌑', w: 25, req: s => !!(s.flags.seal && s.flags.seal.stage === 2), run: async (L, io, c) => {
+      const s = L.saga; s.flags.seal.stage = 3; c.foe = 'the Sleeper beneath the world';
+      const r = await fight(L, io, c, foe(c.foe, 88, 'a=void,shadow,mind w=holy'), { scale: 'war', emoji: '🌑', title: 'The Sleeper wakes. Can the world be saved?' });
+      if (r === 'win') return outcome(L, io, c, { title: 'The Sleeper falls. What becomes of you?', hue: 50, entries: [
+        good('The evil is destroyed', 4, 'all+1 rt+4', '{hero} destroys the Sleeper beneath the world.', { fx: s2 => { s2.flags.evilSlain = true; } }),
+        good('Pass into legend', 1, 'rt+4', '{hero} destroys the Sleeper and vanishes in the light. The songs never stop.', { end: 'legend', fx: s2 => { s2.flags.evilSlain = true; } })] });
+      if (r === 'lose') return outcome(L, io, c, { title: 'The Sleeper is too strong...', hue: 0, entries: [
+        bad('Seal it with your life', 3, '', '{hero} gives their life to seal the Sleeper away again.', { end: 'sealed', alive: 'You seal the Sleeper away again, and it nearly costs you everything.' }),
+        bad('Fall so others can flee', 2, '', '{hero} holds the Sleeper back long enough for the world to run.', { end: 'martyr', alive: 'You hold the Sleeper back until everyone escapes, and crawl out last.' }),
+        bad('The world falls into shadow', 2, 'fate-2 rt-2', 'The Sleeper walks the world. You live on, in the dark.')] });
+      return S.apply(L, E('It sleeps again', 1, 'fate+1', 'The Sleeper sinks back beneath the world. For now.'), c); } },
+    // the heir grows up
+    { hard: true, hideLocked: true, id: 'heirGrown', name: 'Your heir comes of age', emoji: '🧒', w: 8, req: s => !!(s.heir && !s.heir.grown), run: async (L, io, c) => {
+      const s = L.saga, h = s.heir; h.grown = true; const lv = nearYou(L, io.rng, -12, 4);
+      return outcome(L, io, c, { title: h.name + ' is grown. Who have they become?', hue: 50, entries: [
+        good('A worthy heir', 4, 'fate+1', '{heir} grows up strong and fights at your side.', { fx: () => addAlly(L, h.name + ' (your heir)', lv, 'family', 95) }),
+        good('Greater than you', 1.5, 'rt+1', '{heir} becomes greater than you ever were.', { fx: () => { h.blessed = true; addAlly(L, h.name + ' (your heir)', lv + 12, 'family', 90); } }),
+        bad('A bitter rival', 2, 'fate-1', '{heir} turns against you and leaves in anger.', { fx: () => { h.rival = true; } }), E('Off on their own adventure', 2, '', '{heir} leaves home to write their own story.'),
+        E('Takes your throne', 2, '', '{heir} takes the throne of {kingdom}. You step aside.', { if: s2 => !!s2.kingdom, end: 'retired' })] }); } },
+
+    /* ---- more chapters ---- */
+    { id: 'siege', name: 'Defend a city', emoji: '🏯', w: 3, run: async (L, io, c) => {
+      const f = pick(S.FACTIONS.slice(0, 16), io.rng); c.foe = f.name;
+      const r = await fight(L, io, c, foe(f.name, nearYou(L, io.rng, -8, 10), f.dsl.replace(/lv=\d+\s*/, '')), { scale: 'war', emoji: '🏯', title: 'Does the city hold?' });
+      if (r === 'win') return outcome(L, io, c, { title: 'The siege is broken. What now?', entries: [good('Hero of the walls', 4, 'fgt+1 rt+1', 'The city sings of the day {hero} held the walls against {foe}.'), good('The city stands', 3, 'rt+2', 'You break the siege of {foe}.'),
+        good('Made lord of the city', 1.5, 'rt+1', 'The grateful city makes you its lord.', { if: s => !s.kingdom, fx: s => { s.kingdom = { name: pick(REALMS, io.rng), style: 'City-state', power: 40 }; } })] });
+      if (r === 'lose') return outcome(L, io, c, { title: 'The walls fall...', hue: 0, entries: [bad('The city falls', 4, 'rt-1 fate-1', '{foe} take the city.'), bad('Taken prisoner', 2, '', '{foe} keep you prisoner for two years.', { years: 2 }),
+        bad('Hold the gate to the last', 2, '', '{hero} holds the gate so the people can flee, and does not leave it.', { end: 'martyr', alive: 'You hold the gate until the last refugee is out, and somehow live.' })] });
+      return S.apply(L, E('The siege is lifted', 1, 'fate+1', '{foe} give up and march away.'), c); } },
+    { id: 'voyage', name: 'Sail the open sea', emoji: '⛵', w: 3, repeat: true, run: async (L, io, c) => {
+      const e = await outcome(L, io, c, { title: 'What happens at sea?', hue: 200, entries: [good('Discover a new land', 3, 'rt+1 int+1', 'You find a coast that is on no map.'), good('Pirate treasure', 3, 'fate+1 rt+1', 'You find a pirate\'s buried treasure.'),
+        E('A kraken rises', 3, '', 'Something huge rises from the deep.', { quiet: true }), bad('Shipwrecked', 3, 'dur-1', 'Shipwrecked on a nameless island for a year.', { years: 1 }), good('A mermaid\'s gift', 1.5, 'pwr+1 r=water', 'A mermaid gives you a pearl that hums with the sea.'),
+        bad('Sail off the map', 0.4, '', '{hero} sails past the edge of the map and is never seen again.', { end: 'lost' })] });
+      if (e.name !== 'A kraken rises') return e;
+      c.foe = 'the kraken'; const r = await fight(L, io, c, foe('the kraken', nearYou(L, io.rng, -2, 14), 'a=water r=water w=lightning'), { emoji: '🐙', title: 'Can you beat the kraken?' });
+      if (r === 'win') return S.apply(L, good('Kraken slayer', 1, 'str+1 rt+2', 'You slay the kraken. Sailors will tell this one forever.'), c);
+      if (r === 'lose') return outcome(L, io, c, { title: 'The kraken drags the ship down...', hue: 0, entries: [bad('Barely survive', 4, 'dur-1', 'You wash up on a beach, half-drowned.'), bad('Dragged into the deep', 2, '', 'The kraken drags {hero} into the deep.', { end: 'dead' })] });
+      return S.apply(L, E('The kraken sinks away', 1, '', 'The kraken sinks back into the dark water.'), c); } },
+    { id: 'heist', name: 'Pull off a heist', emoji: '💎', w: 3, run: async (L, io, c) => {
+      const thief = L.saga.guild === 'Thieves\' Guild'; c.newArt = newArtifact(io.rng, null, 'pwr+1');
+      return outcome(L, io, c, { title: 'How does the heist go?', hue: 280, hint: thief ? 'The Thieves\' Guild is helping you' : '', entries: [good('A perfect heist', thief ? 5 : 2, 'rt+1 fate+1', 'In and out. Nobody even knows it happened.'), good('Steal a famous artifact', 2, 'pwr+1', 'You steal {art}.', { fx: s => s.artifacts.push(c.newArt) }),
+        bad('Caught red-handed', thief ? 1 : 3, 'rt-1', 'Caught! Two years in the king\'s dungeon.', { years: 2 }), bad('Double-crossed', 2, 'fate-1', 'Your partner runs off with the loot.'), E('Rob a king', 1, 'rt+2 fate-1', 'You rob a king. Now a king wants you dead.', { tone: 'bad' })] }); } },
+    { id: 'haunted', name: 'Haunted', emoji: '👻', w: 2.5, run: async (L, io, c) => outcome(L, io, c, { title: 'A ghost follows you. What does it want?', hue: 180, entries: [
+      good('Lay it to rest', 3, 'fate+1', 'You finish what the ghost could not, and it finally rests.'), good('A ghostly companion', 1.5, '', 'The ghost decides to stay with you.', { fx: () => addAlly(L, 'a restless ghost', 45, 'befriend', 60) }),
+      good('Secrets of the dead', 2, 'pwr+1 r=shadow', 'The ghost teaches you what the dead know.'), bad('Driven half mad', 2, 'int-1', 'The whispers never stop.'), E('Possessed', 2, 'pwr+1 fate-1', 'Something else shares your body now.', { tone: 'bad' }),
+      E('The ghost is you', 1, 'int+1', 'The ghost wears your face, from a life you have forgotten.')] }) },
+    { id: 'mentor', name: 'Meet a mentor', emoji: '🧙', w: 3, run: async (L, io, c) => outcome(L, io, c, { title: 'Who takes you under their wing?', hue: 120, entries: [
+      good('A master of the blade', 3, 'fgt+1 wpn+1', 'An old swordmaster teaches you everything.'), good('An old archmage', 3, 'pwr+1 int+1', 'An archmage shares secrets older than kingdoms.'),
+      good('A retired hero', 2, 'rt+1 fate+1', 'A retired hero takes up the sword again, for you.', { fx: () => addAlly(L, 'your old mentor', 60, 'befriend', 85) }),
+      E('Dies in your arms', 2, 'all+1', 'Your mentor dies, and leaves you everything they knew.', { tone: 'bad' }), E('A dark secret', 1.5, 'pwr+1 fate-1', 'Your mentor taught you well. Then you learn what they really were.', { tone: 'bad' })] }) },
+    { id: 'duel', name: 'A duel of honour', emoji: '🤺', w: 3, repeat: true, run: async (L, io, c) => {
+      c.foe = pick(['Count Verano', 'a scarred knight', 'the Duchess of Blades', 'an insulted wizard', 'a young hothead', 'Sir Gideon the Grey'], io.rng);
+      const r = await fight(L, io, c, foe(c.foe, nearYou(L, io.rng, -6, 10)), { emoji: '🤺', title: 'Who wins the duel?' });
+      if (r === 'win') return S.apply(L, good('Honour satisfied', 1, 'rt+1 fgt+1', 'You beat {foe} at dawn.'), c);
+      if (r === 'lose') return outcome(L, io, c, { title: 'You lose the duel...', hue: 0, entries: [bad('Yield', 4, 'rt-1', 'You yield to {foe}.'), bad('Wounded', 3, 'dur-1', '{foe} leaves you bleeding in the grass.'), bad('Killed in the duel', 1, '', '{foe} kills {hero} at dawn.', { end: 'dead' })] });
+      return S.apply(L, good('Respect earned', 1, 'fate+1', 'Neither of you falls. You part as friends.'), c); } },
+    { hard: true, id: 'succession', name: 'War of succession', emoji: '⚜️', w: 3, req: s => !!(s.kingdom && s.heir), reqText: 'needs a kingdom and an heir', run: async (L, io, c) => {
+      c.foe = 'the pretender'; const r = await fight(L, io, c, foe('the pretender', nearYou(L, io.rng, -8, 8)), { scale: 'war', emoji: '⚜️', title: 'A cousin claims the throne of ' + L.saga.kingdom.name + '. Who wins?' });
+      if (r === 'win') return S.apply(L, good('Your line is secure', 1, 'rt+2 fate+1', '{heir} will rule {kingdom} after you. No one doubts it now.'), c);
+      if (r === 'lose') return outcome(L, io, c, { title: 'The pretender wins...', hue: 0, entries: [bad('The pretender takes the throne', 4, 'rt-2', 'The pretender takes {kingdom}.', { fx: s => { s.kingdom = null; } }), bad('Your heir flees', 3, 'fate-1', '{heir} has to flee the country.'),
+        bad('Die defending your heir', 1.5, '', '{hero} dies so that {heir} can escape.', { end: 'martyr', alive: 'You hold the pretender off long enough for {heir} to escape, and barely live.' })] });
+      return S.apply(L, E('The kingdom splits', 1, '', '{kingdom} splits in two.', { tone: 'bad', fx: s => { s.kingdom.power = Math.max(10, (s.kingdom.power || 50) - 20); } }), c); } },
+    { id: 'found', name: 'Found a city', emoji: '🏛️', w: 2, run: async (L, io, c) => { const city = pick(['Brightharbor', 'Stonebridge', 'Ashford', 'Duskhaven', 'Goldmere', 'Highwatch', 'Lanternfall', 'Saltmarch'], io.rng);
+      return outcome(L, io, c, { title: 'You found ' + city + '. What does it become?', hue: 40, entries: [good('A thriving city', 3, 'rt+2', city + ' grows rich and proud.', { fx: s => { s.flags.city = city; } }),
+        good('An academy of heroes', 2, 'int+1 fgt+1', city + ' becomes a school for heroes.', { fx: s => { s.flags.city = city; } }), good('A haven for outcasts', 2, 'fate+1', city + ' takes in everyone no one else wants.', { fx: s => { s.flags.city = city; addAlly(L, 'the people of ' + city, 40, 'befriend', 90); } }),
+        E('A city of thieves', 1.5, 'spd+1 fate-1', city + ' becomes the best place in the world to buy stolen things.', { tone: 'bad', fx: s => { s.flags.city = city; } }), bad('A ghost town', 2, 'rt-1', 'Nobody comes. ' + city + ' stays empty.')] }); } },
+
+    { id: 'retire', name: 'Retire', emoji: '🌅', w: 1, repeat: true, retire: true, run: async (L, io, c) => (L.saga.ch >= 12 && io.rng() < 0.2
+      ? S.apply(L, good('Passed into legend', 1, '', 'One morning {hero} walks into the mist and is never seen again. The songs never stop.', { end: 'legend' }), c)
+      : S.apply(L, good('Retired', 1, '', '{hero} lays down their weapons and retires.', { end: 'retired' }), c)) }
   ];
   S.CHAPTER_BY_ID = {}; S.CHAPTERS.forEach(ch => S.CHAPTER_BY_ID[ch.id] = ch);
 
   /* ---------------- the story wheel ---------------- */
   S.retireWeight = function (L, o) {
-    const s = L.saga || { ch: 0 }; let w = 1.2 + 0.4 * s.ch;
+    const s = L.saga || { ch: 0 }; let w = 0.8 + 0.25 * s.ch;
     if (o.aging && S.isOld(L)) { const life = S.lifespan(L), a = S.age(L); w += 2 + 4 * clamp((a - life.old) / (life.max - life.old), 0, 2); }
     return w;
   };
@@ -336,6 +485,9 @@
       if (ch.opt && !o[ch.opt]) return;
       if (ch.notOpt && o[ch.notOpt]) return;
       let w = weights[ch.name] > 0 ? weights[ch.name] : ch.w;
+      // a chapter that can repeat gets a thinner slice each time it happens, so sagas don't loop on the same few
+      const reps = (s.flags && s.flags.reps && s.flags.reps[ch.id]) || 0;
+      if (ch.repeat && !ch.retire && !ch.hideLocked && reps) w *= Math.pow(S.REPEAT_FADE, reps);
       if (ch.retire) w = S.retireWeight(L, o);
       const used = !ch.repeat && s.used.indexOf(ch.id) >= 0;
       const locked = !used && ch.req && !ch.req(s, L, o) && (o.requirements || ch.hard);
@@ -374,6 +526,7 @@
     const i = await io.spin({ kind: 'story', emoji: '📖', title: 'Chapter ' + (s.ch + 1) + ': what happens next?', entries: ents, mode: 'cat', hue: 30, hint: 'Grey slices are done or locked' });
     const ch = S.CHAPTER_BY_ID[ents[i].id];
     s.ch++; if (!ch.repeat) s.used.push(ch.id);
+    else if (!ch.retire) { s.flags.reps = s.flags.reps || {}; s.flags.reps[ch.id] = (s.flags.reps[ch.id] || 0) + 1; }
     const c = { o, ch: ch.id, chName: ch.name, emoji: ch.emoji, rng: io.rng };
     s.years += ch.retire ? 0 : 1 + Math.floor(io.rng() * 3);
     await ch.run(L, io, c);
@@ -384,7 +537,9 @@
   };
 
   /* ---------------- dynasty: what the heir inherits ---------------- */
-  S.canContinue = (L, opts) => { const s = L.saga; return !!(s && s.end && s.end !== 'lost' && s.heir && S.opts(opts).dynasty); };
+  // endings that leave nothing behind (no body, no grave, no throne to pass on) end the family line too
+  S.NO_HEIR = { lost: true, sealed: true, damned: true };
+  S.canContinue = (L, opts) => { const s = L.saga; return !!(s && s.end && !S.NO_HEIR[s.end] && s.heir && S.opts(opts).dynasty); };
   S.inheritance = function (L) {
     const s = L.saga, c = FW.compute(L);
     const best = FW.COMBAT_STATS.slice().sort((a, b) => (c.stats[b].lvl || 0) - (c.stats[a].lvl || 0))[0];
@@ -401,7 +556,9 @@
   };
 
   /* ---------------- summaries (card, text, art) ---------------- */
-  S.endLabel = { dead: 'Died', retired: 'Retired', ascended: 'Ascended', lost: 'Lost between worlds' };
+  S.endLabel = { dead: 'Died', retired: 'Retired', ascended: 'Ascended', lost: 'Lost between worlds', martyr: 'Died a hero', sealed: 'Sealed away', damned: 'Taken by the demon', fulfilled: 'Prophecy fulfilled', undying: 'Risen undead', legend: 'Passed into legend' };
+  S.endIcon = { dead: '🪦', retired: '🌅', ascended: '✨', lost: '🌀', martyr: '🕊️', sealed: '🗝️', damned: '🔥', fulfilled: '📜', undying: '💀', legend: '🌟' };
+  S.RARE_END = { ascended: true, fulfilled: true, legend: true };
   S.summary = function (L) {
     const s = L.saga; if (!s) return '';
     const parts = [s.ch + ' chapter' + (s.ch === 1 ? '' : 's')];

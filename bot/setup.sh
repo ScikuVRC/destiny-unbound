@@ -42,17 +42,22 @@ if [ ! -s "$ENV" ] || [ "${1:-}" = "--token" ]; then
   sudo chown root:root "$ENV" && sudo chmod 600 "$ENV"
   unset TOKEN
 fi
+# the world counter's address, for /stats (only added if the file doesn't set one yet)
+sudo grep -q '^WORLD_URL=' "$ENV" || echo 'WORLD_URL=https://destiny-unbound-counter.destiny-unbound.workers.dev' | sudo tee -a "$ENV" >/dev/null
 
 say "Service"
 sudo tee /etc/systemd/system/$SVC.service >/dev/null <<UNIT
 [Unit]
-Description=Destiny Unbound Discord bot (/spin)
+Description=Destiny Unbound Discord bot (/spin, /stats)
 After=network-online.target
 Wants=network-online.target
 
 [Service]
 User=destinybot
 EnvironmentFile=$ENV
+# the /spin count lives in /var/lib/destiny-bot (the only folder the bot may write to)
+StateDirectory=destiny-bot
+Environment=STATS_FILE=/var/lib/destiny-bot/stats.json
 WorkingDirectory=$DIR/bot
 ExecStart=/usr/bin/node index.js
 Restart=always

@@ -7,7 +7,7 @@
   const FW = window.FW, App = window.FWApp, D = window.fatewheelDesktop;
   const PAGE = 'https://bzrkherja.itch.io/destiny-unbound';
 
-  const endWord = e => ({ dead: 'fell', retired: 'retired', ascended: 'ascended', lost: 'was lost' }[e] || 'the end');
+  const endWord = e => ({ dead: 'fell', retired: 'retired', ascended: 'ascended', lost: 'was lost', martyr: 'died a hero', sealed: 'was sealed away', damned: 'was taken below', fulfilled: 'fulfilled a prophecy', undying: 'rose again', legend: 'passed into legend' }[e] || 'the end');
 
   /* What to show, from the game's state. Pure, so it can be tested without Discord. */
   FW.presenceFor = function (S, opts) {

@@ -2,7 +2,7 @@
 
 A running record of where the game stands. Update it when something ships, starts or gets decided.
 This file is public: server addresses, account, payment and moderation details go in `private-notes.md` (not on GitHub).
-Last updated: 2026-11-13 · Current version: **0.1.0-alpha.6**
+Last updated: 2026-11-13 · Current version: **0.2.0-alpha.1**
 
 Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
@@ -21,6 +21,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 | Discord status (Rich Presence) | 0.1.0-alpha.4 | ✅ released 2026-11-13 |
 | Discord server links in the game | 0.1.0-alpha.5 | ✅ released 2026-11-13 |
 | New achievements, accessibility pass, phone layout, French, German and Japanese, Ember Dominion mod template | 0.1.0-alpha.6 | ✅ released 2026-11-13 |
+| Story arcs and endings, balance pass, spin screen redesign, world counter | 0.2.0-alpha.1 | ✅ released 2026-11-13 |
 | Alpha test with 5-15 players | two weeks after release | ⬜ |
 | Beta (fixes from the alpha, signed build, store page) | 0.2.0-beta.1 | ⬜ |
 | 1.0 on itch.io | 1.0.0 | ⬜ |
@@ -48,6 +49,13 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 - Nothing yet
 
 ## Released
+
+### 0.2.0-alpha.1 (2026-11-13, notes in `CHANGELOG.md`)
+
+- ✅ Story arcs (prophecy, demon pact, sealed evil, heir comes of age), 8 new chapters (49), 6 new endings (10), 5 new achievements (34)
+- ✅ Balance: 10,000-saga checks per luck; Heroic arena 51% -> 60%, story battles 45% -> 53%, deaths 48% -> 35%; more chapter variety
+- ✅ Spin screen lined up: Re-spin token badge, Spin settings pop-up, legend shows rolled rows with Show upcoming; desktop and itch.io layouts checked with `scripts/layout-check.js`
+- ✅ Opt-in world counter (`worker/`, Options > Data) and `/stats` on the Discord bot
 
 ### 0.1.0-alpha.6 (2026-11-13, notes in `CHANGELOG.md`)
 
@@ -150,10 +158,13 @@ Newest first. Fixed bugs ship in the next alpha build.
 
 | What | Now | Where it comes from |
 | --- | --- | --- |
-| Automated checks | 83 passing (7 suites) | `npm test` |
-| Mortal-luck arena fights at 10% or less | 23% | `node scripts/balance-report.js` |
-| Sagas ending in death | about 47-50% | balance report |
-| Deaths in chapter 1 | 5-9% | balance report |
+| Automated checks | 84 passing (7 suites) | `npm test` |
+| Arena average win chance (Mortal / Heroic / Mythic / Divine) | 43% / 57% / 72% / 85% (was 36 / 51 / 69 / 84) | `node scripts/balance-report.js 10000 10000` |
+| Mortal-luck arena fights at 10% or less | 12% (was 23%) | balance report |
+| Story battles, average win chance (Heroic) | 54% (was 45%) | balance report |
+| Sagas ending in a death (Heroic) | 40% (was 48%) | balance report |
+| Saga length (median / 1 in 10) | 12-13 / 28 chapters (was 7-8 / 18) | balance report |
+| Deaths in chapter 1 | 2-3% (was 5-9%) | balance report |
 | Installer size | about 120 MB | `npm run dist` |
 
 ## Decisions log
@@ -164,8 +175,11 @@ Newest first. Fixed bugs ship in the next alpha build.
 | 2026-11-12 | Main menu matches the selected theme (all four painted designs) |
 | 2026-11-12 | Astral Oracle replaces the Adventurer's Sheet theme |
 | 2026-11-12 | Analytics stay local only; nothing is sent automatically |
+| 2026-11-13 | One exception, opt-in only: the world counter (Options > Data, off by default) sends an anonymous "hero made" or "saga ended: <ending>" count to a Cloudflare Worker (`worker/`); `/stats` on the Discord shows the totals |
 | 2026-11-12 | Repository becomes public as `ScikuVRC/destiny-unbound` |
 | 2026-11-12 | AI use is disclosed in the README, the credits and the store page |
 | 2026-11-13 | Content packs are mods; the sci-fi pack is original (no licensed setting) |
 | 2026-11-13 | `/spin` only works in #spin-the-wheel |
 | 2026-11-13 | 0.1.0-alpha.6 is the last 0.1 release; the next focus is the 0.2 major update |
+| 2026-11-13 | Balance patch after tester feedback ("the odds are against us"), checked with 10,000 legends and 10,000 sagas per luck level: tighter arena matchmaking, bosses and dragons matched to your power, ordinary story foes 5 points easier, more second chances. Mortal stays the hard mode |
+| 2026-11-13 | Story wheel variety: Train, Study, Find treasure and Do a quest have smaller slices, Cursed and Exiled are about half as likely, and a repeatable chapter keeps 60% of its slice each time it happens |

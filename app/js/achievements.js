@@ -38,7 +38,13 @@
     { id: 'giant', icon: '🗿', name: 'Giant Slayer', desc: 'Win an arena fight with less than a 15% chance.', test: L => wins(L).some(c => typeof c.p === 'number' && c.p < 0.15) },
     { id: 'mercy', icon: '🕊️', name: 'Mercy', desc: 'Spare an opponent you beat in the arena.', test: L => wins(L).some(c => c.key === 'spare') },
     { id: 'recruit', icon: '🎖️', name: 'Strength in Numbers', desc: 'Recruit an opponent you beat in the arena.', test: L => wins(L).some(c => c.key === 'recruit') },
-    { id: 'survivor', icon: '🩹', name: 'Live to Fight Another Day', desc: 'Lose an arena fight, then fight again.', test: L => { const f = fights(L), i = f.findIndex(c => c.kind === 'lose'); return i >= 0 && f.length > i + 1; } }
+    { id: 'survivor', icon: '🩹', name: 'Live to Fight Another Day', desc: 'Lose an arena fight, then fight again.', test: L => { const f = fights(L), i = f.findIndex(c => c.kind === 'lose'); return i >= 0 && f.length > i + 1; } },
+    // story arcs and endings (0.2)
+    { id: 'prophecy', icon: '📜', name: 'Written in the Stars', desc: 'Fulfil a prophecy.', test: L => !!(L.saga && L.saga.flags && L.saga.flags.fulfilled) },
+    { id: 'devil', icon: '👿', name: 'The Devil\'s Due', desc: 'Beat or outwit the demon you made a deal with.', test: L => !!(L.saga && L.saga.flags && L.saga.flags.cheated) },
+    { id: 'sleeper', icon: '🌑', name: 'Light in the Dark', desc: 'Destroy the ancient evil beneath the world.', test: L => !!(L.saga && L.saga.flags && L.saga.flags.evilSlain) },
+    { id: 'legend', icon: '🌟', name: 'Into Legend', desc: 'Pass into legend.', test: L => !!(L.saga && L.saga.end === 'legend') },
+    { id: 'martyr', icon: '🕯️', name: 'Greater Love', desc: 'Die a hero, saving others.', test: L => !!(L.saga && L.saga.end === 'martyr') }
   ];
   const BY_ID = {}; FW.ACHIEVEMENTS.forEach(a => BY_ID[a.id] = a);
   const enabled = () => !FW.gameOptions || FW.gameOptions().achievements;

@@ -201,6 +201,19 @@ Write normal CSS, and use `&` for the page itself:
 [reference/css-hooks.md](reference/css-hooks.md) lists the main class names. To see more, open the game in a
 browser, right-click anything and choose **Inspect**.
 
+**Style, don't move.** The game arranges each screen to fit the window, so leave sizes and positions to it: no
+`width`, `height`, `grid`, `position` or `display` on the screen layout (`.spin-layout`, `.stage`, `.wheel-wrap`,
+`.sheet`, `.screen`). Colours, borders, shadows, fonts and backgrounds are all yours. The spin screen has three
+layouts, and your theme should look right in each:
+
+- **Side by side** (most laptop and desktop windows up to 1200 pixels tall, and the itch.io player): the wheel on
+  the left, the question, result and buttons in the middle, the legend panel on the right (below it in narrow
+  windows).
+- **Stacked** (very tall windows, 2560x1440 and up): the question and result above the wheel, buttons below.
+- **Phone** (narrow windows): everything in one column.
+
+To check, resize the game window (or the browser) from small to large while your theme is selected.
+
 For safety, the game removes anything that could load files from outside your mod: `@import`, web addresses,
 `image-set()` and similar. `url(...)` may only point to files inside your mod, for example
 `url(art/background.jpg)`. CSS escapes (backslashes) are removed too.

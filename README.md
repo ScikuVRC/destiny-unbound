@@ -6,7 +6,7 @@
 
 **Spin the wheels of fate. Forge a legend. Live its story, or die trying.**
 
-[![Version](https://img.shields.io/badge/version-0.1.0--alpha.6-8a5fd6)](progress.md)
+[![Version](https://img.shields.io/badge/version-0.2.0--alpha.1-8a5fd6)](progress.md)
 [![License: GPL v3](https://img.shields.io/badge/license-GPL--3.0--or--later-blue)](LICENSE)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20web-444)
 [![Play on itch.io](https://img.shields.io/badge/play-itch.io-fa5c5c?logo=itch.io&logoColor=white)](https://bzrkherja.itch.io/destiny-unbound)
@@ -53,7 +53,7 @@ chapter, until they retire, ascend or fall.
   the odds, and the wheel always shows the true chances.
 - **Four painted themes.** Ashen Crown, Astral Oracle, Iron Litany and Blood Moon, each with its own title
   screen, wheel, character-card frame, sound effects and music.
-- **Keep playing.** A daily challenge, the Hall of Legends, 29 achievements, versus mode and a vertical video
+- **Keep playing.** A daily challenge, the Hall of Legends, 34 achievements, versus mode and a vertical video
   recorder for sharing.
 - **Built for everyone.** Full controller support, rebindable keys, colour-blind-safe wheels, high contrast,
   text size, reduced motion and sound captions. English, Spanish, French, German and Japanese.
@@ -133,6 +133,16 @@ this size possible on my own, I used AI tools. In the spirit of transparency, he
 AI was used because of a lack of personal funding, not to replace anyone's work. I want players to know
 what they are getting, so this is disclosed here, in the game's credits and on the store page. If you'd rather
 not support projects that use AI, I respect that choice.
+
+## Privacy
+
+The game keeps your saves and play stats on your own device. It sends nothing unless you switch something on:
+
+- **World counter** (Options > Data, off by default): adds one anonymous count to everyone's totals each time you
+  finish a hero or a saga ends. Only "a hero" or the name of the ending is sent: no names, legend codes or IDs.
+  The totals are shown in Options and by `/stats` on the Discord. The counter's code is in [worker/](worker/).
+- **Feedback reports** include your play stats only if you tick the box.
+- **The Art Studio and the saga writer** only talk to an image generator or language model you connect yourself.
 
 ## Support the project
 

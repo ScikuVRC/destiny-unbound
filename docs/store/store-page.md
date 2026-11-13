@@ -40,7 +40,7 @@ A daily challenge with the same spins for everyone. Optional AI portraits with t
 - Story mode with sagas, nemeses, kingdoms, dynasties and heirs
 - Arena fights across thirteen worlds, 77 opponents
 - Four painted themes with their own wheels, sounds and music
-- Daily challenge, Hall of Legends, 29 achievements
+- Daily challenge, Hall of Legends, 34 achievements
 - Wheel Workshop and mod support (themes, sounds, wheel entries)
 - Full controller support, rebindable keys, colour-blind-safe wheels, high contrast, sound captions
 - English, Spanish, French, German and Japanese

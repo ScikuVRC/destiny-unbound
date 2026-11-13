@@ -95,6 +95,8 @@
   function updateTokens() {
     const c = FW.compute(state.legend);
     $('#tokenBox').innerHTML = H.tokens(tokensLeft(), c.fateTokens);
+    // the count of Fate Tokens left sits on the Re-spin button itself (a separate badge, so the word still translates)
+    $('#btnRespin').innerHTML = '&#8635; <span>Re-spin</span> <b class="cnt" aria-label="' + H.esc(FW.t('Fate Tokens left')) + '">' + tokensLeft() + '</b>';
     $('#btnRespin').disabled = tokensLeft() <= 0;
     $('#btnRespin').title = tokensLeft() <= 0 ? 'No Fate Tokens left' : 'Spend a Fate Token to spin this wheel again';
   }
@@ -149,7 +151,13 @@
     if (!state.legend) return;
     const c = FW.compute(state.legend);
     $('#sheetTitle').textContent = 'Your Legend';
-    $('#sheetBody').innerHTML = H.rating(c) + '<div class="rows">' + H.sheetRows(state.legend, c, curId) + '</div>';
+    const rows = H.sheetRows(state.legend, c, curId), upcoming = (rows.match(/class="row empty"/g) || []).length;
+    // rows not rolled yet stay hidden until the player asks for them (remembered); everything rolled always shows
+    const all = !!store.get('fw.sheetAll', false);
+    $('#sheet').classList.toggle('all', all);
+    $('#sheetBody').innerHTML = H.rating(c) + '<div class="rows">' + rows + '</div>' +
+      (upcoming ? '<button class="btn small ghost sheet-more" id="sheetMore" aria-pressed="' + all + '"><span>' + (all ? 'Hide upcoming' : 'Show upcoming') + '</span>' + (all ? '' : ' <b class="cnt">' + upcoming + '</b>') + '</button>' : '');
+    const more = $('#sheetMore'); if (more) more.onclick = () => { store.set('fw.sheetAll', !all); refreshSheet(curId); const m = $('#sheetMore'); if (m) m.focus(); };
   }
   function refreshFightSheet() {
     const L = state.legend, c = FW.compute(L), f = state.fight || {};
@@ -437,6 +445,11 @@
   $('#btnAutoToggle').onclick = () => { state.auto = !state.auto; syncAutoBtn(); if (state.auto && state.waiter) { if (state.mode === 'ready') autoFire('spin', 300); else if (state.mode === 'result') autoFire('next', 600); } };
   $('#btnSpeed').onclick = () => { state.speed = state.speed === 'normal' ? 'fast' : 'normal'; syncSpeedBtn(); persist(); };
   $('#btnDir').onclick = () => { state.spinDir = state.spinDir === 'cw' ? 'ccw' : 'cw'; syncDirBtn(); persist(); };
+  // Spin settings: speed, direction and the Fate Token counter, in a small pop-up next to Auto
+  const spinSet = (open) => { const p = $('#spinSet'), b = $('#btnSpinSet'); if (!p) return; p.hidden = !open; b.setAttribute('aria-expanded', String(open)); };
+  $('#btnSpinSet').onclick = e => { e.stopPropagation(); spinSet($('#spinSet').hidden); if (!$('#spinSet').hidden) $('#btnSpeed').focus(); };
+  document.addEventListener('click', e => { if (!$('#spinSet').hidden && !e.target.closest('.spinset-wrap')) spinSet(false); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#spinSet').hidden) { e.stopImmediatePropagation(); e.preventDefault(); spinSet(false); $('#btnSpinSet').focus(); } }, true);
   $('#btnSound').onclick = () => { state.sound = !state.sound; syncSound(); persist(); FW.Audio.init(); FW.Audio.click(); };
   $('#btnLuck').onclick = () => { const i = FW.LUCK.findIndex(l => l.id === state.luck); setLuck(FW.LUCK[(i + 1) % FW.LUCK.length].id); if (state.screen !== 'home') toast('Luck applies to your next legend'); };
   $('#btnTheme').onclick = () => { const k = Object.keys(FW.THEMES); setTheme(k[(k.indexOf(state.theme) + 1) % k.length]); };

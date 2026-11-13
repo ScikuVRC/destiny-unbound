@@ -1,7 +1,9 @@
 /* Frostbound theme CSS.
    This file only applies while the Frostbound theme is selected, so it can't affect other themes.
    Write normal CSS. "&" means the page itself. url() may only point to files inside this mod.
-   Class names you can use: see reference/css-hooks.md in the mod kit. */
+   Class names you can use: see reference/css-hooks.md in the mod kit.
+   Style, don't move: colours, borders, fonts and backgrounds are yours; leave sizes and positions to the game,
+   which fits every screen to the window (side by side on desktops and itch.io, one column on phones). */
 
 /* The page: a cold glow from the top, over the dark background colour */
 & {

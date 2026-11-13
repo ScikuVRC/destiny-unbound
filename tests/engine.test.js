@@ -111,7 +111,7 @@ t('weighted pick follows slice sizes', () => {
   const human = st.entries.find(e => e.name === 'Human'), god = st.entries.find(e => e.name === 'God');
   assert(Math.abs(cnt.Human / N - human.w / tot) < 0.01, 'human freq');
   assert((cnt.God || 0) / N < 0.005, 'God must be rare');
-  assert(human.w > god.w * 50);
+  assert(human.w > god.w * 20, 'Human must stay far more common than God');
 });
 
 t('race bonus is applied to the rolled tier (Shadowborn +2 speed)', () => {
@@ -274,7 +274,8 @@ t('consequences apply and are reflected in the card', () => {
 t('custom wheel overrides (Workshop)', () => {
   const L = new FW.Legend({ luck: 'mortal' });
   const st = FW.buildStage('race', L, { overrides: { race: { removed: ['Human'], weights: { Elf: 50 }, added: [{ name: 'Moth Person', w: 5 }] } } });
-  assert(!st.entries.find(e => e.name === 'Human')); assert.strictEqual(st.entries.find(e => e.name === 'Elf').w, 50); assert(st.entries.find(e => e.name === 'Moth Person'));
+  assert(!st.entries.find(e => e.name === 'Human')); const k = L.luckInfo().k;   // luck flattens list wheels: weight^(1/(1+0.35k))
+  assert(Math.abs(st.entries.find(e => e.name === 'Elf').w - Math.pow(50, 1 / (1 + 0.35 * k))) < 1e-9, 'the Workshop weight replaces the base slice (luck still applies on top)'); assert(st.entries.find(e => e.name === 'Moth Person'));
   const mini = FW.buildStage('race', L, { overrides: { race: { removed: FW.RACES.map(r => r.name) } } });
   assert(mini.entries.length > 0, 'removing everything must fall back');
 });

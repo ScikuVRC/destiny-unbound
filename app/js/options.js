@@ -117,7 +117,11 @@
       h += '<div id="oBackups" class="o-list"><p class="o-note">…</p></div><p>' + btn('backupNow', 'Back up now') + (D ? ' ' + btn('openBackups', 'Open backups folder', 'ghost') : '') + '</p></div>';
       h += '<div class="o-grp"><h3>' + H.esc(t('Move your save')) + '</h3><p class="o-note">' + H.esc(t('Export everything (Hall of Legends, settings, Workshop edits, achievements) to one file and load it on another PC. API keys and painted portraits are not included.')) + '</p><p>' + btn('export', 'Export save', 'primary') + ' ' + btn('import', 'Import save') + '</p></div>';
       h += '<div class="o-grp"><h3>' + H.esc(t('Play stats')) + '</h3><p class="o-note">' + H.esc(t('Kept only on this device. They are added to a feedback report only if you tick the box.')) + '</p><div class="o-stats">' +
-        [['Sessions', st.sessions], ['Minutes played', st.minutes], ['Legends started', st.legendsStarted], ['Legends finished', st.legendsFinished], ['Stories begun', st.stories], ['Chapters played', st.chapters], ['Deaths', st.deaths], ['Retirements', st.retirements], ['Arena fights', st.arenaFights], ['Daily challenges', st.dailies]].map(r => '<div><b>' + (r[1] || 0) + '</b><span>' + H.esc(t(r[0])) + '</span></div>').join('') + '</div><p>' + btn('resetStats', 'Reset stats', 'ghost') + '</p></div>';
+        [['Sessions', st.sessions], ['Minutes played', st.minutes], ['Legends started', st.legendsStarted], ['Legends finished', st.legendsFinished], ['Stories begun', st.stories], ['Chapters played', st.chapters], ['Deaths', st.deaths], ['Retirements', st.retirements], ['Arena fights', st.arenaFights], ['Daily challenges', st.dailies]].map(r => '<div><b>' + (r[1] || 0) + '</b><span>' + H.esc(t(r[0])) + '</span></div>').join('') + '</div>' + endingsHtml(st.endings) + '<p>' + btn('resetStats', 'Reset stats', 'ghost') + '</p></div>';
+      if (FW.World && FW.World.available()) {
+        h += '<div class="o-grp"><h3>' + H.esc(t('World counter')) + '</h3>' + row('Add my results to the world counter', tog('world', FW.World.enabled(), 'Add my results to the world counter'), 'Off by default. When on, the game sends one anonymous count each time you finish a hero or a saga ends (only "a hero" or the name of the ending: no names, codes or IDs), and shows everyone\'s totals here. The same totals are behind /stats on our Discord.') +
+          (FW.World.enabled() ? '<div id="oWorld"><p class="o-note">…</p></div>' : '') + '</div>';
+      }
       h += '<div class="o-grp"><h3>' + H.esc(t('Help and reports')) + '</h3><p>' + btn('feedback', 'Send feedback', 'primary') + ' ' + (D ? btn('logs', 'Open logs folder') : btn('dlLog', 'Download error log')) + (D ? ' ' + btn('updates', 'Check for updates') : '') + ' ' + btn('credits', 'Credits', 'ghost') + '</p><p class="o-note" id="oUpd"></p>' +
         (D ? row('Check for updates automatically', tog('autoUpd', App.store.get('fw.updates', { auto: true }).auto !== false, 'Check for updates automatically'), 'New versions download in the background; you choose when to restart. This is version ' + FW.VERSION + '.') : '') + '</div>';
       h += '<div class="o-grp danger"><h3>' + H.esc(t('Reset')) + '</h3><p>' + btn('resetAll', 'Reset all saved data', 'ghost') + ' ' + btn('resetPrefs', 'Reset all options', 'ghost') + '</p></div>';
@@ -133,7 +137,7 @@
       '<div class="o-body" role="tabpanel">' + BODY[tab]() + '</div>' +
       '<div class="o-btns"><button class="btn ghost" data-btn="resetTab">' + H.esc(t('Reset this tab')) + '</button><span class="o-hint">' + H.esc(t('Changes apply right away.')) + '</span><button class="btn primary" data-btn="back">' + H.esc(t('Back')) + '</button></div></div></div>';
     wire(root);
-    if (tab === 'data') listBackups();
+    if (tab === 'data') { listBackups(); listWorld(); }
     if (tab === 'graphics' && D && D.windowInfo && !win) D.windowInfo().then(w => { if (w) { win = w; if (tab === 'graphics' && O.isOpen()) render(); } });
   }
   function wire(root) {
@@ -167,6 +171,7 @@
     else if (id === 'vsync') { D.setVsync(on); if (win) win.vsync = on; restartNote = true; }
     else if (id === 'fullscreen') { (on ? document.documentElement.requestFullscreen() : document.exitFullscreen()).catch(() => App.toast(t('Your browser blocked fullscreen'))).then(() => setTimeout(render, 150)); return; }
     else if (id === 'autoUpd') App.store.set('fw.updates', { auto: on });
+    else if (id === 'world') FW.World.setEnabled(on);
     else if (id.indexOf('story:') === 0) { const k = id.slice(6), cur = App.store.get('fw.options', {}); cur[k] = on; App.store.set('fw.options', cur); if (window.FWAchieve) window.FWAchieve.sync(); }
     else { FW.setPref(id, on); if (id === 'cbSafe' || id === 'glow') rebuildWheel(); if (id === 'muteBg' && SYS.syncBackgroundMute) SYS.syncBackgroundMute(); }
     render(); keepFocus('[data-tog="' + id + '"]');
@@ -200,6 +205,21 @@
       P.keys[act] = k; FW.savePrefs(); render(); keepFocus('[data-key="' + act + '"]');
     };
     document.addEventListener('keydown', on, true);
+  }
+  /* how each saga ended (local stats), in the order of the story's ending list; endings never reached are left out */
+  function endingsHtml(ends) {
+    const S = FW.Story; if (!S || !ends) return '';
+    const rows = Object.keys(S.endLabel).filter(k => ends[k]).map(k => '<div><b>' + ends[k] + '</b><span>' + (S.endIcon[k] || '') + ' ' + H.esc(t(S.endLabel[k])) + '</span></div>');
+    return rows.length ? '<h4 class="o-sub">' + H.esc(t('How your sagas ended')) + '</h4><div class="o-stats">' + rows.join('') + '</div>' : '';
+  }
+  async function listWorld() {
+    const box = $('#oWorld'); if (!box || !FW.World) return;
+    const w = await FW.World.totals(); if (!$('#oWorld')) return;
+    if (!w) { box.innerHTML = '<p class="o-note">' + H.esc(t('The world counter can\'t be reached right now.')) + '</p>'; return; }
+    const n = v => (+v || 0).toLocaleString();
+    const ends = w.endings || {};
+    box.innerHTML = '<h4 class="o-sub">' + H.esc(t('World totals')) + '</h4><div class="o-stats"><div><b>' + n(w.heroes) + '</b><span>' + H.esc(t('Heroes made in the game')) + '</span></div><div><b>' + n(w.sagas) + '</b><span>' + H.esc(t('Sagas ended')) + '</span></div><div><b>' + n(w.deaths) + '</b><span>' + H.esc(t('Deaths')) + '</span></div></div>' +
+      endingsHtml(ends);
   }
   async function listBackups() {
     const box = $('#oBackups'); if (!box) return;
