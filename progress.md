@@ -81,22 +81,33 @@ Newest first. Fixed bugs ship in the next alpha build.
 | ✅ Shipped in 0.1.0-alpha.3 | First-run guide step 1 says "Start here with New Legend" but doesn't highlight it | Loading mods redrew the menu and dropped the highlight; a redraw now keeps it (`app/js/menu.js`). |
 | ✅ Shipped in 0.1.0-alpha.2 (2026-11-13) | The wheel bounces up and down while spinning | The result line above the wheel shows each name as it passes the pointer; long names used a smaller font and some wrapped, so the line's height jumped between 41 and 86 px and pushed the wheel. The line now has one fixed height with the text centred in it (`app/css/base.css`). |
 
-## Before the beta
+## 0.2: the next major update
 
-- ⬜ Code-signing certificate for Windows (stops the SmartScreen warning); add `WIN_CSC_LINK` and `WIN_CSC_KEY_PASSWORD` secrets
+0.1.0-alpha.6 is the last 0.1 release. Everything new now goes toward 0.2.
+
+### Focus (chosen 2026-11-13, in this order)
+
+1. ⬜ **More story**: new chapter types, longer sagas, more endings
+2. ⬜ **More Discord bot commands** (for example today's daily challenge, or a Legend Code shown as a card)
+3. ⬜ **A transparent logo** for store pages and the title screens of mod themes (made by hand on grok.com, credited "Created with Grok")
+
+### Must have (the beta basics)
+
+- ⬜ Fix what the alpha testers find (two-week test with 5-15 players, after the invites go out)
+- ⬜ Desktop layout: SPIN sits below the fold at 1280×800
+- ⬜ Phones: the painted title menu (it still falls back to a simple list); check the phone layout on a real iPhone and Android
+- ⬜ Test the macOS and Linux builds ([#3](https://github.com/ScikuVRC/destiny-unbound/issues/3), [#2](https://github.com/ScikuVRC/destiny-unbound/issues/2))
+- ⬜ Story text translated: Spanish first ([#4](https://github.com/ScikuVRC/destiny-unbound/issues/4)), then French, German and Japanese
+- ⬜ Native-speaker review of the French, German and Japanese packs (ask on the Discord)
+- ⬜ Code-signing certificate for Windows (stops the SmartScreen warning); add `WIN_CSC_LINK` and `WIN_CSC_KEY_PASSWORD` secrets. Costs money: decide first
+
+### Later than 0.2
+
+- 💭 Steam (decided 2026-11-13 to wait): store page, capsule images, Steam achievements and cloud saves
+
+### Already settled
+
 - ✅ xAI's terms checked 2026-11-13: outputs are ours to use, but "Created with Grok" must be shown where the art is published (added to the credits, README, itch.io and store kit); every image and prompt is in `docs/art-credits.md`. Make future art by hand on grok.com or through the official API, since the usage policy forbids automated access
-- ⬜ A transparent logo (store pages and mod themes)
-- ⬜ Fix whatever the alpha testers find
-- ⬜ Test the macOS and Linux builds
-- ⬜ Translate the remaining story text into Spanish
-
-## Ideas (not decided)
-
-- 💭 A transparent-background logo for the store and the title screen of mod themes
-- 💭 Exclusive fullscreen and choosing the sound output device (Electron limits both today)
-- 💭 The painted title menu on phones (it still falls back to a simple list), and SPIN sits below the fold at 1280×800 on desktop
-- 💭 Native-speaker review of the French, German and Japanese packs
-- 💭 Steam, later (decided 2026-11-13 to wait): store page, capsule images, achievements and cloud saves
 
 ---
 
@@ -139,7 +150,7 @@ Newest first. Fixed bugs ship in the next alpha build.
 
 | What | Now | Where it comes from |
 | --- | --- | --- |
-| Automated checks | 82 passing (7 suites) | `npm test` |
+| Automated checks | 83 passing (7 suites) | `npm test` |
 | Mortal-luck arena fights at 10% or less | 23% | `node scripts/balance-report.js` |
 | Sagas ending in death | about 47-50% | balance report |
 | Deaths in chapter 1 | 5-9% | balance report |
@@ -157,3 +168,4 @@ Newest first. Fixed bugs ship in the next alpha build.
 | 2026-11-12 | AI use is disclosed in the README, the credits and the store page |
 | 2026-11-13 | Content packs are mods; the sci-fi pack is original (no licensed setting) |
 | 2026-11-13 | `/spin` only works in #spin-the-wheel |
+| 2026-11-13 | 0.1.0-alpha.6 is the last 0.1 release; the next focus is the 0.2 major update |
