@@ -51,6 +51,7 @@ npm test
 | `node scripts/make-menu-css.js` | Rebuilds the title-screen CSS and art from the approved mockups in `mockups/menu/_gen-art.js` |
 | `node scripts/make-icons.js` | Makes every icon size from `app/icons/icon-source.png` (runs before every build) |
 | `node scripts/make-trailer.js` | Builds `docs/store/trailer.mp4` from the store screenshots (needs ffmpeg) |
+| `npm run itch` | Uploads the Windows installer and portable `.exe` from `dist/` to itch.io with [butler](https://itch.io/docs/butler/) (`-- --web` adds the browser build, `-- --dry` only shows what it would do). Log butler in once with `butler login` |
 
 The desktop app understands a few test switches (environment variables):
 
