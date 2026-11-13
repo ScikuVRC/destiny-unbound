@@ -1,5 +1,5 @@
 /* Destiny Unbound mods: themes, sounds and wheel packs that players add themselves. No code runs from a mod.
-   A mod is a folder with a mod.json (see mods/example-mod and the README):
+   A mod is a folder with a mod.json (see mods/example-mod and docs/modding.md):
    { "format": "fatewheel-mod", "version": 1, "id": "my-mod", "name": "...", "author": "...", "description": "...",
      "themes": [ { "id": "verdant", "name": "Verdant Grove", "blurb": "Druid circle", "base": "astral",
                    "vars": { "--bg": "#0d1a10", "--accent": "#5fbf6a" }, "css": "theme.css",

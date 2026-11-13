@@ -54,7 +54,9 @@
     el.querySelectorAll('[data-l]').forEach(b => b.addEventListener('click', () => ({ ach: () => App.achievementsModal(), credits: credits, feedback: () => FW.System.feedbackModal() })[b.dataset.l]()));
     const vis = visible(); if (!vis.some(b => +b.dataset.i === sel)) sel = vis.length ? +vis[0].dataset.i : 0;
     pick(sel, false); fit(); hint();
+    if (coachItem >= 0 && $('#coach')) { const c = el.querySelector('.item[data-i="' + coachItem + '"]'); if (c) c.classList.add('coach-hl'); }   // a redraw (e.g. when mods finish loading) keeps the guide's highlight
   }
+  let coachItem = -1;
   function icon(k) { const d = (FW.MENU_ICONS || {})[k]; return d ? '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + d + '"/></svg>' : ''; }
   function pick(i, focus) {
     sel = i;
@@ -198,11 +200,12 @@
     let n = 0;
     const box = document.createElement('div'); box.id = 'coach'; box.className = 'coach'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-live', 'polite');
     document.body.appendChild(box);
-    const done = () => { App.store.set('fw.guide', true); box.remove(); document.querySelectorAll('.coach-hl').forEach(e => e.classList.remove('coach-hl')); };
+    const done = () => { coachItem = -1; App.store.set('fw.guide', true); box.remove(); document.querySelectorAll('.coach-hl').forEach(e => e.classList.remove('coach-hl')); };
     const draw = () => {
       const g = GUIDE[n];
       document.querySelectorAll('.coach-hl').forEach(e => e.classList.remove('coach-hl'));
       const i = ITEMS.findIndex(x => x.k === g.item), b = document.querySelector('#screen-title .item[data-i="' + i + '"]');
+      coachItem = i;
       if (b) { b.classList.add('coach-hl'); pick(i, false); }
       box.innerHTML = '<small>' + (n + 1) + ' / ' + GUIDE.length + '</small><b>' + H.esc(t(g.title)) + '</b><p>' + H.esc(t(g.text)) + '</p><div><button class="btn small ghost" id="coSkip">' + H.esc(t('Skip')) + '</button><button class="btn small primary" id="coNext">' + H.esc(t(n === GUIDE.length - 1 ? 'Got it' : 'Next')) + '</button></div>';
       $('#coSkip').onclick = done;

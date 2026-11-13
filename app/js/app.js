@@ -28,6 +28,7 @@
   FW.Audio.on = state.sound; FW.Audio.theme = state.theme; Object.assign(FW.Audio.vol, store.get('fw.audio', {}));
 
   /* ---------- small helpers ---------- */
+  const tr = s => (FW.t ? FW.t(s) : s);   // translate text built in code (the page text is translated separately)
   function toast(msg) {
     const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg; document.body.appendChild(t);
     setTimeout(() => t.remove(), 2200);
@@ -64,7 +65,7 @@
   }
   function setLuck(id) { state.luck = id; persist(); $('#btnLuck').textContent = 'Luck: ' + luckInfo().name; renderHomeOpts(); }
   function renderHomeOpts() {
-    $('#luckOpts').innerHTML = FW.LUCK.map(l => '<button class="opt ' + (l.id === state.luck ? 'sel' : '') + '" data-luck="' + l.id + '"><b>' + l.name + '</b><span>' + (FW.t ? FW.t(l.blurb) : l.blurb) + ' &middot; ' + l.tokens + ' Fate Token' + (l.tokens > 1 ? 's' : '') + '</span></button>').join('');
+    $('#luckOpts').innerHTML = FW.LUCK.map(l => '<button class="opt ' + (l.id === state.luck ? 'sel' : '') + '" data-luck="' + l.id + '"><b>' + l.name + '</b><span>' + (FW.t ? FW.t(l.blurb) : l.blurb) + ' &middot; ' + l.tokens + ' ' + (FW.t ? FW.t(l.tokens > 1 ? 'Fate Tokens' : 'Fate Token') : (l.tokens > 1 ? 'Fate Tokens' : 'Fate Token')) + '</span></button>').join('');
     $('#themeOpts').innerHTML = Object.keys(FW.THEMES).map(k => '<button class="opt ' + (k === state.theme ? 'sel' : '') + '" data-theme="' + k + '"><b>' + H.esc(FW.THEMES[k].name) + '</b><span>' + H.esc((FW.t ? FW.t : x => x)(FW.THEMES[k].blurb || ({ ashen: 'Dark fantasy', astral: 'Celestial fantasy', iron: 'Grimdark sci-fi', bloodmoon: 'Gothic horror' })[k] || '')) + (FW.THEMES[k].mod ? ' · mod' : '') + '</span></button>').join('');
   }
 
@@ -229,13 +230,13 @@
   function showCard() {
     const L = state.legend, c = FW.compute(L);
     show('card'); drawCardNow();
-    $('#cardRating').innerHTML = H.rating(c) + '<p class="legend-key" style="margin:0 0 6px">' + c.fateTokens + ' Fate Token' + (c.fateTokens === 1 ? '' : 's') + ' &middot; ' + L.ally.length + ' ally' + (L.ally.length === 1 ? '' : ' allies') + '</p>';
+    $('#cardRating').innerHTML = H.rating(c) + '<p class="legend-key" style="margin:0 0 6px">' + c.fateTokens + ' ' + tr(c.fateTokens === 1 ? 'Fate Token' : 'Fate Tokens') + ' &middot; ' + L.ally.length + ' ' + tr(L.ally.length === 1 ? 'ally' : 'allies') + '</p>';
     $('#cardParts').innerHTML = H.partsBars(c);
     $('#cardMods').innerHTML = H.modTable(c) + (c.weak.length || c.res.length ? '<div class="mods" style="margin-top:10px">' + c.weak.map(w => '<span class="mod debuff">Weak to ' + FW.cap(w) + '</span>').join('') + c.res.map(w => '<span class="mod buff">Resists ' + FW.cap(w) + '</span>').join('') + c.atk.map(w => '<span class="mod info">' + FW.cap(w) + ' attacks</span>').join('') + '</div>' : '');
     const ch = L.chron.filter(x => x.text);
     $('#chronBox').hidden = !ch.length;
     $('#chronList').innerHTML = ch.map(x => '<li>' + H.esc(x.text) + '</li>').join('');
-    $('#btnFight').textContent = L.chron.length ? '⚔ Another fight' : '⚔ Enter the Arena';
+    $('#btnFight').textContent = L.chron.some(x => x.kind !== 'story') ? '⚔ Another fight' : '⚔ Enter the Arena';   // story chapters also add chronicle entries; only real fights count
     hook('cardShown', L);
   }
   function savePng() {

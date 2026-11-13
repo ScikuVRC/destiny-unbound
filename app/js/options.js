@@ -107,7 +107,7 @@
     },
     language() {
       const packs = Object.keys(FW.LANG_PACKS || { en: { name: 'English' } });
-      return '<div class="o-grp"><h3>' + H.esc(t('Language')) + '</h3>' + row('Language', sel('lang', packs.map(id => [id, FW.LANG_PACKS[id].name]), FW.lang || 'en'), 'The game restarts in the new language.') + '<p class="o-note">' + H.esc(t('Translations are files in app/lang; untranslated text stays in English. Want to help translate? See the README.')) + '</p></div>';
+      return '<div class="o-grp"><h3>' + H.esc(t('Language')) + '</h3>' + row('Language', sel('lang', packs.map(id => [id, FW.LANG_PACKS[id].name]), FW.lang || 'en'), 'The game restarts in the new language.') + '<p class="o-note">' + H.esc(t('Translations are files in app/lang; untranslated text stays in English. Want to help translate? See docs/modding.md in the game\'s source on GitHub.')) + '</p></div>';
     },
     data() {
       const st = SYS.stats;
