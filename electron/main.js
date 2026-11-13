@@ -187,6 +187,25 @@ ipcMain.handle('save:import', async e => {
   return fs.readFileSync(r.filePaths[0], 'utf8');
 });
 
+/* ---------------- Discord Rich Presence (local only, see electron/discord.js) ---------------- */
+// The Application ID comes from Discord's Developer Portal ("discordAppId" in package.json); FATEWHEEL_DISCORD_ID
+// overrides it for testing. Without one, the feature stays off.
+const DISCORD_ID = process.env.FATEWHEEL_DISCORD_ID || require('../package.json').discordAppId || '';
+let presence = null;
+function getPresence() {
+  if (!presence && (!SMOKE || process.env.FATEWHEEL_DISCORD_PIPE)) {   // the smoke test only uses a stand-in Discord
+    const { Presence } = require('./discord');
+    // FATEWHEEL_DISCORD_PIPE=name points at a stand-in Discord for testing (a pipe name on Windows, a socket path elsewhere)
+    const fake = process.env.FATEWHEEL_DISCORD_PIPE, prefix = !fake ? null : process.platform === 'win32' && !/^[\\/]/.test(fake) ? '\\\\?\\pipe\\' + fake : fake;
+    presence = new Presence({ clientId: DISCORD_ID, pipePrefix: prefix, log: m => log('info', m) });
+  }
+  return presence;
+}
+ipcMain.handle('discord:info', () => ({ available: !!(getPresence() && getPresence().usable) }));
+ipcMain.handle('discord:enable', (e, on) => { const p = getPresence(); if (p) p.setEnabled(on); return !!(p && p.enabled); });
+ipcMain.handle('discord:set', (e, activity) => { const p = getPresence(); if (p && p.enabled) p.set(activity); });
+app.on('before-quit', () => { if (presence) presence.close(); });
+
 /* ---------------- window ---------------- */
 function isHttp(u) { try { return /^https?:$/.test(new URL(u).protocol); } catch (e) { return false; } }
 

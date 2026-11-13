@@ -235,6 +235,8 @@
     "Spin direction": "Dirección de giro",
     "Luck": "Suerte",
     "First-run guide": "Guía de inicio",
+    "Discord status": "Estado de Discord",
+    "Show what you're playing in your Discord status, for example \"Living a saga · Chapter 4\". It only talks to the Discord app on this computer.": "Muestra a qué juegas en tu estado de Discord, por ejemplo \"Living a saga · Chapter 4\". Solo se comunica con la app de Discord de este ordenador.",
     "Text size": "Tamaño del texto",
     "High contrast": "Alto contraste",
     "Colour-blind-safe wheels": "Ruletas aptas para daltonismo",

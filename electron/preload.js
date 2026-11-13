@@ -1,5 +1,5 @@
 // The only desktop features the game page can reach: the Mods folder, updates, window and display settings,
-// logs and feedback, and save backups.
+// logs and feedback, save backups, and the Discord status (Rich Presence).
 // SPDX-License-Identifier: GPL-3.0-or-later
 const { contextBridge, ipcRenderer } = require('electron');
 
@@ -24,5 +24,8 @@ contextBridge.exposeInMainWorld('fatewheelDesktop', {
   readBackup: name => ipcRenderer.invoke('backup:read', name),
   openBackups: () => ipcRenderer.invoke('backup:open'),
   exportSave: (json, name) => ipcRenderer.invoke('save:export', json, name),
-  importSave: () => ipcRenderer.invoke('save:import')
+  importSave: () => ipcRenderer.invoke('save:import'),
+  discordInfo: () => ipcRenderer.invoke('discord:info'),
+  discordEnable: on => ipcRenderer.invoke('discord:enable', !!on),
+  discordSet: activity => ipcRenderer.invoke('discord:set', activity)
 });

@@ -35,6 +35,8 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
 - ✅ Mod kit (2026-11-13): guide, reference, JSON schemas and 7 templates in `modkit/`; `npm run modkit` builds the zip, which ships with every GitHub release and on itch.io
 
+- 🔄 Discord status (Rich Presence), 2026-11-13: built and tested (`electron/discord.js`, `app/js/presence.js`, `docs/discord.md`). Waiting on a Discord Application ID: create the application and art assets (steps in `docs/discord.md`), put the ID in package.json `discordAppId`
+
 ## Bugs (alpha patching)
 
 Newest first. Fixed bugs ship in the next alpha build.

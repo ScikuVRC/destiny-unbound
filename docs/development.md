@@ -35,7 +35,7 @@ the game install as a web app (PWA).
 npm test
 ```
 
-75 checks in 6 suites:
+81 checks in 7 suites:
 
 - **engine (26):** data validity, unique names, tier shifts, odds, conditional buffs, Legend Codes, arena maths.
 - **art (18):** every generator and language-model connector against a mock server.
@@ -44,6 +44,8 @@ npm test
 - **mods (10):** validation, CSS that tries to escape its theme or load outside pictures, every mod kit template loads, the kit's generated reference is up to date.
 - **system (8):** version, preferences, save import checks, no API keys in exported saves, title-screen art,
   offline caching, arena matchmaking.
+- **discord (6):** the Discord status against a stand-in Discord (handshake, activity, rate limit, switching off,
+  pings, Discord not running) and the text for each screen.
 
 | Script | What it does |
 | --- | --- |
@@ -63,6 +65,8 @@ The desktop app understands a few test switches (environment variables):
 | `FATEWHEEL_MODS_DIR=<folder>` | Uses another Mods folder |
 | `FATEWHEEL_OFFLINE=1` | Cuts the app off from the network |
 | `FATEWHEEL_UPDATE_URL=<url>` | Reads updates from a plain web folder instead of GitHub |
+| `FATEWHEEL_DISCORD_ID=<id>` | Uses this Discord Application ID instead of `discordAppId` in package.json |
+| `FATEWHEEL_DISCORD_PIPE=<name>` | Sends the Discord status to a stand-in instead of the Discord app (also during `FATEWHEEL_SMOKE`) |
 | `FATEWHEEL_UPDATE_TEST=1` | With an installed build: checks for an update, prints each step, installs it |
 
 ## Releases and updates
@@ -127,6 +131,7 @@ Uninstalling keeps all of these.
 | `app/js/packs.js`, `achievements.js`, `i18n.js`, `app/lang/` | Wheel packs, achievements, translations |
 | `app/js/mods.js`, `mods-ui.js` | Mod loading and safety checks; Mods screen and desktop updates |
 | `app/art/`, `app/icons/`, `app/fonts/` | Painted title art, icons, bundled fonts |
+| `electron/discord.js`, `app/js/presence.js` | Discord status: the local connection to Discord, and what the game shows. Setup: [discord.md](discord.md) |
 | `electron/main.js`, `preload.js` | Desktop shell and the small set of desktop features the page can reach |
 | `modkit/` | The mod kit: guide, reference, JSON schemas and templates (zipped by `npm run modkit`) |
 | `mockups/` | Design mockups; `menu/` holds the painted main menus the game is built from |

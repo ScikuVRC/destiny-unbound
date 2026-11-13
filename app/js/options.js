@@ -77,6 +77,7 @@
       h += row('Spin direction', seg('spinDir', [['ccw', 'Counter-clockwise'], ['cw', 'Clockwise']], App.state.spinDir));
       h += row('Luck', seg('luck', FW.LUCK.map(l => [l.id, l.name]), App.state.luck), 'Shifts every wheel\'s odds for your next legend.');
       h += row('First-run guide', btn('guide', 'Show it again'));
+      if (FW.discordAvailable) h += row('Discord status', tog('discord', P.discord !== false, 'Discord status'), 'Show what you\'re playing in your Discord status, for example "Living a saga · Chapter 4". It only talks to the Discord app on this computer.');
       h += '</div>';
       if (S && S.OPTIONS) {
         h += '<div class="o-grp"><h3>' + H.esc(t('Story')) + '</h3><p class="o-note">' + H.esc(t('Switch story features on or off. Changes apply from the next chapter. Chapters themselves can be removed or made rarer in the Wheel Workshop.')) + '</p>';

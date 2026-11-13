@@ -6,10 +6,11 @@
   "license": "GPL-3.0-or-later",
   "author": "Destiny Unbound contributors",
   "main": "electron/main.js",
+  "discordAppId": "",
   "private": true,
   "scripts": {
     "start": "electron .",
-    "test": "node tests/engine.test.js && node tests/art.test.js && node tests/story.test.js && node tests/extras.test.js && node tests/mods.test.js && node tests/system.test.js",
+    "test": "node tests/engine.test.js && node tests/art.test.js && node tests/story.test.js && node tests/extras.test.js && node tests/mods.test.js && node tests/system.test.js && node tests/discord.test.js",
     "icons": "node scripts/make-icons.js",
     "dist": "npm run icons && electron-builder --win nsis portable --publish never",
     "dist:mac": "npm run icons && electron-builder --mac dmg zip --publish never",

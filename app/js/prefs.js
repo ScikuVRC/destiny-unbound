@@ -20,6 +20,7 @@
     contrast: false,          // high-contrast colours
     reduceMotion: false,      // no flashing, shaking or sliding
     cbSafe: false,            // colour-blind-safe wheel slices
+    discord: true,            // desktop app: show what you're playing in your Discord status (Rich Presence)
     keys: { advance: ' ', next: 'Enter', back: 'Escape', respin: 'r', auto: 'a', options: 'o', menu: 'm' }
   };
   FW.PREF_DEFAULTS = DEFAULTS;
