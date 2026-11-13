@@ -35,7 +35,22 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 - ✅ Discord channels and protection, 2026-11-13. Channels: Start here (#welcome, #rules, #announcements: read-only, Moderators can post), Community (#general, #share-your-legends, #mods-and-packs, #spin-the-wheel, #art-and-portraits, #off-topic), Testing (#bug-reports, #suggestions, #feedback, private #tester-chat for Testers and staff), Staff (private #staff-chat, #mod-log for Developer and Moderator), General voice. `/spin` only works in #spin-the-wheel (Integrations command permissions, plus a check in the bot; 5 s slowmode). Protection: verification High (10 minutes in the server before posting), CAPTCHA for suspicious accounts and during raids, Activity Alerts, DM spam filters, explicit image filter for everyone, AutoMod blocking mention spam, suspected spam, slurs and sexual content, and other servers' invite links (staff exempt; our own invite allowed), with alerts and Discord safety notices in #mod-log and Community updates in #staff-chat
 - ✅ Discord bot, 2026-11-13: `/spin` (and `/spin luck:Mythic`) rolls a legend with the game's real wheels (`bot/`). Runs as the `destiny-bot` service on a free Oracle server, "destiny-unbound-bot" (Montreal, Ubuntu 24.04 Minimal, 155.248.224.76, `ssh destiny-bot` from the dev PC). Update with `bash /opt/destiny-unbound/bot/setup.sh`; logs with `sudo journalctl -u destiny-bot -f`. The older stopped server "ASF" is kept for now
 - ✅ Discord server, 2026-11-13: created ("Destiny Unbound", emblem icon). Channels: Start here (#welcome, #rules, #announcements, read-only for members), Community (#general, #share-your-legends, #mods-and-packs, General voice), Testing (#bug-reports and #suggestions forums, #feedback). Permanent invite: https://discord.gg/McDS5HVxzJ. Roles: Developer (owner), Moderator, Tester, Modder. Community mode and Onboarding on: new members answer "What brings you to Destiny Unbound?" (Help test the alpha → Tester, Make mods and wheel packs → Modder, Play and hang out), get a welcome sign and three to-dos. #bug-reports and #suggestions have posting guidelines and tags (Fixed and Planned are moderator-only). Tester invite texts and checklist: `docs/tester-invite.md`. Welcome and rules posted and pinned; linked from the README and the itch.io page. In the game (since 0.1.0-alpha.5): a Discord link in the title-screen footer, a "Talk on Discord" button in Send feedback, and a Community section in Credits (`FW.DISCORD_URL` in `app/js/system.js`)
-- ⬜ Send tester invites (see `docs/alpha-testing.md`)
+- ✅ Discord welcome post updated 2026-11-13: "Where to go" now lists #off-topic, #spin-the-wheel and #art-and-portraits, and tells Testers about #tester-chat (still pinned)
+- ✅ Release announcements, 2026-11-13: every release tag posts an embed in #announcements through a webhook (`scripts/discord-announce.js`, the `announce` job in `release.yml`, secret `DISCORD_WEBHOOK`). `announce-test.yml` sends a manual test post
+- 🔄 itch.io uploads from CI: the `itch` job in `release.yml` is ready but skips until the `BUTLER_API_KEY` secret is added (until then, upload with `node scripts/itch-push.js --web --modkit`)
+- ✅ Issue forms (bug report, suggestion) and `CONTRIBUTING.md`, 2026-11-13
+- ✅ Trailer and GIF from real gameplay, 2026-11-13 (`npm run trailer`; GIF in the README and a 2.2 MB one on itch.io). ⬜ Upload the trailer to YouTube or Vimeo so the itch.io page can embed it
+- ⬜ Send tester invites (texts in `docs/tester-invite.md`, plan in `docs/alpha-testing.md`)
+- ⬜ Rotate the Discord webhook URL that was pasted in chat (Server Settings > Integrations > Webhooks), then update the `DISCORD_WEBHOOK` secret
+- ⬜ Delete the first test spin card left in #general
+
+## Ready for the next alpha (not released yet)
+
+- ✅ Seven new achievements (29 in all): daily challenges on three days, first arena win, five arena wins with one hero ("The Arena Champion" title), win at under 15% odds, spare a beaten foe, recruit a beaten foe, lose a fight and fight again. `node scripts/achievement-report.js` shows how often each one is earned
+- ✅ Accessibility pass: page landmarks and headings, named dialogs that trap and return focus, a visible focus ring, keyboard support on the logo, labelled selects, better contrast on locked achievements; the axe audit finds 0 problems
+- ✅ Escape closes a dialog without also going back a screen
+- ✅ Phones: the top bar wraps instead of hiding buttons, and the title menu scrolls on short screens; no sideways scrolling at phone sizes; the wheel stays smooth with the CPU slowed 6×
+- ✅ Mod kit: template 07, **The Ember Dominion**, an original grimdark sci-fi content pack (theme plus wheel entries); title tier docs fixed to `tt=1..3`
 
 - ✅ Mod kit (2026-11-13): guide, reference, JSON schemas and 7 templates in `modkit/`; `npm run modkit` builds the zip, which ships with every GitHub release and on itch.io
 
@@ -69,8 +84,9 @@ Newest first. Fixed bugs ship in the next alpha build.
 
 - 💭 A transparent-background logo for the store and the title screen of mod themes
 - 💭 Exclusive fullscreen and choosing the sound output device (Electron limits both today)
-- 💭 Phone layout pass (the game runs in a phone browser; the painted menu falls back to a simple list)
-- 💭 More languages
+- 💭 Fuller phone layout pass (the top bar and title menu are fixed; the painted menu still falls back to a simple list)
+- 💭 More languages (decided 2026-11-13 to wait a bit)
+- 💭 Spanish names for the achievements
 - 💭 Steam, later (decided 2026-11-13 to wait): store page, capsule images, achievements and cloud saves
 
 ---
@@ -114,7 +130,7 @@ Newest first. Fixed bugs ship in the next alpha build.
 
 | What | Now | Where it comes from |
 | --- | --- | --- |
-| Automated checks | 73 passing | `npm test` |
+| Automated checks | 82 passing (7 suites) | `npm test` |
 | Mortal-luck arena fights at 10% or less | 23% | `node scripts/balance-report.js` |
 | Sagas ending in death | about 47-50% | balance report |
 | Deaths in chapter 1 | 5-9% | balance report |
@@ -130,3 +146,6 @@ Newest first. Fixed bugs ship in the next alpha build.
 | 2026-11-12 | Analytics stay local only; nothing is sent automatically |
 | 2026-11-12 | Repository becomes public as `ScikuVRC/destiny-unbound` |
 | 2026-11-12 | AI use is disclosed in the README, the credits and the store page |
+| 2026-11-13 | Content packs are mods; the sci-fi pack is original (no licensed setting) |
+| 2026-11-13 | The Discord bot runs on a free Oracle server; the old "ASF" server stays for now |
+| 2026-11-13 | `/spin` only works in #spin-the-wheel |
