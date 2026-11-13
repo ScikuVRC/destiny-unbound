@@ -54,7 +54,7 @@ chapter, until they retire, ascend or fall.
   text size, reduced motion and sound captions. English and Spanish.
 - **Yours to change.** A Wheel Workshop to edit any wheel, plus wheel packs and mods for your own themes,
   sounds and entries.
-- **Shows up on Discord (coming soon).** The desktop app will show what you're playing in your Discord status, from "Living a
+- **Shows up on Discord.** The desktop app shows what you're playing in your Discord status, from "Living a
   saga · Chapter 4" to "Fighting in the arena". It only talks to the Discord app on your PC, and it can be switched off.
 - **Respects players.** No ads, no accounts, no tracking. Works offline. Play stats stay on your PC.
 

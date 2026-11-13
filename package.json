@@ -6,7 +6,7 @@
   "license": "GPL-3.0-or-later",
   "author": "Destiny Unbound contributors",
   "main": "electron/main.js",
-  "discordAppId": "",
+  "discordAppId": "1570658915233046528",
   "private": true,
   "scripts": {
     "start": "electron .",

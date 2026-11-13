@@ -30,6 +30,10 @@ race, never the custom name a player typed. The code that writes these lines is 
 
 ## Setting it up (once)
 
+**Done (2026-11-13):** the application "Destiny Unbound" has Application ID `1570658915233046528` (in `package.json`),
+the emblem as its icon, and the five art assets below. Checked against the real Discord app. The steps are kept here in
+case the application ever has to be made again.
+
 The feature stays switched off until the game has a Discord **Application ID**. To create one:
 
 1. Sign in at <https://discord.com/developers/applications> and press **New Application**.
