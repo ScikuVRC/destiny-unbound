@@ -18,7 +18,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 | First bug-fix alpha | 0.1.0-alpha.2 | ✅ released 2026-11-13 (wheel bounce fix) |
 | Alpha test with 5-15 players | two weeks after release | ⬜ |
 | Beta (fixes from the alpha, signed build, store page) | 0.2.0-beta.1 | ⬜ |
-| 1.0 on itch.io and/or Steam | 1.0.0 | ⬜ |
+| 1.0 on itch.io | 1.0.0 | ⬜ |
 
 ---
 
@@ -43,8 +43,7 @@ Newest first. Fixed bugs ship in the next alpha build.
 
 - ⬜ Code-signing certificate for Windows (stops the SmartScreen warning); add `WIN_CSC_LINK` and `WIN_CSC_KEY_PASSWORD` secrets
 - ✅ xAI's terms checked 2026-11-13: outputs are ours to use, but "Created with Grok" must be shown where the art is published (added to the credits, README, itch.io and store kit); every image and prompt is in `docs/art-credits.md`. Make future art by hand on grok.com or through the official API, since the usage policy forbids automated access
-- 🔄 Store pictures: itch.io cover ✅, Steam capsules and a transparent logo still to do
-- 🔄 Store pages: itch.io ✅ (published 2026-11-12); Steam not started
+- ⬜ A transparent logo (store pages and mod themes)
 - ⬜ Fix whatever the alpha testers find
 - ⬜ Test the macOS and Linux builds
 - ⬜ Translate the remaining story text into Spanish
@@ -55,7 +54,7 @@ Newest first. Fixed bugs ship in the next alpha build.
 - 💭 Exclusive fullscreen and choosing the sound output device (Electron limits both today)
 - 💭 Phone layout pass (the game runs in a phone browser; the painted menu falls back to a simple list)
 - 💭 More languages
-- 💭 Steam achievements and cloud saves (if it goes to Steam)
+- 💭 Steam, later (decided 2026-11-13 to wait): store page, capsule images, achievements and cloud saves
 
 ---
 
