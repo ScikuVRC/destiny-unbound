@@ -4,6 +4,8 @@
 
    node scripts/discord-announce.js v0.1.0-alpha.6          posts it (needs DISCORD_WEBHOOK in the environment)
    node scripts/discord-announce.js v0.1.0-alpha.6 --dry    only prints the message
+   node scripts/discord-announce.js v0.1.0-alpha.6 --test   posts it marked as a test (the "Test Discord
+                                                            announcement" workflow runs this from GitHub)
 
    The "What's new" list is the commit titles since the previous version tag, without housekeeping commits.
    SPDX-License-Identifier: GPL-3.0-or-later */
@@ -68,6 +70,10 @@ if (require.main === module) {
   const tag = process.argv[2];
   if (!/^v\d+\.\d+\.\d+/.test(tag || '')) { console.error('Usage: node scripts/discord-announce.js v1.2.3 [--dry]'); process.exit(2); }
   const body = message(tag, changes(tag));
+  if (process.argv.includes('--test')) {   // a clearly marked test post, for checking the webhook without a release
+    body.embeds[0].title = '🧪 Test: ' + body.embeds[0].title;
+    body.embeds[0].footer = { text: 'Test message: this is not a new release. Checking that release announcements work.' };
+  }
   if (process.argv.includes('--dry')) { console.log(JSON.stringify(body, null, 2)); process.exit(0); }
   const url = process.env.DISCORD_WEBHOOK || '';
   if (!url) { console.log('No DISCORD_WEBHOOK secret set: skipping the Discord announcement.'); process.exit(0); }

@@ -1,0 +1,27 @@
+# Posts a clearly marked test announcement to the Discord's #announcements channel, to check the DISCORD_WEBHOOK
+# secret without making a release. Run it from the Actions tab ("Run workflow") or:
+#   gh workflow run announce-test.yml
+name: Test Discord announcement
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  announce:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Post a test announcement for the latest version
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          tag=$(git describe --tags --abbrev=0 --match 'v*')
+          node scripts/discord-announce.js "$tag" --test
