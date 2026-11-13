@@ -273,7 +273,7 @@
         onResult: idx => { const a = FW.ARENAS[idx]; const comp = FW.compute(L); const hits = comp.conds.filter(cd => a.tags.indexOf(cd.env) >= 0); const chips = a.tags.map(t => ({ t: FW.cap(FW.ENV_LABEL[t] || t), k: 'info' })).concat(hits.map(cd => ({ t: cd.label + ' triggers', k: cd.mods && Object.values(cd.mods).reduce((x, y) => x + y, 0) >= 0 ? 'cond-buff' : 'cond-debuff' }))); return { fx: H.fxCard(a.name, a.tags.length ? 'Conditions: ' + a.tags.map(t => FW.ENV_LABEL[t]).join(', ') : 'Neutral ground - no situational effects.', '', chips) }; } });
       const arena = FW.ARENAS[ai]; state.fight.arena = arena; refreshFightSheet();
       const rep = FW.matchup(L, opp, arena); state.fight.rep = rep;
-      const fctx = { arena: arena.name, uni: uni.name };
+      const fctx = { arena: arena.name, uni: uni.name, p: rep.pWin };   // the win chance is kept for the Giant Slayer achievement
       renderSteps(steps, 3);
       const wi = await playStep({ emoji: '⚔️', title: 'Do you win?', entries: [{ name: 'Victory', w: rep.pWin, dsl: '', color: '#2f9e57', colorLight: 38 }, { name: 'Stalemate', w: rep.pDraw, dsl: '', color: '#777', colorLight: 46 }, { name: 'Defeat', w: rep.pLose, dsl: '', color: '#b8383b', colorLight: 40 }], mode: 'cat', hue: 0,
         hint: 'Slice sizes are your real odds', preFx: H.battle(L.pickName('title'), opp.name, arena.name, rep), onResult: () => ({ fx: H.battle(L.pickName('title'), opp.name, arena.name, rep) }) });

@@ -5,6 +5,9 @@
   const FW = window.FW, H = FW.html, App = window.FWApp, S = FW.Story;
   const log = L => (L.saga ? L.saga.log : []);
   const won = (L, chapter) => log(L).some(x => x.chapter === chapter && x.tone === 'good');
+  const fights = L => (L.chron || []).filter(c => c.kind === 'win' || c.kind === 'lose' || c.kind === 'draw');
+  const wins = L => fights(L).filter(c => c.kind === 'win');
+  const dailyDays = () => { try { return Object.keys((window.FWApp && window.FWApp.store.get('fw.daily', {})) || {}).length; } catch (e) { return 0; } };
   FW.ACHIEVEMENTS = [
     { id: 'first', icon: '🎲', name: 'Fate Spun', desc: 'Finish your first legend.', test: L => !!L.picks.mark },
     { id: 'story', icon: '📖', name: 'Once Upon a Time', desc: 'Play a story chapter.', test: L => !!(L.saga && L.saga.ch) },
@@ -27,7 +30,14 @@
     { id: 'cosmic', icon: '🌌', name: 'Cosmic Being', desc: 'Reach the Cosmic Being rank.', test: L => FW.compute(L).rank === 'Cosmic Being' },
     { id: 'god', icon: '⚡', name: 'Born Divine', desc: 'Roll the God race.', test: L => L.raceName() === 'God' },
     { id: 'old', icon: '🧓', name: 'Centenarian', desc: 'Live to 100 years or more in a story.', test: L => !!(L.saga && S.age(L) >= 100) },
-    { id: 'daily', icon: '📅', name: 'Daily Dose', desc: 'Finish a daily challenge story.', test: L => !!(L.daily && L.saga && L.saga.end) }
+    { id: 'daily', icon: '📅', name: 'Daily Dose', desc: 'Finish a daily challenge story.', test: L => !!(L.daily && L.saga && L.saga.end) },
+    { id: 'daily3', icon: '📆', name: 'Creature of Habit', desc: 'Finish daily challenges on three different days.', test: () => dailyDays() >= 3 },
+    { id: 'arena', icon: '🗡️', name: 'First Blood', desc: 'Win a fight in the arena.', test: L => wins(L).length >= 1 },
+    { id: 'arena5', icon: '🏟️', name: 'Arena Champion', desc: 'Win five arena fights with one hero.', test: L => wins(L).length >= 5, reward: { list: 'title', entry: { name: 'The Arena Champion', w: 1, dsl: 'tt=2 rt+2', perk: 'Five fights, five victories', flaw: '' } } },
+    { id: 'giant', icon: '🗿', name: 'Giant Slayer', desc: 'Win an arena fight with less than a 15% chance.', test: L => wins(L).some(c => typeof c.p === 'number' && c.p < 0.15) },
+    { id: 'mercy', icon: '🕊️', name: 'Mercy', desc: 'Spare an opponent you beat in the arena.', test: L => wins(L).some(c => c.key === 'spare') },
+    { id: 'recruit', icon: '🎖️', name: 'Strength in Numbers', desc: 'Recruit an opponent you beat in the arena.', test: L => wins(L).some(c => c.key === 'recruit') },
+    { id: 'survivor', icon: '🩹', name: 'Live to Fight Another Day', desc: 'Lose an arena fight, then fight again.', test: L => { const f = fights(L), i = f.findIndex(c => c.kind === 'lose'); return i >= 0 && f.length > i + 1; } }
   ];
   const BY_ID = {}; FW.ACHIEVEMENTS.forEach(a => BY_ID[a.id] = a);
   const enabled = () => !FW.gameOptions || FW.gameOptions().achievements;

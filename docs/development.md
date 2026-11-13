@@ -49,6 +49,7 @@ npm test
 
 | Script | What it does |
 | --- | --- |
+| `node scripts/achievement-report.js` | Plays legends, arena fights and sagas and shows how often each achievement unlocks; one at 0% may be impossible (Dynasty and Creature of Habit need choices and days the script doesn't play) |
 | `node scripts/balance-report.js` | Plays thousands of legends, fights and sagas per luck level; prints rank spread, arena odds and how sagas end |
 | `node scripts/make-menu-css.js` | Rebuilds the title-screen CSS and art from the approved mockups in `mockups/menu/_gen-art.js` |
 | `node scripts/make-icons.js` | Makes every icon size from `app/icons/icon-source.png` (runs before every build) |

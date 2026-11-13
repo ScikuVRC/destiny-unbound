@@ -510,7 +510,7 @@
   };
   FW.applyConsequence = function (legend, kind, key, opp, rng, ctx) {
     ctx = ctx || {};
-    const add = (label, dsl, text) => legend.chron.push({ label, dsl, text, kind, key, opp: opp.name, arena: ctx.arena || '', uni: ctx.uni || '' });
+    const add = (label, dsl, text) => legend.chron.push(Object.assign({ label, dsl, text, kind, key, opp: opp.name, arena: ctx.arena || '', uni: ctx.uni || '' }, typeof ctx.p === 'number' ? { p: Math.round(ctx.p * 1000) / 1000 } : {}));
     // outcomes added by content packs carry their own reward
     const custom = (kind === 'win' ? FW.OUTCOMES : kind === 'lose' ? FW.DEFEATS : []).find(o => o.key === key && o.dsl);
     if (custom) add(custom.name + ': ' + opp.name, custom.dsl, custom.text || custom.blurb);

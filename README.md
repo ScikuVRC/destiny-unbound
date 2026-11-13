@@ -53,7 +53,7 @@ chapter, until they retire, ascend or fall.
   the odds, and the wheel always shows the true chances.
 - **Four painted themes.** Ashen Crown, Astral Oracle, Iron Litany and Blood Moon, each with its own title
   screen, wheel, character-card frame, sound effects and music.
-- **Keep playing.** A daily challenge, the Hall of Legends, 22 achievements, versus mode and a vertical video
+- **Keep playing.** A daily challenge, the Hall of Legends, 29 achievements, versus mode and a vertical video
   recorder for sharing.
 - **Built for everyone.** Full controller support, rebindable keys, colour-blind-safe wheels, high contrast,
   text size, reduced motion and sound captions. English and Spanish.
