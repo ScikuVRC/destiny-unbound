@@ -9,6 +9,7 @@
 [![Version](https://img.shields.io/badge/version-0.1.0--alpha.1-8a5fd6)](progress.md)
 [![License: GPL v3](https://img.shields.io/badge/license-GPL--3.0--or--later-blue)](LICENSE)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20web-444)
+[![Play on itch.io](https://img.shields.io/badge/play-itch.io-fa5c5c?logo=itch.io&logoColor=white)](https://bzrkherja.itch.io/destiny-unbound)
 [![Support on Ko-fi](https://img.shields.io/badge/support-Ko--fi-ff5e5b?logo=ko-fi&logoColor=white)](https://ko-fi.com/bzrkherja)
 
 <img src="docs/store/screenshots/02-title-astral.png" alt="The Astral Oracle title screen" width="860">
@@ -67,7 +68,8 @@ A 30-second teaser is in [docs/store/trailer.mp4](docs/store/trailer.mp4).
 
 ## Download
 
-Download the Windows installer (`DestinyUnbound-Setup-<version>.exe`) or the portable `.exe` from the
+**Play it in your browser** on [itch.io](https://bzrkherja.itch.io/destiny-unbound), or download the Windows
+installer (`DestinyUnbound-Setup-<version>.exe`) or the portable `.exe` from itch.io or the
 [Releases](https://github.com/ScikuVRC/destiny-unbound/releases) page.
 
 - **Installer:** installs for your user, adds a Start menu shortcut and updates itself.

@@ -26,7 +26,8 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 - ✅ Rename the GitHub repo to `destiny-unbound` and make it public (done 2026-11-12)
 - ✅ Push the latest commits after the rename
 - ✅ Publish 0.1.0-alpha.1 as a GitHub pre-release (done 2026-11-12: Windows, macOS and Linux builds)
-- 🔄 itch.io page at https://bzrkherja.itch.io/destiny-unbound: draft made 2026-11-12 (browser build, cover, screenshots, theme, AI disclosure); Windows builds uploaded with butler (`npm run itch`); still to do: set up itch.io payments for donations, publish
+- ✅ itch.io page published 2026-11-12: https://bzrkherja.itch.io/destiny-unbound (playable in the browser, Windows builds via `npm run itch`, AI disclosure)
+- ⬜ Set up itch.io payments (PayPal or Stripe) so the "$0 or donate" option can take donations
 - ⬜ Choose the tester feedback channel (Discord, email or GitHub Issues) and send invites (see `docs/alpha-testing.md`)
 
 ## Before the beta
