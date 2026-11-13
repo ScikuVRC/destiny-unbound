@@ -60,9 +60,11 @@ h1,h2,h3,p{margin:0}
 .chip{display:inline-flex;align-items:center;gap:10px;background:var(--chip-bg);color:var(--chip-fg);padding:12px 28px;border-radius:var(--chip-radius);font-size:clamp(17px,4.6vw,22px);font-weight:600;font-family:var(--font-chip);border:1px solid var(--chip-border);max-width:100%}
 .chip-bonus{font-weight:800;color:var(--good);font-size:.95em}
 .chip-bonus.neg{color:var(--bad)}
-.result{font-family:var(--font-result);font-size:clamp(30px,8.4vw,52px);font-weight:var(--result-weight);min-height:1.35em;margin:14px 0 0;line-height:1.1;padding:0 6px;overflow-wrap:break-word;word-break:normal;hyphens:auto;transition:transform .2s,color .2s}
-.result.long{font-size:clamp(24px,6.2vw,40px)}
-.result.xlong{font-size:clamp(19px,4.8vw,30px)}
+/* The result line has one fixed height (sized for the biggest font) so the wheel below never moves while names
+   of different lengths flash past during a spin; shorter sizes are centred in it and may wrap to two lines. */
+.result{font-family:var(--font-result);font-size:clamp(30px,8.4vw,52px);font-weight:var(--result-weight);height:calc(clamp(30px,8.4vw,52px)*1.35);display:flex;align-items:center;justify-content:center;margin:14px 0 0;line-height:1.1;padding:0 6px;overflow-wrap:break-word;word-break:normal;hyphens:auto;transition:transform .2s,color .2s}
+.result.long{font-size:clamp(22px,5.6vw,36px);line-height:1}
+.result.xlong{font-size:clamp(17px,4.4vw,28px);line-height:1}
 .result.pop{animation:pop .45s cubic-bezier(.2,1.6,.4,1)}
 .result.rare{color:var(--accent);text-shadow:0 0 24px color-mix(in srgb,var(--accent) 70%,transparent)}
 @keyframes pop{0%{transform:scale(.8)}100%{transform:scale(1)}}

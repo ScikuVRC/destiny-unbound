@@ -30,6 +30,14 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 - ⬜ Set up itch.io payments (PayPal or Stripe) so the "$0 or donate" option can take donations
 - ⬜ Choose the tester feedback channel (Discord, email or GitHub Issues) and send invites (see `docs/alpha-testing.md`)
 
+## Bugs (alpha patching)
+
+Newest first. Fixed bugs ship in the next alpha build (`0.1.0-alpha.2`).
+
+| Status | Bug | Cause and fix |
+| --- | --- | --- |
+| ✅ Fixed 2026-11-12 | The wheel bounces up and down while spinning | The result line above the wheel shows each name as it passes the pointer; long names used a smaller font and some wrapped, so the line's height jumped between 41 and 86 px and pushed the wheel. The line now has one fixed height with the text centred in it (`app/css/base.css`). |
+
 ## Before the beta
 
 - ⬜ Code-signing certificate for Windows (stops the SmartScreen warning); add `WIN_CSC_LINK` and `WIN_CSC_KEY_PASSWORD` secrets
