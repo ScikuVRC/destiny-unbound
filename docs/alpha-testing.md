@@ -1,4 +1,6 @@
-# Destiny Unbound alpha test plan (0.1.0-alpha.1)
+# Destiny Unbound alpha test plan
+
+Current build: **0.1.0-alpha.5**. Ready-to-send invite texts are in [tester-invite.md](tester-invite.md).
 
 ## Goals
 
@@ -11,15 +13,20 @@
 
 5–15 people. Mix players who like character generators or tabletop RPGs with a few who do not, and include at
 least one person each with a controller, a high-DPI or 4K screen, an older laptop and colour blindness or a
-screen reader, if possible.
+screen reader, if possible. One Mac or Linux player would help a lot: those builds have not been tested yet.
 
-## How testers get the game
+## How testers join
 
-- Send them `DestinyUnbound-Setup-0.1.0-alpha.1.exe` (installs, updates itself once updates are hosted) or the
-  portable `.exe` (no install, never updates itself).
-- **Windows will warn them** because the alpha is not code-signed: "Windows protected your PC". They click
-  **More info → Run anyway**. Tell them this in the invite so it does not look like malware.
-- Saves live in `%APPDATA%\FateWheel` (the game's old name, kept so saves carry over) and survive uninstalling.
+1. They join the Discord: <https://discord.gg/McDS5HVxzJ>. On the first screen ("What brings you to Destiny
+   Unbound?") they pick **Help test the alpha**, which gives them the **Tester** role automatically.
+2. They get the game from <https://bzrkherja.itch.io/destiny-unbound>: play in the browser, or download the Windows
+   installer (updates itself) or the portable version (no install, never updates itself). Mac and Linux builds are
+   on the GitHub releases page: <https://github.com/ScikuVRC/destiny-unbound/releases>.
+3. **Windows will warn them** because the alpha is not code-signed: "Windows protected your PC". They click
+   **More info → Run anyway**. The invite says this so it does not look like malware.
+
+Saves live in `%APPDATA%\FateWheel` (the game's old name, kept so saves carry over) and survive uninstalling. In
+the browser they live in that browser's storage for the itch.io page.
 
 ## What to ask testers to do
 
@@ -38,32 +45,35 @@ Second session (any time later):
 - [ ] Try Options > Accessibility: text size, high contrast, colour-blind-safe wheels, sound captions.
 - [ ] Save a legend to the Hall, export your save (Options > Data), and import it again.
 - [ ] Continue a legend's story as its heir.
-- [ ] Optional: install the example mod (Menu > Mods) or make a small one.
+- [ ] Desktop app with Discord open: check your Discord status shows what you're doing.
+- [ ] Optional: get the mod kit from the itch.io page and try a template, or install a mod (Menu > Mods).
 
 ## How feedback comes back
 
+- **Bugs:** one post per bug in the Discord's **#bug-reports** forum. It asks for the version, platform, steps,
+  what happened and a screenshot, and posts need a tag (Windows app, Browser, Mac or Linux, Crash or freeze,
+  Looks wrong, Gameplay). Moderators mark solved ones **Fixed**.
+- **Ideas:** **#suggestions**, one post per idea. Picked-up ideas get the **Planned** tag.
+- **Everything else:** **#feedback**.
 - **In the game:** Options > Data > **Send feedback** saves a folder with their note, a screenshot, the error log
-  and (if they tick it) their play stats. They zip it and send it to you.
-- **Where they send it:** choose one channel and put it in the invite: a Discord channel, an email address, or
-  GitHub Issues (github.com/ScikuVRC/destiny-unbound/issues), where the game's "Report a bug online" button
-  points. Testers need a free GitHub account to post there.
+  and (if they tick it) their play stats, which they can attach to a bug post. The same window has "Talk on
+  Discord" and "Report a bug online" (GitHub Issues, for testers who prefer it).
 - Ask three questions at the end: What was the best moment? What was the most confusing moment? Would you play
   again tomorrow, and why or why not?
 
 ## Timeline (suggested)
 
-- Week 1: send the invite and the build. Testers do session one.
-- Week 2: testers do session two. Fix crashes and blockers as they come in and ship alpha.2 if needed.
+- Week 1: send the invite. Testers do session one.
+- Week 2: testers do session two. Fix crashes and blockers as they come in and ship a new alpha if needed.
 - End of week 2: collect the three questions, write up what changes for the beta.
 
 ## Known issues in this alpha (tell testers up front)
 
 - The build is not code-signed, so Windows SmartScreen warns on first launch.
-- Automatic updates work for the installer once a release is published on GitHub
-  (github.com/ScikuVRC/destiny-unbound/releases); the portable `.exe` never updates itself.
+- The portable `.exe` never updates itself; the installer does.
 - Fullscreen is borderless fullscreen; there is no exclusive fullscreen mode.
 - Sound always uses the system's default output device.
-- Spanish covers the menus, Options and most of the game; some story text may still be in English.
+- Spanish covers the menus, Options and most of the game; story text is still in English.
 - macOS and Linux builds have not been tested.
 - AI portraits and tales need the player's own image generator or API key (optional).
 
