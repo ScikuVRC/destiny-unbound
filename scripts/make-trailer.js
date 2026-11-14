@@ -1,7 +1,8 @@
 // Turns the frames from scripts/record-trailer.js into a trailer video and a short GIF, with ffmpeg.
 //   node scripts/make-trailer.js            writes dist/trailer/destiny-unbound-trailer.mp4 and destiny-unbound.gif
-// The trailer plays the themes, the first spins and the card at real speed and speeds through the rest; the GIF is
-// a few seconds of spinning plus the finished card. Record first:
+// The trailer plays the themes, a rare spin, the first spins, the card, a boss fight, the story, a dynasty and an
+// ending, speeding through the long parts, with the HD music (app/music) as its soundtrack. The GIF is a few
+// seconds of spinning plus the finished card. Record first:
 //   npx electron scripts/record-trailer.js
 //   npx electron scripts/record-trailer.js --endcard
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -45,30 +46,37 @@ function ffmpeg(args) {
   execFileSync('ffmpeg', ['-loglevel', 'error', '-y', ...args], { stdio: 'inherit' });
 }
 
-const spin = at('spin'),
+const rare = at('rare'),
+  spin = at('spin'),
   card = at('card'),
+  fight = at('fight'),
   story = at('story'),
+  dynasty = at('dynasty'),
+  ending = at('ending'),
   end = at('end');
 // the concat list needs one image format throughout, so the end card becomes a JPEG like the frames
 const endcard = path.join(DIR, 'endcard.jpg');
 execFileSync('ffmpeg', ['-loglevel', 'error', '-y', '-i', path.join(DIR, 'endcard.png'), '-q:v', '2', endcard]);
-const firstSpins = spin + 9000;
 
-// trailer: themes (1x), first spins (1x), the rest of the forging (6x), the card (1x), the story's start (1.5x), end card
+// [from, to, speed] in recorded milliseconds
+const segments = [
+  [0, rare - 300, 1], // the four themes
+  [rare, spin - 200, 1], // the rare spin
+  [spin, spin + 8000, 1], // the first spins
+  [spin + 8000, card, 10], // the rest of the forging
+  [card, fight, 1], // the card and its back
+  [fight, fight + 6000, 1], // the fight starts
+  [fight + 6000, story, 2.5],
+  [story, story + 6000, 1], // the saga starts
+  [story + 6000, dynasty, 2.5],
+  [dynasty, end, 1], // family tree and ending
+];
+// where a recorded moment lands in the finished video, in seconds
+const outAt = ms =>
+  segments.reduce((s, [from, to, speed]) => s + Math.max(0, Math.min(ms, to) - from) / speed, 0) / 1000;
+
 const trailerList = path.join(DIR, 'trailer.txt');
-fs.writeFileSync(
-  trailerList,
-  list(
-    [
-      [0, spin - 400, 1],
-      [spin, firstSpins, 1],
-      [firstSpins, card, 6],
-      [card, story, 1],
-      [story, Math.min(end, story + 12000), 1.5],
-    ],
-    [endcard, 4]
-  )
-);
+fs.writeFileSync(trailerList, list(segments, [endcard, 4]));
 const total = Number(
   fs
     .readFileSync(trailerList, 'utf8')
@@ -76,7 +84,7 @@ const total = Number(
     .reduce((s, d) => s + Number(d.slice(9)), 0)
     .toFixed(2)
 );
-const mp4 = path.join(DIR, 'destiny-unbound-trailer.mp4');
+const silent = path.join(DIR, 'trailer-silent.mp4');
 ffmpeg([
   '-f',
   'concat',
@@ -92,10 +100,46 @@ ffmpeg([
   'slow',
   '-crf',
   '20',
+  silent,
+]);
+
+// soundtrack: the title theme, the battle theme from the fight on, and the legend stinger at the ending
+const MUSIC = path.join(ROOT, 'app', 'music');
+const tF = outAt(fight),
+  tE = outAt(ending);
+const mp4 = path.join(DIR, 'destiny-unbound-trailer.mp4');
+ffmpeg([
+  '-i',
+  silent,
+  '-i',
+  path.join(MUSIC, 'title.ogg'),
+  '-i',
+  path.join(MUSIC, 'battle.ogg'),
+  '-i',
+  path.join(MUSIC, 'legend.ogg'),
+  '-filter_complex',
+  [
+    `[1:a]atrim=0:${(tF + 1.5).toFixed(2)},afade=t=in:d=1.5,afade=t=out:st=${tF.toFixed(2)}:d=1.5[a]`,
+    `[2:a]atrim=0:${(tE - tF + 1).toFixed(2)},adelay=${Math.round(tF * 1000)}:all=1,afade=t=in:st=${tF.toFixed(2)}:d=1.5,afade=t=out:st=${(tE - 0.5).toFixed(2)}:d=1.5[b]`,
+    `[3:a]adelay=${Math.round(tE * 1000)}:all=1[c]`,
+    `[a][b][c]amix=inputs=3:normalize=0:duration=longest,atrim=0:${total.toFixed(2)},afade=t=out:st=${(total - 2).toFixed(2)}:d=2[m]`,
+  ].join(';'),
+  '-map',
+  '0:v',
+  '-map',
+  '[m]',
+  '-c:v',
+  'copy',
+  '-c:a',
+  'aac',
+  '-b:a',
+  '192k',
+  '-shortest',
   '-movflags',
   '+faststart',
   mp4,
 ]);
+fs.rmSync(silent, { force: true });
 
 // GIF: about 7 seconds of spinning at real speed, then 2.5 seconds of the card; small enough for itch.io and Discord
 const gifList = path.join(DIR, 'gif.txt');

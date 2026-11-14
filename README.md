@@ -6,9 +6,9 @@
 
 **Spin the wheels of fate. Forge a legend. Live its story, or die trying.**
 
-[![Version](https://img.shields.io/badge/version-0.2.0--alpha.3.5-8a5fd6)](progress.md)
+[![Version](https://img.shields.io/badge/version-0.2.0--alpha.3.6-8a5fd6)](progress.md)
 [![License: GPL v3](https://img.shields.io/badge/license-GPL--3.0--or--later-blue)](LICENSE)
-![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20web-444)
+![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux%20%7C%20web-444)
 [![Play on itch.io](https://img.shields.io/badge/play-itch.io-fa5c5c?logo=itch.io&logoColor=white)](https://bzrkherja.itch.io/destiny-unbound)
 [![Join the Discord](https://img.shields.io/badge/chat-Discord-5865f2?logo=discord&logoColor=white)](https://discord.gg/McDS5HVxzJ)
 [![Support on Ko-fi](https://img.shields.io/badge/support-Ko--fi-ff5e5b?logo=ko-fi&logoColor=white)](https://ko-fi.com/bzrkherja)
@@ -22,7 +22,7 @@ wheel: race, birthplace, age, class, powers, weapon, weakness and more. Then you
 chapter, until they retire, ascend or fall.
 
 <div align="center">
-<img src="docs/media/destiny-unbound.gif" alt="The race wheel spins and lands on Shadowborn, the next wheel spins, then the finished hero card appears" width="720">
+<img src="docs/media/destiny-unbound.gif" alt="The wheels spin one after another, then the finished hero card appears" width="720">
 </div>
 
 > **Status: early alpha.** The game is playable from start to finish, but expect rough edges. See the
@@ -47,15 +47,21 @@ chapter, until they retire, ascend or fall.
 ## Features
 
 - **Forge a legend.** Over 40 wheels and more than 1,400 entries, each with buffs and debuffs that move the
-  other wheels up or down long stat ladders. Bigger slices are likelier, and four luck levels shift the odds.
-- **Live the story.** A saga of 32 kinds of chapter: quests, dragons, kingdoms, wars, rivals, love and heirs.
-  Death is a real outcome, and a dynasty can carry on through your heirs.
-- **Fight in the arena.** 77 opponents across 13 worlds. Weaknesses, resistances and the arena itself shape
-  the odds, and the wheel always shows the true chances.
+  other wheels up or down long stat ladders. Bigger slices are likelier, four luck levels shift the odds, and a
+  rare result gets its moment: the wheel creeps over the last slices and the winner lights up.
+- **Live the story.** A saga of 49 kinds of chapter: quests, dragons, kingdoms, wars, rivals, love and heirs.
+  At key moments you choose what to do and the wheel decides how it goes. Your class and personality change the
+  odds. Death is a real outcome, and ten endings wait, from a quiet retirement to passing into legend.
+- **Found a dynasty.** Heirs carry on the house with a family trait, an heirloom and any living nemesis, and the
+  family tree remembers every generation.
+- **Fight in the arena.** 77 opponents across 13 worlds, painted arenas, and bosses with tricks of their own:
+  wards, immunities, rage and second phases. The wheel always shows the true chances.
+- **Painted heroes.** Portraits for the most common races, a painting for every ending, card frames that grow
+  grander with your rank, and your own portrait if you connect an image generator.
 - **Four painted themes.** Ashen Crown, Astral Oracle, Iron Litany and Blood Moon, each with its own title
-  screen, wheel, character-card frame, sound effects and music.
-- **Keep playing.** A daily challenge, the Hall of Legends, 34 achievements, versus mode and a vertical video
-  recorder for sharing.
+  screen, wheel, character-card frame, sound effects and music, plus optional HD music.
+- **Keep playing.** A daily challenge with an opt-in leaderboard, the Hall of Legends, a collection, 34
+  achievements, versus mode, short card codes to share a hero, and a vertical video recorder.
 - **Built for everyone.** Full controller support, rebindable keys, colour-blind-safe wheels, high contrast,
   text size, reduced motion and sound captions. English, Spanish, French, German and Japanese.
 - **Yours to change.** A Wheel Workshop to edit any wheel, plus wheel packs and mods for your own themes,
@@ -68,17 +74,19 @@ chapter, until they retire, ascend or fall.
 
 | | |
 | --- | --- |
+| ![A rare result: the race wheel lands on Dragonborn](docs/store/screenshots/05-rare-astral.png) | ![A finished character card with a painted portrait](docs/store/screenshots/06-card-ashen.png) |
+| ![A story choice: Ashwing the Young wakes. What do you do?](docs/store/screenshots/07-choice-bloodmoon.png) | ![A boss fight against Dread Sovereign Kaelun](docs/store/screenshots/08-boss-iron.png) |
+| ![The family tree of House Ravencrest](docs/store/screenshots/09-dynasty-ashen.png) | ![The ending screen: passed into legend](docs/store/screenshots/10-ending-ashen.png) |
 | ![Ashen Crown title screen](docs/store/screenshots/01-title-ashen.png) | ![Iron Litany title screen](docs/store/screenshots/03-title-iron.png) |
-| ![Spinning the race wheel](docs/store/screenshots/05-wheel-astral.png) | ![A finished character card](docs/store/screenshots/06-card-iron.png) |
-| ![A saga in progress](docs/store/screenshots/07-story-bloodmoon.png) | ![The Options screen](docs/store/screenshots/08-options-ashen.png) |
 
-A 30-second teaser is in [docs/store/trailer.mp4](docs/store/trailer.mp4).
+The trailer (84 seconds) is [docs/store/trailer.mp4](docs/store/trailer.mp4).
 
 ## Download
 
 **Play it in your browser** on [itch.io](https://bzrkherja.itch.io/destiny-unbound), or download the Windows
 installer (`DestinyUnbound-Setup-<version>.exe`) or the portable `.exe` from itch.io or the
-[Releases](https://github.com/ScikuVRC/destiny-unbound/releases) page.
+[Releases](https://github.com/ScikuVRC/destiny-unbound/releases) page. macOS (`.dmg`) and Linux (`.AppImage`)
+builds are on the Releases page too; they haven't been tested by a person yet, so reports are very welcome.
 
 - **Installer:** installs for your user, adds a Start menu shortcut and updates itself.
 - **Portable:** runs from anywhere and never updates itself.
@@ -126,9 +134,9 @@ this size possible on my own, I used AI tools. In the spirit of transparency, he
 | --- | --- |
 | **Code** | Much of the code was written with an AI coding assistant (Claude, by Anthropic), directed, reviewed and play-tested by me. |
 | **Game text** | Many wheel entries, story texts and the translations were drafted with AI help and then edited. |
-| **Painted art** | Created with Grok. The title-screen backgrounds, wheel paintings, the four logos and the app icon were generated with Grok Imagine (xAI) and then composed into the game. Every image and its prompt is listed in [docs/art-credits.md](docs/art-credits.md). |
+| **Painted art** | Created with Grok. The title-screen backgrounds, wheel paintings, hero portraits, ending paintings, boss and dragon portraits, arena backdrops, the four logos and the app icon were generated with Grok Imagine (xAI) and then composed into the game. Every image and its prompt is listed in [docs/art-credits.md](docs/art-credits.md). |
 | **Everything else you see** | The playable wheels, character cards, icons and interface are drawn in code. |
-| **Sound and music** | Synthesized in code. No AI audio. |
+| **Sound and music** | Sound effects are synthesized in code. Music comes in two kinds, picked on first launch: classic music synthesized in code, or optional HD music, recorded tracks that are currently placeholders made with ACE-Step (an open-source AI music model). Every track is listed in [docs/music-credits.md](docs/music-credits.md). |
 | **Optional AI features** | The Art Studio and the saga writer only run if you connect your own image generator or language model. They are off by default, and nothing is sent anywhere unless you set them up. |
 
 AI was used because of a lack of personal funding, not to replace anyone's work. I want players to know
@@ -190,4 +198,5 @@ hope that it will be useful, but **without any warranty**; see the license for d
 - **Fonts:** Cinzel, Cormorant Garamond, Cormorant SC, EB Garamond, IM Fell English, Share Tech Mono and
   UnifrakturCook, each under the SIL Open Font License 1.1 (license files in `app/fonts`).
 - **Painted art:** Created with Grok (Grok Imagine, by xAI) for this game; see [docs/art-credits.md](docs/art-credits.md).
+- **HD music:** placeholder tracks made with ACE-Step (MIT); see [docs/music-credits.md](docs/music-credits.md).
 - **Built with:** [Electron](https://www.electronjs.org/) and electron-updater (MIT).

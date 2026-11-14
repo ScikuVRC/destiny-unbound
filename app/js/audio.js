@@ -1,4 +1,5 @@
-/* Destiny Unbound sound: themed effects and ambient music, all synthesized with WebAudio (no audio files needed).
+/* Destiny Unbound sound: themed effects and ambient music, synthesized with WebAudio (no audio files needed).
+   Bundled music files listed in data/music.js replace the synthesized music per scene when present.
    Mods can replace any sound with their own file (tick, reveal, rare, bad, click, music) - see mods.js.
    Same API as before: FW.Audio.init(), .tick(speed), .reveal(rare), .bad(), .click(), .on, .recDest
    SPDX-License-Identifier: GPL-3.0-or-later */
@@ -44,7 +45,10 @@
   A.applyVolume = function () {
     if (!A.ctx) return;
     const t = A.ctx.currentTime;
-    master.gain.setTargetAtTime(A.on && !A.bgMuted ? A.vol.master : 0, t, A.bgMuted ? 0.15 : 0.05); // bgMuted: window in the background (Options > Audio) sfx.gain.setTargetAtTime(A.vol.sfx, t, 0.05); mus.gain.setTargetAtTime(A.vol.music, t, 0.3);
+    // bgMuted: window in the background (Options > Audio)
+    master.gain.setTargetAtTime(A.on && !A.bgMuted ? A.vol.master : 0, t, A.bgMuted ? 0.15 : 0.05);
+    sfx.gain.setTargetAtTime(A.vol.sfx, t, 0.05);
+    mus.gain.setTargetAtTime(A.vol.music, t, 0.3);
     if (A.recDest) {
       try {
         master.disconnect(A.recDest);
@@ -398,6 +402,55 @@
       };
     },
   };
+  /* ---------- bundled music files (data/music.js) ----------
+     Loops play per scene (title, spin, story, battle); stingers play once over the music (victory, defeat, legend).
+     A slot with no file keeps the synthesized music, and a mod's own music always wins. */
+  A.scene = 'title';
+  const broken = {};
+  // HD music is opt-in (Options > Audio, asked on first launch); a theme's own track beats the shared one
+  const trackFile = k => {
+    if (!FW.prefs || FW.prefs.hdMusic !== true) return '';
+    const f = ((FW.MUSIC_THEMES || {})[A.theme] || {})[k] || (FW.MUSIC_FILES || {})[k] || '';
+    return broken[f] ? '' : f;
+  };
+  const modMusic = () => (A.custom[A.theme] || {}).music || (A.custom['*'] || {}).music;
+  const musicKey = () => (modMusic() ? 'mod' : trackFile(A.scene) ? 'file:' + A.scene : 'synth');
+  function mediaNode(file, loop, out, onFail) {
+    const el = new Audio(file);
+    el.loop = loop;
+    el.preload = 'auto';
+    el.addEventListener('error', onFail, { once: true });
+    A.ctx.createMediaElementSource(el).connect(out);
+    el.play().catch(() => {}); // a failed load arrives as the error event
+    return el;
+  }
+  // switch music only when the source changes (a new scene with no track keeps the synthesized music going)
+  A.refreshMusic = function () {
+    if (!A.ctx || !A._music || A._music.key === musicKey()) return;
+    A.stopMusic();
+    A.startMusic();
+  };
+  A.setScene = function (name) {
+    if (name === A.scene) return;
+    A.scene = name;
+    A.refreshMusic();
+  };
+  A.sting = function (name) {
+    const file = trackFile(name);
+    if (!file || !ready() || A.vol.music <= 0) return false;
+    const m = A._music,
+      t = T();
+    if (m) m.out.gain.setTargetAtTime(0.2, t, 0.15); // duck the music under the stinger
+    const restore = () => {
+      if (A._music === m && m) m.out.gain.setTargetAtTime(1, T(), 0.8);
+    };
+    const el = mediaNode(file, false, mus, () => {
+      broken[file] = true;
+      restore();
+    });
+    el.addEventListener('ended', restore, { once: true });
+    return true;
+  };
   A.startMusic = function () {
     if (!A.ctx || A._music || A.vol.music <= 0) return;
     const ctx = A.ctx,
@@ -406,9 +459,24 @@
     out.gain.exponentialRampToValueAtTime(1, ctx.currentTime + 2.5);
     out.connect(mus);
     const timers = [];
-    const cm = (A.custom[A.theme] || {}).music || (A.custom['*'] || {}).music;
+    const cm = modMusic(),
+      key = musicKey();
     let stop;
-    if (cm) {
+    if (!cm && key !== 'synth') {
+      const file = trackFile(A.scene);
+      const el = mediaNode(file, true, out, () => {
+        broken[file] = true; // missing or unreadable file: fall back to the synthesized music
+        if (A._music && A._music.key === key) {
+          A.stopMusic();
+          A.startMusic();
+        }
+      });
+      stop = () => {
+        el.pause();
+        el.removeAttribute('src');
+        el.load();
+      };
+    } else if (cm) {
       const src = ctx.createBufferSource();
       src.buffer = cm;
       src.loop = true;
@@ -431,7 +499,7 @@
         MUSIC[A.theme] || MUSIC[(FW.THEMES && FW.THEMES[A.theme] && FW.THEMES[A.theme].sound) || ''] || MUSIC.ashen;
       stop = gen(ctx, out, every);
     }
-    A._music = { out, timers, stop };
+    A._music = { out, timers, stop, key };
   };
   A.stopMusic = function () {
     const m = A._music;

@@ -337,6 +337,7 @@
     st.auto = false;
     F.syncAutoBtn();
     F.show('spin');
+    FW.Audio.setScene('battle');
     F.renderSteps(2, 0);
     $('#sheetTitle').textContent = 'Versus';
     const side = (L, n) => {
@@ -390,6 +391,7 @@
         onResult: () => ({ fx: H.battle(an, bn, arena.name, rep) }),
       });
       FW.Audio.reveal(wi !== 1);
+      if (wi !== 1) FW.Audio.sting('victory');
       F.setResult(['🏆 ' + an + ' wins', 'A draw', '🏆 ' + bn + ' wins'][wi], { pop: true });
       $('#resultSub').textContent = 'At the ' + arena.name + '.';
       $('#btnSpin').hidden = true;

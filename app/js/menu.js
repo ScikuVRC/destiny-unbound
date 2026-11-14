@@ -228,9 +228,46 @@
     if (name === 'title') {
       render();
       setTimeout(() => pick(sel, true), 30);
-      firstRun();
+      if (!askMusic()) firstRun();
     }
   };
+
+  /* ---------------- asked once: HD music (recorded tracks) or the classic synthesized music ---------------- */
+  function askMusic() {
+    if (FW.prefs.hdMusic != null || !FW.hasMusicFiles || !FW.hasMusicFiles() || $('#modalRoot').firstChild)
+      return false;
+    App.openModal(
+      '<div class="thanks"><h2>' +
+        H.esc(t('Use HD music?')) +
+        '</h2><p>' +
+        H.esc(
+          t(
+            'HD music plays recorded tracks for the menus, hero making, stories and battles. They are placeholders made with an AI music model. Classic keeps the original music, synthesized live in code.'
+          )
+        ) +
+        '</p><div class="cta"><button class="btn primary" id="hdYes">' +
+        H.esc(t('Use HD music')) +
+        '</button><button class="btn ghost" id="hdNo">' +
+        H.esc(t('Keep classic')) +
+        '</button></div><small>' +
+        H.esc(t('You can change this any time in Options > Audio.')) +
+        '</small></div>'
+    );
+    const choose = on => {
+      FW.setPref('hdMusic', on);
+      FW.Audio.init();
+      FW.Audio.refreshMusic();
+      App.closeModal();
+      setTimeout(firstRun, 200);
+    };
+    $('#hdYes').onclick = () => choose(true);
+    $('#hdNo').onclick = () => choose(false);
+    setTimeout(() => {
+      const b = $('#hdYes');
+      if (b) b.focus();
+    }, 30);
+    return true;
+  }
   App.showTitle = () => {
     App.flow.abortRun();
     App.closeModal();
@@ -610,7 +647,7 @@
         '</h3><p>' +
         H.esc(
           t(
-            'Painted art: Created with Grok. The title-screen backgrounds, wheel paintings, logos and app icon were generated with Grok Imagine (xAI) for this game. The playable wheels, character cards, icons and interface are drawn in code.'
+            'Painted art: Created with Grok. The title-screen backgrounds, wheel paintings, hero portraits, ending paintings, boss portraits, arena backdrops, logos and app icon were generated with Grok Imagine (xAI) for this game. The playable wheels, character cards, icons and interface are drawn in code.'
           )
         ) +
         '</p>' +
@@ -627,9 +664,13 @@
         H.esc(t('Sound and music')) +
         '</h3><p>' +
         H.esc(
-          t(
-            'All sound effects and music are synthesized live in code. Mods may add their own sounds; their authors keep their rights.'
-          )
+          FW.hasMusicFiles && FW.hasMusicFiles()
+            ? t(
+                'Sound effects are synthesized live in code. The optional HD music tracks are placeholders made with ACE-Step, an open-source AI music model; the classic music is synthesized in code. Mods may add their own sounds; their authors keep their rights.'
+              )
+            : t(
+                'All sound effects and music are synthesized live in code. Mods may add their own sounds; their authors keep their rights.'
+              )
         ) +
         '</p>' +
         '<h3 class="opt-h">' +

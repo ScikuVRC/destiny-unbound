@@ -17,6 +17,7 @@
     uiVol: 0.6, // interface clicks
     muteBg: true, // silence the game when its window is not in focus
     captions: false, // show what each sound means
+    hdMusic: null, // recorded music tracks (data/music.js) instead of synthesized music; null = not asked yet
     textSize: 100, // % text size
     contrast: false, // high-contrast colours
     reduceMotion: false, // no flashing, shaking or sliding

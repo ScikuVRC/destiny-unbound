@@ -4,6 +4,24 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
+## 0.2.0-alpha.3.6 (2026-11-14)
+
+A small update with music.
+
+### New
+
+- **HD music (optional).** Recorded tracks for the menus, making a hero, stories and battles, plus short stingers
+  for a won fight, a defeat and the rare endings. The game asks once when you start it; you can switch any time in
+  Options > Audio > HD music. The tracks are placeholders made with ACE-Step, an open-source AI music model; the
+  classic music, synthesized in code, stays the default if you'd rather not. Every track is listed in
+  [docs/music-credits.md](docs/music-credits.md).
+- **A new trailer** and new screenshots showing the 0.2 features.
+
+### Fixed
+
+- **The Music and Sound effects volume sliders work again.** Since 0.2.0-alpha.1 only the master volume changed
+  anything.
+
 ## 0.2.0-alpha.3.5 (2026-11-14)
 
 A small update that makes rare results feel rare.

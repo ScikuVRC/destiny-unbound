@@ -12,3 +12,19 @@ bot/data/
 
 # full-size art originals (about 30 MB); the game uses the resized copies in app/art
 art-source/
+music-src/
+# ACE-Step's progress cache, written when scripts/make-music.py runs from the game folder
+.cache/
+
+# private draft: uploading the trailer (never committed)
+docs/store/trailer-upload.md
+
+# tool and system clutter
+worker/.wrangler/
+__pycache__/
+*.pyc
+*.log
+.env
+Thumbs.db
+desktop.ini
+.DS_Store

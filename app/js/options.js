@@ -261,6 +261,12 @@
       h += row('Sound', tog('sound', App.state.sound, 'Sound'));
       h += row('Master volume', slider('master', v.master * 100, 'Master volume'));
       h += row('Music', slider('music', v.music * 100, 'Music'));
+      if (FW.hasMusicFiles && FW.hasMusicFiles())
+        h += row(
+          'HD music',
+          tog('hdMusic', P.hdMusic === true, 'HD music'),
+          'Recorded music tracks instead of music synthesized in code. Placeholders made with ACE-Step, an AI music model.'
+        );
       h += row('Sound effects', slider('sfx', v.sfx * 100, 'Sound effects'));
       h += row('Interface', slider('ui', P.uiVol * 100, 'Interface'), 'Menu clicks.');
       h += '</div><div class="o-grp"><h3>' + H.esc(t('Behaviour')) + '</h3>';
@@ -716,6 +722,7 @@
       FW.setPref(id, on);
       if (id === 'cbSafe' || id === 'glow') rebuildWheel();
       if (id === 'muteBg' && SYS.syncBackgroundMute) SYS.syncBackgroundMute();
+      if (id === 'hdMusic') FW.Audio.refreshMusic();
     }
     render();
     keepFocus('[data-tog="' + id + '"]');

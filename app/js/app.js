@@ -109,6 +109,7 @@
     document.body.classList.toggle('on-title', name === 'title');
     window.scrollTo(0, 0);
     if (name === 'spin') ensureWheel().resize();
+    if (name === 'title' || name === 'home') FW.Audio.setScene('title');
     hook('screenShown', name);
   }
   function ensureWheel() {
@@ -530,6 +531,7 @@
     state.auto = !!auto;
     syncAutoBtn();
     show('spin');
+    FW.Audio.setScene('spin');
     $('#sheet').classList.toggle('collapsed', window.innerWidth < 980);
     const L = state.legend;
     try {
@@ -724,6 +726,7 @@
     state.auto = false;
     syncAutoBtn();
     show('spin');
+    FW.Audio.setScene('battle');
     $('#sheet').classList.toggle('collapsed', window.innerWidth < 980);
     const steps = 5;
     try {
@@ -839,8 +842,13 @@
         });
         result = ['win', 'draw', 'lose'][w2];
       }
-      if (result === 'win') FW.Audio.reveal(true);
-      else if (result === 'lose') FW.Audio.bad();
+      if (result === 'win') {
+        FW.Audio.reveal(true);
+        FW.Audio.sting('victory');
+      } else if (result === 'lose') {
+        FW.Audio.bad();
+        FW.Audio.sting('defeat');
+      }
       renderSteps(steps, 4);
       if (result === 'draw') {
         const c = FW.applyConsequence(L, 'draw', 'draw', opp, state.rng, fctx);

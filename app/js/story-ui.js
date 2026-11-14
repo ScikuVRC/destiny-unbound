@@ -130,6 +130,7 @@
     st.auto = false;
     F.syncAutoBtn();
     F.show('spin');
+    FW.Audio.setScene('story');
     F.renderSteps(0, 0);
     $('#sheet').classList.toggle('collapsed', window.innerWidth < 980);
     const io = {
@@ -182,6 +183,7 @@
       '<div class="fx-card">' + art + '<h3>' + H.esc(S.summary(L)) + '</h3>' + logHtml(s.log) + '</div>';
     if (S.MORTAL[s.end]) FW.Audio.bad();
     else FW.Audio.reveal(true);
+    FW.Audio.sting(S.MORTAL[s.end] ? 'defeat' : S.RARE_END[s.end] ? 'legend' : 'victory');
     if (window.FWAchieve) window.FWAchieve.check(L);
     sheet();
     $('#btnSpin').hidden = true;
