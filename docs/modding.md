@@ -61,7 +61,7 @@ edits can be exported as a pack. See [`packs/example-sky-pirates.json`](../packs
 
 - Wheels: `race birth bg per cls wpn enh elem pow weak pet title mark hair eyes garb`.
 - `w` is the slice size.
-- `dsl` uses the same codes as the built-in data (described at the top of `app/js/data.js`):
+- `dsl` uses the same codes as the built-in data (described in `app/data/README.md`):
   - stat shifts such as `str+2 spd-1` (`str spd dur int fgt wpn pwr all`)
   - situational shifts such as `dark:all+1`
   - `w=fire` weaknesses, `r=ice` resistances, `a=holy` attack types

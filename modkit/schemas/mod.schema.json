@@ -10,14 +10,19 @@
     "$schema": { "type": "string" },
     "format": { "const": "fatewheel-mod", "description": "Always \"fatewheel-mod\"." },
     "version": { "const": 1 },
-    "id": { "type": "string", "pattern": "^[a-z0-9-]{1,40}$", "description": "Lowercase letters, numbers and dashes. Unique per mod." },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{1,40}$",
+      "description": "Lowercase letters, numbers and dashes. Unique per mod."
+    },
     "name": { "type": "string", "minLength": 1, "maxLength": 60 },
     "author": { "type": "string", "maxLength": 60 },
     "description": { "type": "string", "maxLength": 300 },
     "themes": { "type": "array", "maxItems": 12, "items": { "$ref": "#/definitions/theme" } },
     "sounds": { "$ref": "#/definitions/sounds", "description": "Sounds for every theme." },
     "packs": {
-      "type": "array", "maxItems": 10,
+      "type": "array",
+      "maxItems": 10,
       "items": {
         "type": "object",
         "required": ["name"],
@@ -32,9 +37,25 @@
     }
   },
   "definitions": {
-    "file": { "type": "string", "maxLength": 120, "pattern": "^(?![/\\\\])(?![a-zA-Z]+:)(?!.*(^|[/\\\\])\\.\\.([/\\\\]|$)).+$", "description": "A file inside the mod folder, e.g. \"sounds/tick.wav\"." },
-    "colour": { "type": "string", "pattern": "^\\s*(#[0-9a-fA-F]{3,8}|rgba?\\([\\d\\s.,%]+\\)|hsla?\\([\\d\\s.,%deg]+\\))\\s*$", "description": "#rrggbb, rgb(), rgba(), hsl() or hsla()." },
-    "safeValue": { "type": "string", "maxLength": 200, "not": { "pattern": "([uU][rR][lL]\\s*\\(|image-set|image\\s*\\(|cross-fade|src\\s*\\(|expression\\s*\\(|javascript:|[;{}<>@\\\\])" }, "description": "A CSS value. It may not load anything (no url())." },
+    "file": {
+      "type": "string",
+      "maxLength": 120,
+      "pattern": "^(?![/\\\\])(?![a-zA-Z]+:)(?!.*(^|[/\\\\])\\.\\.([/\\\\]|$)).+$",
+      "description": "A file inside the mod folder, e.g. \"sounds/tick.wav\"."
+    },
+    "colour": {
+      "type": "string",
+      "pattern": "^\\s*(#[0-9a-fA-F]{3,8}|rgba?\\([\\d\\s.,%]+\\)|hsla?\\([\\d\\s.,%deg]+\\))\\s*$",
+      "description": "#rrggbb, rgb(), rgba(), hsl() or hsla()."
+    },
+    "safeValue": {
+      "type": "string",
+      "maxLength": 200,
+      "not": {
+        "pattern": "([uU][rR][lL]\\s*\\(|image-set|image\\s*\\(|cross-fade|src\\s*\\(|expression\\s*\\(|javascript:|[;{}<>@\\\\])"
+      },
+      "description": "A CSS value. It may not load anything (no url())."
+    },
     "sounds": {
       "type": "object",
       "properties": {
@@ -47,7 +68,12 @@
       },
       "additionalProperties": false
     },
-    "soundFile": { "allOf": [{ "$ref": "#/definitions/file" }, { "pattern": "\\.(mp3|ogg|oga|wav|m4a|aac|flac|webm|MP3|OGG|OGA|WAV|M4A|AAC|FLAC|WEBM)$" }] },
+    "soundFile": {
+      "allOf": [
+        { "$ref": "#/definitions/file" },
+        { "pattern": "\\.(mp3|ogg|oga|wav|m4a|aac|flac|webm|MP3|OGG|OGA|WAV|M4A|AAC|FLAC|WEBM)$" }
+      ]
+    },
     "theme": {
       "type": "object",
       "required": ["id", "base"],
@@ -55,22 +81,61 @@
         "id": { "type": "string", "pattern": "^[a-zA-Z0-9 _-]{1,40}$" },
         "name": { "type": "string", "maxLength": 40, "description": "Shown in the theme menu." },
         "blurb": { "type": "string", "maxLength": 40, "description": "A short tagline under the name." },
-        "base": { "enum": ["ashen", "astral", "iron", "bloodmoon"], "description": "The built-in look this theme starts from." },
+        "base": {
+          "enum": ["ashen", "astral", "iron", "bloodmoon"],
+          "description": "The built-in look this theme starts from."
+        },
         "vars": {
           "type": "object",
           "description": "Page colours and fonts. See reference/theme-variables.md.",
-          "propertyNames": { "enum": ["--bg", "--topbar", "--fg", "--muted", "--line", "--panel", "--panel-fg", "--chip-bg", "--chip-fg", "--chip-border", "--chip-radius", "--accent", "--accent2", "--accent-fg", "--good", "--bad", "--btn-bg", "--btn-fg", "--radius", "--font", "--font-display", "--font-chip", "--font-result", "--result-weight"] },
+          "propertyNames": {
+            "enum": [
+              "--bg",
+              "--topbar",
+              "--fg",
+              "--muted",
+              "--line",
+              "--panel",
+              "--panel-fg",
+              "--chip-bg",
+              "--chip-fg",
+              "--chip-border",
+              "--chip-radius",
+              "--accent",
+              "--accent2",
+              "--accent-fg",
+              "--good",
+              "--bad",
+              "--btn-bg",
+              "--btn-fg",
+              "--radius",
+              "--font",
+              "--font-display",
+              "--font-chip",
+              "--font-result",
+              "--result-weight"
+            ]
+          },
           "additionalProperties": { "$ref": "#/definitions/safeValue" }
         },
-        "css": { "allOf": [{ "$ref": "#/definitions/file" }, { "pattern": "\\.(css|CSS)$" }], "description": "A CSS file that only applies while this theme is selected." },
+        "css": {
+          "allOf": [{ "$ref": "#/definitions/file" }, { "pattern": "\\.(css|CSS)$" }],
+          "description": "A CSS file that only applies while this theme is selected."
+        },
         "fonts": {
-          "type": "array", "maxItems": 8,
+          "type": "array",
+          "maxItems": 8,
           "items": {
             "type": "object",
             "required": ["family", "file"],
             "properties": {
               "family": { "type": "string", "maxLength": 40 },
-              "file": { "allOf": [{ "$ref": "#/definitions/file" }, { "pattern": "\\.(woff2|woff|ttf|otf|WOFF2|WOFF|TTF|OTF)$" }] },
+              "file": {
+                "allOf": [
+                  { "$ref": "#/definitions/file" },
+                  { "pattern": "\\.(woff2|woff|ttf|otf|WOFF2|WOFF|TTF|OTF)$" }
+                ]
+              },
               "weight": { "type": ["integer", "string"], "pattern": "^\\d{3}$", "default": 400 },
               "style": { "enum": ["normal", "italic"] }
             },
@@ -80,16 +145,36 @@
         "wheel": {
           "type": "object",
           "properties": {
-            "pal": { "type": "array", "maxItems": 8, "items": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "$ref": "#/definitions/colour" } }, "description": "Slice colours: [inner, outer] pairs." },
-            "lad": { "type": "array", "minItems": 2, "maxItems": 8, "items": { "$ref": "#/definitions/colour" }, "description": "Stat ladder colours, lowest to highest." },
-            "gray": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "$ref": "#/definitions/colour" }, "description": "Empty (\"No weapon\") slices." },
+            "pal": {
+              "type": "array",
+              "maxItems": 8,
+              "items": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "$ref": "#/definitions/colour" } },
+              "description": "Slice colours: [inner, outer] pairs."
+            },
+            "lad": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 8,
+              "items": { "$ref": "#/definitions/colour" },
+              "description": "Stat ladder colours, lowest to highest."
+            },
+            "gray": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": { "$ref": "#/definitions/colour" },
+              "description": "Empty (\"No weapon\") slices."
+            },
             "line": { "$ref": "#/definitions/colour" },
             "ink": { "$ref": "#/definitions/colour", "description": "Slice text on dark slices." },
             "inkDark": { "$ref": "#/definitions/colour", "description": "Slice text on light slices." },
             "inkLight": { "$ref": "#/definitions/colour" },
             "hit": { "$ref": "#/definitions/colour", "description": "Flash on the winning slice." },
             "glow": { "$ref": "#/definitions/colour", "description": "Glow around the wheel." },
-            "font": { "$ref": "#/definitions/safeValue", "description": "Slice text font, e.g. \"\\\"Cinzel\\\", serif\"." },
+            "font": {
+              "$ref": "#/definitions/safeValue",
+              "description": "Slice text font, e.g. \"\\\"Cinzel\\\", serif\"."
+            },
             "upper": { "type": "boolean" },
             "italic": { "type": "boolean" }
           },

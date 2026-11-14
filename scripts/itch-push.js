@@ -38,10 +38,12 @@ function stageFile(channel, file) {
   return dir;
 }
 
-const pushes = args.has('--no-windows') ? [] : [
-  ['windows-installer', stageFile('windows-installer', `DestinyUnbound-Setup-${version}.exe`)],
-  ['windows-portable', stageFile('windows-portable', `DestinyUnbound-${version}-portable.exe`)],
-];
+const pushes = args.has('--no-windows')
+  ? []
+  : [
+      ['windows-installer', stageFile('windows-installer', `DestinyUnbound-Setup-${version}.exe`)],
+      ['windows-portable', stageFile('windows-portable', `DestinyUnbound-${version}-portable.exe`)],
+    ];
 if (args.has('--web')) pushes.push(['html5', path.join(root, 'app')]);
 if (args.has('--modkit')) pushes.push(['modkit', stageFile('modkit', `DestinyUnbound-ModKit-${version}.zip`)]);
 
@@ -54,7 +56,13 @@ for (const [channel, dir] of pushes) {
   if (r.status !== 0) process.exit(r.status || 1);
 }
 // the status check is only a report: if itch.io's API is slow, say so instead of failing after a good upload
-if (!args.has('--dry')) for (const [channel] of pushes) {
-  try { console.log(execFileSync(butler, ['status', `${TARGET}:${channel}`], { encoding: 'utf8' })); }
-  catch (e) { console.log(`Could not read the status of ${channel} (${String(e.stdout || e.message).trim()}). Check later with: butler status ${TARGET}:${channel}`); }
-}
+if (!args.has('--dry'))
+  for (const [channel] of pushes) {
+    try {
+      console.log(execFileSync(butler, ['status', `${TARGET}:${channel}`], { encoding: 'utf8' }));
+    } catch (e) {
+      console.log(
+        `Could not read the status of ${channel} (${String(e.stdout || e.message).trim()}). Check later with: butler status ${TARGET}:${channel}`
+      );
+    }
+  }

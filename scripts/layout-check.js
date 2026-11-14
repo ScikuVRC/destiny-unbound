@@ -11,16 +11,42 @@ const os = require('os');
 const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
-const arg = k => { const a = process.argv.find(x => x.startsWith('--' + k + '=')); return a ? a.split('=')[1].split(',') : null; };
-const OUT = path.resolve(process.argv.find((a, i) => i > 1 && !a.startsWith('-') && !a.endsWith('.js')) || path.join(ROOT, 'dist', 'layout'));
-const SIZES = (arg('only') || ['960x540', '1024x600', '1280x720', '1280x800', '1366x768', '1600x900', '1920x1080', '2560x1440']).map(s => s.split('x').map(Number));
-const THEME = (arg('theme') || [''])[0];   // ashen, astral, iron or bloodmoon (default: the game's default)
-const SCREENS = arg('screens') || ['title', 'home', 'spin', 'card', 'story', 'options', 'hall', 'achievements', 'ending'];
+const arg = k => {
+  const a = process.argv.find(x => x.startsWith('--' + k + '='));
+  return a ? a.split('=')[1].split(',') : null;
+};
+const OUT = path.resolve(
+  process.argv.find((a, i) => i > 1 && !a.startsWith('-') && !a.endsWith('.js')) || path.join(ROOT, 'dist', 'layout')
+);
+const SIZES = (
+  arg('only') || ['960x540', '1024x600', '1280x720', '1280x800', '1366x768', '1600x900', '1920x1080', '2560x1440']
+).map(s => s.split('x').map(Number));
+const THEME = (arg('theme') || [''])[0]; // ashen, astral, iron or bloodmoon (default: the game's default)
+const SCREENS = arg('screens') || [
+  'title',
+  'home',
+  'spin',
+  'card',
+  'story',
+  'options',
+  'hall',
+  'achievements',
+  'ending',
+];
 app.setPath('userData', fs.mkdtempSync(path.join(os.tmpdir(), 'du-layout-')));
 app.commandLine.appendSwitch('force-device-scale-factor', '1');
 const sleep = ms => new Promise(r => setTimeout(r, ms));
-process.on('unhandledRejection', e => { console.error('Layout check failed: ' + (e && e.stack || e)); app.exit(1); });
-setTimeout(() => { console.error('Layout check took too long; giving up.'); app.exit(1); }, 15 * 60 * 1000).unref();
+process.on('unhandledRejection', e => {
+  console.error('Layout check failed: ' + ((e && e.stack) || e));
+  app.exit(1);
+});
+setTimeout(
+  () => {
+    console.error('Layout check took too long; giving up.');
+    app.exit(1);
+  },
+  15 * 60 * 1000
+).unref();
 
 // a finished legend, built with the game's own wheels (same as the tests)
 const LEGEND = `(() => { const L = new FW.Legend({ luck: 'heroic', seed: 'layout' }), rng = FW.makeRng('layout:spin'); let i = -1;
@@ -35,7 +61,7 @@ const OPEN = {
   options: `FW.Options.open()`,
   hall: `FWApp.hallModal()`,
   achievements: `FWApp.achievementsModal()`,
-  ending: `(() => { const L = ${LEGEND}; FW.Story.newSaga(L, {}, FW.makeRng('end')); L.saga.ch = 14; L.saga.end = 'fulfilled'; L.saga.endText = L.displayName() + ' takes the crown, rules for a day and rides away into legend.'; FWApp.showCard(); FWApp.runStory(); })()`
+  ending: `(() => { const L = ${LEGEND}; FW.Story.newSaga(L, {}, FW.makeRng('end')); L.saga.ch = 14; L.saga.end = 'fulfilled'; L.saga.endText = L.displayName() + ' takes the crown, rules for a day and rides away into legend.'; FWApp.showCard(); FWApp.runStory(); })()`,
 };
 // what doesn't fit, measured inside the page
 const CHECK = `(() => {
@@ -62,27 +88,67 @@ const CHECK = `(() => {
   return { problems: out, pageHeight: doc.scrollHeight, viewport: W + 'x' + H };
 })()`;
 
-app.on('window-all-closed', () => {});   // keep running between window sizes
+app.on('window-all-closed', () => {}); // keep running between window sizes
 app.whenReady().then(async () => {
   fs.mkdirSync(OUT, { recursive: true });
   const report = {};
   for (const [w, h] of SIZES) {
-    const win = new BrowserWindow({ width: w, height: h, useContentSize: true, show: true, x: -6000, y: 0, skipTaskbar: true, frame: false, backgroundColor: '#0b0908', webPreferences: { backgroundThrottling: false, contextIsolation: true } });
+    const win = new BrowserWindow({
+      width: w,
+      height: h,
+      useContentSize: true,
+      show: true,
+      x: -6000,
+      y: 0,
+      skipTaskbar: true,
+      frame: false,
+      backgroundColor: '#0b0908',
+      webPreferences: { backgroundThrottling: false, contextIsolation: true },
+    });
     const js = code => win.webContents.executeJavaScript(code);
-    const load = async () => { for (let i = 0; i < 5; i++) { try { return await win.loadFile(path.join(ROOT, 'app', 'index.html')); } catch (e) { await sleep(400); } } throw new Error('page would not load'); };
+    const load = async () => {
+      for (let i = 0; i < 5; i++) {
+        try {
+          return await win.loadFile(path.join(ROOT, 'app', 'index.html'));
+        } catch (e) {
+          await sleep(400);
+        }
+      }
+      throw new Error('page would not load');
+    };
     await load();
-    await js(`localStorage.setItem('fw.guide','true'); localStorage.setItem('fw.thanks','true'); localStorage.setItem('fw.prefs', JSON.stringify({ muteBg: false, sound: false })); 1`);
+    await js(
+      `localStorage.setItem('fw.guide','true'); localStorage.setItem('fw.thanks','true'); localStorage.setItem('fw.prefs', JSON.stringify({ muteBg: false, sound: false })); 1`
+    );
     for (const sc of SCREENS) {
       await load();
-      await js('document.fonts.ready.then(() => 1)'); await sleep(500);
+      await js('document.fonts.ready.then(() => 1)');
+      await sleep(500);
       if (THEME) await js(`FWApp.setTheme('${THEME}'); 1`);
-      try { await js(`try { ${OPEN[sc]}; 1 } catch (e) { 'error: ' + e.message }`); } catch (e) { /* async flows keep running; that's fine */ }
+      try {
+        await js(`try { ${OPEN[sc]}; 1 } catch (e) { 'error: ' + e.message }`);
+      } catch (e) {
+        /* async flows keep running; that's fine */
+      }
       await sleep(sc === 'spin' || sc === 'story' || sc === 'ending' ? 1800 : 900);
       const res = await js(CHECK);
-      const key = w + 'x' + h; (report[key] = report[key] || {})[sc] = res;
-      let img = null; for (let i = 0; i < 10 && !img; i++) { try { img = await win.webContents.capturePage(); } catch (e) { await sleep(200); } }
+      const key = w + 'x' + h;
+      (report[key] = report[key] || {})[sc] = res;
+      let img = null;
+      for (let i = 0; i < 10 && !img; i++) {
+        try {
+          img = await win.webContents.capturePage();
+        } catch (e) {
+          await sleep(200);
+        }
+      }
       if (img) fs.writeFileSync(path.join(OUT, key + '-' + (THEME ? THEME + '-' : '') + sc + '.jpg'), img.toJPEG(70));
-      console.log(key.padEnd(10) + sc.padEnd(13) + (res.problems.length ? res.problems.join('\n' + ' '.repeat(23)) : 'ok') + (res.pageHeight > h + 1 ? '   [page scrolls: ' + res.pageHeight + 'px]' : ''));
+      console.log(
+        key.padEnd(10) +
+          sc.padEnd(13) +
+          (res.problems.length ? res.problems.join('\n' + ' '.repeat(23)) : 'ok') +
+          (res.pageHeight > h + 1 ? '   [page scrolls: ' + res.pageHeight + 'px]' : '')
+      );
     }
     win.destroy();
   }

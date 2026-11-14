@@ -95,9 +95,9 @@ Newest first. Fixed bugs ship in the next alpha build.
 
 ### Focus (chosen 2026-11-13, in this order)
 
-1. ⬜ **More story**: new chapter types, longer sagas, more endings
+1. ✅ **More story**: new chapter types, longer sagas, more endings (0.2.0-alpha.1)
 2. ⬜ **More Discord bot commands** (for example today's daily challenge, or a Legend Code shown as a card)
-3. ⬜ **A transparent logo** for store pages and the title screens of mod themes (made by hand on grok.com, credited "Created with Grok")
+3. ✅ **A transparent logo** for store pages and the title screens of mod themes: all four theme logos, in `brand/`
 
 ### Must have (the beta basics)
 

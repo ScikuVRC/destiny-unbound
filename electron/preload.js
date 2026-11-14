@@ -9,7 +9,9 @@ contextBridge.exposeInMainWorld('fatewheelDesktop', {
   openModsFolder: () => ipcRenderer.invoke('mods:open'),
   checkForUpdates: () => ipcRenderer.invoke('update:check'),
   installUpdate: () => ipcRenderer.invoke('update:install'),
-  onUpdate: fn => { ipcRenderer.on('update:status', (e, s) => fn(s)); },
+  onUpdate: fn => {
+    ipcRenderer.on('update:status', (e, s) => fn(s));
+  },
   windowInfo: () => ipcRenderer.invoke('win:info'),
   setWindow: o => ipcRenderer.invoke('win:set', o),
   setZoom: z => ipcRenderer.invoke('win:zoom', z),
@@ -27,5 +29,5 @@ contextBridge.exposeInMainWorld('fatewheelDesktop', {
   importSave: () => ipcRenderer.invoke('save:import'),
   discordInfo: () => ipcRenderer.invoke('discord:info'),
   discordEnable: on => ipcRenderer.invoke('discord:enable', !!on),
-  discordSet: activity => ipcRenderer.invoke('discord:set', activity)
+  discordSet: activity => ipcRenderer.invoke('discord:set', activity),
 });

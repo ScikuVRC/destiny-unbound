@@ -17,7 +17,10 @@
     "dist:linux": "npm run icons && electron-builder --linux AppImage --publish never",
     "itch": "node scripts/itch-push.js",
     "modkit": "node scripts/make-modkit.js",
-    "trailer": "electron scripts/record-trailer.js && electron scripts/record-trailer.js --endcard && node scripts/make-trailer.js"
+    "trailer": "electron scripts/record-trailer.js && electron scripts/record-trailer.js --endcard && node scripts/make-trailer.js",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "build": {
     "appId": "io.github.fatewheel.app",
@@ -81,9 +84,14 @@
     ]
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.5",
     "@resvg/resvg-js": "^2.6.2",
     "electron": "^45.3.1",
-    "electron-builder": "^26.18.0"
+    "electron-builder": "^26.18.0",
+    "eslint": "^9.39.5",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.14.0",
+    "prettier": "^3.10.1"
   },
   "funding": {
     "type": "ko-fi",

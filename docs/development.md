@@ -32,8 +32,12 @@ the game install as a web app (PWA).
 ## Tests and tools
 
 ```bash
-npm test
+npm test              # the test suites
+npm run lint          # ESLint: real mistakes such as undefined names and duplicate keys
+npm run format        # Prettier: formats JavaScript and JSON (CSS and HTML keep their compact form)
 ```
+
+CI runs all three on every push, the lint and format check in their own job.
 
 82 checks in 7 suites:
 
@@ -132,7 +136,8 @@ Uninstalling keeps all of these.
 
 | Path | What it is |
 | --- | --- |
-| `app/js/data.js`, `data-more.js`, `data-extra.js` | Wheel content |
+| `app/data/` | Wheel content, as plain data grouped by topic (format: [app/data/README.md](../app/data/README.md)) |
+| `app/js/data.js` | The row parser the content uses; in node it also loads all of `app/data/` |
 | `app/js/engine.js` | Rules: stages, buffs and debuffs, rating, arena |
 | `app/js/story.js`, `story-ui.js` | Story mode rules and screens |
 | `app/js/wheel.js`, `card.js`, `render.js`, `app.js` | Wheel canvas, card renderer, HTML helpers, main flow |
@@ -151,9 +156,10 @@ Uninstalling keeps all of these.
 | `mockups/` | Design mockups; `menu/` holds the painted main menus the game is built from |
 | `docs/` | This guide, modding, Art Studio, alpha test plan, store kit, art credits (every AI image and its prompt) |
 | `tests/` | Test suites |
+| `brand/` | Transparent logos for store pages and mod themes (rebuild with `python scripts/make-transparent-logos.py`) |
 
 ## Contributing
 
-See [CONTRIBUTING.md](../CONTRIBUTING.md). Bug reports and pull requests are welcome. Run `npm test` before sending a change. New wheel entries go in
-`app/js/data-extra.js` (or a new data file loaded after it); the tests check that names are unique and every
-buff/debuff code parses. By contributing you agree that your contribution is licensed under GPL-3.0-or-later.
+See [CONTRIBUTING.md](../CONTRIBUTING.md). Bug reports and pull requests are welcome. Run `npm test` and `npm run lint` before sending a change, and `npm run format`
+to format it. New wheel entries go at the end of their wheel in `app/data/`; the tests check that names are unique
+and every buff/debuff code parses. By contributing you agree that your contribution is licensed under GPL-3.0-or-later.

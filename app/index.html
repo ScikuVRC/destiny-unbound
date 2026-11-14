@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<!-- Content Security Policy: only the game's own scripts run. Mods are data (no code); AI portraits and stories
+     may call any service the player sets up, so network and image sources stay open. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' blob:; img-src 'self' data: blob: https: http:; font-src 'self' data: blob:; media-src 'self' data: blob:; connect-src 'self' https: http: data: blob:; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Destiny Unbound - Spin a Legend</title>
 <meta name="description" content="Spin the wheels of fate to forge a fictional character: race, powers, weapons, weaknesses - with buffs, debuffs and an arena fight.">
@@ -9,11 +12,11 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/favicon-32.png" type="image/png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
-<link rel="stylesheet" href="css/fonts.css?v=57">
-<link rel="stylesheet" href="css/base.css?v=57">
-<link rel="stylesheet" href="css/themes.css?v=57">
-<link rel="stylesheet" href="css/menu.css?v=57">
-<link rel="stylesheet" href="css/ui.css?v=57">
+<link rel="stylesheet" href="css/fonts.css?v=58">
+<link rel="stylesheet" href="css/base.css?v=58">
+<link rel="stylesheet" href="css/themes.css?v=58">
+<link rel="stylesheet" href="css/menu.css?v=58">
+<link rel="stylesheet" href="css/ui.css?v=58">
 </head>
 <body data-theme="ashen">
 <header class="top">
@@ -169,36 +172,41 @@
 </main>
 
 <div id="modalRoot"></div>
-<script src="js/version.js?v=57"></script>
-<script src="js/prefs.js?v=57"></script>
-<script src="js/data.js?v=57"></script>
-<script src="js/data-more.js?v=57"></script>
-  <script src="js/data-extra.js?v=57"></script>
-<script src="lang/es.js?v=57"></script>
-<script src="lang/fr.js?v=57"></script>
-<script src="lang/de.js?v=57"></script>
-<script src="lang/ja.js?v=57"></script>
-<script src="js/i18n.js?v=57"></script>
-<script src="js/engine.js?v=57"></script>
-<script src="js/story.js?v=57"></script>
-<script src="js/wheel.js?v=57"></script>
-<script src="js/audio.js?v=57"></script>
-<script src="js/render.js?v=57"></script>
-<script src="js/card.js?v=57"></script>
-<script src="js/art.js?v=57"></script>
-<script src="js/app.js?v=57"></script>
-<script src="js/studio.js?v=57"></script>
-<script src="js/story-ui.js?v=57"></script>
-<script src="js/extras.js?v=57"></script>
-<script src="js/packs.js?v=57"></script>
-<script src="js/achievements.js?v=57"></script>
-<script src="js/mods.js?v=57"></script>
-<script src="js/mods-ui.js?v=57"></script>
-<script src="js/system.js?v=57"></script>
-<script src="js/menu-data.js?v=57"></script>
-<script src="js/menu.js?v=57"></script>
-<script src="js/options.js?v=57"></script>
-<script src="js/presence.js?v=57"></script>
-<script src="js/world.js?v=57"></script>
+<script src="js/version.js?v=58"></script>
+<script src="js/prefs.js?v=58"></script>
+<script src="js/data.js?v=58"></script>
+<script src="data/core.js?v=58"></script>
+<script src="data/races.js?v=58"></script>
+<script src="data/origins.js?v=58"></script>
+<script src="data/skills.js?v=58"></script>
+<script src="data/fate.js?v=58"></script>
+<script src="data/looks.js?v=58"></script>
+<script src="data/arena.js?v=58"></script>
+<script src="lang/es.js?v=58"></script>
+<script src="lang/fr.js?v=58"></script>
+<script src="lang/de.js?v=58"></script>
+<script src="lang/ja.js?v=58"></script>
+<script src="js/i18n.js?v=58"></script>
+<script src="js/engine.js?v=58"></script>
+<script src="js/story.js?v=58"></script>
+<script src="js/wheel.js?v=58"></script>
+<script src="js/audio.js?v=58"></script>
+<script src="js/render.js?v=58"></script>
+<script src="js/card.js?v=58"></script>
+<script src="js/art.js?v=58"></script>
+<script src="js/app.js?v=58"></script>
+<script src="js/studio.js?v=58"></script>
+<script src="js/story-ui.js?v=58"></script>
+<script src="js/extras.js?v=58"></script>
+<script src="js/packs.js?v=58"></script>
+<script src="js/achievements.js?v=58"></script>
+<script src="js/mods.js?v=58"></script>
+<script src="js/mods-ui.js?v=58"></script>
+<script src="js/system.js?v=58"></script>
+<script src="js/menu-data.js?v=58"></script>
+<script src="js/menu.js?v=58"></script>
+<script src="js/options.js?v=58"></script>
+<script src="js/presence.js?v=58"></script>
+<script src="js/world.js?v=58"></script>
 </body>
 </html>

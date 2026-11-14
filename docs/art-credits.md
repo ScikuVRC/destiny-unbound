@@ -124,3 +124,9 @@ Astral Oracle logo. Generated 2026-11-12.
 App icon (every icon size is made from it by scripts/make-icons.js). Generated 2026-11-12.
 
 > Generate a new image: a video game app icon, a bold ornate fortune wheel emblem of polished gold with eight glowing rune segments and a bright molten-orange glowing core, a broken golden chain link shattering across the front of the wheel, strong simple silhouette that reads clearly at small sizes, the emblem small and centered in the middle of the image with lots of empty space around it, on a plain smooth dark charcoal background with a soft warm vignette glow behind the emblem, no text, no letters.
+
+### `brand/logo-ashen.png`, `logo-astral.png`, `logo-iron.png`, `logo-bloodmoon.png`
+
+Transparent versions of the four theme logos above (no new image was generated). Made 2026-11-13 by
+`scripts/make-transparent-logos.py`, which turns each logo's black background into transparency and keeps the
+artwork. Created with Grok, like the originals.

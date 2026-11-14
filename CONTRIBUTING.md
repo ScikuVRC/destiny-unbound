@@ -44,11 +44,12 @@ layout, the tests and how releases work.
 
 Before you send a pull request:
 
-1. Run `npm test`. All checks must pass.
+1. Run `npm test` and `npm run lint`. All checks must pass. Run `npm run format` to format your code with Prettier
+   (CI checks it too).
 2. Keep each pull request to one change, and say what it fixes or adds and how you checked it.
 3. If you change something players see, check it in at least one theme at a phone size and a desktop size.
-4. New wheel entries go in `app/js/data-extra.js` (or a new data file loaded after it). The tests check that names
-   are unique and that every buff and debuff code parses.
+4. New wheel entries go at the end of their wheel in `app/data/` ([app/data/README.md](app/data/README.md) explains
+   the format). The tests check that names are unique and that every buff and debuff code parses.
 5. If you change text players see, add the Spanish line to `app/lang/es.js` if you can, or say in the pull request
    that it still needs translating.
 

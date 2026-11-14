@@ -7,8 +7,10 @@ Machine-Priest and the Heresy Hunter, relic weapons, void powers, servo-skull co
 Installing
   Desktop app: Mods > Open mods folder, copy this whole folder in, then press "Restart to apply".
   Browser: Mods > Import a mod folder, and pick this folder.
-  Then pick "Void Cathedral" from the theme button. The new entries are on the wheels in every theme; switch the
-  mod off in the Mods screen to remove them.
+  Then pick "Void Cathedral" from the theme button. Its theme.css styles every part of the spin screen (the
+  buttons, Spin settings pop-up, count badges, legend rows and Show upcoming), so it is a good starting point for
+  a theme of your own.
+  The new entries are on the wheels in every theme; switch the mod off in the Mods screen to remove them.
 
 Making your own setting
   Copy this folder, rename it, change "id" and "name" in mod.json, and replace the entries. Keep the setting

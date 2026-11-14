@@ -79,7 +79,7 @@ Singleplayer, Free to Play, Open Source, Moddable, Casual, Controller.
 - itch.io: a cover image 630×500 (the Ashen Crown logo over its painted city works well).
 - Steam: header capsule 920×430, small capsule 462×174, main capsule 1232×706, vertical capsule 748×896, library
   hero 3840×1240 and library logo (a transparent PNG). These can be cut from the painted backgrounds and logos;
-  the logo needs a transparent version first.
+  transparent logos for all four themes are in `brand/`.
 
 ## Content notes
 

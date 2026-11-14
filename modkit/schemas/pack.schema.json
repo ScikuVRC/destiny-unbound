@@ -20,12 +20,30 @@
       "type": "object",
       "required": ["name"],
       "properties": {
-        "name": { "type": "string", "minLength": 1, "maxLength": 60, "description": "Shown on the wheel. Must not match a built-in entry." },
-        "w": { "type": "number", "exclusiveMinimum": 0, "maximum": 200, "default": 3, "description": "Slice size. Built-in entries are mostly 2 to 10." },
-        "dsl": { "type": "string", "description": "Buffs and debuffs, e.g. \"str+2 dark:all+1 w=fire\". See reference/dsl-codes.md." },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60,
+          "description": "Shown on the wheel. Must not match a built-in entry."
+        },
+        "w": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 200,
+          "default": 3,
+          "description": "Slice size. Built-in entries are mostly 2 to 10."
+        },
+        "dsl": {
+          "type": "string",
+          "description": "Buffs and debuffs, e.g. \"str+2 dark:all+1 w=fire\". See reference/dsl-codes.md."
+        },
         "perk": { "type": "string", "maxLength": 120, "description": "A short good line shown under the result." },
         "flaw": { "type": "string", "maxLength": 120, "description": "A short bad line." },
-        "art": { "type": "string", "maxLength": 200, "description": "Races only: how the race looks, for AI portraits." }
+        "art": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "Races only: how the race looks, for AI portraits."
+        }
       },
       "additionalProperties": false
     },
@@ -45,7 +63,10 @@
         "pow": { "$ref": "#/definitions/list", "description": "Powers (dsl should include rar=1..6; default rar=2)" },
         "weak": { "$ref": "#/definitions/list", "description": "Weaknesses" },
         "pet": { "$ref": "#/definitions/list", "description": "Companions" },
-        "title": { "$ref": "#/definitions/list", "description": "Titles (dsl should include tt=1..5; default tt=1 rt+1)" },
+        "title": {
+          "$ref": "#/definitions/list",
+          "description": "Titles (dsl should include tt=1..5; default tt=1 rt+1)"
+        },
         "mark": { "$ref": "#/definitions/list", "description": "Marks of Fate" },
         "hair": { "$ref": "#/definitions/list", "description": "Hair" },
         "eyes": { "$ref": "#/definitions/list", "description": "Eyes" },
@@ -59,8 +80,16 @@
       "additionalProperties": {
         "type": "object",
         "properties": {
-          "weights": { "type": "object", "additionalProperties": { "type": "number", "exclusiveMinimum": 0, "maximum": 1000 }, "description": "Entry name: new slice size." },
-          "removed": { "type": "array", "items": { "type": "string" }, "description": "Entry names to take off the wheel." }
+          "weights": {
+            "type": "object",
+            "additionalProperties": { "type": "number", "exclusiveMinimum": 0, "maximum": 1000 },
+            "description": "Entry name: new slice size."
+          },
+          "removed": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Entry names to take off the wheel."
+          }
         },
         "additionalProperties": false
       }

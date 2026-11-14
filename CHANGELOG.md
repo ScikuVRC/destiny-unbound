@@ -4,6 +4,26 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
+## Unreleased
+
+### Fixes
+
+- Mod themes now get every colour and font they leave out from their base theme, as the mod kit guide says. Before,
+  they fell back to Ashen Crown's look.
+- Spanish: the master volume and the "Master" tier no longer share one translation; French and German now call the
+  tier "Maître" and "Meister" (they read "Général" and "Gesamt" before).
+
+### Behind the scenes
+
+- **Content split from code.** Every wheel's entries now live in `app/data/`, grouped by topic, as plain data with
+  a guide to the format. Each wheel is in one place instead of spread over three files. The game plays the same:
+  every table was checked to be identical.
+- **Content Security Policy.** The page only runs the game's own scripts.
+- **Linter and formatter.** ESLint and Prettier, run in CI. All JavaScript was formatted once.
+- **Mod kit: The Ember Dominion** (template 07) is restyled for the 0.2 spin screen: hard-edged buttons, the Spin
+  settings pop-up, count badges, legend rows and Show upcoming all match its Void Cathedral look.
+- **Transparent logos** for all four themes in `brand/`, for store pages and mod themes.
+
 ## 0.2.0-alpha.1 (2026-11-13)
 
 The first 0.2 build: a much bigger story, fairer odds, a cleaner spin screen and an optional world counter.
