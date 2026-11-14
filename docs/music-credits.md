@@ -34,6 +34,35 @@ ffmpeg -i music-src/title.mp3 -af "loudnorm=I=-18:TP=-1.5:LRA=11,silenceremove=s
 | `defeat` | lost fight, death | `music/defeat.ogg` | 0:15 | ACE-Step | 2026-11-14 |
 | `legend` | rare endings | `music/legend.ogg` | 0:14 | ACE-Step | 2026-11-14 |
 
+## Theme tracks
+
+Ashen Crown and mod themes use the shared tracks above. The other three themes have their own set, made with
+`scripts/make-music.py -q high --theme <theme>` (the slot's prompt plus the theme's flavour words).
+
+| Theme | Slot | File | Length | Model and seed | Made |
+| --- | --- | --- | --- | --- | --- |
+| Astral Oracle | `battle` | `music/astral/battle.ogg` | 1:57 | ACE-Step 1.5 SFT, 50 steps, seed 749711397 | 2026-11-14 |
+| Astral Oracle | `defeat` | `music/astral/defeat.ogg` | 0:11 | ACE-Step 1.5 SFT, 50 steps, seed 1446687901 | 2026-11-14 |
+| Astral Oracle | `legend` | `music/astral/legend.ogg` | 0:14 | ACE-Step 1.5 SFT, 50 steps, seed 753411263 | 2026-11-14 |
+| Astral Oracle | `spin` | `music/astral/spin.ogg` | 2:00 | ACE-Step 1.5 SFT, 50 steps, seed 87558445 | 2026-11-14 |
+| Astral Oracle | `story` | `music/astral/story.ogg` | 3:00 | ACE-Step 1.5 SFT, 50 steps, seed 1445900464 | 2026-11-14 |
+| Astral Oracle | `title` | `music/astral/title.ogg` | 2:30 | ACE-Step 1.5 SFT, 50 steps, seed 1205813366 | 2026-11-14 |
+| Astral Oracle | `victory` | `music/astral/victory.ogg` | 0:12 | ACE-Step 1.5 SFT, 50 steps, seed 1480186547 | 2026-11-14 |
+| Iron Litany | `battle` | `music/iron/battle.ogg` | 1:59 | ACE-Step 1.5 SFT, 50 steps, seed 1578382699 | 2026-11-14 |
+| Iron Litany | `defeat` | `music/iron/defeat.ogg` | 0:12 | ACE-Step 1.5 SFT, 50 steps, seed 1931544974 | 2026-11-14 |
+| Iron Litany | `legend` | `music/iron/legend.ogg` | 0:14 | ACE-Step 1.5 SFT, 50 steps, seed 578382367 | 2026-11-14 |
+| Iron Litany | `spin` | `music/iron/spin.ogg` | 2:00 | ACE-Step 1.5 SFT, 50 steps, seed 1205859965 | 2026-11-14 |
+| Iron Litany | `story` | `music/iron/story.ogg` | 3:00 | ACE-Step 1.5 SFT, 50 steps, seed 815846102 | 2026-11-14 |
+| Iron Litany | `title` | `music/iron/title.ogg` | 2:30 | ACE-Step 1.5 SFT, 50 steps, seed 71076964 | 2026-11-14 |
+| Iron Litany | `victory` | `music/iron/victory.ogg` | 0:08 | ACE-Step 1.5 SFT, 50 steps, seed 1585440076 | 2026-11-14 |
+| Blood Moon | `battle` | `music/bloodmoon/battle.ogg` | 1:59 | ACE-Step 1.5 SFT, 50 steps, seed 1123466102 | 2026-11-14 |
+| Blood Moon | `defeat` | `music/bloodmoon/defeat.ogg` | 0:11 | ACE-Step 1.5 SFT, 50 steps, seed 1945973211 | 2026-11-14 |
+| Blood Moon | `legend` | `music/bloodmoon/legend.ogg` | 0:14 | ACE-Step 1.5 SFT, 50 steps, seed 417709135 | 2026-11-14 |
+| Blood Moon | `spin` | `music/bloodmoon/spin.ogg` | 2:00 | ACE-Step 1.5 SFT, 50 steps, seed 357814174 | 2026-11-14 |
+| Blood Moon | `story` | `music/bloodmoon/story.ogg` | 3:00 | ACE-Step 1.5 SFT, 50 steps, seed 424930345 | 2026-11-14 |
+| Blood Moon | `title` | `music/bloodmoon/title.ogg` | 2:30 | ACE-Step 1.5 SFT, 50 steps, seed 234542652 | 2026-11-14 |
+| Blood Moon | `victory` | `music/bloodmoon/victory.ogg` | 0:12 | ACE-Step 1.5 SFT, 50 steps, seed 715281467 | 2026-11-14 |
+
 ## Prompts
 
 Suggested prompts for each slot (note the exact prompt and seed used in the table above when a track is kept). In ACE-Step, put them in the tags box and write `[instrumental]` in

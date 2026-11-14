@@ -47,6 +47,7 @@ in [docs/release-plan.md](docs/release-plan.md).
 
 ## Recently done
 
+- 0.2.0-alpha.3.7: every theme has its own HD music (21 new tracks for Astral Oracle, Iron Litany and Blood Moon).
 - 0.2.0-alpha.3.6: optional HD music, asked on first launch; the music and effects volume sliders work again; a new trailer.
 - 0.2.0-alpha.3.5: rare results get a moment: the wheel slows before it lands, the slice flashes and the result glows.
 - 0.2.0-alpha.3.4: fewer buttons: Share and Portrait menus on the card, Share in the Hall, Record in the ☰ menu.

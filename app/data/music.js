@@ -8,7 +8,7 @@
 (function (g) {
   const FW = g.FW;
 
-  // Shared by every theme.
+  // Shared by every theme without its own set (Ashen Crown and mod themes).
   FW.MUSIC_FILES = {
     title: 'music/title.ogg',
     spin: 'music/spin.ogg',
@@ -18,8 +18,9 @@
     defeat: 'music/defeat.ogg',
     legend: 'music/legend.ogg',
   };
-  // A theme's own tracks, used instead of the shared ones when present,
-  // for example bloodmoon: { title: 'music/bloodmoon/title.ogg' }.
-  FW.MUSIC_THEMES = {};
+  // A theme's own tracks, used instead of the shared ones (app/music/<theme>/<slot>.ogg).
+  const SLOTS = ['title', 'spin', 'story', 'battle', 'victory', 'defeat', 'legend'];
+  const set = theme => Object.fromEntries(SLOTS.map(s => [s, 'music/' + theme + '/' + s + '.ogg']));
+  FW.MUSIC_THEMES = { astral: set('astral'), iron: set('iron'), bloodmoon: set('bloodmoon') };
   FW.hasMusicFiles = () => Object.keys(FW.MUSIC_FILES).some(k => FW.MUSIC_FILES[k]);
 })(typeof window !== 'undefined' ? window : globalThis);

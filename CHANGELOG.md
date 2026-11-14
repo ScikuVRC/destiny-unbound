@@ -4,6 +4,18 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
+## 0.2.0-alpha.3.7 (2026-11-14)
+
+A small update: every theme sounds like itself.
+
+### New
+
+- **HD music for every theme.** Astral Oracle, Iron Litany and Blood Moon each have their own seven tracks now
+  (menus, making a hero, stories, battles, and the victory, defeat and legend stingers): starlit and airy, organ
+  and iron, gothic and eerie. Ashen Crown keeps the first set. Like the first set, they are placeholders made with
+  ACE-Step, an open-source AI music model, and only play with Options > Audio > HD music on. The full list, with
+  every track's settings, is in [docs/music-credits.md](docs/music-credits.md).
+
 ## 0.2.0-alpha.3.6 (2026-11-14)
 
 A small update with music.
