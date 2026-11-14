@@ -535,156 +535,387 @@
     }
   }
 
-  /* an AI or uploaded portrait fills the whole card with no seams: a blurred, darkened copy of the picture behind
-     everything, the sharp picture starting just below the name (so the title never covers the face), softly faded in
-     at the top, and darkened towards the bottom so the stat panel reads cleanly */
-  const PORTRAIT_TOP = 230;
-  function portrait(c, im) {
-    const sb = Math.max(W / im.width, H / im.height) * 1.08;
-    c.save();
-    c.fillStyle = '#050507';
-    c.fillRect(0, 0, W, H);
-    c.filter = 'blur(34px) brightness(0.42) saturate(1.15)';
-    c.drawImage(im, (W - im.width * sb) / 2, (H - im.height * sb) / 2, im.width * sb, im.height * sb);
-    c.restore();
-    const AH = H - PORTRAIT_TOP,
-      s = Math.max(W / im.width, AH / im.height),
-      dw = im.width * s,
-      dh = im.height * s;
+  /* ================= trading-card faces =================
+     The front shows the picture and the name; the back shows the numbers. Two front styles: 'arch' (the default, a
+     tarot-like arched window and a rank seal) and 'full' (the picture fills the card, name over a dark fade).
+     FW.drawCard(canvas, legend, { theme, image, side: 'front' | 'back', style: 'arch' | 'full' }) */
+  FW.CARD_STYLES = ['arch', 'full'];
+  const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'];
+  function themeOf(t) {
+    return t && CT[t] ? t : FW.THEME_ALIAS && CT[FW.THEME_ALIAS[t]] ? FW.THEME_ALIAS[t] : 'ashen';
+  }
+  function hueOf(legend) {
+    const race = legend.raceName();
+    return HUE[race] != null
+      ? HUE[race]
+      : FW.RACE_HUE && FW.RACE_HUE[race] != null
+        ? FW.RACE_HUE[race]
+        : hash(race) % 360;
+  }
+  // the picture for the card: the player's portrait if there is one, else the painted scene and silhouette
+  function scene(legend, th, hue, image) {
     const o = document.createElement('canvas');
     o.width = W;
     o.height = H;
     const oc = o.getContext('2d');
-    oc.drawImage(im, (W - dw) / 2, PORTRAIT_TOP + (AH - dh) * 0.2, dw, dh); // keep the upper part: faces sit near the top
-    oc.globalCompositeOperation = 'destination-in';
-    const m = oc.createLinearGradient(0, PORTRAIT_TOP - 60, 0, PORTRAIT_TOP + 150);
-    m.addColorStop(0, 'rgba(0,0,0,0)');
-    m.addColorStop(1, 'rgba(0,0,0,1)');
-    oc.fillStyle = m;
-    oc.fillRect(0, 0, W, H);
-    c.drawImage(o, 0, 0);
-    const low = c.createLinearGradient(0, 560, 0, 900);
+    if (image) {
+      const s = Math.max(W / image.width, H / image.height);
+      oc.drawImage(image, (W - image.width * s) / 2, (H - image.height * s) * 0.2, image.width * s, image.height * s);
+    } else {
+      art(oc, legend, th, hue, FW.makeRng('card' + legend.seed));
+      figure(oc, legend, hue);
+    }
+    return o;
+  }
+  const rankIndex = r => {
+    let i = 0;
+    FW.RANKS.forEach((x, k) => {
+      if (r >= x[0]) i = k;
+    });
+    return i;
+  };
+  function flavour(legend) {
+    const per = legend.entry('per'),
+      ttl = legend.entry('title');
+    const line = (per && per.perk) || (ttl && ttl.perk) || '';
+    return line ? '“' + line.replace(/\.$/, '') + '.”' : '';
+  }
+  function typeLine(legend) {
+    const race = legend.raceName();
+    const parts = [legend.has('sub') ? legend.pickName('sub') + ' ' + race : race];
+    if (legend.has('cls')) parts.push(legend.pickName('cls'));
+    return parts.join('  ·  ');
+  }
+  function heroName(legend) {
+    return legend.name || legend.pickName('title') || legend.raceName();
+  }
+  function wrap(c, text, maxW) {
+    const out = [];
+    let line = '';
+    String(text)
+      .split(/\s+/)
+      .forEach(w => {
+        const t = line ? line + ' ' + w : w;
+        if (c.measureText(t).width > maxW && line) {
+          out.push(line);
+          line = w;
+        } else line = t;
+      });
+    if (line) out.push(line);
+    return out;
+  }
+  const tr = s => (FW.t ? FW.t(s) : s);
+
+  function frontArch(c, legend, th, name, hue, pic) {
+    const comp = FW.compute(legend);
+    const bg = c.createRadialGradient(W / 2, 0, 40, W / 2, 200, H);
+    bg.addColorStop(0, th.panel.replace(/[\d.]+\)$/, '1)'));
+    bg.addColorStop(1, '#070506');
+    c.fillStyle = bg;
+    c.fillRect(0, 0, W, H);
+    // a soft, dark copy of the picture behind everything so the card never looks empty
+    c.save();
+    c.filter = 'blur(30px) brightness(.32)';
+    c.drawImage(pic, 0, 0, W, H);
+    c.restore();
+    // the arched window
+    const ax = 92,
+      ay = 92,
+      aw = W - 184,
+      ah = 960,
+      r = aw / 2;
+    const archPath = () => {
+      c.beginPath();
+      c.moveTo(ax, ay + ah);
+      c.lineTo(ax, ay + r);
+      c.arc(ax + r, ay + r, r, Math.PI, 0);
+      c.lineTo(ax + aw, ay + ah);
+      c.closePath();
+    };
+    c.save();
+    archPath();
+    c.clip();
+    // crop the picture to the window, keeping the upper body (the silhouette sits between y 250 and 790)
+    const sh = 900,
+      sw = sh * (aw / ah);
+    c.drawImage(pic, (W - sw) / 2, 90, sw, sh, ax, ay, aw, ah);
+    const fade = c.createLinearGradient(0, ay + ah - 220, 0, ay + ah);
+    fade.addColorStop(0, 'rgba(0,0,0,0)');
+    fade.addColorStop(1, 'rgba(0,0,0,.6)');
+    c.fillStyle = fade;
+    c.fillRect(ax, ay + ah - 220, aw, 220);
+    c.restore();
+    archPath();
+    c.lineWidth = 6;
+    c.strokeStyle = th.accent;
+    c.stroke();
+    c.lineWidth = 2;
+    c.strokeStyle = th.stroke;
+    c.save();
+    c.translate(0, 0);
+    c.beginPath();
+    c.moveTo(ax - 14, ay + ah + 10);
+    c.lineTo(ax - 14, ay + r);
+    c.arc(ax + r, ay + r, r + 14, Math.PI, 0);
+    c.lineTo(ax + aw + 14, ay + ah + 10);
+    c.stroke();
+    c.restore();
+    // the rank seal
+    const ri = rankIndex(comp.rating),
+      sx = W / 2,
+      sy = ay + ah;
+    c.beginPath();
+    c.arc(sx, sy, 62, 0, TAU);
+    const seal = c.createRadialGradient(sx, sy - 20, 6, sx, sy, 62);
+    seal.addColorStop(0, th.key);
+    seal.addColorStop(1, '#14080a');
+    c.fillStyle = seal;
+    c.fill();
+    c.lineWidth = 5;
+    c.strokeStyle = th.accent;
+    c.stroke();
+    c.fillStyle = '#fff4e0';
+    c.textAlign = 'center';
+    c.textBaseline = 'middle';
+    c.font = '800 46px ' + th.head;
+    c.fillText(ROMAN[ri] || '', sx, sy + 3);
+    c.textBaseline = 'alphabetic';
+    // name, type and flavour
+    const nm = th.caps ? heroName(legend).toUpperCase() : heroName(legend);
+    fit(c, nm, W - 140, 76, '800', th.head);
+    c.shadowColor = 'rgba(0,0,0,.9)';
+    c.shadowBlur = 14;
+    c.fillStyle = th.val;
+    c.fillText(nm, W / 2, sy + 150);
+    c.shadowBlur = 0;
+    const ty = typeLine(legend);
+    fit(c, ty, W - 160, 36, '600', th.font);
+    c.fillStyle = th.sub;
+    c.fillText(ty, W / 2, sy + 202);
+    const fl = flavour(legend);
+    if (fl) {
+      c.font = 'italic 500 34px ' + th.font;
+      c.fillStyle = th.val;
+      c.globalAlpha = 0.85;
+      wrap(c, fl, W - 220)
+        .slice(0, 2)
+        .forEach((l, i) => c.fillText(l, W / 2, sy + 262 + i * 42));
+      c.globalAlpha = 1;
+    }
+    // the rating at the foot
+    c.font = '800 54px ' + th.head;
+    const rt = String(comp.rating),
+      rk = '  ' + tr(comp.rank).toUpperCase();
+    const w1 = c.measureText(rt).width;
+    c.font = '700 30px ' + th.font;
+    const w2 = c.measureText(rk).width;
+    const x0 = W / 2 - (w1 + w2) / 2;
+    c.textAlign = 'left';
+    c.font = '800 54px ' + th.head;
+    c.fillStyle = th.val;
+    c.fillText(rt, x0, H - 74);
+    c.font = '700 30px ' + th.font;
+    c.fillStyle = th.accent;
+    c.fillText(rk, x0 + w1, H - 76);
+    c.textAlign = 'center';
+  }
+
+  function frontFull(c, legend, th, name, hue, pic) {
+    const comp = FW.compute(legend);
+    // the picture fills the card (scaled up so the silhouette is bigger)
+    c.drawImage(pic, 108, 80, 864, 1296, 0, 0, W, H);
+    const top = c.createLinearGradient(0, 0, 0, 260);
+    top.addColorStop(0, 'rgba(0,0,0,.6)');
+    top.addColorStop(1, 'rgba(0,0,0,0)');
+    c.fillStyle = top;
+    c.fillRect(0, 0, W, 260);
+    const low = c.createLinearGradient(0, H * 0.55, 0, H * 0.82);
     low.addColorStop(0, 'rgba(0,0,0,0)');
-    low.addColorStop(1, 'rgba(0,0,0,.82)');
+    low.addColorStop(1, 'rgba(6,4,4,.94)');
     c.fillStyle = low;
-    c.fillRect(0, 560, W, 340);
-    c.fillStyle = 'rgba(0,0,0,.82)';
-    c.fillRect(0, 900, W, H - 900);
+    c.fillRect(0, H * 0.55, W, H * 0.45);
+    // header and rating badge
+    c.textAlign = 'left';
+    c.font = '600 24px ' + th.font;
+    c.fillStyle = 'rgba(255,255,255,.75)';
+    c.fillText('D E S T I N Y   U N B O U N D', 70, 96);
+    const rt = String(comp.rating);
+    c.font = '800 48px ' + th.head;
+    const bw = c.measureText(rt).width + 56;
+    rr(c, W - 66 - bw, 48, bw, 74, 37);
+    c.fillStyle = 'rgba(10,7,6,.78)';
+    c.fill();
+    c.lineWidth = 3;
+    c.strokeStyle = th.accent;
+    c.stroke();
+    c.textAlign = 'center';
+    c.fillStyle = th.val;
+    c.fillText(rt, W - 66 - bw / 2, 102);
+    // name block
+    const nm = th.caps ? heroName(legend).toUpperCase() : heroName(legend);
+    fit(c, nm, W - 140, 86, '800', th.head);
+    c.shadowColor = 'rgba(0,0,0,.95)';
+    c.shadowBlur = 20;
+    c.fillStyle = '#fff';
+    c.fillText(nm, W / 2, H - 330);
+    c.shadowBlur = 0;
+    const ty = typeLine(legend);
+    fit(c, ty, W - 160, 38, '600', th.font);
+    c.fillStyle = th.accent;
+    c.fillText(ty, W / 2, H - 272);
+    const g = c.createLinearGradient(160, 0, W - 160, 0);
+    g.addColorStop(0, 'rgba(0,0,0,0)');
+    g.addColorStop(0.5, th.accent);
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    c.fillStyle = g;
+    c.fillRect(160, H - 240, W - 320, 2);
+    const fl = flavour(legend);
+    if (fl) {
+      c.font = 'italic 500 34px ' + th.font;
+      c.fillStyle = th.val;
+      c.globalAlpha = 0.88;
+      wrap(c, fl, W - 220)
+        .slice(0, 2)
+        .forEach((l, i) => c.fillText(l, W / 2, H - 186 + i * 42));
+      c.globalAlpha = 1;
+    }
+    // stars for the rank (1 to 5)
+    const stars = 1 + Math.round((rankIndex(comp.rating) / (FW.RANKS.length - 1)) * 4);
+    c.font = '700 38px ' + th.font;
+    c.fillStyle = th.accent;
+    c.fillText('★'.repeat(stars) + '☆'.repeat(5 - stars), W / 2, H - 78);
+  }
+
+  function back(c, legend, th, name, hue, pic) {
+    const comp = FW.compute(legend);
+    const bg = c.createRadialGradient(W / 2, 0, 40, W / 2, 300, H);
+    bg.addColorStop(0, th.panel.replace(/[\d.]+\)$/, '1)'));
+    bg.addColorStop(1, '#060406');
+    c.fillStyle = bg;
+    c.fillRect(0, 0, W, H);
+    c.save();
+    c.globalAlpha = 0.16;
+    c.filter = 'blur(26px)';
+    c.drawImage(pic, 0, 0, W, H);
+    c.restore();
+    const L = 96,
+      R = W - 96;
+    c.textAlign = 'center';
+    const nm = th.caps ? heroName(legend).toUpperCase() : heroName(legend);
+    fit(c, nm, W - 200, 58, '800', th.head);
+    c.fillStyle = th.accent;
+    c.fillText(nm, W / 2, 150);
+    c.font = '500 30px ' + th.font;
+    c.fillStyle = th.sub;
+    fit(c, typeLine(legend), W - 200, 30, '500', th.font);
+    c.fillText(typeLine(legend), W / 2, 196);
+    // rating and rank
+    c.textAlign = 'left';
+    c.font = '800 96px ' + th.head;
+    c.fillStyle = th.val;
+    c.fillText(String(comp.rating), L, 320);
+    c.textAlign = 'right';
+    c.font = '700 34px ' + th.font;
+    c.fillStyle = th.key;
+    c.fillText(tr(comp.rank).toUpperCase(), R, 312);
+    c.fillStyle = th.stroke;
+    c.fillRect(L, 352, R - L, 2);
+    // the seven stat bars
+    const Wt = FW.WEIGHTS;
+    const stats = [
+      ['str', 'Strength', Wt.str],
+      ['dur', 'Durability', Wt.dur],
+      ['spd', 'Speed', Wt.spd],
+      ['fgt', 'Fighting', Wt.fgt],
+      ['int', 'Intellect', Wt.int],
+      ['wpn', 'Weapon', Wt.wpnE],
+      ['pwr', 'Power', Wt.powE],
+    ];
+    let y = 430;
+    stats.forEach(([k, label, wt]) => {
+      const pct = Math.max(0, Math.min(100, Math.round((comp.parts[k] || 0) / wt)));
+      c.textAlign = 'left';
+      c.font = '600 32px ' + th.font;
+      c.fillStyle = th.val;
+      c.fillText(tr(label), L, y);
+      rr(c, L + 250, y - 20, R - L - 340, 16, 8);
+      c.fillStyle = 'rgba(255,255,255,.12)';
+      c.fill();
+      rr(c, L + 250, y - 20, Math.max(16, ((R - L - 340) * Math.min(100, pct)) / 100), 16, 8);
+      const bar = c.createLinearGradient(L + 250, 0, R - 90, 0);
+      bar.addColorStop(0, th.accent);
+      bar.addColorStop(1, th.key);
+      c.fillStyle = bar;
+      c.fill();
+      c.textAlign = 'right';
+      c.font = '600 30px ' + th.font;
+      c.fillStyle = th.sub;
+      c.fillText(String(pct), R, y);
+      y += 70;
+    });
+    y += 6;
+    c.fillStyle = th.stroke;
+    c.fillRect(L, y - 30, R - L, 2);
+    // facts
+    const facts = FW.extraLines(legend).filter(
+      x => ['BIRTHPLACE', 'BACKGROUND', 'PERSONALITY', "FATE'S MARK"].indexOf(x.k) >= 0
+    );
+    if (legend.has('wpn')) facts.push({ k: 'WEAPON', v: legend.pickName('wpn') });
+    if (legend.has('pow') && !legend.isNone('pow')) facts.push({ k: 'POWER', v: legend.pickName('pow') });
+    if (legend.has('weak') && !legend.isNone('weak')) facts.push({ k: 'WEAKNESS', v: legend.pickName('weak') });
+    if (legend.has('pet') && !legend.isNone('pet')) facts.push({ k: 'COMPANION', v: legend.pickName('pet') });
+    y += 26;
+    facts.slice(0, 8).forEach(f => {
+      c.textAlign = 'left';
+      c.font = '700 24px ' + th.font;
+      c.fillStyle = th.key;
+      const k = tr(f.k.charAt(0) + f.k.slice(1).toLowerCase()).toUpperCase();
+      c.fillText(k, L, y);
+      fit(c, String(f.v), R - L - 280, 32, '500', th.font);
+      c.fillStyle = th.val;
+      c.fillText(String(f.v), L + 280, y);
+      y += 60;
+    });
+    // weaknesses and resistances in one line
+    const wr = [];
+    if (comp.weak.length) wr.push(tr('Weak to') + ' ' + comp.weak.map(FW.cap).join(', '));
+    if (comp.res.length) wr.push(tr('Resists') + ' ' + comp.res.map(FW.cap).join(', '));
+    if (wr.length) {
+      c.textAlign = 'center';
+      fit(c, wr.join('   ·   '), R - L, 28, '600', th.font);
+      c.fillStyle = th.sub;
+      c.fillText(wr.join('   ·   '), W / 2, y + 10);
+      y += 56;
+    }
+    // the saga, if one was played
+    if (legend.saga && legend.saga.ch && FW.Story) {
+      c.textAlign = 'center';
+      c.font = 'italic 500 30px ' + th.font;
+      c.fillStyle = th.val;
+      wrap(c, FW.Story.summary(legend), R - L)
+        .slice(0, 2)
+        .forEach((l, i) => c.fillText(l, W / 2, Math.min(H - 170, y + 20) + i * 38));
+    }
+    c.textAlign = 'center';
+    c.font = '600 22px ' + th.font;
+    c.fillStyle = 'rgba(255,255,255,.45)';
+    c.fillText('D E S T I N Y   U N B O U N D', W / 2, H - 76);
   }
 
   FW.drawCard = function (canvas, legend, opts) {
     opts = opts || {};
-    const name =
-      opts.theme && CT[opts.theme]
-        ? opts.theme
-        : FW.THEME_ALIAS && CT[FW.THEME_ALIAS[opts.theme]]
-          ? FW.THEME_ALIAS[opts.theme]
-          : 'ashen';
-    const th = CT[name];
+    const name = themeOf(opts.theme),
+      th = CT[name];
     canvas.width = W;
     canvas.height = H;
     const c = canvas.getContext('2d');
-    const comp = FW.compute(legend);
-    const race = legend.raceName();
-    const hue =
-      HUE[race] != null ? HUE[race] : FW.RACE_HUE && FW.RACE_HUE[race] != null ? FW.RACE_HUE[race] : hash(race) % 360;
-    const rng = FW.makeRng('card' + legend.seed);
-    if (opts.image) portrait(c, opts.image);
-    else {
-      art(c, legend, th, hue, rng);
-      figure(c, legend, hue);
-    }
-    const bottomFade = c.createLinearGradient(0, 640, 0, 900);
-    bottomFade.addColorStop(0, 'rgba(0,0,0,0)');
-    bottomFade.addColorStop(1, 'rgba(0,0,0,.65)');
-    c.fillStyle = bottomFade;
-    c.fillRect(0, 640, W, 260);
-
-    // title block
-    const title = legend.name || legend.pickName('title') || '';
-    c.textAlign = 'center';
-    c.textBaseline = 'alphabetic';
-    c.fillStyle = 'rgba(255,255,255,.55)';
-    c.font = '600 22px ' + th.font;
-    c.fillText('D E S T I N Y   U N B O U N D', W / 2, 78);
-    const tt = th.caps ? title.toUpperCase() : title;
-    const ts = fit(c, tt, W - 160, 78, '800', th.head);
-    c.shadowColor = 'rgba(0,0,0,.9)';
-    c.shadowBlur = opts.image ? 26 : 18;
-    c.fillStyle = '#fff';
-    c.fillText(tt, W / 2, 160);
-    const subName =
-      (legend.name && legend.pickName('title') ? legend.pickName('title') + '  ·  ' : '') +
-      (legend.has('sub') ? legend.pickName('sub') + ' ' + race : race);
-    c.shadowBlur = opts.image ? 16 : 0;
-    c.fillStyle = th.light ? '#f4e6c4' : th.accent;
-    fit(c, th.caps ? subName.toUpperCase() : subName, W - 140, 36, '600', th.font);
-    c.fillText(th.caps ? subName.toUpperCase() : subName, W / 2, 210);
-    c.shadowBlur = 0;
-
-    // panel
-    const px = 54,
-      py = 800,
-      pw = W - 108,
-      ph = 690;
+    const hue = hueOf(legend);
+    const pic = scene(legend, th, hue, opts.image);
     c.save();
-    rr(c, px, py, pw, ph, th.radius);
-    c.fillStyle = th.panel;
-    c.fill();
-    c.lineWidth = name === 'iron' ? 3 : 2.5;
-    c.strokeStyle = th.stroke;
-    if (name === 'ashen') {
-      c.shadowColor = '#c2410c';
-      c.shadowBlur = 18;
-    }
-    c.stroke();
+    if (opts.side === 'back') back(c, legend, th, name, hue, pic);
+    else if (opts.style === 'full') frontFull(c, legend, th, name, hue, pic);
+    else frontArch(c, legend, th, name, hue, pic);
     c.restore();
-    const lines = FW.cardLines(legend, comp);
-    const lh = Math.min(48, Math.floor((ph - 56) / lines.length));
-    let y = py + 52;
-    c.textAlign = 'left';
-    lines.forEach(L => {
-      const key = (FW.t ? FW.t(L.k) : L.k) + ' : ';
-      const ks = Math.min(30, lh - 7);
-      c.font = '700 ' + ks + 'px ' + th.font;
-      c.fillStyle = th.key;
-      c.fillText(key, px + 34, y);
-      const kw = c.measureText(key).width;
-      const val = FW.t ? FW.t(L.v) : L.v;
-      const maxW = pw - 68 - kw;
-      const vs = fit(c, val, maxW, Math.min(34, lh - 4), '600', th.font);
-      c.fillStyle = th.val;
-      c.fillText(val, px + 34 + kw, y);
-      y += lh;
-    });
-    // footer: rating + extras
-    const fy = py + ph + 36;
-    c.font = '700 30px ' + th.font;
-    c.fillStyle = th.light ? '#efe0bd' : '#fff';
-    c.textAlign = 'left';
-    c.fillText('POWER RATING  ' + comp.rating, px + 6, fy);
-    c.textAlign = 'right';
-    c.fillStyle = th.light ? '#efe0bd' : th.accent;
-    c.fillText(comp.rank.toUpperCase(), W - px - 6, fy);
-    const bw = pw - 12;
-    rr(c, px + 6, fy + 16, bw, 12, 6);
-    c.fillStyle = 'rgba(255,255,255,.16)';
-    c.fill();
-    rr(c, px + 6, fy + 16, Math.max(12, bw * Math.min(1, comp.rating / 100)), 12, 6);
-    c.fillStyle = th.accent;
-    c.fill();
-    c.textAlign = 'center';
-    c.font = '500 22px ' + th.font;
-    c.fillStyle = th.light ? '#d9c79c' : 'rgba(255,255,255,.55)';
-    const ex = [
-      legend.pickName('birth'),
-      legend.pickName('per'),
-      FW.P(legend.entry('mark')).none ? null : legend.pickName('mark'),
-    ]
-      .filter(Boolean)
-      .join('  •  ');
-    const exs = fit(c, ex, W - 140, 22, '500', th.font);
-    c.fillText(ex, W / 2, fy + 62);
     frame(c, th.frame || name, hue);
   };
 

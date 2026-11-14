@@ -98,7 +98,7 @@
     _cache.set(dsl, p);
     return p;
   };
-  const P = (FW.P = e => FW.parse(e.dsl));
+  const P = (FW.P = e => FW.parse(e ? e.dsl : ''));
 
   const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
   FW.cap = cap;
@@ -828,7 +828,7 @@
     x.push({ k: 'BIRTHPLACE', v: legend.pickName('birth') });
     x.push({ k: 'BACKGROUND', v: legend.pickName('bg') });
     x.push({ k: 'PERSONALITY', v: legend.pickName('per') });
-    x.push({ k: "FATE'S MARK", v: FW.P(e('mark')).none ? 'Unmarked' : legend.pickName('mark') });
+    x.push({ k: "FATE'S MARK", v: !legend.has('mark') || FW.P(e('mark')).none ? 'Unmarked' : legend.pickName('mark') });
     const looks = ['hair', 'eyes', 'garb'].filter(id => legend.has(id)).map(id => legend.pickName(id));
     if (looks.length) x.push({ k: 'LOOKS', v: looks.join('; ') });
     if (legend.name) x.unshift({ k: 'NAME', v: legend.name });

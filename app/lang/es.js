@@ -875,6 +875,13 @@
       'prophecy fulfilled': 'profecía cumplida',
       'risen undead': 'alzado no muerto',
       'passed into legend': 'pasó a la leyenda',
+      'Turn over': 'Dar la vuelta',
+      'Card: Arch': 'Carta: Arco',
+      'Card: Full art': 'Carta: Arte completo',
+      'Turn the card over to see the stats': 'Da la vuelta a la carta para ver las estadísticas',
+      'Switch the front of the card between the arch and full art':
+        'Cambia el frente de la carta entre arco y arte completo',
+      'Saves two pictures: the front and the back': 'Guarda dos imágenes: el frente y el reverso',
     },
   };
 })(typeof window !== 'undefined' ? window : globalThis);

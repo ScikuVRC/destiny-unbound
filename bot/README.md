@@ -52,3 +52,10 @@ WORLD_URL=https://destiny-unbound-counter.destiny-unbound.workers.dev
 
 Without `WORLD_URL`, `/stats` shows only the Discord spins. (`stats.js` can also serve the counter itself over HTTP:
 set `STATS_PORT`, and put it behind HTTPS.)
+
+## /patchnotes
+
+`/patchnotes` shows the newest release's notes from `CHANGELOG.md`; `/patchnotes version:0.2.0-alpha.3` shows an
+older one (the box suggests versions as you type). The bot reads the changelog from its own checkout, so after a
+release run `sudo git pull --ff-only` on the server and restart the bot. The release announcement in
+#announcements uses the same notes (`scripts/discord-announce.js`).

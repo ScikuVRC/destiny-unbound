@@ -4,6 +4,24 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
+## 0.2.0-alpha.3.1 (2026-11-14)
+
+A small update: the trading-card look, and patch notes on Discord.
+
+### New
+
+- **Your card is a trading card.** The front shows your hero's picture, name, type and a line about them; press
+  **Turn over** (or click the card) for the back with the rating, every stat, where they're from and what they
+  carry. Two fronts: **Arch** (a tarot-style window with a rank seal, the default) and **Full art** (the picture
+  fills the card); switch with the Card button, and the game remembers your choice. Every theme colours its own.
+- **Save PNG saves both sides** as two pictures, and Share sends both where your device allows it.
+- **Patch notes on Discord:** `/patchnotes` shows what's new (pick any version), and release announcements now
+  post these notes instead of a list of code changes.
+
+### Fixes
+
+- The back of the card no longer breaks when it's drawn before the last wheel has been spun.
+
 ## 0.2.0-alpha.3 (2026-11-14)
 
 You make choices in the story now, your hero's nature changes the odds, battles have painted art, and the

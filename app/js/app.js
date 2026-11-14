@@ -573,41 +573,17 @@
     }
   }
 
-  /* ---------- card ---------- */
+  /* ---------- card ----------
+     A trading card: the picture and name on the front (arch or full art, chosen with the Card button and
+     remembered), the numbers on the back. Save PNG saves both sides. */
+  const cardStyle = () => (store.get('fw.cardStyle', 'arch') === 'full' ? 'full' : 'arch');
   function drawCardNow() {
-    FW.drawCard($('#cardCanvas'), state.legend, { theme: state.theme, image: state.image });
+    const o = { theme: state.theme, image: state.image };
+    FW.drawCard($('#cardCanvas'), state.legend, Object.assign({ side: 'front', style: cardStyle() }, o));
+    FW.drawCard($('#cardBack'), state.legend, Object.assign({ side: 'back' }, o));
+    $('#btnCardStyle').textContent = tr(cardStyle() === 'full' ? 'Card: Full art' : 'Card: Arch');
   }
-  /* the card moment: it turns over into view the first time each legend's card is shown, can be flipped to read
-     its back, and shared as a picture */
   let revealed = null;
-  function cardBack(L, c) {
-    const saga = L.saga && FW.Story ? FW.Story.summary(L) : '';
-    // the story of the hero in a few lines: where they come from and who they are, not the stats on the front
-    const pick = ['BIRTHPLACE', 'BACKGROUND', 'PERSONALITY', "FATE'S MARK"];
-    const facts = FW.extraLines(L).filter(x => pick.indexOf(x.k) >= 0);
-    return (
-      '<div class="cb-top">Destiny Unbound</div>' +
-      '<div class="cb-name">' +
-      H.esc(L.displayName()) +
-      '</div><div class="cb-race">' +
-      H.esc((L.has('sub') ? L.pickName('sub') + ' ' : '') + L.raceName()) +
-      '</div><div class="cb-rating"><b>' +
-      H.esc(String(c.rating)) +
-      '</b><span>' +
-      H.esc(tr(c.rank)) +
-      '</span></div><dl class="cb-facts">' +
-      facts
-        .map(x => '<dt>' + H.esc(tr(x.k.charAt(0) + x.k.slice(1).toLowerCase())) + '</dt><dd>' + H.esc(x.v) + '</dd>')
-        .join('') +
-      '</dl>' +
-      (saga ? '<p class="cb-saga">' + H.esc(saga) + '</p>' : '') +
-      '<button class="btn small cb-code" type="button">' +
-      H.esc(tr('Copy Legend Code')) +
-      '</button><div class="cb-foot">' +
-      H.esc(tr('Spin the wheels of fate')) +
-      '</div>'
-    );
-  }
   function flipCard(on) {
     const f = $('#cardFlip'),
       want = on == null ? !f.classList.contains('flipped') : on;
@@ -624,17 +600,21 @@
     void f.offsetWidth; // restart the animation
     if (FW.motion && FW.motion() !== 'off') f.classList.add('reveal');
   }
+  const blobOf = cv => new Promise(r => cv.toBlob(r, 'image/png'));
+  const cardFileName = side =>
+    'destiny-unbound_' + state.legend.displayName().replace(/[^\w]+/g, '_') + '_' + side + '.png';
   async function shareCard() {
-    const cv = $('#cardCanvas'),
-      L = state.legend;
-    const blob = await new Promise(r => cv.toBlob(r, 'image/png'));
-    const file = new File([blob], 'destiny-unbound_' + L.displayName().replace(/[^\w]+/g, '_') + '.png', {
-      type: 'image/png',
-    });
+    const L = state.legend;
+    const blob = await blobOf($('#cardCanvas')),
+      backBlob = await blobOf($('#cardBack'));
+    const files = [
+      new File([blob], cardFileName('front'), { type: 'image/png' }),
+      new File([backBlob], cardFileName('back'), { type: 'image/png' }),
+    ];
     const text = L.displayName() + ' · ' + tr('made in Destiny Unbound');
     try {
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({ files: [file], title: L.displayName(), text });
+      if (navigator.canShare && navigator.canShare({ files })) {
+        await navigator.share({ files, title: L.displayName(), text });
         return;
       }
       if (navigator.clipboard && window.ClipboardItem) {
@@ -653,7 +633,6 @@
       c = FW.compute(L);
     show('card');
     drawCardNow();
-    $('#cardBack').innerHTML = cardBack(L, c);
     revealCard(L);
     $('#cardRating').innerHTML =
       H.rating(c) +
@@ -686,18 +665,22 @@
     $('#btnFight').textContent = L.chron.some(x => x.kind !== 'story') ? '⚔ Another fight' : '⚔ Enter the Arena'; // story chapters also add chronicle entries; only real fights count
     hook('cardShown', L);
   }
-  function savePng() {
-    const cv = $('#cardCanvas');
-    const name = state.legend.displayName().replace(/[^\w]+/g, '_');
-    cv.toBlob(b => {
+  /* two pictures: the front and the back of the card */
+  async function savePng() {
+    for (const [id, side] of [
+      ['#cardCanvas', 'front'],
+      ['#cardBack', 'back'],
+    ]) {
+      const b = await blobOf($(id));
       const a = document.createElement('a');
       a.href = URL.createObjectURL(b);
-      a.download = 'destiny-unbound_' + name + '.png';
+      a.download = cardFileName(side);
       document.body.appendChild(a);
       a.click();
       a.remove();
       setTimeout(() => URL.revokeObjectURL(a.href), 4000);
-    }, 'image/png');
+      await new Promise(r => setTimeout(r, 300)); // some browsers drop a second download started at once
+    }
   }
   function saveToHall() {
     const L = state.legend,
@@ -1379,10 +1362,12 @@
   $('#btnPng').onclick = savePng;
   $('#btnShare').onclick = shareCard;
   $('#btnFlip').onclick = () => flipCard();
-  $('#cardFlip').addEventListener('click', e => {
-    if (e.target.closest('.cb-code')) return copy(state.legend.toCode(), 'Legend Code copied');
-    flipCard();
-  });
+  $('#cardFlip').addEventListener('click', () => flipCard());
+  $('#btnCardStyle').onclick = () => {
+    store.set('fw.cardStyle', cardStyle() === 'full' ? 'arch' : 'full');
+    drawCardNow();
+    flipCard(false);
+  };
   $('#cardFlip').addEventListener('animationend', e => {
     if (e.animationName === 'cardShine') $('#cardFlip').classList.remove('reveal');
   });

@@ -865,6 +865,13 @@
       'prophecy fulfilled': 'Prophezeiung erfüllt',
       'risen undead': 'als Untoter erhoben',
       'passed into legend': 'zur Legende geworden',
+      'Turn over': 'Umdrehen',
+      'Card: Arch': 'Karte: Bogen',
+      'Card: Full art': 'Karte: Vollbild',
+      'Turn the card over to see the stats': 'Dreh die Karte um, um die Werte zu sehen',
+      'Switch the front of the card between the arch and full art':
+        'Wechselt die Vorderseite zwischen Bogen und Vollbild',
+      'Saves two pictures: the front and the back': 'Speichert zwei Bilder: Vorder- und Rückseite',
     },
   };
 })(typeof window !== 'undefined' ? window : globalThis);

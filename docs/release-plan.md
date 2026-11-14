@@ -51,6 +51,9 @@ text and balance. New ideas go on the list for the next version.
 - `0.MINOR.PATCH-stage.n` until 1.0. MINOR goes up for a big update (0.2 was story arcs and the new spin screen),
   PATCH for a smaller one, `n` for each build of the same stage.
 - After 1.0: `1.MINOR.PATCH`. MINOR adds content, PATCH only fixes.
+- A **small update** (a few fixes or one feature between builds) adds a number to the current build instead of
+  starting a new one: `0.2.0-alpha.3.1`, `0.2.0-alpha.3.2`. It still updates installed copies, and the announcement
+  is marked "small update".
 - A version never goes backwards and is never reused.
 
 ## How a release is made

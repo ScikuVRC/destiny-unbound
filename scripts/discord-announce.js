@@ -7,11 +7,13 @@
    node scripts/discord-announce.js v0.1.0-alpha.6 --test   posts it marked as a test (the "Test Discord
                                                             announcement" workflow runs this from GitHub)
 
-   The "What's new" list is the commit titles since the previous version tag, without housekeeping commits.
+   The message is this version's patch notes from CHANGELOG.md (the same text as the bot's /patchnotes). Without a
+   changelog section it falls back to the commit titles since the previous version tag.
    SPDX-License-Identifier: GPL-3.0-or-later */
 'use strict';
 const { execFileSync } = require('child_process');
 const https = require('https');
+const notes = require('../bot/patchnotes.js');
 
 const REPO = 'https://github.com/ScikuVRC/destiny-unbound';
 const ITCH = 'https://bzrkherja.itch.io/destiny-unbound';
@@ -37,13 +39,13 @@ function changes(tag) {
     .filter(s => !/^(Version \d|progress\.md|Merge )/i.test(s));
 }
 
-function message(tag, list) {
+function message(tag, list, patch) {
   const version = tag.replace(/^v/, '');
   const pre = /-/.test(version);
   const lines = list.slice(0, 8).map(s => '• ' + s.replace(/[*_~`|>]/g, '\\$&'));
   if (list.length > 8) lines.push('• …and ' + (list.length - 8) + ' more');
   const description = [
-    lines.length ? "**What's new**\n" + lines.join('\n') : '',
+    patch ? notes.toDiscord(patch, 3300) : lines.length ? "**What's new**\n" + lines.join('\n') : '',
     `🎮 **Play or download:** ${ITCH}`,
     'Installed copies offer the update automatically.' +
       (pre ? ' This is an early alpha: please report bugs in ' + BUG_CHANNEL + '.' : ''),
@@ -56,7 +58,7 @@ function message(tag, list) {
     allowed_mentions: { parse: [] }, // never ping anyone
     embeds: [
       {
-        title: `Destiny Unbound ${version} is out`,
+        title: `Destiny Unbound ${version} is out` + (notes.isMicro(version) ? ' (small update)' : ''),
         url: `${REPO}/releases/tag/${tag}`,
         description: description.slice(0, 4000),
         color: GOLD,
@@ -96,7 +98,8 @@ if (require.main === module) {
     console.error('Usage: node scripts/discord-announce.js v1.2.3 [--dry]');
     process.exit(2);
   }
-  const body = message(tag, changes(tag));
+  const s = notes.find(notes.load(), tag);
+  const body = message(tag, changes(tag), s && s.body);
   if (process.argv.includes('--test')) {
     // a clearly marked test post, for checking the webhook without a release
     body.embeds[0].title = '🧪 Test: ' + body.embeds[0].title;

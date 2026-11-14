@@ -250,6 +250,39 @@ const prefix =
     assert(!/<#\d+>/.test(message('v1.0.0', []).embeds[0].description), 'full releases skip the alpha note');
   });
 
+  await t(
+    'patch notes: every changelog release is found, Unreleased is skipped, and Discord gets readable text',
+    () => {
+      const N = require('../bot/patchnotes.js');
+      const sample =
+        '# Changelog\n\n## Unreleased\n\n- not out yet\n\n## 1.2.0-alpha.1.1 (2026-11-14)\n\nA small fix.\n\n' +
+        '### Fixes\n\n- **Cards.** The back no longer\n  breaks before the last wheel.\n\n## 1.2.0-alpha.1 (2026-11-13)\n\n- First.\n';
+      const list = N.sections(sample);
+      assert.deepStrictEqual(
+        list.map(s => s.version),
+        ['1.2.0-alpha.1.1', '1.2.0-alpha.1']
+      );
+      assert.strictEqual(N.find(list).version, '1.2.0-alpha.1.1', 'the newest by default');
+      assert.strictEqual(N.find(list, 'v1.2.0-alpha.1').date, '2026-11-13');
+      assert.strictEqual(N.find(list, '9.9.9'), null);
+      const d = N.toDiscord(list[0].body);
+      assert(/__\*\*Fixes\*\*__/.test(d), d);
+      assert(
+        /• \*\*Cards\.\*\* The back no longer breaks before the last wheel\./.test(d),
+        'wrapped lines are joined: ' + d
+      );
+      assert(N.toDiscord('- ' + 'x '.repeat(3000), 500).length <= 500);
+      assert(N.isMicro('0.2.0-alpha.3.1') && !N.isMicro('0.2.0-alpha.3') && !N.isMicro('1.0.0'));
+      // the real changelog has notes for every tagged release, and the announcement uses them
+      const real = N.load();
+      assert(real.length >= 9 && N.find(real, '0.2.0-alpha.3'), 'CHANGELOG.md sections');
+      const { message } = require('../scripts/discord-announce.js');
+      const m = message('v0.2.0-alpha.3', [], N.find(real, '0.2.0-alpha.3').body);
+      assert(/Story choices/.test(m.embeds[0].description) && m.embeds[0].description.length <= 4000);
+      assert(/small update/.test(message('v0.2.0-alpha.3.1', [], 'x').embeds[0].title));
+    }
+  );
+
   console.log('\n' + pass + ' of ' + (pass + fail) + ' checks passed');
   process.exit(fail ? 1 : 0);
 })();

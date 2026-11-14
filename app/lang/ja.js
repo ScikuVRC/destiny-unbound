@@ -857,6 +857,12 @@
       'prophecy fulfilled': '予言成就',
       'risen undead': 'アンデッドとして復活',
       'passed into legend': '伝説となった',
+      'Turn over': '裏返す',
+      'Card: Arch': 'カード：アーチ',
+      'Card: Full art': 'カード：フルアート',
+      'Turn the card over to see the stats': 'カードを裏返して能力値を見る',
+      'Switch the front of the card between the arch and full art': 'カードの表面をアーチとフルアートで切り替えます',
+      'Saves two pictures: the front and the back': '表面と裏面の2枚の画像を保存します',
     },
   };
 })(typeof window !== 'undefined' ? window : globalThis);

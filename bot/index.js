@@ -1,5 +1,6 @@
 // Destiny Unbound Discord bot: /spin rolls a random legend with the game's real wheels and shows its card;
-// /stats shows the world counter (heroes made and how sagas ended; see stats.js).
+// /stats shows the world counter (heroes made and how sagas ended; see stats.js); /patchnotes shows what changed in a
+// release, read from CHANGELOG.md (patchnotes.js).
 // Needs DISCORD_TOKEN (the bot's token) in the environment. Run: node bot/index.js
 // SPDX-License-Identifier: GPL-3.0-or-later
 'use strict';
@@ -17,6 +18,7 @@ const {
 } = require('discord.js');
 const { roll, LUCKS } = require('./legend.js');
 const { createStore, startServer } = require('./stats.js');
+const notes = require('./patchnotes.js');
 
 const TOKEN = process.env.DISCORD_TOKEN || '';
 const PLAY = 'https://bzrkherja.itch.io/destiny-unbound';
@@ -54,6 +56,24 @@ const command = new SlashCommandBuilder()
 const statsCommand = new SlashCommandBuilder()
   .setName('stats')
   .setDescription('How many heroes fate has made, and how their sagas ended');
+const notesCommand = new SlashCommandBuilder()
+  .setName('patchnotes')
+  .setDescription("What's new in Destiny Unbound")
+  .addStringOption(o =>
+    o.setName('version').setDescription('A version, like 0.2.0-alpha.3 (default: the newest)').setAutocomplete(true)
+  );
+
+function notesCard(version) {
+  const list = notes.load(),
+    s = notes.find(list, version);
+  if (!s) return null;
+  return new EmbedBuilder()
+    .setColor(0xc8902c)
+    .setTitle(`Destiny Unbound ${s.version}${notes.isMicro(s.version) ? ' · small update' : ''}`)
+    .setURL(notes.releaseUrl(s.version))
+    .setDescription(notes.toDiscord(s.body) || 'No notes for this version.')
+    .setFooter({ text: (s.date ? s.date + ' · ' : '') + 'Full notes and downloads: the title link' });
+}
 
 // the game's totals live on the world counter (worker/, WORLD_URL); /spin counts are kept here on the bot server
 async function worldTotals() {
@@ -126,10 +146,10 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.once('ready', async () => {
   try {
-    await new REST({ version: '10' })
-      .setToken(TOKEN)
-      .put(Routes.applicationCommands(client.user.id), { body: [command.toJSON(), statsCommand.toJSON()] });
-    console.log(`Logged in as ${client.user.tag}; /spin and /stats are registered.`);
+    await new REST({ version: '10' }).setToken(TOKEN).put(Routes.applicationCommands(client.user.id), {
+      body: [command.toJSON(), statsCommand.toJSON(), notesCommand.toJSON()],
+    });
+    console.log(`Logged in as ${client.user.tag}; /spin, /stats and /patchnotes are registered.`);
   } catch (e) {
     console.error('Could not register the commands: ' + e.message);
   }
@@ -137,7 +157,31 @@ client.once('ready', async () => {
 
 const recent = new Map(); // a small per-user cooldown so one person can't flood a channel
 client.on('interactionCreate', async i => {
+  if (i.isAutocomplete() && i.commandName === 'patchnotes') {
+    const typed = String(i.options.getFocused() || '').toLowerCase();
+    const choices = notes
+      .load()
+      .map(s => s.version)
+      .filter(v => v.toLowerCase().includes(typed))
+      .slice(0, 25)
+      .map(v => ({ name: v, value: v }));
+    return i.respond(choices).catch(() => {});
+  }
   if (!i.isChatInputCommand()) return;
+  if (i.commandName === 'patchnotes') {
+    const v = i.options.getString('version');
+    const e = notesCard(v);
+    const row = new ActionRowBuilder().addComponents(
+      new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel('Play Destiny Unbound').setURL(PLAY)
+    );
+    return i
+      .reply(
+        e
+          ? { embeds: [e], components: [row], allowedMentions: { parse: [] } }
+          : { content: `There are no notes for version ${v}.`, flags: MessageFlags.Ephemeral }
+      )
+      .catch(err => console.error(err));
+  }
   if (i.commandName === 'stats') {
     try {
       await i.deferReply();
