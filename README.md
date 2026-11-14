@@ -79,7 +79,7 @@ chapter, until they retire, ascend or fall.
 | ![The family tree of House Ravencrest](docs/store/screenshots/09-dynasty-ashen.png) | ![The ending screen: passed into legend](docs/store/screenshots/10-ending-ashen.png) |
 | ![Ashen Crown title screen](docs/store/screenshots/01-title-ashen.png) | ![Iron Litany title screen](docs/store/screenshots/03-title-iron.png) |
 
-The trailer (84 seconds) is [docs/store/trailer.mp4](docs/store/trailer.mp4).
+**[Watch the trailer on YouTube](https://youtu.be/HH21PKSL9Sg)** (84 seconds; the file is also in [docs/store/trailer.mp4](docs/store/trailer.mp4)).
 
 ## Download
 
