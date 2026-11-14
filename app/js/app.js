@@ -964,6 +964,9 @@
         '<button class="opt" data-act="versus"><b>Versus</b><span>Pit two legends against each other</span></button>' +
         '<button class="opt" data-act="workshop"><b>Wheel Workshop</b><span>Edit slice sizes, remove or add entries</span></button>' +
         '<button class="opt" data-act="import"><b>Open a shared card</b><span>See and collect a card someone shared</span></button>' +
+        (window.FWApp && window.FWApp.canRecord && window.FWApp.canRecord()
+          ? '<button class="opt" data-act="rec"><b>&#9210; Record a video</b><span>A vertical video of your spins for TikTok, Shorts or Reels</span></button>'
+          : '') +
         '<button class="opt" data-act="help"><b>How the rules work</b><span>Tiers, buffs, debuffs, luck and the arena</span></button>' +
         '<a class="opt" href="https://ko-fi.com/bzrkherja" target="_blank" rel="noopener"><b>&#9749; Support on Ko-fi</b><span>Enjoying Destiny Unbound? Buy the developer a coffee</span></a>' +
         '<button class="opt" data-act="reset"><b>Reset saved data</b><span>Clears settings, Hall and Workshop edits</span></button></div>'
@@ -983,9 +986,33 @@
             mods: () => window.FWApp.modsModal(),
             ach: () => window.FWApp.achievementsModal(),
             versus: () => window.FWApp.versusModal(),
+            rec: () => {
+              closeModal();
+              window.FWApp.startRec();
+            },
           })[b.dataset.act]()
         )
       );
+  }
+  // sharing a saved legend: the short card code, or the long code that works offline
+  function shareHallModal(h) {
+    openModal(
+      '<button class="btn small ghost close">Close ✕</button><h2>' +
+        H.esc(tr('Share') + ': ' + h.title) +
+        '</h2><div class="cta" style="flex-direction:column;align-items:center">' +
+        (FW.WORLD_URL && FW.Collect
+          ? '<button class="btn primary" id="hsShort">' + H.esc(tr('Get a card code')) + '</button>'
+          : '') +
+        '<button class="pop-link" id="hsLong">' +
+        H.esc(tr('Copy long code (works offline)')) +
+        '</button></div>'
+    );
+    const sb = $('#hsShort');
+    if (sb) sb.onclick = () => getShortCode(FW.Legend.fromCode(h.code));
+    $('#hsLong').onclick = () => {
+      copy(h.code, 'Legend Code copied');
+      closeModal();
+    };
   }
   function resetData() {
     openModal(
@@ -1031,7 +1058,7 @@
               h.id +
               '">View</button> <button class="btn small ghost" data-code="' +
               h.id +
-              '">Code</button> <button class="btn small ghost" data-del="' +
+              '">Share</button> <button class="btn small ghost" data-del="' +
               h.id +
               '">✕</button></div></div>'
           )
@@ -1055,11 +1082,7 @@
     );
     root
       .querySelectorAll('[data-code]')
-      .forEach(b =>
-        b.addEventListener('click', () =>
-          copy(state.hall.find(x => x.id === b.dataset.code).code, 'Legend Code copied')
-        )
-      );
+      .forEach(b => b.addEventListener('click', () => shareHallModal(state.hall.find(x => x.id === b.dataset.code))));
     root.querySelectorAll('[data-del]').forEach(b =>
       b.addEventListener('click', () => {
         state.hall = state.hall.filter(x => x.id !== b.dataset.del);
@@ -1285,9 +1308,6 @@
     FW.Audio.init();
     runLegend(true);
   };
-  $('#btnHall').onclick = hallModal;
-  $('#btnImport').onclick = importModal;
-  $('#btnWorkshop').onclick = workshopModal;
   $('#btnMenu').onclick = menuModal;
   $('#brand').onclick = () => {
     abortRun();
@@ -1390,14 +1410,12 @@
   $('#btnPng').onclick = savePng;
   $('#btnShare').onclick = shareCard;
   // a short card code: the first time, say what it does before anything is sent
-  $('#btnShort').onclick = () => {
+  function getShortCode(L, done) {
     if (!FW.Collect) return;
     const go = async () => {
       closeModal();
-      $('#btnShort').disabled = true;
-      const id = await FW.Collect.shareShort(state.legend);
-      $('#btnShort').disabled = false;
-      if (id) $('#btnShort').textContent = id;
+      const id = await FW.Collect.shareShort(L);
+      if (done) done(id);
     };
     if (store.get('fw.shortOk', false)) return go();
     openModal(
@@ -1417,7 +1435,46 @@
       store.set('fw.shortOk', true);
       go();
     };
-  };
+  }
+  $('#btnShort').onclick = () =>
+    getShortCode(state.legend, id => {
+      if (id) $('#btnShort').textContent = id;
+    });
+  // small drop-up menus (Share, Portrait): one open at a time; outside click, Esc or picking an item closes them
+  function closePops(except) {
+    document.querySelectorAll('.pop-menu:not([hidden])').forEach(m => {
+      if (m === except) return;
+      m.hidden = true;
+      m.previousElementSibling.setAttribute('aria-expanded', 'false');
+    });
+  }
+  document.querySelectorAll('[data-pop]').forEach(b =>
+    b.addEventListener('click', e => {
+      e.stopPropagation();
+      const m = b.nextElementSibling,
+        open = m.hidden;
+      closePops(m);
+      m.hidden = !open;
+      b.setAttribute('aria-expanded', String(open));
+      if (open) m.querySelector('button:not([hidden])').focus();
+    })
+  );
+  document.querySelectorAll('.pop-menu').forEach(m => m.addEventListener('click', () => closePops()));
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.pop')) closePops();
+  });
+  document.addEventListener(
+    'keydown',
+    e => {
+      const m = document.querySelector('.pop-menu:not([hidden])');
+      if (!m || e.key !== 'Escape') return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      closePops();
+      m.previousElementSibling.focus();
+    },
+    true
+  );
   $('#btnFlip').onclick = () => flipCard();
   $('#cardFlip').addEventListener('click', () => flipCard());
   $('#btnCardStyle').onclick = () => {

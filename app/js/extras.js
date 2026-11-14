@@ -561,6 +561,7 @@
   function syncRecBtn() {
     const on = !!(R.rec && R.rec.state === 'recording'),
       b = $('#btnRec');
+    b.hidden = !on; // the top-bar button only shows while recording, as the Stop button; start from the ☰ menu
     if (!on) {
       b.textContent = '⏺ Record';
       b.classList.remove('rec-on');
@@ -586,9 +587,10 @@
     FW.Audio.init();
     startDaily();
   };
-  $('#btnVersus').onclick = versusModal;
   $('#btnRec').onclick = () => (R.rec ? stopRec() : startRec());
-  if (!canRecord()) $('#btnRec').hidden = true;
+  $('#btnRec').hidden = true;
+  App.canRecord = canRecord;
+  App.startRec = () => !R.rec && startRec();
   homeDaily();
   chain('optionsModal', () => {});
   App.versusModal = versusModal;

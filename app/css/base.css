@@ -123,6 +123,12 @@ h1,h2,h3,p{margin:0}
 @media(min-width:980px){.card-layout{grid-template-columns:minmax(0,430px) minmax(340px,1fr);justify-content:center}}
 .card-canvas{width:100%;max-width:430px;aspect-ratio:2/3;border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.55);display:block;margin:0 auto;background:#000}
 .card-actions{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.pop{position:relative;display:inline-flex}
+.pop-menu.card-panel{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);z-index:40;min-width:230px;padding:10px;display:flex;flex-direction:column;gap:6px;box-shadow:0 12px 32px rgba(0,0,0,.6)}
+.pop-menu[hidden]{display:none}
+.pop-menu .btn{width:100%}
+.pop-link{background:none;border:0;color:inherit;opacity:.75;font:inherit;font-size:12px;text-decoration:underline;cursor:pointer;padding:4px}
+.pop-link:hover,.pop-link:focus-visible{opacity:1}
 .table{width:100%;border-collapse:collapse;font-size:14px}
 .table td,.table th{padding:6px 8px;border-bottom:1px dashed color-mix(in srgb,var(--panel-fg) 16%,transparent);text-align:left;vertical-align:top}
 .table th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;opacity:.7}

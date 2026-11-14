@@ -355,7 +355,6 @@
     F.abortRun();
     App.showCard();
   };
-  $('#btnOptions').onclick = () => App.hooks.optionsModal();
   App.runStory = runStory;
   App.continueAsHeir = continueAsHeir;
 })();

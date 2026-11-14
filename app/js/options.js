@@ -57,8 +57,6 @@
     App.flow.show(back === 'options' ? 'title' : back);
   };
   App.hooks.optionsModal = () => O.open('gameplay');
-  const ob = $('#btnOptions');
-  if (ob) ob.onclick = () => O.open();
 
   /* ---------------- controls ---------------- */
   const row = (label, control, note) =>

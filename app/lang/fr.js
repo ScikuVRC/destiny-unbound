@@ -878,6 +878,19 @@
         "Obtenez un code court comme DU-7K3QXM que n'importe qui peut ouvrir dans le jeu",
       "This stores your card's Legend Code (your hero's rolls, name and saga, nothing about you) on the Destiny Unbound server for 90 days, and gives you a short code like DU-7K3QXM. Anyone who has the code can open your card in the game.":
         'Cela enregistre le Code de Légende de votre carte (les tirages, le nom et la saga de votre héros, rien sur vous) sur le serveur de Destiny Unbound pendant 90 jours, et vous donne un code court comme DU-7K3QXM. Toute personne qui a le code peut ouvrir votre carte dans le jeu.',
+      'Share ▾': 'Partager ▾',
+      'Portrait ▾': 'Portrait ▾',
+      'Share picture': "Partager l'image",
+      'Use my own picture': 'Utiliser ma propre image',
+      'Copy long code (works offline)': 'Copier le code long (fonctionne hors ligne)',
+      "Change the hero's picture": "Changer l'image du héros",
+      'Share the front and back pictures, or copy the picture to paste anywhere':
+        "Partager le recto et le verso, ou copier l'image pour la coller n'importe où",
+      'The full Legend Code: works offline and never expires':
+        "Le code de légende complet : fonctionne hors ligne et n'expire jamais",
+      'Record a video': 'Enregistrer une vidéo',
+      'A vertical video of your spins for TikTok, Shorts or Reels':
+        'Une vidéo verticale de vos tirages pour TikTok, Shorts ou Reels',
       'Get my code': 'Obtenir mon code',
       'Card code copied:': 'Code de carte copié :',
       'Could not make a short code:': 'Impossible de créer un code court :',

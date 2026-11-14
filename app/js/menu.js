@@ -84,7 +84,7 @@
         App.startDaily();
       },
     },
-    { k: 'Hall of Legends', run: () => $('#btnHall').click() },
+    { k: 'Hall of Legends', run: () => App.hallModal() },
     { k: 'Mods', run: () => App.modsModal() },
     { k: 'Options', run: () => FW.Options.open() },
     { k: 'Quit', run: () => D && D.quit(), hide: () => !(D && D.quit) },

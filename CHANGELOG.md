@@ -4,6 +4,20 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
+## 0.2.0-alpha.3.4 (2026-11-14)
+
+A small update that clears up the buttons.
+
+### Changed
+
+- **Fewer buttons on the card.** **Share ▾** now holds the card code, the picture (share or save as PNG) and the
+  text, with the long Legend Code as a small link at the bottom; it still works offline and never expires.
+  **Portrait ▾** holds Generate AI art and Use my own picture. Turn over and the card style stay as they were.
+- **Share from the Hall.** Each saved legend has a **Share** button that gives a short card code, or the long code.
+- **Tidier screens.** The row of extra buttons under New Legend is gone; Hall of Legends, Open a shared card,
+  Wheel Workshop, Versus and Options are all in the ☰ menu. **Record a video** moved into the ☰ menu too; while it
+  records, the Stop button stays in the top bar.
+
 ## 0.2.0-alpha.3.3 (2026-11-14)
 
 A small update with a lot of new faces: hero portraits, painted endings, boss tricks and living dynasties.

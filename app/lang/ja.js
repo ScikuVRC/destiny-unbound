@@ -870,6 +870,18 @@
         '誰でもゲーム内で開ける DU-7K3QXM のような短いコードを取得します',
       "This stores your card's Legend Code (your hero's rolls, name and saga, nothing about you) on the Destiny Unbound server for 90 days, and gives you a short code like DU-7K3QXM. Anyone who has the code can open your card in the game.":
         'カードのレジェンドコード（ヒーローの出目、名前、サーガ。あなた自身の情報は含みません）を Destiny Unbound のサーバーに90日間保存し、DU-7K3QXM のような短いコードを発行します。コードを持っている人なら誰でも、ゲーム内であなたのカードを開けます。',
+      'Share ▾': '共有 ▾',
+      'Portrait ▾': '肖像 ▾',
+      'Share picture': '画像を共有',
+      'Use my own picture': '自分の画像を使う',
+      'Copy long code (works offline)': '長いコードをコピー（オフラインでも使えます）',
+      "Change the hero's picture": '英雄の画像を変える',
+      'Share the front and back pictures, or copy the picture to paste anywhere':
+        '表と裏の画像を共有、またはコピーしてどこにでも貼り付け',
+      'The full Legend Code: works offline and never expires':
+        '完全なレジェンドコード：オフラインで使え、期限切れになりません',
+      'Record a video': '動画を録画',
+      'A vertical video of your spins for TikTok, Shorts or Reels': 'TikTok、Shorts、Reels向けのスピンの縦型動画',
       'Get my code': 'コードを取得する',
       'Card code copied:': 'カードコードをコピーしました：',
       'Could not make a short code:': '短いコードを作成できませんでした：',
