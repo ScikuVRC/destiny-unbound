@@ -22,7 +22,7 @@ wheel: race, birthplace, age, class, powers, weapon, weakness and more. Then you
 chapter, until they retire, ascend or fall.
 
 <div align="center">
-<img src="docs/media/destiny-unbound.gif" alt="The wheels spin one after another, then the finished hero card appears" width="720">
+<img src="docs/media/destiny-unbound.gif" alt="The race wheel creeps onto its rarest slice and lights up, then a finished hero card with a painted portrait appears" width="720">
 </div>
 
 > **Status: early alpha.** The game is playable from start to finish, but expect rough edges. See the
@@ -79,7 +79,7 @@ chapter, until they retire, ascend or fall.
 | ![The family tree of House Ravencrest](docs/store/screenshots/09-dynasty-ashen.png) | ![The ending screen: passed into legend](docs/store/screenshots/10-ending-ashen.png) |
 | ![Ashen Crown title screen](docs/store/screenshots/01-title-ashen.png) | ![Iron Litany title screen](docs/store/screenshots/03-title-iron.png) |
 
-**[Watch the trailer on YouTube](https://youtu.be/HH21PKSL9Sg)** (84 seconds; the file is also in [docs/store/trailer.mp4](docs/store/trailer.mp4)).
+**[Watch the trailer on YouTube](https://youtu.be/TFmxhzBBCbo)** (80 seconds; the file is also in [docs/store/trailer.mp4](docs/store/trailer.mp4)).
 
 ## Download
 

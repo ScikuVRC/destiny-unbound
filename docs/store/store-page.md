@@ -1,7 +1,7 @@
 # Destiny Unbound: store page kit
 
 Everything needed to fill in an itch.io or Steam page. Screenshots are in `screenshots/` (1920×1080 PNG) and a
-84-second trailer is `trailer.mp4` (rebuild it with `node scripts/make-trailer.js` after new screenshots).
+80-second trailer is `trailer.mp4` (on YouTube: https://youtu.be/TFmxhzBBCbo) (rebuild it with `node scripts/make-trailer.js` after new screenshots).
 
 ## Name and tagline
 

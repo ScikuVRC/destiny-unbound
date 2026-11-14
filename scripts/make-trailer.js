@@ -1,10 +1,9 @@
-// Turns the frames from scripts/record-trailer.js into a trailer video and a short GIF, with ffmpeg.
-//   node scripts/make-trailer.js            writes dist/trailer/destiny-unbound-trailer.mp4 and destiny-unbound.gif
-// The trailer plays the themes, a rare spin, the first spins, the card, a boss fight, the story, a dynasty and an
-// ending, speeding through the long parts, with the HD music (app/music) as its soundtrack. The GIF is a few
-// seconds of spinning plus the finished card. Record first:
+// Cuts the clips from scripts/record-trailer.js into the trailer, with ffmpeg:
+//   node scripts/make-trailer.js     writes dist/trailer/destiny-unbound-trailer.mp4 (1080p), a 720p copy for
+//                                    uploads, destiny-unbound.gif and destiny-unbound-itch.gif
+// Each shot dips to black, title cards fade, and the HD music (app/music) follows the story: the title theme,
+// the battle theme from the boss on, and the legend stinger when the ending lands. Record first:
 //   npx electron scripts/record-trailer.js
-//   npx electron scripts/record-trailer.js --endcard
 // SPDX-License-Identifier: GPL-3.0-or-later
 'use strict';
 const fs = require('fs');
@@ -13,171 +12,126 @@ const { execFileSync } = require('child_process');
 
 const ROOT = path.join(__dirname, '..');
 const DIR = path.join(ROOT, 'dist', 'trailer');
-const FRAMES = path.join(DIR, 'frames');
-const rec = JSON.parse(fs.readFileSync(path.join(FRAMES, 'index.json'), 'utf8'));
-const marks = rec.marks;
-// keep only complete JPEGs (the last few can be cut short when recording stops); a JPEG ends with FF D9
-const frames = rec.frames.filter(([f]) => {
-  try {
-    const b = fs.readFileSync(path.join(FRAMES, f));
-    return b.length > 1000 && b[b.length - 2] === 0xff && b[b.length - 1] === 0xd9;
-  } catch (e) {
-    return false;
-  }
-});
-const at = label => (marks.find(m => m[1] === label) || [0])[0];
-const fwd = p => p.replace(/\\/g, '/');
-
-/* One concat list: each segment [from, to, speed] in recorded milliseconds. */
-function list(segments, tail) {
-  const out = [];
-  for (const [from, to, speed] of segments) {
-    const fr = frames.filter(f => f[1] >= from && f[1] < to);
-    fr.forEach((f, i) => {
-      const next = i + 1 < fr.length ? fr[i + 1][1] : to;
-      out.push(`file '${fwd(path.join(FRAMES, f[0]))}'`, `duration ${((next - f[1]) / 1000 / speed).toFixed(4)}`);
-    });
-  }
-  if (tail) out.push(`file '${fwd(tail[0])}'`, `duration ${tail[1]}`, `file '${fwd(tail[0])}'`); // the last file is listed twice so its duration counts
-  return out.join('\n') + '\n';
-}
-
-function ffmpeg(args) {
-  execFileSync('ffmpeg', ['-loglevel', 'error', '-y', ...args], { stdio: 'inherit' });
-}
-
-const rare = at('rare'),
-  spin = at('spin'),
-  card = at('card'),
-  fight = at('fight'),
-  story = at('story'),
-  dynasty = at('dynasty'),
-  ending = at('ending'),
-  end = at('end');
-// the concat list needs one image format throughout, so the end card becomes a JPEG like the frames
-const endcard = path.join(DIR, 'endcard.jpg');
-execFileSync('ffmpeg', ['-loglevel', 'error', '-y', '-i', path.join(DIR, 'endcard.png'), '-q:v', '2', endcard]);
-
-// [from, to, speed] in recorded milliseconds
-const segments = [
-  [0, rare - 300, 1], // the four themes
-  [rare, spin - 200, 1], // the rare spin
-  [spin, spin + 8000, 1], // the first spins
-  [spin + 8000, card, 10], // the rest of the forging
-  [card, fight, 1], // the card and its back
-  [fight, fight + 6000, 1], // the fight starts
-  [fight + 6000, story, 2.5],
-  [story, story + 6000, 1], // the saga starts
-  [story + 6000, dynasty, 2.5],
-  [dynasty, end, 1], // family tree and ending
-];
-// where a recorded moment lands in the finished video, in seconds
-const outAt = ms =>
-  segments.reduce((s, [from, to, speed]) => s + Math.max(0, Math.min(ms, to) - from) / speed, 0) / 1000;
-
-const trailerList = path.join(DIR, 'trailer.txt');
-fs.writeFileSync(trailerList, list(segments, [endcard, 4]));
-const total = Number(
-  fs
-    .readFileSync(trailerList, 'utf8')
-    .match(/duration [\d.]+/g)
-    .reduce((s, d) => s + Number(d.slice(9)), 0)
-    .toFixed(2)
-);
-const silent = path.join(DIR, 'trailer-silent.mp4');
-ffmpeg([
-  '-f',
-  'concat',
-  '-safe',
-  '0',
-  '-i',
-  trailerList,
-  '-vf',
-  `fps=30,scale=1280:720:flags=lanczos,format=yuv420p,fade=t=in:st=0:d=0.6,fade=t=out:st=${(total - 0.8).toFixed(2)}:d=0.8`,
-  '-c:v',
-  'libx264',
-  '-preset',
-  'slow',
-  '-crf',
-  '20',
-  silent,
-]);
-
-// soundtrack: the title theme, the battle theme from the fight on, and the legend stinger at the ending
+const CLIPS = path.join(DIR, 'clips');
 const MUSIC = path.join(ROOT, 'app', 'music');
-const tF = outAt(fight),
-  tE = outAt(ending);
-const mp4 = path.join(DIR, 'destiny-unbound-trailer.mp4');
-ffmpeg([
-  '-i',
-  silent,
+const marks = JSON.parse(fs.readFileSync(path.join(CLIPS, 'marks.json'), 'utf8'));
+const land = name => (marks[name] && marks[name].land) || 0;
+const ffmpeg = args => execFileSync('ffmpeg', ['-loglevel', 'error', '-y', ...args], { stdio: 'inherit' });
+
+// [clip, from (s), to (s), speed, zoom]: zoom slowly pushes in on still shots
+const CARD = 2.2;
+const shots = [
+  ['open', 0.3, 4.8, 1, true],
+  ['card-spin', 0.2, 0.2 + CARD, 1],
+  ['rare', 0.4, land('rare') + 2.0, 1],
+  ['forge', 0.6, 16, 2.5],
+  ['card', 0.2, 6.8, 1],
+  ['card-saga', 0.2, 0.2 + CARD, 1],
+  ['choice', 0.6, land('choice') + 1.6, 1],
+  ['card-boss', 0.2, 0.2 + CARD, 1],
+  ['boss', 0.8, land('boss') + 2.0, 1],
+  ['card-house', 0.2, 0.2 + CARD, 1],
+  ['house', 0.3, 4.2, 1, true],
+  ['card-end', 0.2, 0.2 + CARD, 1],
+  ['ending', 0.4, land('ending') + 3.6, 1],
+  ['card-worlds', 0.2, 0.2 + CARD, 1],
+  ['worlds', 0.1, 6.0, 1],
+  ['endcard', 0.2, 5.4, 1, true],
+];
+
+// build the video graph: trim, speed, optional push-in, dip to black at both ends, then join
+const inputs = [],
+  parts = [],
+  starts = {};
+let t = 0;
+shots.forEach(([clip, from, to, speed, zoom], i) => {
+  inputs.push('-i', path.join(CLIPS, clip + '.mp4'));
+  const len = (to - from) / speed;
+  const fade = clip.startsWith('card') || clip === 'open' || clip === 'endcard' ? 0.5 : 0.3;
+  const push = zoom
+    ? `,scale=2112:1188,zoompan=z='1+0.05*on/(${Math.round(len * 30)})':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s=1920x1080:fps=30`
+    : '';
+  parts.push(
+    `[${i}:v]trim=${from}:${to},setpts=(PTS-STARTPTS)/${speed},fps=30${push},format=yuv420p,` +
+      `fade=t=in:st=0:d=${fade},fade=t=out:st=${(len - fade).toFixed(3)}:d=${fade}[v${i}]`
+  );
+  starts[clip] = { at: t, speed, from };
+  t += len;
+});
+const total = t;
+const at = (clip, s) => starts[clip].at + (s - starts[clip].from) / starts[clip].speed;
+parts.push(shots.map((s, i) => `[v${i}]`).join('') + `concat=n=${shots.length}:v=1:a=0[v]`);
+
+// music: title theme until the boss card, battle theme after it, the legend stinger when the ending lands
+const n = shots.length,
+  tBoss = starts['card-boss'].at,
+  tLegend = at('ending', land('ending'));
+inputs.push(
   '-i',
   path.join(MUSIC, 'title.ogg'),
   '-i',
   path.join(MUSIC, 'battle.ogg'),
   '-i',
-  path.join(MUSIC, 'legend.ogg'),
-  '-filter_complex',
-  [
-    `[1:a]atrim=0:${(tF + 1.5).toFixed(2)},afade=t=in:d=1.5,afade=t=out:st=${tF.toFixed(2)}:d=1.5[a]`,
-    `[2:a]atrim=0:${(tE - tF + 1).toFixed(2)},adelay=${Math.round(tF * 1000)}:all=1,afade=t=in:st=${tF.toFixed(2)}:d=1.5,afade=t=out:st=${(tE - 0.5).toFixed(2)}:d=1.5[b]`,
-    `[3:a]adelay=${Math.round(tE * 1000)}:all=1[c]`,
-    `[a][b][c]amix=inputs=3:normalize=0:duration=longest,atrim=0:${total.toFixed(2)},afade=t=out:st=${(total - 2).toFixed(2)}:d=2[m]`,
-  ].join(';'),
+  path.join(MUSIC, 'legend.ogg')
+);
+parts.push(
+  `[${n}:a]atrim=0:${(tBoss + 1.5).toFixed(2)},afade=t=in:d=2,afade=t=out:st=${(tBoss - 0.5).toFixed(2)}:d=2[a]`,
+  `[${n + 1}:a]atrim=0:${(total - tBoss + 1).toFixed(2)},adelay=${Math.round(tBoss * 1000)}:all=1,` +
+    `afade=t=in:st=${tBoss.toFixed(2)}:d=1.2,volume=0.9[b]`,
+  `[${n + 2}:a]adelay=${Math.round(tLegend * 1000)}:all=1,volume=1.1[c]`,
+  `[a][b][c]amix=inputs=3:normalize=0:duration=longest,atrim=0:${total.toFixed(2)},` +
+    `afade=t=out:st=${(total - 3).toFixed(2)}:d=3,alimiter=limit=0.95[m]`
+);
+
+const graph = path.join(DIR, 'trailer-graph.txt');
+fs.writeFileSync(graph, parts.join(';\n'));
+const mp4 = path.join(DIR, 'destiny-unbound-trailer.mp4');
+ffmpeg([
+  ...inputs,
+  '-filter_complex_script',
+  graph,
   '-map',
-  '0:v',
+  '[v]',
   '-map',
   '[m]',
   '-c:v',
-  'copy',
+  'libx264',
+  '-preset',
+  'slow',
+  '-crf',
+  '18',
+  '-pix_fmt',
+  'yuv420p',
   '-c:a',
   'aac',
   '-b:a',
   '192k',
-  '-shortest',
   '-movflags',
   '+faststart',
   mp4,
 ]);
-fs.rmSync(silent, { force: true });
 
-// GIF: about 7 seconds of spinning at real speed, then 2.5 seconds of the card; small enough for itch.io and Discord
-const gifList = path.join(DIR, 'gif.txt');
-fs.writeFileSync(
-  gifList,
-  list([
-    [spin + 1500, spin + 8500, 1],
-    [card + 300, card + 2800, 1],
-  ])
-);
+// a 720p copy small enough for browser uploads (under 10 MB)
+const small = path.join(DIR, 'destiny-unbound-trailer-720p.mp4');
+const kbps = Math.floor((9.3 * 8 * 1024) / total) - 128;
+ffmpeg(['-i', mp4, '-vf', 'scale=1280:720:flags=lanczos', '-c:v', 'libx264', '-preset', 'slow', '-b:v', kbps + 'k',
+  '-maxrate', kbps * 1.4 + 'k', '-bufsize', kbps * 2 + 'k', '-c:a', 'aac', '-b:a', '128k', '-movflags', '+faststart', small]); // prettier-ignore
+
+// GIFs: the rare spin landing, then the card
+const gifSrc = path.join(DIR, 'gif-src.mp4');
+ffmpeg([
+  '-i', path.join(CLIPS, 'rare.mp4'), '-i', path.join(CLIPS, 'card.mp4'), '-filter_complex',
+  `[0:v]trim=${Math.max(0, land('rare') - 4.5)}:${land('rare') + 1.5},setpts=PTS-STARTPTS[a];` +
+    `[1:v]trim=0.3:4.3,setpts=PTS-STARTPTS[b];[a][b]concat=n=2:v=1:a=0[v]`,
+  '-map', '[v]', '-c:v', 'libx264', '-crf', '14', gifSrc,
+]); // prettier-ignore
 const gif = path.join(DIR, 'destiny-unbound.gif');
-ffmpeg([
-  '-f',
-  'concat',
-  '-safe',
-  '0',
-  '-i',
-  gifList,
-  '-vf',
-  'fps=15,scale=720:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle',
-  gif,
-]);
-
-// a smaller copy for itch.io, whose screenshots must be under 3 MB
-const small = path.join(DIR, 'destiny-unbound-itch.gif');
-ffmpeg([
-  '-f',
-  'concat',
-  '-safe',
-  '0',
-  '-i',
-  gifList,
-  '-vf',
-  'fps=12,scale=600:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=96:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle',
-  small,
-]);
+ffmpeg(['-i', gifSrc, '-vf', 'fps=15,scale=720:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle', gif]); // prettier-ignore
+const itch = path.join(DIR, 'destiny-unbound-itch.gif');
+ffmpeg(['-i', gifSrc, '-vf', 'fps=12,scale=600:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=96:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle', itch]); // prettier-ignore
+fs.rmSync(gifSrc, { force: true });
 
 const mb = f => (fs.statSync(f).size / 1048576).toFixed(1) + ' MB';
-console.log(`itch.io gif ${mb(small)}: ${small}`);
 console.log(`trailer ${total.toFixed(1)} s, ${mb(mp4)}: ${mp4}`);
-console.log(`gif ${mb(gif)}: ${gif}`);
+console.log(`720p copy ${mb(small)}: ${small}`);
+console.log(`gif ${mb(gif)}, itch gif ${mb(itch)}`);
