@@ -64,5 +64,6 @@ text and balance. New ideas go on the list for the next version.
 3. `CHANGELOG.md` gets the version's section (it becomes the GitHub release notes).
 4. Commit, tag `v<version>`, push the commit and the tag. The release workflow builds Windows, macOS and Linux,
    publishes the GitHub release, uploads to itch.io and posts in #announcements.
-5. After it's green: update the Discord bot server (`git pull` and restart) if anything under `bot/` or the game data
+5. Update [ROADMAP.md](../ROADMAP.md): move what shipped to "Recently done".
+6. After it's green: update the Discord bot server (`git pull` and restart) if anything under `bot/` or the game data
    changed, and redeploy the world counter if anything under `worker/` changed.

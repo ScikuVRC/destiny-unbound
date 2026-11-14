@@ -216,7 +216,7 @@ Everything is synthesized in 146 lines of code: clever and tiny, but it sounds l
 100. ⬜ **Steam (L).** Decided to wait. Needs a store page, capsule art, Steam achievements, cloud saves and a signed
    build.
 101. ⬜ **Press kit (S).** One page with logo, screenshots, description and contact.
-102. ⬜ **A roadmap players can see (S).** A trimmed, public version of this list.
+102. ✅ **A roadmap players can see (S).** Done 2026-11-14: [ROADMAP.md](../ROADMAP.md), linked from the README. A trimmed, public version of this list.
 
 ---
 

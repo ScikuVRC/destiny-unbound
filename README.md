@@ -25,9 +25,10 @@ chapter, until they retire, ascend or fall.
 <img src="docs/media/destiny-unbound.gif" alt="The race wheel spins and lands on Shadowborn, the next wheel spins, then the finished hero card appears" width="720">
 </div>
 
-> **Status: early alpha.** The game is playable from start to finish, but expect rough edges. See
-> [progress.md](progress.md) for what is done and what is next, and [docs/alpha-testing.md](docs/alpha-testing.md)
-> for the alpha test plan and known issues.
+> **Status: early alpha.** The game is playable from start to finish, but expect rough edges. See the
+> **[roadmap](ROADMAP.md)** for what's coming, the [changelog](CHANGELOG.md) for what changed,
+> [progress.md](progress.md) for the detailed task list, and [docs/alpha-testing.md](docs/alpha-testing.md) for the
+> alpha test plan and known issues.
 
 ---
 
