@@ -74,12 +74,13 @@
 
   /* ---------- small helpers ---------- */
   const tr = s => (FW.t ? FW.t(s) : s); // translate text built in code (the page text is translated separately)
-  function toast(msg) {
+  function toast(msg, kind) {
     const t = document.createElement('div');
-    t.className = 'toast';
+    t.className = 'toast' + (kind ? ' ' + kind : '');
+    t.setAttribute('role', 'status');
     t.textContent = msg;
     document.body.appendChild(t);
-    setTimeout(() => t.remove(), 2200);
+    setTimeout(() => t.remove(), kind === 'tip' ? 4500 : 2200);
   }
   function copy(text, okMsg) {
     const done = () => toast(okMsg || 'Copied');
@@ -192,7 +193,7 @@
     $('#steps').innerHTML = s;
   }
   function setChip(emoji, title, bonus) {
-    $('#chipEmoji').textContent = emoji;
+    $('#chipEmoji').innerHTML = FW.icon ? FW.icon(emoji) : H.esc(emoji || '');
     $('#chipTitle').textContent = title;
     const b = $('#chipBonus');
     if (bonus) {
@@ -263,6 +264,51 @@
     state.runId++;
     fire('abort');
     if (state.wheel && state.wheel.spinning) state.wheel.skip();
+  }
+
+  /* ---------- a choice: the player picks, and the next wheel decides how it goes ---------- */
+  async function chooseStep(cfg) {
+    const run = state.runId;
+    setChip(cfg.emoji, cfg.title);
+    setResult('');
+    $('#resultSub').textContent = tr('Your choice. The wheel decides how it goes.');
+    setControls('choice');
+    $('#effects').innerHTML =
+      '<div class="choices" role="group" aria-label="' +
+      H.esc(tr(cfg.title)) +
+      '">' +
+      cfg.options
+        .map(
+          (o, i) =>
+            '<button class="btn choice' +
+            (i === 0 ? ' primary' : '') +
+            '" data-choice="' +
+            i +
+            '"><b>' +
+            H.esc(tr(o.label)) +
+            '</b>' +
+            (o.hint ? '<span>' + H.esc(tr(o.hint)) + '</span>' : '') +
+            '</button>'
+        )
+        .join('') +
+      '</div>';
+    $('#effects')
+      .querySelectorAll('[data-choice]')
+      .forEach(b => (b.onclick = () => fire('choice:' + b.dataset.choice)));
+    const first = $('#effects [data-choice]');
+    if (first && !state.auto) first.focus({ preventScroll: true });
+    for (;;) {
+      const p = waitFor();
+      if (state.auto) autoFire('choice:' + Math.floor(state.rng() * cfg.options.length), 900);
+      const a = await p;
+      if (run !== state.runId) throw ABORT;
+      const m = /^choice:(\d+)$/.exec(a || '');
+      if (m) {
+        FW.Audio.init();
+        $('#effects').innerHTML = '';
+        return Math.min(+m[1], cfg.options.length - 1);
+      }
+    }
   }
 
   /* ---------- the generic wheel step ---------- */
@@ -531,11 +577,84 @@
   function drawCardNow() {
     FW.drawCard($('#cardCanvas'), state.legend, { theme: state.theme, image: state.image });
   }
+  /* the card moment: it turns over into view the first time each legend's card is shown, can be flipped to read
+     its back, and shared as a picture */
+  let revealed = null;
+  function cardBack(L, c) {
+    const saga = L.saga && FW.Story ? FW.Story.summary(L) : '';
+    // the story of the hero in a few lines: where they come from and who they are, not the stats on the front
+    const pick = ['BIRTHPLACE', 'BACKGROUND', 'PERSONALITY', "FATE'S MARK"];
+    const facts = FW.extraLines(L).filter(x => pick.indexOf(x.k) >= 0);
+    return (
+      '<div class="cb-top">Destiny Unbound</div>' +
+      '<div class="cb-name">' +
+      H.esc(L.displayName()) +
+      '</div><div class="cb-race">' +
+      H.esc((L.has('sub') ? L.pickName('sub') + ' ' : '') + L.raceName()) +
+      '</div><div class="cb-rating"><b>' +
+      H.esc(String(c.rating)) +
+      '</b><span>' +
+      H.esc(tr(c.rank)) +
+      '</span></div><dl class="cb-facts">' +
+      facts
+        .map(x => '<dt>' + H.esc(tr(x.k.charAt(0) + x.k.slice(1).toLowerCase())) + '</dt><dd>' + H.esc(x.v) + '</dd>')
+        .join('') +
+      '</dl>' +
+      (saga ? '<p class="cb-saga">' + H.esc(saga) + '</p>' : '') +
+      '<button class="btn small cb-code" type="button">' +
+      H.esc(tr('Copy Legend Code')) +
+      '</button><div class="cb-foot">' +
+      H.esc(tr('Spin the wheels of fate')) +
+      '</div>'
+    );
+  }
+  function flipCard(on) {
+    const f = $('#cardFlip'),
+      want = on == null ? !f.classList.contains('flipped') : on;
+    f.classList.toggle('flipped', want);
+    $('#btnFlip').setAttribute('aria-pressed', String(want));
+    $('#cardBack').setAttribute('aria-hidden', String(!want));
+  }
+  function revealCard(L) {
+    const f = $('#cardFlip');
+    flipCard(false);
+    if (revealed === L) return;
+    revealed = L;
+    f.classList.remove('reveal');
+    void f.offsetWidth; // restart the animation
+    if (FW.motion && FW.motion() !== 'off') f.classList.add('reveal');
+  }
+  async function shareCard() {
+    const cv = $('#cardCanvas'),
+      L = state.legend;
+    const blob = await new Promise(r => cv.toBlob(r, 'image/png'));
+    const file = new File([blob], 'destiny-unbound_' + L.displayName().replace(/[^\w]+/g, '_') + '.png', {
+      type: 'image/png',
+    });
+    const text = L.displayName() + ' · ' + tr('made in Destiny Unbound');
+    try {
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title: L.displayName(), text });
+        return;
+      }
+      if (navigator.clipboard && window.ClipboardItem) {
+        await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+        toast(tr('Card picture copied: paste it anywhere'));
+        return;
+      }
+    } catch (e) {
+      if (e && e.name === 'AbortError') return; // the player closed the share sheet
+    }
+    savePng();
+    toast(tr('Saved the card as a picture to share'));
+  }
   function showCard() {
     const L = state.legend,
       c = FW.compute(L);
     show('card');
     drawCardNow();
+    $('#cardBack').innerHTML = cardBack(L, c);
+    revealCard(L);
     $('#cardRating').innerHTML =
       H.rating(c) +
       '<p class="legend-key" style="margin:0 0 6px">' +
@@ -552,9 +671,13 @@
       H.modTable(c) +
       (c.weak.length || c.res.length
         ? '<div class="mods" style="margin-top:10px">' +
-          c.weak.map(w => '<span class="mod debuff">Weak to ' + FW.cap(w) + '</span>').join('') +
-          c.res.map(w => '<span class="mod buff">Resists ' + FW.cap(w) + '</span>').join('') +
-          c.atk.map(w => '<span class="mod info">' + FW.cap(w) + ' attacks</span>').join('') +
+          [
+            ...c.weak.map(w => ({ t: 'Weak to ' + FW.cap(w), k: 'debuff' })),
+            ...c.res.map(w => ({ t: 'Resists ' + FW.cap(w), k: 'buff' })),
+            ...c.atk.map(w => ({ t: FW.cap(w) + ' attacks', k: 'info' })),
+          ]
+            .map(x => H.chip(Object.assign(x, { tip: FW.chipTip(x.t) })))
+            .join('') +
           '</div>'
         : '');
     const ch = L.chron.filter(x => x.text);
@@ -1209,6 +1332,12 @@
   };
   document.addEventListener('click', e => {
     if (!$('#spinSet').hidden && !e.target.closest('.spinset-wrap')) spinSet(false);
+    // tapping a buff or debuff chip explains it (hovering shows the same text as a tooltip)
+    const chip = e.target.closest && e.target.closest('.mod[data-tip]');
+    if (chip) {
+      document.querySelectorAll('.toast.tip').forEach(t => t.remove());
+      toast(chip.dataset.tip, 'tip');
+    }
   });
   document.addEventListener(
     'keydown',
@@ -1248,6 +1377,15 @@
     if (b) setTheme(b.dataset.theme);
   });
   $('#btnPng').onclick = savePng;
+  $('#btnShare').onclick = shareCard;
+  $('#btnFlip').onclick = () => flipCard();
+  $('#cardFlip').addEventListener('click', e => {
+    if (e.target.closest('.cb-code')) return copy(state.legend.toCode(), 'Legend Code copied');
+    flipCard();
+  });
+  $('#cardFlip').addEventListener('animationend', e => {
+    if (e.animationName === 'cardShine') $('#cardFlip').classList.remove('reveal');
+  });
   $('#btnCopyText').onclick = () => copy(FW.legendText(state.legend), 'Character text copied');
   $('#btnCopyCode').onclick = () => copy(state.legend.toCode(), 'Legend Code copied');
   $('#btnSaveHall').onclick = saveToHall;
@@ -1322,6 +1460,7 @@
     persist,
     flow: {
       playStep,
+      chooseStep,
       show,
       abortRun,
       ABORT,

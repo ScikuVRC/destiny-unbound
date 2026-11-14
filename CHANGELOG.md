@@ -4,6 +4,38 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
+## 0.2.0-alpha.3 (2026-11-14)
+
+You make choices in the story now, your hero's nature changes the odds, battles have painted art, and the
+Grimdark pack is built in. Thanks to everyone voting in the Discord poll.
+
+### New
+
+- **Story choices.** At key moments you choose, then the wheel decides how it goes: refuse the demon, pay it or
+  hunt for a loophole; fight a dragon, talk to it or rob its hoard; finish a beaten nemesis, spare them or offer
+  them a place at your side; show a beaten boss mercy or none.
+- **Chapters react to your hero.** Your class, nature, element and past change the odds in heists, hauntings, at
+  sea, in training, study, quests and with a mentor, and the wheel says why ("Your Rogue class helps with the
+  heist").
+- **The winning slice lights up** with a short flash and a bright outline when the wheel stops.
+- **Your card has a moment:** it turns over into view, flips to show its back (where you're from, your rating,
+  your saga and a Copy Legend Code button), and Share sends the picture or copies it to paste anywhere.
+- **Tooltips on every buff and debuff:** hover or tap "+1 FGT" or "In darkness: +1 ALL" to see what it means.
+- **Painted art in battles:** a backdrop for every kind of arena, and portraits of the seven dragons and the
+  strongest foe of each of the thirteen worlds. Created with Grok.
+- **The game's own icons:** line icons in each theme's colours for every wheel and story chapter. Prefer emoji?
+  Options > Graphics.
+- **Daily leaderboard (optional, off by default):** post your daily challenge results and see today's top ten.
+
+### Balance
+
+- The weakest races and classes got a little stronger (Fairy, Titan, Slime, Mycelid, Kobold; Merchant, Sorcerer,
+  Alchemist). Checked against every arena foe with the new `scripts/win-rates.js`.
+
+- **Official mods.** The Mods screen has a new Official mods section with mods made by us that come with the game.
+  The first is **The Ember Dominion**: a grimdark far-future theme (Void Cathedral) and about forty new wheel
+  entries. It's off by default: switch it on in Mods, restart, then pick Void Cathedral from the theme button.
+
 ## 0.2.0-alpha.2 (2026-11-13)
 
 Fixes, a restyled mod kit template, and groundwork for what comes next. Thanks to everyone voting in the Discord

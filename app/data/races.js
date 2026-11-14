@@ -14,9 +14,9 @@ Beastkin|7|spd+1 str+1 int-1 life=s|Primal senses|Instinct over reason
 Lizardfolk|6|dur+1 str+1 w=ice ice:spd-2 life=m|Scaled hide, strong in warm lands|Cold-blooded: sluggish in the cold
 Elf|7|spd+1 int+1 str-1 wild:fgt+1 life=l|Graceful and long-lived, deadly in forests|Slender frame
 Dark Elf|5|spd+1 fgt+1 dark:fgt+1 sun:all-1 life=l|Night-hunters - sharper in the dark|Dazzled by bright daylight
-Fairy|4|spd+2 int+1 pwr+1 str-2 dur-2 w=metal hs=0.2 life=l|Flight and glamour|Cold iron burns
+Fairy|4|spd+2 int+1 pwr+2 str-2 w=metal hs=0.2 life=l|Flight and glamour|Cold iron burns
 Mermaid|4|spd+1 int+1 water:all+2 urban:all-1 life=l|Sea-song - dominant in water|Out of her element in cities
-Slime|4|dur+2 str-1 int-1 r=poison w=fire hs=0.8 life=l|Amorphous body - shrugs off blows|Fire dries it out
+Slime|4|dur+2 str-1 r=poison,metal w=fire hs=0.8 life=l|Amorphous body - shrugs off blows|Fire dries it out
 Golem|4|str+2 dur+2 spd-2 int-1 w=lightning hs=1.5 life=l|Living stone|Lightning shatters the runes
 Half-Giant|4|str+2 dur+1 spd-1 hs=1.6 life=m|Towering frame|Hard to hide, slow to turn
 Vampire|3.5|spd+1 str+1 fgt+1 dark:all+1 sun:all-2 w=holy,fire life=a|Bloodline predator - regenerates by feeding|Burns in sunlight
@@ -39,14 +39,14 @@ Ghoul|3|str+1 dur+1 r=poison w=holy,fire life=m|Carrion-fed hardiness|Ravenous h
 Cyborg|3|str+1 dur+1 int+1 r=poison w=lightning life=m|Machine-grafted body|Shorts out in storms
 Mutant|3|spd+1 str+1 pwr+1 dur-1 life=s|Unstable gene-gifts|Body is failing
 Frost Giant|1.8|str+2 dur+2 spd-1 r=ice w=fire hs=3 life=l|Glacier-born titan|Fire melts him
-Titan|1|int-1 spd-1 str+1 dur+1 hs=8 life=a|Colossal ancient|Easy target
+Titan|1|str+2 dur+2 int-1 spd-1 hs=8 life=a|Colossal ancient|Easy target
 Eldritch Horror|0.8|int+2 pwr+2 dur+1 dark:pwr+2 sun:all-1 w=mind a=mind,void hs=3 life=a|Thing from beyond|Mind-shattering madness
 Cosmic Entity|0.5|all+2 pwr+2 w=void life=a|Star-born being|Hunted by the void
 Eternal|0.3|all+2 fate+1 life=a|Time cannot touch you|Lonely forever
 God|0.25|all+3 pwr+3 fate+1 life=a|A divine being|Hunted by rival pantheons
 Halfling|7|spd+1 fate+1 str-1 hs=0.6 life=s|Lucky and light-footed - +1 Fate Token|Small frame
 Gnome|5|int+2 str-1 hs=0.55 life=m|Tinker-genius|Tiny and easy to shove aside
-Kobold|5|spd+1 int+1 str-1 dur-1 dark:all+1 hs=0.6 life=s|Tunnel trapper, bolder in the dark|Scrawny
+Kobold|5|spd+1 int+1 str-1 dark:all+1 hs=0.6 life=s|Tunnel trapper, bolder in the dark|Scrawny
 Ogre|5|str+2 dur+1 int-2 hs=1.5 life=s|Mountain of muscle|Slow-witted
 Troll|4|str+1 dur+2 int-1 w=fire hs=1.4 life=m|Regenerating hide|Fire stops the healing
 Centaur|4|spd+2 str+1 urban:spd-1 hs=1.3 life=m|Four-legged charge|Clumsy in tight streets
@@ -62,7 +62,7 @@ Arachne|3|spd+1 fgt+1 dark:all+1 a=poison w=fire life=m|Eight-limbed ambusher|We
 Yeti|3|str+2 dur+1 ice:all+1 r=ice w=fire hs=1.4 life=m|Snow-furred giant|Overheats quickly
 Automaton|3|dur+2 int+1 spd-1 r=poison,mind w=lightning life=a|Clockwork body that never tires|Lightning scrambles the gears
 Mothfolk|3|spd+1 int+1 dur-1 dark:all+1 w=fire life=s|Silent wings in the night|Drawn to the flame
-Mycelid|3|dur+1 int+1 spd-1 wild:all+1 r=poison a=poison w=fire life=l|Fungus-folk sharing one patient mind|Dry heat ruins the spores
+Mycelid|3|dur+1 int+1 wild:all+1 r=poison a=poison w=fire life=l|Fungus-folk sharing one patient mind|Dry heat ruins the spores
 Changeling|3|int+1 spd+1 fate+1 w=metal life=m|Wears any face - +1 Fate Token|Cold iron reveals the truth
 Revenant|2.5|dur+2 fgt+1 behind:all+1 r=poison w=holy life=a|Came back for revenge, fights harder when losing|Holy rites can lay it to rest
 Elemental|2|pwr+2 dur+1 life=a|A body of raw element|Bound to its opposite

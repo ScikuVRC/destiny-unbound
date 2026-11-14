@@ -243,6 +243,11 @@
       );
       h += row('Glows and particles', tog('glow', P.glow, 'Glows and particles'));
       h += row(
+        'Emoji instead of drawn icons',
+        tog('emojiIcons', P.emojiIcons, 'Emoji instead of drawn icons'),
+        "The game's own icons match each theme. Switch this on to see your system's emoji instead."
+      );
+      h += row(
         'Theme',
         sel(
           'theme',
@@ -508,6 +513,11 @@
             'Off by default. When on, the game sends one anonymous count each time you finish a hero or a saga ends (only "a hero" or the name of the ending: no names, codes or IDs), and shows everyone\'s totals here. The same totals are behind /stats on our Discord.'
           ) +
           (FW.World.enabled() ? '<div id="oWorld"><p class="o-note">…</p></div>' : '') +
+          row(
+            'Post my daily challenge results',
+            tog('board', FW.World.boardEnabled(), 'Post my daily challenge results'),
+            'Off by default. When on, finishing a daily challenge saga posts your hero\'s name, race, score, ending and chapter count to that day\'s leaderboard, with a random id so you appear once a day. Names with rude words are shown as "A nameless hero". Nothing else is sent.'
+          ) +
           '</div>';
       }
       h +=
@@ -697,6 +707,7 @@
       return;
     } else if (id === 'autoUpd') App.store.set('fw.updates', { auto: on });
     else if (id === 'world') FW.World.setEnabled(on);
+    else if (id === 'board') FW.World.setBoard(on);
     else if (id.indexOf('story:') === 0) {
       const k = id.slice(6),
         cur = App.store.get('fw.options', {});
@@ -948,7 +959,7 @@
         const d = FW.PREF_DEFAULTS,
           keys =
             {
-              graphics: ['uiScale', 'fps', 'anim', 'quality', 'glow'],
+              graphics: ['uiScale', 'fps', 'anim', 'quality', 'glow', 'emojiIcons'],
               audio: ['uiVol', 'muteBg', 'captions'],
               access: ['textSize', 'contrast', 'cbSafe', 'reduceMotion', 'captions'],
               controls: ['keys'],

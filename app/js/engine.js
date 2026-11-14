@@ -136,7 +136,45 @@
     p.res.forEach(w => out.push({ t: 'Resists ' + cap(w), k: 'buff' }));
     p.atk.forEach(w => out.push({ t: cap(w) + ' attacks', k: 'info' }));
     if (p.hs && p.hs !== 1) out.push({ t: 'Height ×' + p.hs, k: 'info' });
+    out.forEach(c => (c.tip = FW.chipTip(c.t)));
     return out;
+  };
+  /* A plain-language explanation of a chip, shown when the player hovers or taps it. */
+  const STAT_WORD = { STR: 'Strength', SPD: 'Speed', DUR: 'Durability', INT: 'Intelligence', FGT: 'Fighting' };
+  Object.assign(STAT_WORD, { WPN: 'Weapon skill', PWR: 'Power skill', ALL: 'every fighting stat' });
+  // "+1 FGT" -> "Fighting 1 tier up" (on its ladder); in a fight, "Fighting 1 tier higher"
+  function shiftTip(part, fight) {
+    const m = /^([+−-])(\d+) ([A-Z]+)$/.exec(part.trim());
+    if (!m) return '';
+    const n = +m[2],
+      up = m[1] === '+',
+      what = STAT_WORD[m[3]] || m[3],
+      tiers = n + (n === 1 ? ' tier' : ' tiers');
+    return what + ' ' + tiers + (fight ? (up ? ' higher' : ' lower') : up ? ' up' : ' down');
+  }
+  FW.chipTip = function (t) {
+    let m;
+    if ((m = /^(.+?): (.+)$/.exec(t)))
+      return (
+        'Only in a fight ' +
+        m[1].toLowerCase() +
+        ': ' +
+        m[2]
+          .split(', ')
+          .map(x => shiftTip(x, true))
+          .join(', ') +
+        '. Dashed chips count only in a matching arena or moment.'
+      );
+    if (/^[+−-]\d+ Fate Token/.test(t)) return 'Fate Tokens let you re-spin a result you dislike.';
+    if (/^[+−-]\d+ Renown$/.test(t)) return 'Renown adds straight to your power rating.';
+    if ((m = /^Weak to (.+)$/.exec(t)))
+      return 'Foes who attack with ' + m[1] + ' have a much better chance against you.';
+    if ((m = /^Resists (.+)$/.exec(t))) return 'Foes who attack with ' + m[1] + ' have a worse chance against you.';
+    if ((m = /^(.+) attacks$/.exec(t)))
+      return 'You fight with ' + m[1] + ': better odds against foes weak to it, worse against foes who resist it.';
+    if (/^Height ×/.test(t)) return 'How tall you are compared with a human.';
+    const parts = t.split(', ').map(x => shiftTip(x, false));
+    return parts.every(Boolean) ? 'Moves your result on the ladder: ' + parts.join(', ') + '.' : '';
   };
 
   /* ---------- ladders ---------- */

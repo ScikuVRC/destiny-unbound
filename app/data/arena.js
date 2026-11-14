@@ -339,4 +339,42 @@ The Deep King|1.2|lv=94 a=water,void r=water w=holy|The reason the sea is so qui
       scene: 'marked by a glowing curse from',
     },
   ];
+
+  // Painted art (app/art/arena, app/art/foes; Created with Grok, see docs/art-credits.md). An arena shows the backdrop
+  // of its first condition; one with none shows open plains. Foes without a portrait just show no picture.
+  FW.ARENA_ART = {
+    dark: 'dark',
+    sun: 'sun',
+    water: 'water',
+    storm: 'storm',
+    void: 'void',
+    fire: 'fire',
+    ice: 'ice',
+    holy: 'holy',
+    wild: 'wild',
+    urban: 'urban',
+    none: 'plains',
+  };
+  FW.FOE_ART = {
+    'Ashwing the Young': 'ashwing',
+    Rimefang: 'rimefang',
+    Stormcrown: 'stormcrown',
+    Venomscale: 'venomscale',
+    Nightmaw: 'nightmaw',
+    'The Gold Tyrant': 'goldtyrant',
+    'Vaelgor the World-Burner': 'vaelgor',
+    'Dread Sovereign Kaelun': 'kaelun',
+    'Shogun Prime': 'shogun',
+    'Planet-Eater Gorun': 'gorun',
+    'Elder Storm-Hart': 'stormhart',
+    'Forge-God Ulm': 'ulm',
+    'The Nameless Throne': 'nameless',
+    'Dragon Emperor Zhalmarr': 'zhalmarr',
+    'The Drowned Emperor': 'drowned',
+    'The Unwound King': 'unwound',
+    'Mother of Eclipses': 'eclipse',
+    'The Thunder Prophet': 'prophet',
+    'The Headmistress': 'headmistress',
+    'The Deep King': 'deepking',
+  };
 })(typeof window !== 'undefined' ? window : globalThis);

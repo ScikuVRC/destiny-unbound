@@ -14,6 +14,9 @@
 (function (g) {
   const FW = (g.FW = g.FW || {});
   const M = (FW.Mods = { loaded: [], errors: [] });
+  // Mods made by the Destiny Unbound team that ship with the game (app/official/<id>/), off until switched on.
+  // Each is also a mod kit template, and tests/mods.test.js checks the two copies match.
+  M.OFFICIAL = ['ember-dominion'];
   const BASES = ['ashen', 'astral', 'iron', 'bloodmoon'];
   const baseOf = b =>
     BASES.indexOf(b) >= 0 ? b : FW.THEME_ALIAS && BASES.indexOf(FW.THEME_ALIAS[b]) >= 0 ? FW.THEME_ALIAS[b] : null; // old mods may say 'tabletop' (now 'astral')
@@ -299,7 +302,8 @@
   };
   M.imported = () => tx('readonly', st => st.getAll());
   const settings = () => (App ? App.store.get('fw.mods', {}) : {});
-  M.isEnabled = id => settings()[id] !== false;
+  // Official mods are off until the player switches them on; mods the player adds are on until switched off.
+  M.isEnabled = (id, official) => (official ? settings()[id] === true : settings()[id] !== false);
   M.setEnabled = (id, on) => {
     const s = settings();
     s[id] = !!on;
@@ -333,6 +337,23 @@
     } catch (e) {
       /* no IndexedDB (private window) */
     }
+    // Official mods ship with the game in app/official/<id>/ (listed in M.OFFICIAL). They come last, so a copy the
+    // player installed from the mod kit (same id) is the one that loads.
+    for (const id of M.OFFICIAL) {
+      const base = 'official/' + id + '/';
+      try {
+        const r = await fetch(base + 'mod.json');
+        if (!r.ok) continue;
+        out.push({
+          source: 'official',
+          key: id,
+          text: await r.text(),
+          resolve: f => base + f.split('/').map(encodeURIComponent).join('/'),
+        });
+      } catch (e) {
+        /* opened from a file:// page: official mods need the app or a web server */
+      }
+    }
     return out;
   }
   M.load = async function () {
@@ -340,6 +361,7 @@
       document.getElementById('modStyles') ||
       Object.assign(document.head.appendChild(document.createElement('style')), { id: 'modStyles' });
     let css = '';
+    const seen = new Set();
     for (const src of await sources()) {
       let mod;
       try {
@@ -348,10 +370,13 @@
         M.errors.push((src.folder || src.key) + ': ' + e.message);
         continue;
       }
+      if (src.source === 'official' && seen.has(mod.id)) continue; // the player's own copy is already loaded
+      seen.add(mod.id);
       mod.source = src.source;
+      mod.official = src.source === 'official';
       mod.folder = src.folder;
       mod.key = src.key;
-      mod.enabled = M.isEnabled(mod.id);
+      mod.enabled = M.isEnabled(mod.id, mod.official);
       M.loaded.push(mod);
       if (!mod.enabled) continue;
       try {

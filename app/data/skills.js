@@ -23,7 +23,7 @@ Warlock|3|pwr+2 fate-1|Power on loan|The patron will collect
 Summoner|3|pwr+1 int+1 dur-1|Never fights alone|Fragile alone
 Samurai|3|wpn+2 fgt+1 ahead:all-1|One perfect cut|Honour slows the finish
 Gunslinger|3|spd+1 wpn+1 int+1 fgt-1|Fastest draw|Poor in a brawl
-Alchemist|4|int+2 str-1|Bottled solutions|Needs preparation
+Alchemist|4|int+2 r=poison|Bottled solutions|Needs preparation
 Beastmaster|4|str+1 spd+1 wild:all+1|Fights beside claws|
 Tactician|3|int+2 fgt+1 str-1|Wins before the fight starts|Not a brawler
 Spellblade|2.5|wpn+1 pwr+1 fgt+1|Steel in one hand, fire in the other|
@@ -33,12 +33,12 @@ Dancer|3|spd+2 str-1|Every dodge is choreography|
 Chosen One|0.8|all+1 fate+1 rt+2|The prophecy has your name on it|So does every villain
 Archer|5|wpn+1 spd+1|Eyes on the target|
 Brawler|5|str+1 fgt+1 wpn-1|Fists first, questions never|Clumsy with weapons
-Merchant|5|int+1 fate+1 fgt-1|Can buy a way out|Not a fighter
+Merchant|5|int+1 fate+1 rt+1 fgt-1|Can buy a way out|Not a fighter
 Gladiator|4|str+1 fgt+1 rt+1|Fights for the crowd|
 Duelist|4|fgt+1 spd+1 wpn+1 dur-1|One opponent at a time|Lightly armoured
 Healer|4|dur+1 int+1 fate+1 fgt-1|Keeps everyone standing|Hates to hurt anyone
 Witch|4|pwr+1 int+1 dark:all+1|Hexes and herbs|
-Sorcerer|4|pwr+2 dur-1|Born with magic|Fragile body
+Sorcerer|4|pwr+2 int+1 dur-1|Born with magic|Fragile body
 Shaman|4|pwr+1 int+1 storm:all+1|Speaks with spirits|
 Engineer|4|int+2 wpn+1 fgt-1|Builds the solution|Bad at close quarters
 Ninja|3|spd+2 fgt+1 dark:all+1 dur-1|Unseen until it is too late|No armour

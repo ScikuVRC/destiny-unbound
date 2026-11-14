@@ -71,7 +71,7 @@
                 (x.end ? 'end ' : '') +
                 (x.tone || '') +
                 '"><span>' +
-                (x.emoji || '•') +
+                (x.emoji ? FW.icon(x.emoji) : '•') +
                 '</span><div><b>' +
                 (x.ch ? 'Ch. ' + x.ch + ' · ' : '') +
                 H.esc(x.chapter) +
@@ -132,7 +132,15 @@
     F.show('spin');
     F.renderSteps(0, 0);
     $('#sheet').classList.toggle('collapsed', window.innerWidth < 980);
-    const io = { rng: st.rng, spin: spinUI };
+    const io = {
+      rng: st.rng,
+      spin: spinUI,
+      choose: cfg => {
+        sheet();
+        $('#btnStoryExit').hidden = true;
+        return F.chooseStep(cfg);
+      },
+    };
     try {
       while (!L.saga.end) {
         // if the player leaves in the middle of a chapter, that chapter is undone

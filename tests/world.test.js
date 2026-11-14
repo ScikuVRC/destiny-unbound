@@ -111,6 +111,68 @@ async function t(name, fn) {
     assert.deepStrictEqual(W.ENDINGS.slice().sort(), ENDINGS.slice().sort(), 'game and bot know the same endings');
   });
 
+  await t('the daily leaderboard checks every entry and filters rude names', async () => {
+    const B = await import('../worker/src/board.js');
+    const now = new Date('2026-11-14T12:00:00Z');
+    const ok = {
+      day: '2026-11-14',
+      pid: 'abcdefghij1234',
+      name: 'Lady Cinder',
+      race: 'Elf',
+      score: 120,
+      end: 'dead',
+      ch: 12,
+    };
+    const row = B.checkEntry(ok, now);
+    assert.deepStrictEqual(row, {
+      day: '2026-11-14',
+      pid: 'abcdefghij1234',
+      name: 'Lady Cinder',
+      race: 'Elf',
+      score: 120,
+      ending: 'dead',
+      ch: 12,
+    });
+    assert(!B.checkEntry(Object.assign({}, ok, { day: '2026-11-15' }), now).error, 'tomorrow is fine (time zones)');
+    assert(B.checkEntry(Object.assign({}, ok, { day: '2026-11-10' }), now).error, 'old days are refused');
+    assert(B.checkEntry(Object.assign({}, ok, { pid: 'x' }), now).error);
+    assert(B.checkEntry(Object.assign({}, ok, { score: 9999 }), now).error);
+    assert(B.checkEntry(Object.assign({}, ok, { score: 1.5 }), now).error);
+    assert(B.checkEntry(Object.assign({}, ok, { end: 'nonsense' }), now).error);
+    ['Sir F u c k', 'sh1t lord', 'www.spam.com', 'B!tch Queen', 'join discord.gg/x'].forEach(n =>
+      assert.strictEqual(B.cleanName(n), B.NAMELESS, 'should be filtered: ' + n)
+    );
+    ['Cumberland the Bold', 'Ana the Analyst', 'The Grave Dancer', 'Lady Cinder'].forEach(n =>
+      assert.strictEqual(B.cleanName(n), n, 'should pass: ' + n)
+    );
+    assert.strictEqual(B.cleanName('<b>Bold</b>\u0007'), 'bBold/b', 'no markup or control characters');
+    assert.strictEqual(B.cleanName('x'.repeat(80)).length, 40);
+    assert.deepStrictEqual(B.ENDINGS.slice().sort(), ENDINGS.slice().sort(), 'board and bot know the same endings');
+  });
+
+  await t('the game posts to the leaderboard only after opting in, with a random id and nothing else', async () => {
+    const W = globalThis.FW.World,
+      sent = [];
+    globalThis.fetch = async (url, o) => {
+      sent.push({ url, body: o && o.body });
+      return { ok: true, json: async () => ({ ok: true, top: [], players: 0 }) };
+    };
+    assert(!W.boardEnabled(), 'the leaderboard must be off by default');
+    assert.strictEqual(await W.postDaily({ day: '2026-11-14', name: 'X', score: 1, end: 'dead' }), null);
+    assert.strictEqual(sent.length, 0, 'sent something while off');
+    W.setBoard(true);
+    await W.postDaily({ day: '2026-11-14', name: 'Lady Cinder', race: 'Elf', score: 99.6, end: 'legend', ch: 7 });
+    assert.strictEqual(sent.length, 1);
+    const b = JSON.parse(sent[0].body);
+    assert.deepStrictEqual(Object.keys(b).sort(), ['ch', 'day', 'end', 'name', 'pid', 'race', 'score']);
+    assert(/^[a-z0-9]{20}$/.test(b.pid) && b.score === 100);
+    assert(/\/v1\/daily$/.test(sent[0].url));
+    W.setBoard(false);
+    W.setBoard(true);
+    await W.postDaily({ day: '2026-11-14', name: 'Again', score: 5, end: 'dead' });
+    assert.strictEqual(JSON.parse(sent[1].body).pid, b.pid, 'the id stays the same');
+  });
+
   fs.rmSync(dir, { recursive: true, force: true });
   console.log('\n' + pass + ' of ' + (pass + fail) + ' checks passed');
   process.exit(fail ? 1 : 0);

@@ -4,6 +4,10 @@ A full content pack as a mod: a grimdark far-future setting with its own theme (
 new entries across the wheels. Races like the Vatborn Templar and the Void-Touched Seer, classes like the
 Machine-Priest and the Heresy Hunter, relic weapons, void powers, servo-skull companions and more.
 
+This pack is also built into the game: switch on "The Ember Dominion" under Official mods in the Mods screen.
+Install this copy only if you want to change it. A copy you install has the same id, so it loads instead of the
+built-in one.
+
 Installing
   Desktop app: Mods > Open mods folder, copy this whole folder in, then press "Restart to apply".
   Browser: Mods > Import a mod folder, and pick this folder.

@@ -39,6 +39,10 @@ npm run format        # Prettier: formats JavaScript and JSON (CSS and HTML keep
 
 CI runs all three on every push, the lint and format check in their own job.
 
+Balance tools: `node scripts/balance-report.js 10000 10000` (ratings, arena odds, how sagas end, per luck
+level) and `node scripts/win-rates.js 20000 heroic` (every race and class against all arena foes). The release
+rules are in [release-plan.md](release-plan.md).
+
 82 checks in 7 suites:
 
 - **engine (26):** data validity, unique names, tier shifts, odds, conditional buffs, Legend Codes, arena maths.
@@ -136,6 +140,7 @@ Uninstalling keeps all of these.
 
 | Path | What it is |
 | --- | --- |
+| `app/official/` | Official mods that ship with the game, off until switched on in the Mods screen ([modding.md](modding.md)) |
 | `app/data/` | Wheel content, as plain data grouped by topic (format: [app/data/README.md](../app/data/README.md)) |
 | `app/js/data.js` | The row parser the content uses; in node it also loads all of `app/data/` |
 | `app/js/engine.js` | Rules: stages, buffs and debuffs, rating, arena |

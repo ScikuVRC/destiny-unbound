@@ -10,6 +10,17 @@ loads, and anything with a problem is listed with the reason. Only install mods 
 > [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases), or browse it in [`modkit/`](../modkit).
 > This page is the short reference.
 
+## Official mods
+
+Mods made by the Destiny Unbound team ship with the game in `app/official/<id>/` and are listed under **Official
+mods** in the Mods screen. They are off until a player switches them on (then restart). Today there is one: **The
+Ember Dominion**, a grimdark far-future theme (Void Cathedral) with about forty wheel entries.
+
+Each official mod is also a mod kit template (`modkit/templates/07-ember-dominion`), and the tests check that the two
+copies are identical, so change both together. To add another, put its folder in `app/official/`, add its id to
+`M.OFFICIAL` in `app/js/mods.js`, list its files in `app/sw.js`, and map it to its template in `tests/mods.test.js`.
+If a player installs their own copy with the same id (from the mod kit, say), their copy loads instead.
+
 ## Mods
 
 A mod can add **themes** (colours, fonts, CSS, wheel and card colours), **sounds and music**, and **wheel

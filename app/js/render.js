@@ -8,19 +8,23 @@
       c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]
     ));
 
+  // a chip with a plain-language tip: shown on hover (title) and on tap (app.js shows data-tip as a toast)
+  const chipHtml = c =>
+    '<span class="mod ' +
+    c.k +
+    '"' +
+    (c.tip
+      ? ' title="' + esc(FW.t ? FW.t(c.tip) : c.tip) + '" data-tip="' + esc(FW.t ? FW.t(c.tip) : c.tip) + '"'
+      : '') +
+    '>' +
+    esc(c.t) +
+    '</span>';
+  H.chip = chipHtml;
   H.chips = function (chips) {
-    return chips.length
-      ? '<div class="mods">' +
-          chips.map(c => '<span class="mod ' + c.k + '">' + esc(c.t) + '</span>').join('') +
-          '</div>'
-      : '';
+    return chips.length ? '<div class="mods">' + chips.map(chipHtml).join('') + '</div>' : '';
   };
   H.tinyChips = function (chips) {
-    return chips.length
-      ? '<div class="tiny-mods">' +
-          chips.map(c => '<span class="mod ' + c.k + '">' + esc(c.t) + '</span>').join('') +
-          '</div>'
-      : '';
+    return chips.length ? '<div class="tiny-mods">' + chips.map(chipHtml).join('') + '</div>' : '';
   };
   H.resultClass = t => (t.length > 24 ? ' xlong' : t.length > 12 ? ' long' : '');
   H.fxCard = function (title, perk, flaw, chips, extra, big) {
@@ -129,7 +133,7 @@
           '<div class="' +
           cls +
           '"><span>' +
-          emoji +
+          (FW.icon ? FW.icon(emoji) : esc(emoji)) +
           '</span><span class="k">' +
           esc(LABEL[s.id]) +
           '</span><span class="v">' +
@@ -216,8 +220,23 @@
             '</b></div>'
         )
         .join('') || '<div class="adj"><span>No situational modifiers</span><b>0</b></div>';
+    // painted backdrop for the arena and a portrait of the foe, when the game has them
+    const ar = (FW.ARENAS || []).find(a => a.name === arena);
+    const bg = ar && FW.ARENA_ART ? FW.ARENA_ART[ar.tags[0] || 'none'] : '';
+    const face = FW.FOE_ART && FW.FOE_ART[opp];
+    const art =
+      bg || face
+        ? '<div class="battle-art' +
+          (face ? ' has-foe' : '') +
+          '"' +
+          (bg ? ' style="background-image:url(art/arena/' + bg + '.webp)"' : '') +
+          '>' +
+          (face ? '<img class="foe-art" src="art/foes/' + face + '.webp" alt="' + esc(opp) + '" loading="lazy">' : '') +
+          '</div>'
+        : '';
     return (
-      '<div class="fx-card"><h3>Battle report</h3>' +
+      '<div class="fx-card battle"><h3>Battle report</h3>' +
+      art +
       '<div class="vs"><div><b>' +
       rep.hero.toFixed(1) +
       '</b><span>' +

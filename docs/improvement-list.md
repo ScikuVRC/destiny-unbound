@@ -12,10 +12,10 @@ Where the game stands: about 6,800 lines of game code, 26 wheels per hero, 98 ra
 ## 1. Gameplay
 
 ### Story mode
-1. ⬜ ★ **Choices, not only spins (M).** Every outcome is a wheel. Let the player pick between two or three options at
+1. ✅ ★ **Choices, not only spins (M).** Done 2026-11-14: the demon's debt, the dragon, a beaten nemesis and a beaten boss. Every outcome is a wheel. Let the player pick between two or three options at
    key moments (spare or kill, pay the demon or fight it), with the wheel deciding how it goes. This is the biggest
    step from "watching" to "playing".
-2. ⬜ ★ **Chapters that react to your hero (M).** Class, personality, element and weakness barely change the story. A
+2. ✅ ★ **Chapters that react to your hero (M).** Done 2026-11-14 for heists, hauntings, the sea, training, study, quests, mentors and demon loopholes. Class, personality, element and weakness barely change the story. A
    Thief should get better heist odds (the guild already does this), a Necromancer different haunted outcomes, a
    hero weak to fire a worse dragon fight, and the text should mention it.
 3. ⬜ **More arcs (M each).** Four exist. Candidates: a cursed artifact that grows stronger and hungrier, a war between
@@ -53,7 +53,7 @@ Where the game stands: about 6,800 lines of game code, 26 wheels per hero, 98 ra
 19. ⬜ **Hero comparison (S).** Compare two heroes from the Hall side by side.
 
 ### Keeping players
-20. ⬜ **Daily challenge leaderboard (M).** The world counter service exists; a per-day top-10 of scores (opt-in, a
+20. ✅ **Daily challenge leaderboard (M).** Done 2026-11-14 (opt-in; the server part goes live with the next deploy). The world counter service exists; a per-day top-10 of scores (opt-in, a
    chosen display name) is a small step from it.
 21. ⬜ **Weekly themed events (S each).** "Dragon week": dragon chapters more likely, a special achievement.
 22. ⬜ **Unlockables (M).** Achievements unlock wheel entries today. Add cosmetic unlocks: card frames, wheel skins,
@@ -66,9 +66,9 @@ Where the game stands: about 6,800 lines of game code, 26 wheels per hero, 98 ra
 
 ## 2. Interface and feel
 
-25. ⬜ ★ **The winning slice lights up (S).** The wheel stops and only the text tells you where. Flash and hold the
+25. ✅ ★ **The winning slice lights up (S).** Done 2026-11-14. The wheel stops and only the text tells you where. Flash and hold the
    winning slice.
-26. ⬜ ★ **A real character card moment (M).** The card is the reward for 26 spins. Animate it assembling, let players
+26. ✅ ★ **A real character card moment (M).** Done 2026-11-14: reveal, flip to the back, Share. The card is the reward for 26 spins. Animate it assembling, let players
    flip it, and add a "share" button that copies the image.
 27. ⬜ **Apply the spin-screen polish everywhere (M).** The card, home, hall and options screens haven't had the same
    alignment pass as the spin screen.
@@ -76,7 +76,7 @@ Where the game stands: about 6,800 lines of game code, 26 wheels per hero, 98 ra
    portrait and the saga log as a proper journal.
 29. ⬜ **Wheel readability with many slices (M).** The race wheel has 98 slices; labels at the small end are unreadable.
    Options: zoom the wheel near the pointer while it slows, or show the five slices around the pointer in a strip.
-30. ⬜ **Tooltips for tags (S).** "+1 FGT", "In the wilds: +1 ALL" mean nothing to a new player. Hover or tap to explain.
+30. ✅ **Tooltips for tags (S).** Done 2026-11-14. "+1 FGT", "In the wilds: +1 ALL" mean nothing to a new player. Hover or tap to explain.
 31. ⬜ **Onboarding (M).** The first-run guide is four tooltips. A short guided first hero ("spin three wheels, see
    what they do") would teach buffs, tokens and luck.
 32. ⬜ **Transitions (S).** Screens cut. Short fades and a wheel "wind up" make it feel finished.
@@ -99,9 +99,9 @@ All painted art is made by hand on grok.com and credited "Created with Grok" (lo
 39. ⬜ **Chapter illustrations (L).** One small painting per chapter type (49), shown as the chapter banner. Start with
    the 12 most common.
 40. ⬜ **Ending illustrations (M).** One per ending (10). Endings are the screens players screenshot.
-41. ⬜ **Boss and dragon portraits (M).** 7 dragons and the top bosses.
-42. ⬜ **Arena backdrops (M).** 34 arenas are names only. Even 8 backdrops shared by groups would help.
-43. ⬜ **Icon set (M).** The interface uses emoji, which look different on every system and clash with the painted
+41. ✅ **Boss and dragon portraits (M).** Done 2026-11-14: 7 dragons and the strongest foe of all 13 worlds. 7 dragons and the top bosses.
+42. ✅ **Arena backdrops (M).** Done 2026-11-14: 11 backdrops. 34 arenas are names only. Even 8 backdrops shared by groups would help.
+43. ✅ **Icon set (M).** Done 2026-11-14: 56 line icons covering every wheel and chapter. The interface uses emoji, which look different on every system and clash with the painted
    style. A custom icon set (about 60 icons: the 26 wheel types, stats, chapter types) would make it look like one
    game.
 44. ⬜ **Card frames by rank (M).** Commoner to Cosmic Being: eight frames of rising fanciness.
@@ -191,7 +191,7 @@ Everything is synthesized in 146 lines of code: clever and tiny, but it sounds l
 
 ## 7. Balance and data
 
-87. ⬜ **Per-race and per-class win rates (S).** The balance report shows the strongest and weakest races; act on
+87. ✅ **Per-race and per-class win rates (S).** Done 2026-11-14: `scripts/win-rates.js`, and the weakest races and classes tuned. The balance report shows the strongest and weakest races; act on
    them. The spread is about 10 points at each luck level.
 88. ⬜ **Achievement rates (S).** "Dynasty" is at 0% and "Creature of Habit" can't be simulated; tune or redesign.
 89. ⬜ **Ending spread (S).** "Prophecy fulfilled" (about 1%) and "sealed away" (about 2%) are rare enough that most
@@ -205,7 +205,7 @@ Everything is synthesized in 146 lines of code: clever and tiny, but it sounds l
 
 ## 8. Community, store and release
 
-93. ⬜ ★ **A stable release plan (S).** Everything is "alpha". Define what beta and 1.0 mean (the list in
+93. ✅ ★ **A stable release plan (S).** Done 2026-11-14: [release-plan.md](release-plan.md). Everything is "alpha". Define what beta and 1.0 mean (the list in
    `progress.md` is a start) and stop adding features for a week before each.
 94. ⬜ **Windows code signing (S, costs money).** Removes the SmartScreen warning that scares new players.
 95. ⬜ **Mac and Linux testing (M).** Never tested by a human (issues #2 and #3).

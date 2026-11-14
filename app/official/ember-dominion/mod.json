@@ -1,0 +1,233 @@
+{
+  "$schema": "https://raw.githubusercontent.com/ScikuVRC/destiny-unbound/main/modkit/schemas/mod.schema.json",
+  "format": "fatewheel-mod",
+  "version": 1,
+  "id": "ember-dominion",
+  "name": "The Ember Dominion (grimdark sci-fi)",
+  "author": "Destiny Unbound contributors",
+  "description": "A content pack and theme: a dying star-empire of endless war, vat-grown templars, machine-priests, void ships and the things that whisper between the stars. Original setting, free to copy.",
+  "themes": [
+    {
+      "id": "voidcathedral",
+      "name": "Void Cathedral",
+      "blurb": "Grimdark far future",
+      "base": "iron",
+      "vars": {
+        "--bg": "#07080b",
+        "--topbar": "rgba(9,10,14,.94)",
+        "--fg": "#e6dccb",
+        "--muted": "#9a8f7c",
+        "--line": "#3a2a22",
+        "--panel": "#101117",
+        "--panel-fg": "#e6dccb",
+        "--chip-fg": "#f0c674",
+        "--chip-border": "#8a2a1f",
+        "--accent": "#c9302c",
+        "--accent2": "#c9a24a",
+        "--accent-fg": "#fff4e0",
+        "--btn-bg": "#16121a"
+      },
+      "css": "theme.css",
+      "wheel": {
+        "pal": [
+          ["#1a1c24", "#2a2d38"],
+          ["#3a1210", "#5a1c18"],
+          ["#2a2416", "#43391f"]
+        ],
+        "lad": ["#fff1d0", "#e0a63a", "#a0281f", "#1a0606"],
+        "line": "rgba(201,162,74,.35)",
+        "ink": "#f4e6c8",
+        "hit": "rgba(255,90,60,.5)",
+        "glow": "#ff5a3c"
+      },
+      "card": {
+        "key": "#c9a24a",
+        "accent": "#c9302c",
+        "stroke": "#8a2a1f",
+        "panel": "rgba(9,10,14,.9)"
+      }
+    }
+  ],
+  "packs": [
+    {
+      "name": "The Ember Dominion",
+      "entries": {
+        "race": [
+          {
+            "name": "Vatborn Templar",
+            "w": 1.5,
+            "dsl": "str+2 dur+2 int-1 fate-1 hs=1.35 life=l",
+            "perk": "Grown in a vat for one purpose: war",
+            "flaw": "Knows nothing but the next battle",
+            "art": "towering vat-grown templar in scarred crimson power armour, shaved head with ritual scars and brass ports in the skull"
+          },
+          {
+            "name": "Hive-Stack Human",
+            "w": 8,
+            "dsl": "urban:all+1 fate+1 life=s",
+            "perk": "Survived a billion neighbours",
+            "flaw": "Has never seen a real sky",
+            "art": "pale, hollow-eyed human from a vast industrial hive city, grime on the skin and a rebreather around the neck"
+          },
+          {
+            "name": "Void-Touched Seer",
+            "w": 2.5,
+            "dsl": "pwr+2 dur-1 w=mind void:all+1 life=s",
+            "perk": "Sees through the veil between stars",
+            "flaw": "Something on the other side sees back",
+            "art": "gaunt seer with milky glowing eyes, hooded, faint violet light leaking from the eyes and mouth"
+          },
+          {
+            "name": "Cogitator-Grafted",
+            "w": 3,
+            "dsl": "int+2 r=poison w=lightning life=l",
+            "perk": "Half the brain is brass and code",
+            "flaw": "Static makes the thoughts stutter",
+            "art": "robed figure with a brass and glass face plate, cables running from the skull into the hood, mechanical tendrils"
+          },
+          {
+            "name": "Voidborn Spacer",
+            "w": 3,
+            "dsl": "spd+1 void:all+2 sun:all-1 hs=1.15 life=m",
+            "perk": "Born between the stars, never on a world",
+            "flaw": "Real gravity and real sunlight hurt",
+            "art": "tall, thin spacer with very pale skin, large dark eyes and a sealed void suit"
+          },
+          {
+            "name": "Ash-World Mutant",
+            "w": 4,
+            "dsl": "str+1 dur+1 fate-1 r=poison life=s",
+            "perk": "Shrugs off what kills the pure",
+            "flaw": "Hunted by the Dominion's purity laws",
+            "art": "hulking mutant with mottled grey skin, one oversized arm and patched scavenged armour"
+          }
+        ],
+        "birth": [
+          {
+            "name": "Spire-Hive Underlevels",
+            "w": 5,
+            "dsl": "urban:fgt+1 fate+1",
+            "perk": "A kilometre of city stacked overhead"
+          },
+          { "name": "Cathedral World", "w": 3, "dsl": "holy:all+1 int+1", "perk": "Every building is a shrine" },
+          { "name": "Forge-Moon", "w": 3, "dsl": "wpn+1 r=fire", "perk": "Raised among furnaces that never cool" },
+          {
+            "name": "Drifting Void-Hulk",
+            "w": 2,
+            "dsl": "void:all+1 fate-1",
+            "perk": "A tomb of dead ships fused together"
+          },
+          {
+            "name": "Feral Frontier World",
+            "w": 4,
+            "dsl": "wild:str+1 fgt+1",
+            "perk": "Spears and bows under a sky full of warships"
+          }
+        ],
+        "bg": [
+          {
+            "name": "Survived a penal legion.",
+            "w": 3,
+            "dsl": "behind:all+2 fate-1",
+            "perk": "Sentenced to die in the front line, and didn't"
+          },
+          { "name": "Raised by a scrap-cult.", "w": 3, "dsl": "int+1 wpn+1", "perk": "Prays to engines and means it" },
+          { "name": "Orbital drop-trooper.", "w": 3, "dsl": "fgt+1 spd+1", "perk": "Has fallen from orbit forty times" }
+        ],
+        "per": [
+          {
+            "name": "Fanatic of the Pyre",
+            "w": 4,
+            "dsl": "fgt+1 o.kill*1.6 o.spare*0.5 o.banish*1.3",
+            "perk": "Faith is a weapon"
+          },
+          {
+            "name": "Weary Veteran",
+            "w": 4,
+            "dsl": "dur+1 o.spare*1.3 o.recruit*1.2",
+            "perk": "Has buried too many friends to hate anyone"
+          }
+        ],
+        "cls": [
+          { "name": "Void Templar", "w": 2, "dsl": "str+1 dur+1 fgt+1", "perk": "Sworn shield of a dying empire" },
+          {
+            "name": "Machine-Priest",
+            "w": 3,
+            "dsl": "int+2 wpn+1 holy:int+1",
+            "perk": "Blesses engines and curses rust"
+          },
+          {
+            "name": "Heresy Hunter",
+            "w": 3,
+            "dsl": "int+1 fgt+1 holy:all+1",
+            "perk": "Carries a warrant signed in blood"
+          },
+          { "name": "Hive Ganger", "w": 4, "dsl": "spd+1 urban:fgt+1", "perk": "Rules three floors of the underhive" },
+          { "name": "Sanctioned Seer", "w": 2, "dsl": "pwr+2 dur-1", "perk": "Licensed to use the forbidden sight" }
+        ],
+        "wpn": [
+          { "name": "Beam Carbine", "w": 5, "dsl": "q=2 a=fire", "perk": "Standard issue, millions made" },
+          { "name": "Chain-Glaive", "w": 3, "dsl": "q=3 a=metal", "perk": "A polearm with teeth" },
+          {
+            "name": "Plasma Lance",
+            "w": 1.2,
+            "dsl": "q=4 a=fire",
+            "perk": "Burns hotter than a star, sometimes the wielder too"
+          },
+          { "name": "Relic Thunder-Maul", "w": 0.5, "dsl": "q=5 a=lightning", "perk": "Older than the empire itself" }
+        ],
+        "enh": [
+          { "name": "Bionic Arm", "w": 3, "dsl": "str+1 wpn+1 w=lightning", "perk": "Brass and pistons, never tires" },
+          { "name": "Ceramite Plating", "w": 2, "dsl": "dur+2 spd-1", "perk": "Armour grafted to the ribs" }
+        ],
+        "pow": [
+          { "name": "Veil Sight", "w": 2, "dsl": "rar=3 a=mind", "perk": "" },
+          { "name": "Machine Communion", "w": 2.5, "dsl": "rar=2 a=metal", "perk": "" },
+          { "name": "Void Tempest", "w": 0.5, "dsl": "rar=5 a=void", "perk": "" }
+        ],
+        "weak": [
+          {
+            "name": "Void Corruption",
+            "w": 3,
+            "dsl": "w=void fate-1",
+            "perk": "",
+            "flaw": "The whispers are getting louder"
+          },
+          { "name": "Purity Laws", "w": 3, "dsl": "urban:all-1", "perk": "", "flaw": "Wanted in every Dominion city" }
+        ],
+        "pet": [
+          { "name": "Servo-Skull", "w": 4, "dsl": "int+1", "perk": "A floating skull that takes notes" },
+          { "name": "Cyber-Mastiff", "w": 3, "dsl": "fgt+1 str+1", "perk": "Half dog, half engine, all bite" }
+        ],
+        "title": [
+          {
+            "name": "The Last Templar",
+            "w": 1.5,
+            "dsl": "tt=3 rt+2",
+            "perk": "The only one of their order still standing"
+          },
+          {
+            "name": "The Saint of the Burning Hive",
+            "w": 0.8,
+            "dsl": "tt=3 rt+4",
+            "perk": "A billion people pray to them"
+          }
+        ],
+        "mark": [
+          {
+            "name": "Touched by the Void",
+            "w": 2,
+            "dsl": "void:all+1 fate+1",
+            "perk": "Came back from the dark between stars"
+          }
+        ],
+        "garb": [
+          { "name": "Crimson war-plate", "w": 3, "dsl": "dur+1", "perk": "" },
+          { "name": "Hooded machine-priest robes", "w": 3, "dsl": "int+1", "perk": "" }
+        ],
+        "eyes": [{ "name": "Red augmetic lenses", "w": 3, "dsl": "", "perk": "" }],
+        "hair": [{ "name": "Shaved, with data-ports", "w": 3, "dsl": "", "perk": "" }]
+      }
+    }
+  ]
+}

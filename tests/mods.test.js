@@ -221,5 +221,27 @@ t('the mod kit wheel pack template is a valid pack, and the generated reference 
   assert.strictEqual(z.readUInt32LE(z.length - 22), 0x06054b50);
 });
 
+t('official mods ship with the game, are valid, are cached offline and match their mod kit template', () => {
+  const dir = path.join(__dirname, '..', 'app', 'official');
+  assert.deepStrictEqual(fs.readdirSync(dir).sort(), [...M.OFFICIAL].sort(), 'M.OFFICIAL lists every folder');
+  const sw = fs.readFileSync(path.join(__dirname, '..', 'app', 'sw.js'), 'utf8');
+  const TEMPLATE = { 'ember-dominion': '07-ember-dominion' };
+  const text = f => fs.readFileSync(f, 'utf8').replace(/\r\n/g, '\n');
+  M.OFFICIAL.forEach(id => {
+    const files = fs.readdirSync(path.join(dir, id));
+    const mod = M.validate(JSON.parse(text(path.join(dir, id, 'mod.json'))));
+    assert.strictEqual(mod.id, id);
+    mod.files.forEach(f => assert(files.includes(f), id + ' is missing ' + f));
+    files.forEach(f => {
+      assert(sw.includes("'official/" + id + '/' + f + "'"), 'not cached offline: official/' + id + '/' + f);
+      assert.strictEqual(
+        text(path.join(dir, id, f)),
+        text(path.join(KIT, 'templates', TEMPLATE[id], f)),
+        'app/official/' + id + '/' + f + ' differs from the mod kit template: copy the changes across'
+      );
+    });
+  });
+});
+
 console.log('\n' + pass + ' of ' + (pass + fail) + ' checks passed');
 process.exit(fail ? 1 : 0);

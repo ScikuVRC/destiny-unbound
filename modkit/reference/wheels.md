@@ -40,9 +40,9 @@ Race and bloodline. Use `life=` for lifespan, `hs=` for height, and `art` for AI
 | Lizardfolk | 6 | `dur+1 str+1 w=ice ice:spd-2 life=m` |
 | Elf | 7 | `spd+1 int+1 str-1 wild:fgt+1 life=l` |
 | Dark Elf | 5 | `spd+1 fgt+1 dark:fgt+1 sun:all-1 life=l` |
-| Fairy | 4 | `spd+2 int+1 pwr+1 str-2 dur-2 w=metal hs=0.2 life=l` |
+| Fairy | 4 | `spd+2 int+1 pwr+2 str-2 w=metal hs=0.2 life=l` |
 | Mermaid | 4 | `spd+1 int+1 water:all+2 urban:all-1 life=l` |
-| Slime | 4 | `dur+2 str-1 int-1 r=poison w=fire hs=0.8 life=l` |
+| Slime | 4 | `dur+2 str-1 r=poison,metal w=fire hs=0.8 life=l` |
 | Golem | 4 | `str+2 dur+2 spd-2 int-1 w=lightning hs=1.5 life=l` |
 | Half-Giant | 4 | `str+2 dur+1 spd-1 hs=1.6 life=m` |
 | Vampire | 3.5 | `spd+1 str+1 fgt+1 dark:all+1 sun:all-2 w=holy,fire life=a` |
@@ -65,14 +65,14 @@ Race and bloodline. Use `life=` for lifespan, `hs=` for height, and `art` for AI
 | Cyborg | 3 | `str+1 dur+1 int+1 r=poison w=lightning life=m` |
 | Mutant | 3 | `spd+1 str+1 pwr+1 dur-1 life=s` |
 | Frost Giant | 1.8 | `str+2 dur+2 spd-1 r=ice w=fire hs=3 life=l` |
-| Titan | 1 | `int-1 spd-1 str+1 dur+1 hs=8 life=a` |
+| Titan | 1 | `str+2 dur+2 int-1 spd-1 hs=8 life=a` |
 | Eldritch Horror | 0.8 | `int+2 pwr+2 dur+1 dark:pwr+2 sun:all-1 w=mind a=mind,void hs=3 life=a` |
 | Cosmic Entity | 0.5 | `all+2 pwr+2 w=void life=a` |
 | Eternal | 0.3 | `all+2 fate+1 life=a` |
 | God | 0.25 | `all+3 pwr+3 fate+1 life=a` |
 | Halfling | 7 | `spd+1 fate+1 str-1 hs=0.6 life=s` |
 | Gnome | 5 | `int+2 str-1 hs=0.55 life=m` |
-| Kobold | 5 | `spd+1 int+1 str-1 dur-1 dark:all+1 hs=0.6 life=s` |
+| Kobold | 5 | `spd+1 int+1 str-1 dark:all+1 hs=0.6 life=s` |
 | Ogre | 5 | `str+2 dur+1 int-2 hs=1.5 life=s` |
 | Troll | 4 | `str+1 dur+2 int-1 w=fire hs=1.4 life=m` |
 | Centaur | 4 | `spd+2 str+1 urban:spd-1 hs=1.3 life=m` |
@@ -88,7 +88,7 @@ Race and bloodline. Use `life=` for lifespan, `hs=` for height, and `art` for AI
 | Yeti | 3 | `str+2 dur+1 ice:all+1 r=ice w=fire hs=1.4 life=m` |
 | Automaton | 3 | `dur+2 int+1 spd-1 r=poison,mind w=lightning life=a` |
 | Mothfolk | 3 | `spd+1 int+1 dur-1 dark:all+1 w=fire life=s` |
-| Mycelid | 3 | `dur+1 int+1 spd-1 wild:all+1 r=poison a=poison w=fire life=l` |
+| Mycelid | 3 | `dur+1 int+1 wild:all+1 r=poison a=poison w=fire life=l` |
 | Changeling | 3 | `int+1 spd+1 fate+1 w=metal life=m` |
 | Revenant | 2.5 | `dur+2 fgt+1 behind:all+1 r=poison w=holy life=a` |
 | Elemental | 2 | `pwr+2 dur+1 life=a` |
@@ -360,7 +360,7 @@ Class or profession.
 | Summoner | 3 | `pwr+1 int+1 dur-1` |
 | Samurai | 3 | `wpn+2 fgt+1 ahead:all-1` |
 | Gunslinger | 3 | `spd+1 wpn+1 int+1 fgt-1` |
-| Alchemist | 4 | `int+2 str-1` |
+| Alchemist | 4 | `int+2 r=poison` |
 | Beastmaster | 4 | `str+1 spd+1 wild:all+1` |
 | Tactician | 3 | `int+2 fgt+1 str-1` |
 | Spellblade | 2.5 | `wpn+1 pwr+1 fgt+1` |
@@ -370,12 +370,12 @@ Class or profession.
 | Chosen One | 0.8 | `all+1 fate+1 rt+2` |
 | Archer | 5 | `wpn+1 spd+1` |
 | Brawler | 5 | `str+1 fgt+1 wpn-1` |
-| Merchant | 5 | `int+1 fate+1 fgt-1` |
+| Merchant | 5 | `int+1 fate+1 rt+1 fgt-1` |
 | Gladiator | 4 | `str+1 fgt+1 rt+1` |
 | Duelist | 4 | `fgt+1 spd+1 wpn+1 dur-1` |
 | Healer | 4 | `dur+1 int+1 fate+1 fgt-1` |
 | Witch | 4 | `pwr+1 int+1 dark:all+1` |
-| Sorcerer | 4 | `pwr+2 dur-1` |
+| Sorcerer | 4 | `pwr+2 int+1 dur-1` |
 | Shaman | 4 | `pwr+1 int+1 storm:all+1` |
 | Engineer | 4 | `int+2 wpn+1 fgt-1` |
 | Ninja | 3 | `spd+2 fgt+1 dark:all+1 dur-1` |

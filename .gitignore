@@ -9,3 +9,6 @@ research/
 private-notes.md
 # the world counter's totals on the bot server
 bot/data/
+
+# full-size art originals (about 30 MB); the game uses the resized copies in app/art
+art-source/

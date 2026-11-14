@@ -130,3 +130,133 @@ App icon (every icon size is made from it by scripts/make-icons.js). Generated 2
 Transparent versions of the four theme logos above (no new image was generated). Made 2026-11-13 by
 `scripts/make-transparent-logos.py`, which turns each logo's black background into transparency and keeps the
 artwork. Created with Grok, like the originals.
+
+## Arena backdrops and foe portraits (2026-11-14)
+
+Made by hand on grok.com (Grok Imagine, Quality 2.0, four images per prompt; one picked per prompt), then resized
+and saved as WebP: backdrops 1280x720 in `app/art/arena/`, portraits 512x512 in `app/art/foes/`. Created with Grok.
+The battle report shows the backdrop of the arena's first condition and the foe's portrait when it has one.
+
+### `app/art/arena/dark.webp`
+
+> Painterly dark fantasy video game battle arena background, wide 16:9: a haunted graveyard under a moonless night sky, crooked tombstones, dead trees, cold blue moonlight and low mist. Atmospheric, cinematic lighting, highly detailed concept art. No characters, no text, no logo.
+
+### `app/art/arena/sun.webp`
+
+> Painterly dark fantasy video game battle arena background, wide 16:9: an ancient sun-baked colosseum at blazing noon, sand arena floor, broken stone arches, harsh white sunlight and heat haze. Atmospheric, cinematic lighting, highly detailed concept art. No characters, no text, no logo.
+
+### `app/art/arena/water.webp`
+
+> Painterly dark fantasy video game battle arena background, wide 16:9: ruins of a sunken temple deep underwater, broken pillars covered in coral and kelp, shafts of light from the surface far above, drifting particles, deep teal and blue. Atmospheric, cinematic lighting, highly detailed concept art. No characters, no text, no logo.
+
+### `app/art/arena/storm.webp`
+
+> Painterly dark fantasy video game battle arena background, wide 16:9: a jagged mountain summit in a raging thunderstorm, forks of lightning, black churning clouds, wind-torn banners on a ruined stone platform. Atmospheric, cinematic lighting, highly detailed concept art. No characters, no text, no logo.
+
+### `app/art/arena/void.webp`
+
+> Painterly dark fantasy video game battle arena background, wide 16:9: the void between worlds, broken islands of rock floating in a starless violet nothing, a swirling black hole with a glowing rim in the distance, shards of shattered reality. Atmospheric, cinematic lighting, highly detailed concept art. No characters, no text, no logo.
+
+### `app/art/arena/fire.webp`
+
+> Painterly dark fantasy video game battle arena background, wide 16:9: a volcanic forge inside a mountain, rivers of glowing lava, a narrow stone bridge over magma, giant anvils and chains, embers rising in the dark. Atmospheric, cinematic lighting, highly detailed concept art. No characters, no text, no logo.
+
+### `app/art/arena/ice.webp`
+
+> Painterly dark fantasy video game battle arena background, wide 16:9: a frozen waste in a blizzard, towering cliffs of blue ice, a frozen lake cracked underfoot, snow whipping through pale cold light. Atmospheric, cinematic lighting, highly detailed concept art. No characters, no text, no logo.
+
+### `app/art/arena/holy.webp`
+
+> Painterly dark fantasy video game battle arena background, wide 16:9: the nave of a vast sacred cathedral, golden light pouring through tall stained-glass windows, marble floor, rows of stone saints, dust in the light beams. Atmospheric, cinematic lighting, highly detailed concept art. No characters, no text, no logo.
+
+### `app/art/arena/wild.webp`
+
+> Painterly dark fantasy video game battle arena background, wide 16:9: a clearing in an ancient primeval forest, colossal mossy trees with twisted roots, ferns, green-gold sunbeams through the canopy, old standing stones. Atmospheric, cinematic lighting, highly detailed concept art. No characters, no text, no logo.
+
+### `app/art/arena/urban.webp`
+
+> Painterly dark fantasy video game battle arena background, wide 16:9: rooftops of a sprawling gothic city at dusk, slate roofs and chimneys, a great clocktower, glowing lantern-lit streets far below, smoke and a crimson sky. Atmospheric, cinematic lighting, highly detailed concept art. No characters, no text, no logo.
+
+### `app/art/arena/plains.webp`
+
+> Painterly dark fantasy video game battle arena background, wide 16:9: wide open grassy plains under a dramatic overcast sky, a ruined castle on a distant hill, wind through the long grass, an old battlefield with broken spears. Atmospheric, cinematic lighting, highly detailed concept art. No characters, no text, no logo.
+
+### `app/art/foes/ashwing.webp`
+
+> Painterly dark fantasy video game boss portrait, square: Ashwing the Young, a young fire dragon with ember-red scales and glowing cracks of heat between them, small sharp horns, smoke curling from its jaws. Head and neck, facing the viewer, dramatic rim lighting, dark smoky background, highly detailed concept art. No text, no logo, no frame.
+
+### `app/art/foes/rimefang.webp`
+
+> Painterly dark fantasy video game boss portrait, square: Rimefang, an ancient ice dragon with pale blue crystalline scales, frost-rimed horns and icicle fangs, freezing mist pouring from its jaws, cold glowing eyes. Head and neck, facing the viewer, dramatic rim lighting, dark misty background, highly detailed concept art. No text, no logo, no frame.
+
+### `app/art/foes/stormcrown.webp`
+
+> Painterly dark fantasy video game boss portrait, square: Stormcrown, a storm dragon with slate-grey scales and a crown of jagged horns crackling with blue lightning, storm clouds swirling around its head, glowing white eyes. Head and neck, facing the viewer, dramatic rim lighting, dark stormy background, highly detailed concept art. No text, no logo, no frame.
+
+### `app/art/foes/venomscale.webp`
+
+> Painterly dark fantasy video game boss portrait, square: Venomscale, a serpentine poison dragon with dark green and black scales, acid-green venom dripping from its fangs, toxic green vapour, slit yellow eyes. Head and neck, facing the viewer, dramatic rim lighting, dark swampy background, highly detailed concept art. No text, no logo, no frame.
+
+### `app/art/foes/nightmaw.webp`
+
+> Painterly dark fantasy video game boss portrait, square: Nightmaw, a shadow dragon with scales black as a moonless night, wisps of darkness peeling off its horns, faint violet glow in its eyes and throat, a vast maw of needle teeth. Head and neck, facing the viewer, dramatic rim lighting, deep black background, highly detailed concept art. No text, no logo, no frame.
+
+### `app/art/foes/goldtyrant.webp`
+
+> Painterly dark fantasy video game boss portrait, square: The Gold Tyrant, a colossal dragon with burnished gold scales and a crown of horns, white-gold holy fire in its throat, jewels embedded in its hide from centuries on a hoard, proud cruel eyes. Head and neck, facing the viewer, dramatic rim lighting, dark background with glinting treasure, highly detailed concept art. No text, no logo, no frame.
+
+### `app/art/foes/vaelgor.webp`
+
+> Painterly dark fantasy video game boss portrait, square: Vaelgor the World-Burner, an apocalyptic titan dragon with obsidian scales split by rivers of magma, horns like broken mountains, a burning void glowing in its open jaws, ash and embers filling the air. Head and neck, facing the viewer, dramatic rim lighting, dark burning background, highly detailed concept art. No text, no logo, no frame.
+
+### `app/art/foes/kaelun.webp`
+
+> Painterly dark fantasy video game boss portrait, square: Dread Sovereign Kaelun, the last king of a kingdom of ash, an undead king in blackened ash-grey plate armour, a crown of smouldering embers, cracked grey skin glowing orange from within, cold burning eyes. Head and shoulders, facing the viewer, dramatic rim lighting, dark smoky background with drifting ash, highly detailed concept art. No text, no logo, no frame.
+
+### `app/art/foes/shogun.webp`
+
+> Painterly dark fantasy video game boss portrait, square: Shogun Prime, a cyber-samurai warlord of a neon megacity, ornate black and crimson samurai armour fused with chrome machinery, a glowing red visor slit, neon kanji-free signs reflected on the armour, rain. Head and shoulders, facing the viewer, dramatic rim lighting in magenta and cyan, dark rainy background, highly detailed concept art. No text, no logo, no frame.
+
+### `app/art/foes/gorun.webp`
+
+> Painterly dark fantasy video game boss portrait, square: Planet-Eater Gorun, a colossal cosmic giant whose dark skin is full of stars and nebulae, a cracked planet held near its open mouth, eyes like two burning suns, crown of orbiting moons. Head and shoulders, facing the viewer, dramatic rim lighting, deep space background, highly detailed concept art. No text, no logo, no frame.
+
+### `app/art/foes/stormhart.webp`
+
+> Painterly dark fantasy video game boss portrait, square: Elder Storm-Hart, an ancient colossal stag spirit of the forest, antlers branching into crackling lightning and storm clouds, moss and vines on its neck, wise furious glowing eyes. Head and neck, facing the viewer, dramatic rim lighting, dark stormy forest background, highly detailed concept art. No text, no logo, no frame.
+
+### `app/art/foes/ulm.webp`
+
+> Painterly dark fantasy video game boss portrait, square: Forge-God Ulm, a towering god of the forge made of dark iron, a beard of flowing molten metal, eyes like furnace slits, rivets and runes on his iron skin, a great hammer on his shoulder, sparks flying. Head and shoulders, facing the viewer, dramatic rim lighting, dark forge background with orange glow, highly detailed concept art. No text, no logo, no frame.
+
+### `app/art/foes/nameless.webp`
+
+> Painterly dark fantasy video game boss portrait, square: The Nameless Throne, the absent king of a court in the void, a tall robed figure with no face, only a smooth dark oval where a face should be, an empty floating crown of black glass above it, tendrils of violet void unravelling from its robes. Head and shoulders, facing the viewer, dramatic rim lighting, starless violet background, highly detailed concept art. No text, no logo, no frame.
+
+### `app/art/foes/zhalmarr.webp`
+
+> Painterly dark fantasy video game boss portrait, square: Dragon Emperor Zhalmarr, sovereign of all wyrms, an ancient regal dragon with deep crimson and bronze scales, wearing an emperor's golden crown and jade ornaments woven between its horns, long whiskers, smoke and gold leaf drifting. Head and neck, facing the viewer, dramatic rim lighting, dark imperial background, highly detailed concept art. No text, no logo, no frame.
+
+### `app/art/foes/drowned.webp`
+
+> Painterly dark fantasy video game boss portrait, square: The Drowned Emperor, a dead king who still holds court beneath the sea, pale blue-grey skin, a crown of coral and barnacles, seaweed tangled in long white hair, glowing sea-green eyes, robes drifting in the water, bubbles rising. Head and shoulders, facing the viewer, dramatic rim lighting, dark underwater background with light from above, highly detailed concept art. No text, no logo, no frame.
+
+### `app/art/foes/unwound.webp`
+
+> Painterly dark fantasy video game boss portrait, square: The Unwound King, a clockwork automaton monarch, a cracked porcelain face mask over exposed brass gears and springs, a crown of clock hands, one eye a glowing amber lens, a huge ticking heart visible through his chest plate. Head and shoulders, facing the viewer, dramatic rim lighting, dark background with drifting gears, highly detailed concept art. No text, no logo, no frame.
+
+### `app/art/foes/eclipse.webp`
+
+> Painterly dark fantasy video game boss portrait, square: the Mother of Eclipses, a celestial witch-queen of a hollow moon, a black eclipsed sun as a halo behind her head with a thin ring of white fire, silver-grey skin, closed serene eyes, a gown of night sky and stars. Head and shoulders, facing the viewer, dramatic rim lighting, dark starry background, highly detailed concept art. No text, no logo, no frame.
+
+### `app/art/foes/prophet.webp`
+
+> Painterly dark fantasy video game boss portrait, square: the Thunder Prophet, a gaunt wild-eyed preacher of a haunted desert frontier, wide-brimmed hat and long tattered duster coat, a bone necklace, lightning crawling over his raised hand and in his white eyes, dust storm behind him. Head and shoulders, facing the viewer, dramatic rim lighting, dark stormy desert background, highly detailed concept art. No text, no logo, no frame.
+
+### `app/art/foes/headmistress.webp`
+
+> Painterly dark fantasy video game boss portrait, square: the Headmistress of an arcane academy, an elderly archmage woman with silver hair pinned up, half-moon spectacles, a high-collared midnight-blue robe embroidered with constellations, utterly calm expression, spell books floating behind her with faint runic light. Head and shoulders, facing the viewer, dramatic rim lighting, dark library background, highly detailed concept art. No text, no logo, no frame.
+
+### `app/art/foes/deepking.webp`
+
+> Painterly dark fantasy video game boss portrait, square: the Deep King, a colossal sea kaiju rising from a black ocean, a craggy armoured head the size of a mountain, barnacles and old shipwrecks clinging to it, bioluminescent teal eyes, seawater pouring off its jaws, a stormy night sky. Head and shoulders, facing the viewer, dramatic rim lighting, dark ocean background, highly detailed concept art. No text, no logo, no frame.

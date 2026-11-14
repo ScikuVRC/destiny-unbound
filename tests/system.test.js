@@ -134,6 +134,29 @@ t('the title screens have art, a logo and a tagline for every built-in theme', (
   });
 });
 
+t('every painted arena backdrop and foe portrait exists and belongs to a real arena or foe', () => {
+  ['data.js', 'engine.js', 'story.js'].forEach(f => require(path.join(root, 'app', 'js', f)));
+  const FW = globalThis.FW;
+  const tags = new Set(['none']);
+  FW.ARENAS.forEach(a => a.tags.forEach(t => tags.add(t)));
+  tags.forEach(t => assert(FW.ARENA_ART[t], 'no backdrop for arenas with ' + t));
+  Object.values(FW.ARENA_ART).forEach(f =>
+    assert(fs.existsSync(path.join(root, 'app', 'art', 'arena', f + '.webp')), 'missing arena art ' + f)
+  );
+  const story = fs.readFileSync(path.join(root, 'app', 'js', 'story.js'), 'utf8');
+  const foes = new Set();
+  FW.UNIVERSES.forEach(u => u.opps.forEach(o => foes.add(o.name)));
+  Object.keys(FW.FOE_ART).forEach(n => {
+    assert(foes.has(n) || story.indexOf("'" + n + "'") >= 0, 'portrait for an unknown foe: ' + n);
+    assert(fs.existsSync(path.join(root, 'app', 'art', 'foes', FW.FOE_ART[n] + '.webp')), 'missing portrait ' + n);
+  });
+  // the strongest foe of every world has a portrait
+  FW.UNIVERSES.forEach(u => {
+    const top = u.opps.slice().sort((a, b) => FW.P(b).lv - FW.P(a).lv)[0];
+    assert(FW.FOE_ART[top.name], 'no portrait for ' + top.name + ' (' + u.name + ')');
+  });
+});
+
 t('every script the page loads exists and is cached for offline play', () => {
   const html = fs.readFileSync(path.join(root, 'app', 'index.html'), 'utf8'),
     sw = fs.readFileSync(path.join(root, 'app', 'sw.js'), 'utf8');

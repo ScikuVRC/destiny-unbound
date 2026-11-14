@@ -223,6 +223,55 @@ async function playSaga(seed, opts, ov) {
     console.log('       endings', JSON.stringify(ends));
   });
 
+  await t(
+    'choices: the player picks at key moments, every option leads somewhere, and a bot without choose still plays',
+    async () => {
+      const titles = {};
+      for (let i = 0; i < 300; i++) {
+        const L = makeLegend('choice' + i);
+        const io = bot('choice' + i);
+        let k = 0;
+        io.choose = async cfg => {
+          assert(cfg.options.length >= 2, 'a choice needs two options: ' + cfg.title);
+          cfg.options.forEach(o => assert(o.label, 'option without a label'));
+          titles[cfg.title.replace(/^.*? (wakes|is beaten)/, '... $1')] = 1;
+          return k++ % cfg.options.length; // walk through every option
+        };
+        S.newSaga(L, {}, io.rng);
+        for (let n = 0; !L.saga.end && n < 400; n++) await S.playTurn(L, io, {});
+        assert(L.saga.end, 'saga with choices never ended');
+      }
+      const seen = Object.keys(titles).join(' | ');
+      ['... wakes. What do you do?', '... is beaten. What do you do?', '... is beaten. Mercy?'].forEach(x =>
+        assert(seen.indexOf(x) >= 0, 'never asked: ' + x + ' (saw ' + seen + ')')
+      );
+    }
+  );
+
+  await t(
+    'chapters react to the hero: a fitting class or nature helps, an unfitting one hurts, and says why',
+    async () => {
+      const L = makeLegend('fit');
+      const pickName = L.pickName.bind(L),
+        has = L.has.bind(L);
+      // pretend the hero is a Rogue Trickster, then a Paladin Lawful Good, then a Commoner Shy
+      const as = (cls, per) => {
+        L.pickName = id => (id === 'cls' ? cls : id === 'per' ? per : pickName(id));
+        L.has = id => (id === 'cls' || id === 'per' ? true : has(id));
+      };
+      as('Rogue', 'Trickster');
+      let f = S.fit(L, 'heist');
+      assert(f.m > 1 && /Rogue class/.test(f.why) && /help/.test(f.why), JSON.stringify(f));
+      as('Paladin', 'Lawful Good');
+      f = S.fit(L, 'heist');
+      assert(f.m < 1 && /against you/.test(f.why), JSON.stringify(f));
+      as('Commoner', 'Cheerful');
+      f = S.fit(L, 'heist');
+      assert.strictEqual(f.m, 1);
+      Object.keys(S.FIT).forEach(k => assert(S.FIT[k].what, 'fit ' + k + ' needs a description'));
+    }
+  );
+
   console.log('\n' + pass + ' of ' + (pass + fail) + ' checks passed');
   process.exit(fail ? 1 : 0);
 })();

@@ -513,6 +513,19 @@
           ctx.globalCompositeOperation = th.kind === 'parchment' ? 'multiply' : 'screen';
           ctx.fillStyle = th.hit;
           ctx.fill();
+          // the landing flash: the slice brightens a few times, then holds with a bright outline
+          const f = this.flash || 0;
+          if (f > 0) {
+            ctx.globalAlpha = f;
+            ctx.fill();
+            ctx.globalAlpha = 1;
+          }
+          ctx.globalCompositeOperation = 'source-over';
+          ctx.shadowBlur = 0;
+          ctx.lineJoin = 'round';
+          ctx.lineWidth = Math.max(2, G.S * 0.007) * (1 + f);
+          ctx.strokeStyle = th.glow || th.ink || '#fff';
+          ctx.stroke();
           ctx.restore();
         }
         ctx.restore();
@@ -815,7 +828,30 @@
     }
     clearFocus() {
       this.focus = -1;
+      this.flash = 0;
       this.draw();
+    }
+    /* three quick pulses on the winning slice (none when motion is off; one soft pulse when reduced) */
+    flashWin() {
+      const m = FW.motion ? FW.motion() : 'full';
+      if (m === 'off' || typeof requestAnimationFrame !== 'function') return;
+      const pulses = m === 'reduced' ? 1 : 3,
+        dur = pulses * 260,
+        t0 = performance.now(),
+        focus = this.focus;
+      cancelAnimationFrame(this._flashRaf);
+      const step = now => {
+        const x = (now - t0) / dur;
+        if (this.spinning || this.focus !== focus || x >= 1) {
+          this.flash = 0;
+          if (!this.spinning) this.draw();
+          return;
+        }
+        this.flash = 0.8 * Math.sin(Math.PI * ((x * pulses) % 1)) * (1 - x * 0.5);
+        this.draw();
+        this._flashRaf = requestAnimationFrame(step);
+      };
+      this._flashRaf = requestAnimationFrame(step);
     }
     skip() {
       this._skip = true;
@@ -872,6 +908,7 @@
             this._lastIdx = idx;
             if (this.onLabel) this.onLabel(this.entries[idx], idx, true);
             this.draw();
+            this.flashWin();
             resolve(idx);
           }
         };

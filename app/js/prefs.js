@@ -13,6 +13,7 @@
     anim: 'full', // full | reduced | off
     quality: 'high', // wheel sharpness: low | medium | high
     glow: true, // glows, embers, stars and shadows
+    emojiIcons: false, // show emoji instead of the game's drawn icons
     uiVol: 0.6, // interface clicks
     muteBg: true, // silence the game when its window is not in focus
     captions: false, // show what each sound means

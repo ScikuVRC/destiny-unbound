@@ -1,5 +1,5 @@
 /* Destiny Unbound service worker: cache-first for the app shell so it works offline */
-const CACHE = 'fatewheel-v49';
+const CACHE = 'fatewheel-v51';
 const FILES = [
   './',
   'index.html',
@@ -32,6 +32,7 @@ const FILES = [
   'lang/de.js',
   'lang/ja.js',
   'js/i18n.js',
+  'js/icons.js',
   'js/engine.js',
   'js/story.js',
   'js/wheel.js',
@@ -47,6 +48,8 @@ const FILES = [
   'js/achievements.js',
   'js/mods.js',
   'js/mods-ui.js',
+  'official/ember-dominion/mod.json',
+  'official/ember-dominion/theme.css',
 ];
 self.addEventListener('install', e => {
   e.waitUntil(

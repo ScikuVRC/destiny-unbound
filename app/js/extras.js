@@ -127,6 +127,18 @@
         all[L.daily] = { score, title: L.displayName(), race: L.raceName(), summary: S.summary(L) };
         App.store.set('fw.daily', all);
         homeDaily();
+        // the leaderboard only hears about it if the player opted in (Options > Data)
+        if (FW.World && FW.World.boardEnabled())
+          FW.World.postDaily({
+            day: L.daily,
+            name: L.displayName(),
+            race: L.raceName(),
+            score,
+            end: L.saga.end,
+            ch: L.saga.ch,
+          }).then(
+            r => r && App.toast(FW.t ? FW.t('Posted to the daily leaderboard') : 'Posted to the daily leaderboard')
+          );
       }
     }
     const best = daily()[L.daily];
@@ -138,7 +150,11 @@
       score +
       (done ? '' : ' so far (finish the story to record it)') +
       (best ? ' · your best today: ' + best.score : '') +
-      ' <button class="btn small ghost" id="btnDailyShare">Copy result</button>';
+      ' <button class="btn small ghost" id="btnDailyShare">Copy result</button>' +
+      (FW.World && FW.World.available()
+        ? ' <button class="btn small ghost" id="btnDailyBoard">🏆 Leaderboard</button>'
+        : '');
+    if ($('#btnDailyBoard')) $('#btnDailyBoard').onclick = () => dailyBoard(L.daily);
     $('#btnDailyShare').onclick = () =>
       App.copy(
         'Destiny Unbound daily ' +
@@ -155,6 +171,80 @@
         'Result copied'
       );
   }
+  /* today's leaderboard: the top ten opted-in players. Opening it is the player's own click, so it may ask the server
+     even when they don't post their own results. */
+  const END_WORD = {
+    dead: 'died',
+    retired: 'retired',
+    ascended: 'ascended',
+    lost: 'lost between worlds',
+    martyr: 'died a hero',
+    sealed: 'sealed away',
+    damned: 'taken by the demon',
+    fulfilled: 'prophecy fulfilled',
+    undying: 'risen undead',
+    legend: 'passed into legend',
+  };
+  async function dailyBoard(day) {
+    const tr = s => (FW.t ? FW.t(s) : s);
+    const body = rows =>
+      App.openModal(
+        '<button class="btn small ghost close">Close ✕</button><h2>' +
+          H.esc(tr('Daily leaderboard')) +
+          '</h2><p class="legend-key">' +
+          H.esc(day) +
+          '</p>' +
+          rows +
+          (FW.World.boardEnabled()
+            ? '<p class="legend-key">' + H.esc(tr('Your results are posted when a daily saga ends.')) + '</p>'
+            : '<p class="legend-key">' +
+              H.esc(
+                tr(
+                  "You're not on the board. To appear, switch on Post my daily challenge results in Options > Data: it sends your hero's name, race, score and ending."
+                )
+              ) +
+              '</p><p><button class="btn small" id="boardOn">' +
+              H.esc(tr('Post my results from now on')) +
+              '</button></p>')
+      );
+    body('<p>' + H.esc(tr('Loading…')) + '</p>');
+    const j = await FW.World.daily(day);
+    let rows;
+    if (!j) rows = '<p>' + H.esc(tr("The leaderboard can't be reached right now.")) + '</p>';
+    else if (!j.top.length) rows = '<p>' + H.esc(tr('Nobody has posted a result today yet.')) + '</p>';
+    else
+      rows =
+        '<ol class="board">' +
+        j.top
+          .map(
+            (x, i) =>
+              '<li><span class="b-n">' +
+              (i + 1) +
+              '</span><div><b>' +
+              H.esc(x.name) +
+              '</b><span>' +
+              H.esc(
+                [x.race, tr(END_WORD[x.ending] || x.ending), x.ch + ' ' + tr('chapters')].filter(Boolean).join(' · ')
+              ) +
+              '</span></div><span class="b-s">' +
+              H.esc(String(x.score)) +
+              '</span></li>'
+          )
+          .join('') +
+        '</ol><p class="legend-key">' +
+        H.esc(j.players + ' ' + tr(j.players === 1 ? 'player today' : 'players today')) +
+        '</p>';
+    if (!document.querySelector('#modalRoot .modal')) return; // closed while loading
+    body(rows);
+    const on = document.getElementById('boardOn');
+    if (on)
+      on.onclick = () => {
+        FW.World.setBoard(true);
+        App.toast(tr('Your next daily result will be posted'));
+        dailyBoard(day);
+      };
+  }
+  FW.dailyBoard = dailyBoard;
   function homeDaily() {
     const b = daily()[today()];
     $('#btnDaily').textContent = '📅 Daily challenge' + (b ? ' (best ' + b.score + ')' : '');

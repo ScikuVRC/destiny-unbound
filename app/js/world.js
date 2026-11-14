@@ -6,7 +6,8 @@
 (function (g) {
   const FW = (g.FW = g.FW || {});
   const App = g.FWApp;
-  const KEY = 'fw.world';
+  const KEY = 'fw.world',
+    BOARD = 'fw.board';
   const ENDINGS = [
     'dead',
     'retired',
@@ -44,6 +45,58 @@
         return true;
       } catch (e) {
         return false;
+      }
+    },
+    /* ---------- the daily challenge leaderboard: a separate opt-in ----------
+       When on, a finished daily saga posts the hero's name, race, score, ending and chapter count, with a random id
+       made once per install so a player has one row a day. Viewing the board is always the player's own click. */
+    boardEnabled: () => !!(W.url && App && App.store.get(BOARD, { on: false }).on),
+    setBoard(on) {
+      if (!App) return;
+      const b = App.store.get(BOARD, { on: false });
+      b.on = !!on;
+      if (on && !/^[a-z0-9]{12,32}$/.test(b.pid || ''))
+        b.pid = Array.from(
+          { length: 20 },
+          () => 'abcdefghijklmnopqrstuvwxyz0123456789'[Math.floor(Math.random() * 36)]
+        ).join('');
+      App.store.set(BOARD, b);
+    },
+    postDaily(e) {
+      if (!W.boardEnabled()) return Promise.resolve(null);
+      const b = App.store.get(BOARD, {});
+      const body = {
+        day: e.day,
+        pid: b.pid,
+        name: String(e.name || '').slice(0, 40),
+        race: String(e.race || '').slice(0, 30),
+        score: Math.round(e.score),
+        end: e.end,
+        ch: Math.round(e.ch || 0),
+      };
+      return fetch(W.url + '/v1/daily', {
+        method: 'POST',
+        body: JSON.stringify(body),
+        headers: { 'Content-Type': 'text/plain' },
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer',
+      })
+        .then(r => (r.ok ? r.json() : null))
+        .catch(() => null);
+    },
+    async daily(day) {
+      if (!W.url) return null;
+      try {
+        const r = await fetch(W.url + '/v1/daily?day=' + encodeURIComponent(day), {
+          credentials: 'omit',
+          referrerPolicy: 'no-referrer',
+          cache: 'no-store',
+        });
+        if (!r.ok) return null;
+        const j = await r.json();
+        return j && Array.isArray(j.top) ? j : null;
+      } catch (e) {
+        return null;
       }
     },
     /* the world totals, or null if the server can't be reached. Only asked for while the counter is on. */

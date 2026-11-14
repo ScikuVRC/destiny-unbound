@@ -31,31 +31,40 @@
   }
   let changed = false;
   function modsModal() {
-    const rows = M.loaded.length
-      ? M.loaded
-          .map(
-            m =>
-              '<div class="hall-item"><div><b>' +
-              H.esc(m.name) +
-              '</b><span>' +
-              H.esc(m.description || '') +
-              (m.author ? ' · by ' + H.esc(m.author) : '') +
-              '<br>' +
-              H.esc(summary(m)) +
-              ' · ' +
-              (m.source === 'folder' ? 'Mods folder' : 'imported') +
-              '</span></div><div><label class="check"><input type="checkbox" data-mod="' +
-              H.esc(m.id) +
-              '"' +
-              (m.enabled ? ' checked' : '') +
-              '> on</label>' +
-              (m.source === 'imported'
-                ? ' <button class="btn small ghost" data-rm="' + H.esc(m.key) + '">✕</button>'
-                : '') +
-              '</div></div>'
-          )
-          .join('')
-      : '<p>No mods installed yet.</p>';
+    const row = m =>
+      '<div class="hall-item' +
+      (m.official ? ' official' : '') +
+      '"><div><b>' +
+      H.esc(m.name) +
+      '</b><span>' +
+      H.esc(m.description || '') +
+      (m.official ? '' : m.author ? ' · by ' + H.esc(m.author) : '') +
+      '<br>' +
+      H.esc(summary(m)) +
+      ' · ' +
+      H.esc(FW.t(m.official ? 'Official' : m.source === 'folder' ? 'Mods folder' : 'imported')) +
+      '</span></div><div><label class="check"><input type="checkbox" data-mod="' +
+      H.esc(m.id) +
+      '"' +
+      (m.enabled ? ' checked' : '') +
+      '> on</label>' +
+      (m.source === 'imported' ? ' <button class="btn small ghost" data-rm="' + H.esc(m.key) + '">✕</button>' : '') +
+      '</div></div>';
+    const official = M.loaded.filter(m => m.official),
+      own = M.loaded.filter(m => !m.official);
+    const rows =
+      (official.length
+        ? '<h3 class="opt-h">' +
+          H.esc(FW.t('Official mods')) +
+          '</h3><p class="legend-key">' +
+          H.esc(FW.t('Made by the Destiny Unbound team and included with the game. Switch one on, then restart.')) +
+          '</p>' +
+          official.map(row).join('')
+        : '') +
+      '<h3 class="opt-h">' +
+      H.esc(FW.t('Your mods')) +
+      '</h3>' +
+      (own.length ? own.map(row).join('') : '<p>No mods installed yet.</p>');
     const errs = M.errors.length
       ? '<div class="warn"><b>Some mods could not load</b><ul>' +
         M.errors.map(e => '<li>' + H.esc(e) + '</li>').join('') +

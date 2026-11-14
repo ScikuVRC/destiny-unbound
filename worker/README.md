@@ -26,3 +26,14 @@ npx wrangler deploy
 - `POST /v1/count` with `{"kind":"hero"}` or `{"kind":"end","end":"dead"}` (endings: dead, retired, ascended, lost,
   martyr, sealed, damned, fulfilled, undying, legend)
 - `GET /v1/totals` returns `{ heroes, sagas, deaths, endings: { ... }, since }`
+- `POST /v1/daily` with `{"day":"2026-11-14","pid":"<random id>","name":"...","race":"...","score":120,"end":"dead","ch":12}`: the daily leaderboard (a separate opt-in in the game). Checked in `src/board.js`: the day
+  must be within a day of today (UTC), names are filtered, one row per player per day keeps the best score, and
+  rows older than 14 days are deleted.
+- `GET /v1/daily?day=2026-11-14` returns `{ day, top: [{ name, race, score, ending, ch }], players }` (top ten)
+
+After changing `schema.sql`, run it again on the live database (it only adds what is missing):
+
+```bash
+npx wrangler d1 execute destiny-unbound-counter --remote --file=schema.sql
+npx wrangler deploy
+```

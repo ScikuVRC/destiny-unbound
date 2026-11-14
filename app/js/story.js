@@ -408,8 +408,144 @@
     return e;
   };
   // spin a wheel of outcome entries and apply the winner
+  /* ---------------- choices: the player picks, the wheel decides how it goes ----------------
+     io.choose shows the options and resolves with the index picked. Without it (tests, the balance report, the
+     Discord bot) a random option is taken, so every path is still played. */
+  async function choose(L, io, ctx, cfg) {
+    const n = cfg.options.length;
+    if (n < 2) return 0;
+    if (io.choose) {
+      const i = await io.choose({
+        emoji: cfg.emoji || ctx.emoji,
+        title: cfg.title,
+        options: cfg.options.map(o => ({ label: o.label, hint: o.hint || '' })),
+      });
+      return clamp(i | 0, 0, n - 1);
+    }
+    return Math.floor(io.rng() * n) % n;
+  }
+  S.choose = choose;
+
+  /* ---------------- chapters that react to the hero ----------------
+     For some chapters a fitting class, personality, element or background makes the good slices bigger (and an
+     unfitting one the bad slices), and the wheel says why. */
+  S.FIT = {
+    heist: {
+      what: 'the heist',
+      cls: ['Rogue', 'Assassin', 'Ninja', 'Illusionist', 'Bard', 'Merchant', 'Dancer'],
+      per: ['Opportunist', 'Trickster', 'Mastermind', 'Calculating', 'Greedy', 'Manipulator', 'Chaotic Neutral'],
+      bg: /thief|con artist|street|criminal|pickpocket|smuggl/i,
+      against: { cls: ['Paladin', 'Templar', 'Knight'], per: ['Lawful Good', 'Honourable', 'Pacifist'] },
+    },
+    haunted: {
+      what: 'the dead',
+      cls: ['Necromancer', 'Cleric', 'Templar', 'Paladin', 'Shaman', 'Healer', 'Witch', 'Monster Hunter', 'Warlock'],
+      elem: ['Spirit', 'Light', 'Shadow', 'Moon'],
+      per: ['Serene', 'Stoic', 'Brooding'],
+      against: { per: ['Coward', 'Paranoid', 'Shy'] },
+    },
+    sea: {
+      what: 'the sea',
+      cls: ['Pirate', 'Ranger', 'Beastmaster', 'Druid'],
+      elem: ['Water', 'Storm', 'Wind', 'Ice'],
+      bg: /pirate|sail|ship|fisher|harbou?r/i,
+      against: { weak: ['Water'] },
+    },
+    train: {
+      what: 'training',
+      cls: ['Warrior', 'Monk', 'Brawler', 'Gladiator', 'Samurai', 'Knight', 'Duelist', 'Berserker', 'Archer'],
+      per: ['Stoic', 'Glory Hound', 'Honourable', 'Ambitious', 'Hot-headed'],
+      against: { per: ['Coward', 'Free Spirit', 'Playful'] },
+    },
+    study: {
+      what: 'study',
+      cls: ['Mage', 'Sorcerer', 'Alchemist', 'Chronomancer', 'Runesmith', 'Engineer', 'Tactician', 'Witch', 'Warlock'],
+      per: ['Scholar', 'Mad Genius', 'Calculating', 'Mastermind', 'Serene'],
+      against: { per: ['Hot-headed', 'Thrill Seeker', 'Bloodthirsty'] },
+    },
+    quest: {
+      what: 'the quest',
+      cls: ['Ranger', 'Hero of Legend', 'Chosen One', 'Monster Hunter', 'Paladin', 'Knight'],
+      per: ['Hero', 'Justice Seeker', 'Kind-hearted', 'Protector', 'Guardian', 'Neutral Good', 'Lawful Good'],
+      against: { per: ['Coward', 'Greedy', 'Sadist'] },
+    },
+    mentor: {
+      what: 'learning from a mentor',
+      per: ['Scholar', 'Loyal', 'Honourable', 'Serene', 'Kind-hearted', 'Shy'],
+      against: { per: ['Arrogant', 'Paranoid', 'Loner'] },
+    },
+    cunning: {
+      what: 'outwitting a demon',
+      cls: ['Mage', 'Warlock', 'Witch', 'Alchemist', 'Tactician', 'Bard', 'Illusionist', 'Chronomancer'],
+      per: ['Mastermind', 'Calculating', 'Scholar', 'Trickster', 'Manipulator', 'Mad Genius'],
+      against: { per: ['Hot-headed', 'Bloodthirsty', 'Gentle Giant'] },
+    },
+    dragontalk: {
+      what: 'talking to a dragon',
+      cls: ['Dragon Rider', 'Bard', 'Druid', 'Beastmaster', 'Merchant', 'Sorcerer'],
+      per: ['Serene', 'Calculating', 'Manipulator', 'Honourable', 'Gentle Giant'],
+      against: { per: ['Arrogant', 'Hot-headed', 'Bloodthirsty', 'Greedy'] },
+    },
+  };
+  const LABEL_OF = { cls: 'class', per: 'nature', elem: 'element', weak: 'weakness' };
+  S.fit = function (L, key) {
+    const r = S.FIT[key];
+    if (!r) return { m: 1, why: '' };
+    const has = (id, list) => {
+      if (!list || !L.has(id)) return '';
+      const n = L.pickName(id);
+      if (list instanceof RegExp) return list.test(n) ? n : '';
+      return list.indexOf(n) >= 0 ? n : '';
+    };
+    const plus = [],
+      minus = [];
+    ['cls', 'per', 'elem', 'bg', 'weak'].forEach(k => {
+      const name = k =>
+        k === 'bg'
+          ? 'your past'
+          : 'your ' + (k === 'weak' ? 'weakness to ' : '') + '{n}' + (k === 'weak' ? '' : ' ' + LABEL_OF[k]);
+      const a = has(k, r[k]);
+      if (a) plus.push(name(k).replace('{n}', a));
+      const b = r.against && has(k, r.against[k]);
+      if (b) minus.push(name(k).replace('{n}', b));
+    });
+    const m = Math.pow(1.6, Math.min(2, plus.length)) / Math.pow(1.6, Math.min(2, minus.length));
+    const up = x => x.charAt(0).toUpperCase() + x.slice(1);
+    const why =
+      m > 1
+        ? up(plus.join(' and ')) + (plus.length > 1 ? ' help' : ' helps') + ' with ' + r.what + '.'
+        : m < 1
+          ? up(minus.join(' and ')) + (minus.length > 1 ? ' work' : ' works') + ' against you in ' + r.what + '.'
+          : '';
+    return { m, why };
+  };
+
   async function outcome(L, io, ctx, cfg) {
-    const ents = cfg.entries.filter(x => x && x.w > 0 && (!x.if || x.if(L.saga, L, ctx)));
+    let ents = cfg.entries.filter(x => x && x.w > 0 && (!x.if || x.if(L.saga, L, ctx)));
+    // a choice first: it narrows the wheel to what follows from it, and can tilt the slices
+    if (cfg.choice) {
+      const opts = cfg.choice.options.filter(
+        o => (!o.if || o.if(L.saga, L, ctx)) && (!o.keep || ents.some(e => o.keep.indexOf(e.name) >= 0))
+      );
+      if (opts.length) {
+        const o = opts[await choose(L, io, ctx, { emoji: cfg.emoji, title: cfg.choice.title, options: opts })];
+        ctx.choice = o.label;
+        ctx.choiceFit = o.fit || '';
+        if (o.keep) ents = ents.filter(e => o.keep.indexOf(e.name) >= 0);
+        if (o.boost) ents = ents.map(e => (o.boost[e.name] ? Object.assign({}, e, { w: e.w * o.boost[e.name] }) : e));
+      }
+    }
+    let hint = cfg.hint || '';
+    const fitKey = (cfg.choice && ctx.choiceFit) || cfg.fit;
+    const fit = fitKey ? S.fit(L, fitKey) : { m: 1, why: '' };
+    if (fit.m !== 1) {
+      ents = ents.map(e =>
+        e.tone === 'good' || e.tone === 'bad'
+          ? Object.assign({}, e, { w: e.tone === 'good' ? e.w * fit.m : e.w / fit.m })
+          : e
+      );
+      hint = fit.why + (hint ? ' ' + hint : '');
+    }
     const shown = ents.map(x => Object.assign({}, x, { text: fill(x.text, ctx, L) }));
     const i = await io.spin({
       emoji: cfg.emoji || ctx.emoji,
@@ -417,9 +553,13 @@
       entries: shown,
       mode: cfg.mode || 'cat',
       hue: cfg.hue != null ? cfg.hue : 40,
-      hint: cfg.hint || '',
+      hint,
     });
-    return S.apply(L, ents[i], ctx);
+    let e = ents[i];
+    // the saga log says when the hero's nature made the difference
+    if ((fit.m > 1 && e.tone === 'good') || (fit.m < 1 && e.tone === 'bad'))
+      e = Object.assign({}, e, { text: e.text + ' (' + fit.why.replace(/\.$/, '') + '.)' });
+    return S.apply(L, e, ctx);
   }
   const addAlly = (L, name, lv, how, loyalty) => {
     L.ally.push({ name, lv: Math.round(lv), how, loyalty });
@@ -472,6 +612,7 @@
       run: async (L, io, c) =>
         outcome(L, io, c, {
           title: 'How does training go?',
+          fit: 'train',
           hue: 10,
           entries: [
             good('Muscles of iron', 4, 'str+1', 'Months of training: +1 Strength.'),
@@ -494,6 +635,7 @@
       run: async (L, io, c) =>
         outcome(L, io, c, {
           title: 'What do you learn?',
+          fit: 'study',
           hue: 210,
           entries: [
             good('Ancient tome', 5, 'int+1', 'Old books, new ideas: +1 Intelligence.'),
@@ -640,7 +782,19 @@
         c.foe = boss.name;
         const r = await fight(L, io, c, boss);
         if (r === 'win') {
-          const oe = FW.outcomeEntries(L);
+          let oe = FW.outcomeEntries(L);
+          const MERCY = ['spare', 'recruit', 'befriend', 'heal', 'teach', 'banish', 'imprison'];
+          const HARSH = ['kill', 'enslave', 'absorb', 'trophy', 'curse', 'throne', 'imprison', 'banish'];
+          const way = await choose(L, io, c, {
+            emoji: '🏆',
+            title: boss.name + ' is beaten. Mercy?',
+            options: [
+              { label: 'Show mercy', hint: 'Spare, heal, recruit or teach.' },
+              { label: 'No mercy', hint: 'Kill, enslave, curse or take what is theirs.' },
+            ],
+          });
+          const keep = way === 0 ? MERCY : HARSH;
+          if (oe.some(x => keep.indexOf(x.key) >= 0)) oe = oe.filter(x => keep.indexOf(x.key) >= 0);
           const oi = await io.spin({
             emoji: '🏆',
             title: 'What do you do to ' + boss.name + '?',
@@ -689,6 +843,47 @@
         });
         const d = DRAGONS[di];
         c.foe = d.name;
+        const way = await choose(L, io, c, {
+          emoji: '🐉',
+          title: d.name + ' wakes. What do you do?',
+          options: [
+            { label: 'Fight it', hint: 'Win, and the realm never forgets you.' },
+            { label: 'Talk to it', hint: 'Dragons are proud and clever. So must you be.' },
+            { label: 'Sneak into its hoard', hint: 'Quiet feet and quick hands.' },
+          ],
+        });
+        if (way === 1) {
+          const t = await outcome(L, io, c, {
+            title: 'Will ' + d.name + ' listen?',
+            hue: 35,
+            fit: 'dragontalk',
+            entries: [
+              good('A pact of fire', 2, 'rt+2', '{foe} agrees to fight beside you, for now.', {
+                fx: () => addAlly(L, d.name, FW.P(d).lv, 'befriend', 40),
+              }),
+              good('A gift for your nerve', 3, 'fate+1 rt+1', '{foe} admires your nerve and gives you a gift.'),
+              good('Ancient secrets', 2, 'int+1 pwr+1', '{foe} tells you things no human has heard.'),
+              bad('It laughs, and attacks', 4, '', '{foe} has heard enough.', { quiet: true }),
+            ],
+          });
+          if (t.name !== 'It laughs, and attacks') return t;
+        } else if (way === 2) {
+          c.newArt = newArtifact(io.rng, null, 'pwr+1');
+          const t = await outcome(L, io, c, {
+            title: 'Can you rob ' + d.name + '?',
+            hue: 45,
+            fit: 'heist',
+            entries: [
+              good('Rob the hoard', 3, 'rt+1 fate+1', 'You fill your pockets and slip away while {foe} sleeps.'),
+              good('Steal its treasure', 1.5, 'pwr+1', 'You steal {art} from under its nose.', {
+                fx: s2 => s2.artifacts.push(c.newArt),
+              }),
+              bad('Burned as you flee', 3, 'dur-1', '{foe} wakes too soon. You escape, burned.'),
+              bad('It wakes up', 3, '', '{foe} opens one eye.', { quiet: true }),
+            ],
+          });
+          if (t.name !== 'It wakes up') return t;
+        }
         const r = await fight(L, io, c, d, { emoji: '🐉' });
         if (r === 'win')
           return outcome(L, io, c, {
@@ -1180,6 +1375,29 @@
         if (r === 'win')
           return outcome(L, io, c, {
             title: 'What becomes of ' + n.name + '?',
+            choice: {
+              title: n.name + ' is beaten. What do you do?',
+              options: [
+                {
+                  label: 'Finish them',
+                  hint: 'End it, if they let you.',
+                  keep: ['Nemesis slain', 'Badly wounded', 'Flees, swearing revenge'],
+                  boost: { 'Nemesis slain': 2 },
+                },
+                {
+                  label: 'Show mercy',
+                  hint: 'Mercy can make an enemy think.',
+                  keep: ['You spare them', 'Flees, swearing revenge', 'Joins your side'],
+                  boost: { 'You spare them': 1.5 },
+                },
+                {
+                  label: 'Offer them a place at your side',
+                  hint: 'Old enemies make fierce friends, or worse traitors.',
+                  keep: ['Joins your side', 'You spare them', 'Flees, swearing revenge'],
+                  boost: { 'Joins your side': 3 },
+                },
+              ],
+            },
             entries: [
               good('Flees, swearing revenge', 5, 'rt+1', '{nem} flees, swearing revenge.', {
                 fx: () => {
@@ -1817,8 +2035,26 @@
         d.stage = 2;
         c.foe = 'the demon';
         const how = await outcome(L, io, c, {
-          title: 'The demon wants its due. What do you do?',
+          title: 'The demon wants its due. What happens?',
           hue: 0,
+          choice: {
+            title: 'The demon wants its due. What do you do?',
+            options: [
+              { label: 'Refuse and fight', hint: 'No more deals. Steel and fire.', keep: ['Fight the demon'] },
+              {
+                label: 'Pay what you owe',
+                hint: 'A treasure, years of your life, or worse.',
+                keep: ['Pay with a treasure', 'Pay with years', 'Pay with your soul'],
+              },
+              {
+                label: 'Look for a loophole',
+                hint: 'A sharp mind can twist a contract. A dull one gets damned.',
+                keep: ['Find a loophole', 'Pay with years', 'Pay with your soul'],
+                boost: { 'Find a loophole': 2.5 },
+                fit: 'cunning',
+              },
+            ],
+          },
           entries: [
             E('Fight the demon', 4, '', 'You refuse to pay.', { quiet: true }),
             bad('Pay with a treasure', 2, '', 'You pay with your finest artifact.', {
@@ -2121,6 +2357,7 @@
       run: async (L, io, c) => {
         const e = await outcome(L, io, c, {
           title: 'What happens at sea?',
+          fit: 'sea',
           hue: 200,
           entries: [
             good('Discover a new land', 3, 'rt+1 int+1', 'You find a coast that is on no map.'),
@@ -2167,6 +2404,7 @@
         c.newArt = newArtifact(io.rng, null, 'pwr+1');
         return outcome(L, io, c, {
           title: 'How does the heist go?',
+          fit: 'heist',
           hue: 280,
           hint: thief ? "The Thieves' Guild is helping you" : '',
           entries: [
@@ -2187,6 +2425,7 @@
       run: async (L, io, c) =>
         outcome(L, io, c, {
           title: 'A ghost follows you. What does it want?',
+          fit: 'haunted',
           hue: 180,
           entries: [
             good('Lay it to rest', 3, 'fate+1', 'You finish what the ghost could not, and it finally rests.'),
@@ -2208,6 +2447,7 @@
       run: async (L, io, c) =>
         outcome(L, io, c, {
           title: 'Who takes you under their wing?',
+          fit: 'mentor',
           hue: 120,
           entries: [
             good('A master of the blade', 3, 'fgt+1 wpn+1', 'An old swordmaster teaches you everything.'),
