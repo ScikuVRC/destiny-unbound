@@ -377,4 +377,59 @@ The Deep King|1.2|lv=94 a=water,void r=water w=holy|The reason the sea is so qui
     'The Headmistress': 'headmistress',
     'The Deep King': 'deepking',
   };
+
+  // Boss tricks, by name (engine.js FW.matchup applies them; a 'phases' boss rises again after a win).
+  // ward: your element bonuses don't count. immune: that element does nothing. punish: attacking with that element
+  // costs you. enrage: harder when you're the weaker one. phases: a second fight, 8 levels stronger.
+  FW.BOSS_MECH = {
+    'Ashwing the Young': { kind: 'enrage' },
+    Rimefang: { kind: 'immune', elem: 'ice' },
+    Stormcrown: { kind: 'immune', elem: 'lightning' },
+    Venomscale: { kind: 'immune', elem: 'poison' },
+    Nightmaw: { kind: 'punish', elem: 'holy' },
+    'The Gold Tyrant': { kind: 'punish', elem: 'shadow' },
+    'Vaelgor the World-Burner': { kind: 'phases' },
+    'Dread Sovereign Kaelun': { kind: 'phases' },
+    'Shogun Prime': { kind: 'enrage' },
+    'Planet-Eater Gorun': { kind: 'phases' },
+    'Elder Storm-Hart': { kind: 'punish', elem: 'fire' },
+    'Forge-God Ulm': { kind: 'immune', elem: 'fire' },
+    'The Nameless Throne': { kind: 'ward' },
+    'Dragon Emperor Zhalmarr': { kind: 'phases' },
+    'The Drowned Emperor': { kind: 'immune', elem: 'water' },
+    'The Unwound King': { kind: 'immune', elem: 'lightning' },
+    'Mother of Eclipses': { kind: 'ward' },
+    'The Thunder Prophet': { kind: 'punish', elem: 'lightning' },
+    'The Headmistress': { kind: 'ward' },
+    'The Deep King': { kind: 'phases' },
+  };
+
+  // Painted ending illustrations (app/art/endings/<ending>.webp) and default hero portraits
+  // (app/art/portraits/<file>.webp) for heroes without their own picture. Created with Grok.
+  // A portrait list per race: files ending in f are feminine, m masculine; others suit anyone.
+  FW.ENDING_ART = [
+    'dead',
+    'retired',
+    'ascended',
+    'lost',
+    'martyr',
+    'sealed',
+    'damned',
+    'fulfilled',
+    'undying',
+    'legend',
+  ];
+  FW.PORTRAITS = {
+    Human: ['human-f1', 'human-f2', 'human-m1', 'human-m2'],
+    Dwarf: ['dwarf-m1', 'dwarf-m2', 'dwarf-m3'],
+    Orc: ['orc-f1', 'orc-m1', 'orc-m2'],
+    Goblin: ['goblin-m1'],
+    Elf: ['elf-f1', 'elf-m1'],
+    'Dark Elf': ['darkelf-f1'],
+    Beastkin: ['beastkin-1'],
+    Halfling: ['halfling-f1'],
+    Skeleton: ['skeleton-1'],
+    Lizardfolk: ['lizardfolk-1'],
+    Gnome: ['gnome-m1'],
+  };
 })(typeof window !== 'undefined' ? window : globalThis);

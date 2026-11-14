@@ -608,6 +608,9 @@
 
   function frontArch(c, legend, th, name, hue, pic) {
     const comp = FW.compute(legend);
+    // the window and the seal take the rank's metal (see rankFrame), from Veteran up
+    const tier = FW.rankFrameTier(rankIndex(comp.rating));
+    const metal = tier === 7 ? '#e6dcff' : tier >= 2 ? RANK_METAL[tier] : th.accent;
     const bg = c.createRadialGradient(W / 2, 0, 40, W / 2, 200, H);
     bg.addColorStop(0, th.panel.replace(/[\d.]+\)$/, '1)'));
     bg.addColorStop(1, '#070506');
@@ -647,7 +650,7 @@
     c.restore();
     archPath();
     c.lineWidth = 6;
-    c.strokeStyle = th.accent;
+    c.strokeStyle = metal;
     c.stroke();
     c.lineWidth = 2;
     c.strokeStyle = th.stroke;
@@ -672,7 +675,7 @@
     c.fillStyle = seal;
     c.fill();
     c.lineWidth = 5;
-    c.strokeStyle = th.accent;
+    c.strokeStyle = metal;
     c.stroke();
     c.fillStyle = '#fff4e0';
     c.textAlign = 'center';
@@ -902,6 +905,155 @@
     c.fillText('D E S T I N Y   U N B O U N D', W / 2, H - 76);
   }
 
+  /* the rank frame: an inner border inside the theme's frame that grows richer with the hero's rank.
+     Commoner and Fighter: a thin iron line. Veteran: bronze with corner studs. Champion: silver, doubled.
+     Warlord and Mythic: gold, doubled, with corner brackets and diamonds on the edges. Demigod: gold with glowing
+     gems. Cosmic Being: a prismatic, glowing border scattered with stars. */
+  const RANK_METAL = ['#6f6252', '#857462', '#b07a48', '#c9cdd6', '#e0b46a', '#f0c674', '#f6d27a', '#ffffff'];
+  FW.rankFrameTier = ri => Math.max(0, Math.min(7, ri | 0));
+  function rankFrame(c, th, ri) {
+    const t = FW.rankFrameTier(ri),
+      m = RANK_METAL[t],
+      i = 34,
+      w = W - 2 * i,
+      h = H - 2 * i;
+    c.save();
+    c.lineJoin = 'round';
+    if (t === 7) {
+      const g = c.createLinearGradient(0, 0, W, H);
+      ['#ff8ad8', '#8fd3ff', '#b6ff9c', '#ffe58a', '#ff9f7a', '#c79bff'].forEach((col, k, a) =>
+        g.addColorStop(k / (a.length - 1), col)
+      );
+      c.shadowColor = 'rgba(200,180,255,.9)';
+      c.shadowBlur = 26;
+      c.strokeStyle = g;
+      c.lineWidth = 6;
+      rr(c, i, i, w, h, 18);
+      c.stroke();
+      c.shadowBlur = 0;
+      c.lineWidth = 1.5;
+      rr(c, i + 12, i + 12, w - 24, h - 24, 12);
+      c.stroke();
+      const rng = FW.makeRng('stars');
+      for (let k = 0; k < 46; k++) {
+        const side = k % 4,
+          p = rng();
+        const x = side === 0 ? i + p * w : side === 1 ? i + w : side === 2 ? i + p * w : i;
+        const y = side === 0 ? i : side === 1 ? i + p * h : side === 2 ? i + h : i + p * h;
+        const r = 2 + rng() * 5;
+        c.fillStyle = 'rgba(255,255,255,' + (0.5 + rng() * 0.5) + ')';
+        c.beginPath();
+        for (let q = 0; q < 8; q++) {
+          const a = (q / 8) * TAU,
+            rad = q % 2 ? r * 0.35 : r;
+          c.lineTo(x + Math.cos(a) * rad, y + Math.sin(a) * rad);
+        }
+        c.fill();
+      }
+      c.restore();
+      return;
+    }
+    c.strokeStyle = m;
+    c.lineWidth = t >= 4 ? 4 : t >= 2 ? 3 : 1.5;
+    if (t >= 5) {
+      c.shadowColor = m;
+      c.shadowBlur = 12;
+    }
+    rr(c, i, i, w, h, 10);
+    c.stroke();
+    c.shadowBlur = 0;
+    if (t >= 3) {
+      c.lineWidth = 1.5;
+      rr(c, i + 10, i + 10, w - 20, h - 20, 6);
+      c.stroke();
+    }
+    const corners = [
+      [i, i, 1, 1],
+      [i + w, i, -1, 1],
+      [i, i + h, 1, -1],
+      [i + w, i + h, -1, -1],
+    ];
+    if (t >= 2)
+      corners.forEach(([x, y, sx, sy]) => {
+        c.fillStyle = m;
+        c.beginPath();
+        c.arc(x + sx * 4, y + sy * 4, t >= 4 ? 9 : 6, 0, TAU);
+        c.fill();
+      });
+    if (t >= 4) {
+      // corner brackets and a diamond in the middle of each edge
+      c.lineWidth = 3;
+      corners.forEach(([x, y, sx, sy]) => {
+        c.beginPath();
+        c.moveTo(x + sx * 70, y + sy * 18);
+        c.lineTo(x + sx * 18, y + sy * 18);
+        c.lineTo(x + sx * 18, y + sy * 70);
+        c.stroke();
+      });
+      [
+        [W / 2, i],
+        [W / 2, i + h],
+        [i, H / 2],
+        [i + w, H / 2],
+      ].forEach(([x, y]) => {
+        c.fillStyle = m;
+        c.beginPath();
+        c.moveTo(x, y - 11);
+        c.lineTo(x + 11, y);
+        c.lineTo(x, y + 11);
+        c.lineTo(x - 11, y);
+        c.closePath();
+        c.fill();
+      });
+    }
+    if (t >= 6) {
+      // glowing gems in the theme's colour at the corners
+      corners.forEach(([x, y, sx, sy]) => {
+        const gx = x + sx * 4,
+          gy = y + sy * 4;
+        const gg = c.createRadialGradient(gx - 3, gy - 3, 1, gx, gy, 12);
+        gg.addColorStop(0, '#fff');
+        gg.addColorStop(0.4, th.key);
+        gg.addColorStop(1, '#2a0a12');
+        c.shadowColor = th.key;
+        c.shadowBlur = 18;
+        c.fillStyle = gg;
+        c.beginPath();
+        c.arc(gx, gy, 12, 0, TAU);
+        c.fill();
+      });
+    }
+    c.restore();
+  }
+
+  /* a default painted portrait for heroes without their own picture: chosen by race, presentation and seed.
+     Returns the image once it has loaded; until then null, and onReady is called when it arrives. */
+  const portraitCache = {};
+  FW.portraitFile = function (legend) {
+    const list = (FW.PORTRAITS || {})[legend.raceName()];
+    if (!list || !list.length) return '';
+    const want = legend.pres === 'fem' ? /f\d*$/ : legend.pres === 'masc' ? /m\d*$/ : null;
+    // a portrait that matches the chosen presentation, or one that suits anyone, before any other
+    const neutral = list.filter(f => !/[fm]\d*$/.test(f));
+    const pool = want ? list.filter(f => want.test(f)).concat(neutral) : list;
+    const use = pool.length ? pool : list;
+    return use[hash(String(legend.seed)) % use.length];
+  };
+  FW.defaultPortrait = function (legend, onReady) {
+    if (typeof Image === 'undefined') return null;
+    const f = FW.portraitFile(legend);
+    if (!f) return null;
+    let im = portraitCache[f];
+    if (!im) {
+      im = portraitCache[f] = new Image();
+      im.decoding = 'async';
+      im.src = 'art/portraits/' + f + '.webp';
+    }
+    if (im.complete && im.naturalWidth) return im;
+    if (onReady) im.addEventListener('load', () => onReady(), { once: true });
+    return null;
+  };
+
   FW.drawCard = function (canvas, legend, opts) {
     opts = opts || {};
     const name = themeOf(opts.theme),
@@ -917,6 +1069,7 @@
     else frontArch(c, legend, th, name, hue, pic);
     c.restore();
     frame(c, th.frame || name, hue);
+    rankFrame(c, th, rankIndex(FW.compute(legend).rating));
   };
 
   FW.canvasToBlob = function (canvas) {

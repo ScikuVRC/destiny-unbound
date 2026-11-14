@@ -1,6 +1,6 @@
 # Destiny Unbound alpha test plan
 
-Current build: **0.2.0-alpha.3.2**. Ready-to-send invite texts are in [tester-invite.md](tester-invite.md).
+Current build: **0.2.0-alpha.3.3**. Ready-to-send invite texts are in [tester-invite.md](tester-invite.md).
 
 ## Goals
 

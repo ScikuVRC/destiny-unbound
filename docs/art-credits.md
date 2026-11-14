@@ -260,3 +260,29 @@ The battle report shows the backdrop of the arena's first condition and the foe'
 ### `app/art/foes/deepking.webp`
 
 > Painterly dark fantasy video game boss portrait, square: the Deep King, a colossal sea kaiju rising from a black ocean, a craggy armoured head the size of a mountain, barnacles and old shipwrecks clinging to it, bioluminescent teal eyes, seawater pouring off its jaws, a stormy night sky. Head and shoulders, facing the viewer, dramatic rim lighting, dark ocean background, highly detailed concept art. No text, no logo, no frame.
+
+## Ending illustrations and default hero portraits (2026-11-14)
+
+Made by hand on grok.com (Grok Imagine, Quality 2.0), one picked per prompt and saved through Grok's "Copy image".
+Endings are 1280x720 WebP in `app/art/endings/` (one per ending: dead, retired, ascended, lost, martyr, sealed,
+damned, fulfilled, undying, legend). Portraits are 640x960 WebP in `app/art/portraits/`, shown on the cards of heroes
+of that race who have no picture of their own (`FW.PORTRAITS` in `app/data/arena.js`). Created with Grok.
+Originals are in the local `art-source/grok-2026-11-14b/` folder.
+
+Ending prompts all start "Painterly dark fantasy video game ending illustration, wide 16:9:" and end "cinematic
+lighting, highly detailed concept art. No text, no logo." The scenes: a fallen warrior's grave on a hill at a red
+dusk (dead); a lakeside cottage at sunset with a sword and shield over the door (retired); a radiant figure rising in
+a pillar of light (ascended); a ship sailing through a rift at the edge of the world (lost); a hero's funeral pyre on
+a bridge, a city holding lanterns (martyr); a rune-sealed vault with a figure frozen in crystal (sealed); a burning
+contract falling into hellfire, demonic hands below (damned); an oracle's tablet lighting up under a comet
+(fulfilled); a hand bursting from a moonlit grave (undying); a colossal hero statue over a city square (legend).
+
+Portrait prompts all start "Painterly dark fantasy video game character portrait, tall 2:3:" and end "Head and
+shoulders, facing the viewer, centred in the upper half, plain dark smoky background, dramatic rim lighting, highly
+detailed concept art. No text, no logo, no frame." The subjects: a young human woman and man adventurer in leather and
+a travelling cloak; a dwarf with braided red hair, an iron circlet and fur-trimmed armour; an orc warrior with a
+topknot and tusks, and an orc woman with beaded braids and war paint; a goblin tinkerer with goggles; an elf woman
+with a silver circlet and an elf man in a green hood; a dark elf woman in spider-silk armour; a wolf-like beastkin
+hunter; a halfling woman in a green hooded cloak; a skeleton warrior with glowing blue eyes; a lizardfolk warrior; an
+old gnome inventor.
+

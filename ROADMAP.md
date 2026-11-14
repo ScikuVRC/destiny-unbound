@@ -5,14 +5,14 @@ things land when they're ready, in small updates. Plans change with what players
 want most on the [Discord](https://discord.gg/McDS5HVxzJ) (there's a poll running) or in
 [GitHub issues](https://github.com/ScikuVRC/destiny-unbound/issues).
 
-Last updated 2026-11-14, at version 0.2.0-alpha.3.2. What already changed is in the [changelog](CHANGELOG.md).
+Last updated 2026-11-14, at version 0.2.0-alpha.3.3. What already changed is in the [changelog](CHANGELOG.md).
 
 ## Now: the rest of 0.2
 
 - **Real sound and music.** Proper sound effects for the wheel, reveals, battles and endings, and a real track
   per theme, instead of the sounds the game makes up as it plays.
-- **Portraits for every hero.** Painted portraits for the most common races, so every card has a face without
-  connecting your own image generator.
+- **Portraits for more heroes.** The eleven most common races have painted faces now; more races and more
+  variety next.
 - **Reroll with consequences.** Fate Tokens that can nudge the wheel one slice, or lock a result before a risky
   re-spin.
 - **More Discord commands.** Today's daily challenge, and a Legend Code shown as a card.
@@ -47,6 +47,8 @@ in [docs/release-plan.md](docs/release-plan.md).
 
 ## Recently done
 
+- 0.2.0-alpha.3.3: painted portraits for the most common races, an illustration for every ending, bosses with
+  tricks, family traits and a family tree, card frames by rank, and new names in every saga.
 - 0.2.0-alpha.3.2: open other players' cards without replacing your hero, collect them, fight them in Versus,
   and share yours with a short code like DU-7K3QXM.
 - 0.2.0-alpha.3.1: the character card became a trading card (picture on the front, stats on the back);

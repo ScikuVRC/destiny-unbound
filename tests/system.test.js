@@ -134,6 +134,22 @@ t('the title screens have art, a logo and a tagline for every built-in theme', (
   });
 });
 
+t('every ending illustration and hero portrait the game lists exists, for a real ending and race', () => {
+  ['data.js', 'engine.js', 'story.js'].forEach(f => require(path.join(root, 'app', 'js', f)));
+  const FW = globalThis.FW;
+  FW.ENDING_ART.forEach(e => {
+    assert(FW.Story.endLabel[e], 'not an ending: ' + e);
+    assert(fs.existsSync(path.join(root, 'app', 'art', 'endings', e + '.webp')), 'missing ending art ' + e);
+  });
+  const races = new Set(FW.RACES.map(r => r.name));
+  Object.keys(FW.PORTRAITS).forEach(r => {
+    assert(races.has(r), 'portraits for an unknown race: ' + r);
+    FW.PORTRAITS[r].forEach(f =>
+      assert(fs.existsSync(path.join(root, 'app', 'art', 'portraits', f + '.webp')), 'missing portrait ' + f)
+    );
+  });
+});
+
 t('every painted arena backdrop and foe portrait exists and belongs to a real arena or foe', () => {
   ['data.js', 'engine.js', 'story.js'].forEach(f => require(path.join(root, 'app', 'js', f)));
   const FW = globalThis.FW;

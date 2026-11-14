@@ -908,6 +908,30 @@
         total -= 4;
       }
     });
+    // a boss's own trick (FW.BOSS_MECH): a ward, an immunity, a punished element, rage, or a second phase
+    const mech = FW.BOSS_MECH && !opp.phase ? FW.BOSS_MECH[opp.name] : null;
+    if (mech) {
+      const who = opp.name;
+      if (mech.kind === 'ward') {
+        const lost = adj.filter(a => / hits their weakness$/.test(a.label)).reduce((t, a) => t + a.d, 0);
+        if (lost) {
+          adj.push({ label: who + "'s ward: no weakness can be found", d: -lost, kind: 'debuff', boss: true });
+          total -= lost;
+        }
+      } else if (mech.kind === 'immune' && hset.indexOf(mech.elem) >= 0) {
+        const lost = adj
+          .filter(a => a.label === 'Your ' + cap(mech.elem) + ' hits their weakness')
+          .reduce((t, a) => t + a.d, 0);
+        adj.push({ label: who + ' is immune to ' + cap(mech.elem), d: -(lost + 5), kind: 'debuff', boss: true });
+        total -= lost + 5;
+      } else if (mech.kind === 'punish' && hset.indexOf(mech.elem) >= 0) {
+        adj.push({ label: who + ' punishes ' + cap(mech.elem), d: -7, kind: 'debuff', boss: true });
+        total -= 7;
+      } else if (mech.kind === 'enrage' && total < oppLv) {
+        adj.push({ label: who + ' is enraged by weaker foes', d: -4, kind: 'debuff', boss: true });
+        total -= 4;
+      }
+    }
     const P = 1 / (1 + Math.exp(-(total - oppLv) / 9));
     const draw = 0.04;
     let win = Math.min(0.97, Math.max(0.02, P * (1 - draw)));
@@ -916,8 +940,38 @@
       lose = 0.0099;
       win = 1 - lose - draw;
     }
-    return { hero: total, base, opp: oppLv, adj, pWin: win, pLose: lose, pDraw: draw, behind, ahead, c };
+    return {
+      hero: total,
+      base,
+      opp: oppLv,
+      adj,
+      pWin: win,
+      pLose: lose,
+      pDraw: draw,
+      behind,
+      ahead,
+      c,
+      mech: mech || null,
+      phases: !!(mech && mech.kind === 'phases'),
+    };
   };
+  /* a boss with two phases rises again after you win: stronger, and without its trick a second time */
+  FW.phaseTwo = function (opp) {
+    const p = FW.P(opp);
+    return Object.assign({}, opp, {
+      dsl: opp.dsl.replace(/lv=\d+/, 'lv=' + Math.min(99, p.lv + 8)),
+      phase: 2,
+      name: opp.name,
+    });
+  };
+  FW.MECH_TEXT = {
+    ward: 'Warded: your element finds no weakness',
+    immune: 'Immune to {elem}',
+    punish: 'Punishes {elem}',
+    enrage: 'Enraged by weaker foes',
+    phases: 'Two phases: rises again, stronger',
+  };
+  FW.mechText = m => (m ? (FW.MECH_TEXT[m.kind] || '').replace('{elem}', cap(m.elem || '')) : '');
   /* the opponent wheel: with a legend, foes far above its power rating get thinner slices (never below ~35%), so a
      weak hero is less often handed a hopeless fight while every foe can still be drawn. Slice size stays the true odds. */
   // how much of its slice a foe keeps on a matchmaking wheel: full up to 4 points above you, then shrinking to 10%

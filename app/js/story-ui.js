@@ -174,7 +174,12 @@
     F.setChip(icon, 'The end of ' + L.displayName(), 0);
     F.setResult(S.endLabel[s.end] || 'The End', { pop: true, rare: !!S.RARE_END[s.end] });
     $('#resultSub').textContent = s.endText;
-    $('#effects').innerHTML = '<div class="fx-card"><h3>' + H.esc(S.summary(L)) + '</h3>' + logHtml(s.log) + '</div>';
+    const art =
+      FW.ENDING_ART && FW.ENDING_ART.indexOf(s.end) >= 0
+        ? '<img class="end-art" src="art/endings/' + s.end + '.webp" alt="">'
+        : '';
+    $('#effects').innerHTML =
+      '<div class="fx-card">' + art + '<h3>' + H.esc(S.summary(L)) + '</h3>' + logHtml(s.log) + '</div>';
     if (S.MORTAL[s.end]) FW.Audio.bad();
     else FW.Audio.reveal(true);
     if (window.FWAchieve) window.FWAchieve.check(L);
@@ -210,11 +215,69 @@
     App.toast(C.displayName() + ' carries on ' + inh.dyn.house);
   }
 
+  /* ---------------- the family tree ---------------- */
+  function houseModal() {
+    const L = st.legend,
+      s = L && L.saga;
+    if (!s || !s.dyn) return;
+    const t = FW.t || (x => x),
+      tree = S.familyTree(L),
+      tr = s.dyn.trait;
+    const row = (r, i) =>
+      '<li class="' +
+      (r.current ? 'cur' : '') +
+      '"><span class="ft-gen">' +
+      H.esc(t('Gen') + ' ' + r.gen) +
+      '</span><div><b>' +
+      H.esc(r.name) +
+      '</b><span>' +
+      H.esc(
+        [
+          r.race,
+          r.rating + ' ' + t(r.rank),
+          r.end
+            ? (S.endLabel[r.end] ? t(S.endLabel[r.end]) : r.end) + ' · ' + r.ch + ' ' + t('chapters')
+            : t('the story goes on'),
+          r.kingdom,
+        ]
+          .filter(Boolean)
+          .join(' · ')
+      ) +
+      '</span></div></li>' +
+      (i < tree.length - 1 ? '<li class="ft-link" aria-hidden="true">│</li>' : '');
+    App.openModal(
+      '<button class="btn small ghost close">Close ✕</button><h2>' +
+        H.esc(s.dyn.house) +
+        '</h2>' +
+        (tr
+          ? '<p><b>' +
+            H.esc(t('Family trait')) +
+            ':</b> ' +
+            H.esc(t(tr.name)) +
+            ' ' +
+            H.chips(FW.chips(FW.parse(tr.dsl))) +
+            '</p><p class="legend-key">' +
+            H.esc(t(tr.text)) +
+            ' ' +
+            H.esc(t('Every heir carries it, and each generation adds renown to the house name.')) +
+            '</p>'
+          : '') +
+        '<ol class="family-tree">' +
+        tree.map(row).join('') +
+        '</ol>'
+    );
+  }
+  $('#btnHouse').onclick = houseModal;
+
   /* ---------------- card panel ---------------- */
   App.hooks.cardShown = L => {
     const s = L.saga,
       o = opts();
     $('#sagaBox').hidden = !(s && s.log.length);
+    $('#btnHouse').hidden = !(s && s.dyn);
+    if (s && s.dyn)
+      $('#btnHouse').textContent =
+        '🏰 ' + s.dyn.house + (s.dyn.gen > 1 ? ' · ' + (FW.t ? FW.t('Gen') : 'Gen') + ' ' + s.dyn.gen : '');
     if (s) {
       $('#sagaSum').textContent = S.summary(L);
       $('#sagaList').innerHTML = logHtml(s.log);

@@ -495,4 +495,44 @@ t('custom Workshop entries never crash cards, rating or codes', () => {
   assert.throws(() => FW.Legend.fromCode('FW1.%%%%'), /Corrupt/);
 });
 
+t('boss tricks: wards, immunities, punished elements, rage and a second phase', () => {
+  const arena = { name: 'Plain', tags: [], w: 1 };
+  const L = new FW.Legend({ luck: 'heroic', seed: 'boss' });
+  const rng = FW.makeRng('boss:spin');
+  let i = -1;
+  while ((i = FW.nextStageIndex(L, i)) < FW.STAGES.length) {
+    const st = FW.buildStage(FW.STAGES[i].id, L);
+    FW.commitPick(L, st, FW.weightedIndex(st.entries, rng), rng);
+  }
+  const atk = FW.compute(L).atk;
+  if (atk.length) {
+    // a ward cancels exactly what your attacks would gain from the foe's weakness
+    const w = FW.matchup(L, { name: 'The Nameless Throne', w: 1, dsl: 'lv=60 w=' + atk[0] }, arena);
+    const hit = w.adj.filter(a => / hits their weakness$/.test(a.label)).reduce((t, a) => t + a.d, 0);
+    const ward = w.adj.find(a => a.boss);
+    assert(ward && ward.d === -hit, JSON.stringify(w.adj));
+  }
+  // an immunity only matters when you attack with that element
+  const imm = FW.matchup(L, { name: 'Forge-God Ulm', w: 1, dsl: 'lv=60' }, arena);
+  assert.strictEqual(!!imm.adj.find(a => a.boss), atk.indexOf('fire') >= 0);
+  // rage only against a weaker hero
+  assert(!FW.matchup(L, { name: 'Shogun Prime', w: 1, dsl: 'lv=12' }, arena).adj.find(a => a.boss));
+  assert(
+    FW.matchup(L, { name: 'Shogun Prime', w: 1, dsl: 'lv=99' }, arena).adj.find(a => a.boss && /enraged/.test(a.label))
+  );
+  // two phases: the second fight is 8 levels stronger and does not rise again
+  assert(FW.matchup(L, { name: 'Dread Sovereign Kaelun', w: 1, dsl: 'lv=60' }, arena).phases);
+  const k2 = FW.phaseTwo({ name: 'Dread Sovereign Kaelun', w: 1, dsl: 'lv=60 a=fire' });
+  assert.strictEqual(FW.P(k2).lv, 68);
+  assert(!FW.matchup(L, k2, arena).phases);
+  // every trick belongs to a real foe and has a description
+  const foes = new Set();
+  FW.UNIVERSES.forEach(u => u.opps.forEach(o => foes.add(o.name)));
+  const story = require('fs').readFileSync(require('path').join(__dirname, '..', 'app', 'js', 'story.js'), 'utf8');
+  Object.keys(FW.BOSS_MECH).forEach(n => {
+    assert(foes.has(n) || story.indexOf("'" + n + "'") >= 0, 'trick for an unknown foe: ' + n);
+    assert(FW.mechText(FW.BOSS_MECH[n]), 'no text for ' + n);
+  });
+});
+
 console.log('\n' + passed + ' checks passed' + (process.exitCode ? ' - WITH FAILURES' : ''));

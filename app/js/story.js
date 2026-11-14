@@ -4,6 +4,8 @@
 (function (g) {
   const FW = (g.FW = g.FW || {});
   const S = (FW.Story = {});
+  if (!FW.Names && typeof require === 'function') require('./names.js'); // node: tests, the balance report, the bot
+  const Nm = () => FW.Names;
 
   /* ---------------- options (every feature can be switched off) ---------------- */
   S.OPTIONS = [
@@ -107,80 +109,6 @@
     ['The Gold Tyrant', 84, 'a=fire,holy r=fire w=void'],
     ['Vaelgor the World-Burner', 94, 'a=fire,void r=fire w=ice'],
   ].map(d => ({ name: d[0], w: 1, dsl: 'lv=' + d[1] + ' ' + d[2] }));
-  const NEMESES = [
-    'Kael the Envious',
-    'Mirelle Ashborne',
-    'Varg of the Broken Oath',
-    'Seraphine Nightwhisper',
-    'Dorran Coldheart',
-    'The Grey Pretender',
-    'Ysolde the Unforgiving',
-    'Malrec Thornblood',
-    'Ivo the Smiling',
-    'Nyx Halloway',
-    'Brannoc Vile',
-    'Lady Cinder',
-    'Orlan the Second',
-    'Thessaly Venn',
-  ];
-  const HEIRS = [
-    'Aric',
-    'Bryn',
-    'Cael',
-    'Daria',
-    'Eamon',
-    'Freya',
-    'Garrick',
-    'Hale',
-    'Isolde',
-    'Joren',
-    'Kira',
-    'Lio',
-    'Mara',
-    'Nils',
-    'Orla',
-    'Peregrine',
-    'Rhea',
-    'Soren',
-    'Tamsin',
-    'Vale',
-    'Wren',
-    'Yara',
-  ];
-  const HOUSES = [
-    'Ashgrove',
-    'Blackthorn',
-    'Brightwater',
-    'Coldmere',
-    'Duskbane',
-    'Emberfall',
-    'Greymantle',
-    'Hollowell',
-    'Ironvale',
-    'Moonridge',
-    'Ravencrest',
-    'Stormhold',
-    'Sunmere',
-    'Wolfsbane',
-  ];
-  const REALMS = [
-    'Aldmere',
-    'Brakkor',
-    'Caelvorn',
-    'Dunhallow',
-    'Everfrost',
-    'Galdren',
-    'Highmoor',
-    'Kesh',
-    'Lunaris',
-    'Morvane',
-    'Novaterra',
-    'Ostrel',
-    'Ravenreach',
-    'Solace',
-    'Thalgar',
-    'Valemont',
-  ];
   const ARTIFACT_KIND = ['Sword', 'Crown', 'Ring', 'Armour', 'Staff', 'Amulet', 'Bow', 'Gauntlet', 'Shield', 'Lantern'];
   const ARTIFACT_OF = [
     'Embers',
@@ -221,8 +149,20 @@
     };
     s.dyn =
       inherit && inherit.dyn
-        ? { house: inherit.dyn.house, gen: inherit.dyn.gen + 1, parent: inherit.parent || '' }
-        : { house: 'House ' + (L.name ? L.name.split(' ').slice(-1)[0] : pick(HOUSES, rng)), gen: 1, parent: '' };
+        ? {
+            house: inherit.dyn.house,
+            gen: inherit.dyn.gen + 1,
+            parent: inherit.parent || '',
+            trait: inherit.dyn.trait || S.rollTrait(rng),
+            history: (inherit.dyn.history || []).concat(inherit.record ? [inherit.record] : []).slice(-12),
+          }
+        : {
+            house: 'House ' + (L.name ? L.name.split(' ').slice(-1)[0] : Nm().house(rng).slice(6)),
+            gen: 1,
+            parent: '',
+            trait: S.rollTrait(rng),
+            history: [],
+          };
     if (inherit) {
       if (inherit.kingdom) s.kingdom = Object.assign({}, inherit.kingdom);
       if (inherit.artifact) s.artifacts.push(Object.assign({}, inherit.artifact, { inherited: true }));
@@ -236,7 +176,7 @@
     const base = FW.compute(L).baseRating;
     const race = FW.RACES[FW.weightedIndex(FW.RACES, rng)];
     return {
-      name: pick(NEMESES, rng),
+      name: Nm().nemesis(rng, race.name),
       race: race.name,
       lv: Math.round(clamp(base + 2 + rng() * 8, 25, 99)),
       met: 0,
@@ -352,8 +292,11 @@
       ],
     });
     if (i === 0 && rep.pWin < 0.2 && L.saga) L.saga.flags.underdog = true;
+    // a boss with two phases rises again: win the second fight too
+    if (i === 0 && rep.phases) return fight(L, io, ctx, FW.phaseTwo(enemy), Object.assign({}, cfg, phaseCfg(enemy)));
     return ['win', 'draw', 'lose'][i];
   }
+  const phaseCfg = enemy => ({ title: enemy.name + ' rises again, stronger. Do you win?', emoji: '🔥' });
 
   /* ---------------- applying a result ---------------- */
   function fill(t, ctx, L) {
@@ -578,11 +521,17 @@
     L.ally.forEach(a => {
       a.loyalty = clamp((a.loyalty == null ? 60 : a.loyalty) + d, 0, 100);
     });
-  const newArtifact = (rng, kind, dsl, quality) => ({
-    name: (kind || pick(ARTIFACT_KIND, rng)) + ' of ' + pick(ARTIFACT_OF, rng),
-    dsl,
-    quality: quality || 'fine',
-  });
+  // an artifact; one in three is named after its maker ("Durgrim's Crown")
+  const newArtifact = (rng, kind, dsl, quality) => {
+    const k = kind || pick(ARTIFACT_KIND, rng);
+    const maker = Nm().person(rng, pick(['dwarven', 'elven', 'human', 'infernal'], rng));
+    return {
+      name: rng() < 0.33 ? maker + "'s " + k : k + ' of ' + pick(ARTIFACT_OF, rng),
+      maker,
+      dsl,
+      quality: quality || 'fine',
+    };
+  };
 
   /* shared result sets */
   const WIN_LOOT = [
@@ -978,7 +927,7 @@
       req: s => !s.kingdom,
       reqText: 'only if you have no kingdom',
       run: async (L, io, c) => {
-        const realm = pick(REALMS, io.rng);
+        const realm = Nm().realm(io.rng);
         const r = await outcome(L, io, c, {
           title: 'How do you rule ' + realm + '?',
           hue: 50,
@@ -1252,7 +1201,7 @@
       emoji: '👶',
       w: 3,
       run: async (L, io, c) => {
-        const n = pick(HEIRS, io.rng);
+        const n = Nm().person(io.rng, L.raceName());
         return outcome(L, io, c, {
           title: 'Is an heir born?',
           hue: 50,
@@ -1281,7 +1230,7 @@
       emoji: '🧑‍🎓',
       w: 2,
       run: async (L, io, c) => {
-        const n = pick(HEIRS, io.rng);
+        const n = Nm().person(io.rng, L.raceName());
         return outcome(L, io, c, {
           title: 'What is your apprentice like?',
           hue: 120,
@@ -1495,7 +1444,7 @@
       w: 3,
       notOpt: 'nemesis',
       run: async (L, io, c) => {
-        c.foe = pick(NEMESES, io.rng);
+        c.foe = Nm().nemesis(io.rng, FW.RACES[FW.weightedIndex(FW.RACES, io.rng)].name);
         const r = await fight(L, io, c, foe(c.foe, nearYou(L, io.rng, -6, 10)));
         return S.apply(
           L,
@@ -1927,7 +1876,7 @@
                     good('Crowned as foretold', 4, 'rt+2', 'You take the crown, as the oracle said.', {
                       fx: s2 => {
                         done();
-                        if (!s2.kingdom) s2.kingdom = { name: pick(REALMS, io.rng), style: 'Prophesied', power: 55 };
+                        if (!s2.kingdom) s2.kingdom = { name: Nm().realm(io.rng), style: 'Prophesied', power: 55 };
                       },
                     }),
                     good(
@@ -2005,7 +1954,7 @@
               if: s => !s.kingdom,
               fx: s => {
                 sign(s);
-                s.kingdom = { name: pick(REALMS, io.rng), style: 'Demon-given', power: 50 };
+                s.kingdom = { name: Nm().realm(io.rng), style: 'Demon-given', power: 50 };
               },
             }),
             E('Youth', 2, 'dur+1', 'You sign, and thirty years fall away from you.', {
@@ -2324,7 +2273,7 @@
               good('Made lord of the city', 1.5, 'rt+1', 'The grateful city makes you its lord.', {
                 if: s => !s.kingdom,
                 fx: s => {
-                  s.kingdom = { name: pick(REALMS, io.rng), style: 'City-state', power: 40 };
+                  s.kingdom = { name: Nm().realm(io.rng), style: 'City-state', power: 40 };
                 },
               }),
             ],
@@ -2355,8 +2304,9 @@
       w: 3,
       repeat: true,
       run: async (L, io, c) => {
+        const ship = Nm().ship(io.rng);
         const e = await outcome(L, io, c, {
-          title: 'What happens at sea?',
+          title: 'Aboard ' + ship + ': what happens at sea?',
           fit: 'sea',
           hue: 200,
           entries: [
@@ -2565,10 +2515,7 @@
       emoji: '🏛️',
       w: 2,
       run: async (L, io, c) => {
-        const city = pick(
-          ['Brightharbor', 'Stonebridge', 'Ashford', 'Duskhaven', 'Goldmere', 'Highwatch', 'Lanternfall', 'Saltmarch'],
-          io.rng
-        );
+        const city = Nm().city(io.rng);
         return outcome(L, io, c, {
           title: 'You found ' + city + '. What does it become?',
           hue: 40,
@@ -2793,6 +2740,46 @@
     return ch;
   };
 
+  /* ---------------- dynasty: family traits and the house's history ----------------
+     A house gets one trait when it is founded; every heir born into it carries the trait, and the house's history
+     (each ancestor's name, rank, ending and chapters) passes down with it. Each generation also adds a little renown:
+     the older the house, the more its name is worth (up to +3). */
+  S.TRAITS = [
+    { name: 'Iron-blooded', dsl: 'dur+1', text: 'The family is hard to kill.' },
+    { name: 'Quick of hand', dsl: 'spd+1', text: 'Nobody in the family was ever caught napping.' },
+    { name: 'A line of scholars', dsl: 'int+1', text: 'Every child grows up among books.' },
+    { name: 'Born to fight', dsl: 'fgt+1', text: 'The children learn to fight before they can read.' },
+    { name: 'Old magic', dsl: 'pwr+1', text: 'Magic runs in the blood.' },
+    { name: 'Fortune-favoured', dsl: 'fate+1', text: 'Luck follows the family like a dog.' },
+    { name: 'Sworn to the sword', dsl: 'wpn+1', text: 'Every heir is handed a blade.' },
+    { name: 'Strong as oxen', dsl: 'str+1', text: 'Broad shoulders run in the family.' },
+    { name: 'Storm-touched', dsl: 'r=lightning', text: 'Lightning has never harmed one of them.' },
+    { name: 'Moon-blessed', dsl: 'dark:all+1', text: 'The family is at its best at night.' },
+    { name: 'Cursed blood', dsl: 'all+1 fate-1', text: 'Strong, and unlucky. An old curse, an old strength.' },
+  ];
+  S.rollTrait = rng => Object.assign({}, S.TRAITS[Math.floor(rng() * S.TRAITS.length) % S.TRAITS.length]);
+  /* the parent's line in the house history */
+  S.record = function (L) {
+    const s = L.saga,
+      c = FW.compute(L);
+    return {
+      gen: (s.dyn && s.dyn.gen) || 1,
+      name: L.displayName(),
+      race: L.raceName(),
+      rating: c.rating,
+      rank: c.rank,
+      end: s.end || '',
+      ch: s.ch || 0,
+      kingdom: s.kingdom ? s.kingdom.name : '',
+    };
+  };
+  /* the whole family line, oldest first, ending with this hero */
+  S.familyTree = function (L) {
+    const s = L.saga;
+    if (!s || !s.dyn) return [];
+    return (s.dyn.history || []).concat([Object.assign(S.record(L), { current: true })]);
+  };
+
   /* ---------------- dynasty: what the heir inherits ---------------- */
   // endings that leave nothing behind (no body, no grave, no throne to pass on) end the family line too
   S.NO_HEIR = { lost: true, sealed: true, damned: true };
@@ -2816,7 +2803,14 @@
       sub: L.has('sub') ? L.pickName('sub') : '',
       best,
       heir: s.heir,
-      dsl: best + '+1' + (s.heir && s.heir.blessed ? ' fate+1' : '') + (s.world ? ' rt+2' : s.kingdom ? ' rt+1' : ''),
+      record: S.record(L),
+      dsl:
+        best +
+        '+1' +
+        (s.heir && s.heir.blessed ? ' fate+1' : '') +
+        (s.world ? ' rt+2' : s.kingdom ? ' rt+1' : '') +
+        ' rt+' +
+        Math.min(3, (s.dyn && s.dyn.gen) || 1),
     };
   };
   S.startHeir = function (L, inh, opts, rng) {
@@ -2827,6 +2821,14 @@
       text: 'Child of ' + inh.parent + ': inherited their talent.',
       kind: 'story',
     });
+    const tr = L.saga.dyn.trait;
+    if (tr)
+      L.chron.push({
+        label: 'Family trait: ' + tr.name,
+        dsl: tr.dsl,
+        text: '',
+        kind: 'story',
+      });
     if (inh.artifact)
       L.chron.push({
         label: 'Heirloom: ' + inh.artifact.name,

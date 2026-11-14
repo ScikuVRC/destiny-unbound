@@ -915,6 +915,12 @@
       rating: 'puntuación',
       View: 'Ver',
       Remove: 'Quitar',
+      Gen: 'Gen.',
+      'Family trait': 'Rasgo familiar',
+      'Every heir carries it, and each generation adds renown to the house name.':
+        'Todos los herederos lo llevan, y cada generación añade renombre al nombre de la casa.',
+      'the story goes on': 'la historia continúa',
+      'Suggest a name': 'Sugerir un nombre',
     },
   };
 })(typeof window !== 'undefined' ? window : globalThis);

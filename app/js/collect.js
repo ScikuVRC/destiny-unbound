@@ -101,7 +101,7 @@
         H.esc(t('Fight it in Versus')) +
         '</button></div>'
     );
-    const o = { theme: App.state.theme };
+    const o = { theme: App.state.theme, image: FW.defaultPortrait(L) };
     FW.drawCard($('#vFront'), L, Object.assign({ side: 'front', style }, o));
     FW.drawCard($('#vBack'), L, Object.assign({ side: 'back' }, o));
     const flip = () => {

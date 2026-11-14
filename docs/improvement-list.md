@@ -29,7 +29,7 @@ Where the game stands: about 6,800 lines of game code, 26 wheels per hero, 98 ra
 7. ⬜ **A saga recap screen (S).** At the end, show a timeline with the turning points, the closest fight, years lived
    and the family tree, not only the log.
 8. ⬜ **Epilogues (S).** One paragraph built from flags: what happened to the kingdom, the heir, the nemesis.
-9. ⬜ **Dynasty depth (M).** Heirs inherit one stat and a kingdom. Add family traits, a family tree view and a house
+9. ✅ **Dynasty depth (M).** Done 2026-11-14: family traits, house history, growing renown, family tree. Heirs inherit one stat and a kingdom. Add family traits, a family tree view and a house
    history that carries across generations (the "Dynasty" achievement is earned by 0% of simulated sagas).
 10. ⬜ **Difficulty presets for the story (S).** "Gentle / Standard / Brutal" on top of the luck level, changing the
    second-chance rates that already exist in code.
@@ -37,7 +37,7 @@ Where the game stands: about 6,800 lines of game code, 26 wheels per hero, 98 ra
 ### Arena and versus
 11. ⬜ **Arena progression (M).** Fights are one-offs. Add a ladder or gauntlet: five fights in a row, rising rewards,
    one life.
-12. ⬜ **Boss mechanics (M).** Bosses are a level and a few tags. Give the big ones a gimmick (immune until weakened,
+12. ✅ **Boss mechanics (M).** Done 2026-11-14: wards, immunities, punished elements, rage, two phases. Bosses are a level and a few tags. Give the big ones a gimmick (immune until weakened,
    two phases, punishes a specific element).
 13. ⬜ **Versus improvements (S-M).** Best of three, shareable challenge codes ("beat my hero"), a result card to post.
 14. ⬜ **Team fights (L).** Use your companions: three against three.
@@ -93,18 +93,18 @@ All painted art is made by hand on grok.com and credited "Created with Grok" (lo
 
 37. ✅ ★ **Transparent logo (S).** Done 2026-11-13: all four theme logos as transparent PNGs in `brand/`, for store
    pages, mod themes and overlays (rebuild with `scripts/make-transparent-logos.py`).
-38. ⬜ ★ **Default portraits (L).** Heroes show a silhouette unless the player connects their own image generator.
+38. ✅ ★ **Default portraits (L).** Done 2026-11-14 for the 11 most common races (19 portraits). Heroes show a silhouette unless the player connects their own image generator.
    A set of painted portraits per race group (start with the 12 most common races, two variants each) would
    transform the card. This is the single biggest visual upgrade.
 39. ⬜ **Chapter illustrations (L).** One small painting per chapter type (49), shown as the chapter banner. Start with
    the 12 most common.
-40. ⬜ **Ending illustrations (M).** One per ending (10). Endings are the screens players screenshot.
+40. ✅ **Ending illustrations (M).** Done 2026-11-14: all 10. One per ending (10). Endings are the screens players screenshot.
 41. ✅ **Boss and dragon portraits (M).** Done 2026-11-14: 7 dragons and the strongest foe of all 13 worlds. 7 dragons and the top bosses.
 42. ✅ **Arena backdrops (M).** Done 2026-11-14: 11 backdrops. 34 arenas are names only. Even 8 backdrops shared by groups would help.
 43. ✅ **Icon set (M).** Done 2026-11-14: 56 line icons covering every wheel and chapter. The interface uses emoji, which look different on every system and clash with the painted
    style. A custom icon set (about 60 icons: the 26 wheel types, stats, chapter types) would make it look like one
    game.
-44. ⬜ **Card frames by rank (M).** Commoner to Cosmic Being: eight frames of rising fanciness.
+44. ✅ **Card frames by rank (M).** Done 2026-11-14. Commoner to Cosmic Being: eight frames of rising fanciness.
 45. ⬜ **Achievement badges (M).** 34 small emblems instead of emoji.
 46. ⬜ **Wheel skins (M).** The wheel is drawn in code. Painted hubs and rims per theme, as overlays.
 47. ⬜ **Painted title menu for phones (M).**
@@ -141,7 +141,7 @@ Everything is synthesized in 146 lines of code: clever and tiny, but it sounds l
    first (issue #4), then French, German, Japanese.
 61. ⬜ ★ **Native-speaker review of French, German and Japanese (M, needs volunteers).** They are AI drafts.
 62. ⬜ **Text variety (M).** Most outcomes have one line. Three variants each would stop sagas reading the same.
-63. ⬜ **Names for everything (S).** Generated names for villages, rivals' houses, ships, artifacts' makers.
+63. ✅ **Names for everything (S).** Done 2026-11-14: names for rivals, heirs, houses, realms, cities, ships, makers. Generated names for villages, rivals' houses, ships, artifacts' makers.
 64. ⬜ **Gendered and plural text (M).** Story text avoids pronouns; languages like Spanish and French need agreement
    rules once the story is translated.
 65. ⬜ **A style guide for writers and translators (S).**

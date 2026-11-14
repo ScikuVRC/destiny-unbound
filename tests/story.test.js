@@ -171,7 +171,25 @@ async function playSaga(seed, opts, ov) {
       assert.strictEqual(child.saga.dyn.gen, L.saga.dyn.gen + 1);
       if (L.saga.kingdom) assert.strictEqual(child.saga.kingdom.name, L.saga.kingdom.name);
       assert(child.chron.some(x => /Inheritance/.test(x.label)));
+      // the family trait and the house history pass down
+      assert(child.saga.dyn.trait && child.saga.dyn.trait.name === L.saga.dyn.trait.name, 'trait kept');
+      assert(child.chron.some(x => x.label === 'Family trait: ' + child.saga.dyn.trait.name));
+      const tree = S.familyTree(child);
+      assert.strictEqual(tree.length, child.saga.dyn.gen, 'one line per generation');
+      assert.strictEqual(tree[tree.length - 2].name, L.displayName());
+      assert(tree[tree.length - 1].current);
       FW.Legend.fromCode(child.toCode());
+      // a third generation: renown grows with the house (up to +3)
+      if (checked === 0) {
+        child.saga.end = 'retired';
+        child.saga.heir = { name: 'Third', kind: 'daughter' };
+        const inh3 = S.inheritance(child);
+        assert(/rt\+2$/.test(inh3.dsl), inh3.dsl);
+        const g3 = makeLegend('grandchild' + i);
+        S.startHeir(g3, inh3, {}, FW.makeRng('g' + i));
+        assert.strictEqual(g3.saga.dyn.gen, L.saga.dyn.gen + 2);
+        assert.strictEqual(S.familyTree(g3).length, g3.saga.dyn.gen);
+      }
       checked++;
     }
     assert(checked >= 5, 'too few heirs to test: ' + checked);
@@ -269,6 +287,26 @@ async function playSaga(seed, opts, ov) {
       f = S.fit(L, 'heist');
       assert.strictEqual(f.m, 1);
       Object.keys(S.FIT).forEach(k => assert(S.FIT[k].what, 'fit ' + k + ' needs a description'));
+    }
+  );
+
+  await t(
+    'generated names: the same seed gives the same names, rivals get an epithet, nothing unpronounceable',
+    async () => {
+      const N = FW.Names;
+      assert.strictEqual(N.person(FW.makeRng('names'), 'Elf'), N.person(FW.makeRng('names'), 'Elf'));
+      const rng = FW.makeRng('many');
+      for (let i = 0; i < 400; i++) {
+        const p = N.person(rng, N.STYLES[i % N.STYLES.length]);
+        assert(/^[A-Z][a-z]{3,9}$/.test(p), 'odd name: ' + p);
+        assert(!/[aeiou]{3}|([aeiou])\1/i.test(p), 'hard to say: ' + p);
+      }
+      assert(/^\S+ (the |[A-Z])/.test(N.nemesis(rng, 'Orc')));
+      assert(/^House [A-Z][a-z]+$/.test(N.house(rng)));
+      assert(/^The [A-Z]/.test(N.ship(rng)));
+      assert.strictEqual(N.styleFor('Dark Elf'), 'elven');
+      assert.strictEqual(N.styleFor('Orc'), 'orcish');
+      assert.strictEqual(N.styleFor('Human'), 'human');
     }
   );
 

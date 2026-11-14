@@ -2,7 +2,7 @@
 
 A running record of where the game stands. Update it when something ships, starts or gets decided.
 This file is public: server addresses, account, payment and moderation details go in `private-notes.md` (not on GitHub).
-Last updated: 2026-11-13 · Current version: **0.2.0-alpha.3.2**
+Last updated: 2026-11-13 · Current version: **0.2.0-alpha.3.3**
 
 Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
@@ -26,6 +26,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 | Story choices, hero-aware chapters, card moment, battle art, icons, official mods, daily leaderboard | 0.2.0-alpha.3 | ✅ released 2026-11-14 |
 | Trading-card fronts and back, /patchnotes on Discord (small update) | 0.2.0-alpha.3.1 | ✅ released 2026-11-14 |
 | Shared cards: viewer, collection, Versus, short card codes (small update) | 0.2.0-alpha.3.2 | ✅ released 2026-11-14 |
+| Names, rank frames, boss tricks, dynasties, ending art, hero portraits (small update) | 0.2.0-alpha.3.3 | ✅ released 2026-11-14 |
 | Alpha test with 5-15 players | two weeks after release | ⬜ |
 | Beta (fixes from the alpha, signed build, store page) | 0.2.0-beta.1 | ⬜ |
 | 1.0 on itch.io | 1.0.0 | ⬜ |

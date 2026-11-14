@@ -904,6 +904,12 @@
       rating: 'score',
       View: 'Voir',
       Remove: 'Retirer',
+      Gen: 'Gén.',
+      'Family trait': 'Trait de famille',
+      'Every heir carries it, and each generation adds renown to the house name.':
+        'Chaque héritier le porte, et chaque génération ajoute du renom au nom de la maison.',
+      'the story goes on': "l'histoire continue",
+      'Suggest a name': 'Suggérer un nom',
     },
   };
 })(typeof window !== 'undefined' ? window : globalThis);

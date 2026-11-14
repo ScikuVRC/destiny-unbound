@@ -4,6 +4,27 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
+## 0.2.0-alpha.3.3 (2026-11-14)
+
+A small update with a lot of new faces: hero portraits, painted endings, boss tricks and living dynasties.
+
+### New
+
+- **New names in every saga.** Rivals, heirs, houses, kingdoms, cities, ships and the makers of artifacts get names
+  made up as you play, in a style that fits their race (elven, dwarven, orcish, infernal and more). A 🎲 button
+  next to the hero name suggests one.
+- **Card frames by rank.** The card's border grows richer as your hero rises: iron, bronze, silver, gold with
+  brackets, glowing gems, and a prismatic frame for a Cosmic Being.
+- **Bosses have tricks.** The dragons and the strongest foe of every world each have one: a ward that hides their
+  weakness, an immunity, an element they punish, a rage against weaker foes, or a second phase where they rise
+  again, stronger. The battle report shows it.
+- **Dynasties.** Every house gets a family trait that all its heirs carry, the house remembers each generation,
+  and each generation adds renown to the name. **Family tree** on the card shows the whole line.
+- **Painted endings.** Every ending has its own illustration on the final screen.
+- **Faces for heroes.** Humans, dwarves, orcs, goblins, elves, dark elves, beastkin, halflings, skeletons, lizardfolk
+  and gnomes now get a painted portrait on their card when you haven't made one of your own; it follows the
+  presentation you chose. Created with Grok.
+
 ## 0.2.0-alpha.3.2 (2026-11-14)
 
 A small update: open, collect and fight other players' cards, and share yours with a short code.

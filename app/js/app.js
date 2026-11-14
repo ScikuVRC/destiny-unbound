@@ -578,7 +578,7 @@
      remembered), the numbers on the back. Save PNG saves both sides. */
   const cardStyle = () => (store.get('fw.cardStyle', 'arch') === 'full' ? 'full' : 'arch');
   function drawCardNow() {
-    const o = { theme: state.theme, image: state.image };
+    const o = { theme: state.theme, image: state.image || FW.defaultPortrait(state.legend, () => drawCardNow()) };
     FW.drawCard($('#cardCanvas'), state.legend, Object.assign({ side: 'front', style: cardStyle() }, o));
     FW.drawCard($('#cardBack'), state.legend, Object.assign({ side: 'back' }, o));
     $('#btnCardStyle').textContent = tr(cardStyle() === 'full' ? 'Card: Full art' : 'Card: Arch');
@@ -752,7 +752,8 @@
           const chips = [{ t: 'Level ' + p.lv, k: 'info' }].concat(
             p.atk.map(a => ({ t: FW.cap(a) + ' attacks', k: 'info' })),
             p.weak.map(a => ({ t: 'Weak to ' + FW.cap(a), k: 'buff' })),
-            p.res.map(a => ({ t: 'Resists ' + FW.cap(a), k: 'debuff' }))
+            p.res.map(a => ({ t: 'Resists ' + FW.cap(a), k: 'debuff' })),
+            FW.BOSS_MECH && FW.BOSS_MECH[o.name] ? [{ t: FW.mechText(FW.BOSS_MECH[o.name]), k: 'debuff' }] : []
           );
           return { sub: H.esc(o.perk), fx: H.fxCard(o.name, o.perk, '', chips) };
         },
@@ -812,7 +813,29 @@
         preFx: H.battle(L.pickName('title'), opp.name, arena.name, rep),
         onResult: () => ({ fx: H.battle(L.pickName('title'), opp.name, arena.name, rep) }),
       });
-      const result = ['win', 'draw', 'lose'][wi];
+      let result = ['win', 'draw', 'lose'][wi];
+      // a boss with two phases rises again after a win, stronger
+      if (result === 'win' && rep.phases) {
+        const opp2 = FW.phaseTwo(opp),
+          rep2 = FW.matchup(L, opp2, arena);
+        state.fight.rep = rep2;
+        fctx.p = rep2.pWin;
+        const w2 = await playStep({
+          emoji: '🔥',
+          title: tr(opp.name + ' rises again, stronger. Do you win?'),
+          entries: [
+            { name: 'Victory', w: rep2.pWin, dsl: '', color: '#2f9e57', colorLight: 38 },
+            { name: 'Stalemate', w: rep2.pDraw, dsl: '', color: '#777', colorLight: 46 },
+            { name: 'Defeat', w: rep2.pLose, dsl: '', color: '#b8383b', colorLight: 40 },
+          ],
+          mode: 'cat',
+          hue: 0,
+          hint: 'Phase two: slice sizes are your real odds',
+          preFx: H.battle(L.pickName('title'), opp.name, arena.name, rep2),
+          onResult: () => ({ fx: H.battle(L.pickName('title'), opp.name, arena.name, rep2) }),
+        });
+        result = ['win', 'draw', 'lose'][w2];
+      }
       if (result === 'win') FW.Audio.reveal(true);
       else if (result === 'lose') FW.Audio.bad();
       renderSteps(steps, 4);

@@ -1,5 +1,5 @@
 /* Destiny Unbound service worker: cache-first for the app shell so it works offline */
-const CACHE = 'fatewheel-v55';
+const CACHE = 'fatewheel-v56';
 const FILES = [
   './',
   'index.html',
@@ -34,6 +34,7 @@ const FILES = [
   'js/i18n.js',
   'js/icons.js',
   'js/engine.js',
+  'js/names.js',
   'js/story.js',
   'js/wheel.js',
   'js/audio.js',

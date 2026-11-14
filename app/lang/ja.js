@@ -896,6 +896,12 @@
       rating: '評価',
       View: '見る',
       Remove: '削除',
+      Gen: '第',
+      'Family trait': '家系の特性',
+      'Every heir carries it, and each generation adds renown to the house name.':
+        '後継者は皆これを受け継ぎ、世代を重ねるごとに家名の名声が高まります。',
+      'the story goes on': '物語は続く',
+      'Suggest a name': '名前を提案',
     },
   };
 })(typeof window !== 'undefined' ? window : globalThis);

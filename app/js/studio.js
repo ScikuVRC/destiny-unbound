@@ -39,9 +39,9 @@
       );
     }).join('');
     $('#personBox').innerHTML =
-      '<label class="mini"><span>Hero name (optional)</span><input id="pName" maxlength="40" placeholder="e.g. Kael Ashborne" value="' +
+      '<label class="mini"><span>Hero name (optional)</span><span class="name-row"><input id="pName" maxlength="40" placeholder="e.g. Kael Ashborne" value="' +
       esc(p.name) +
-      '"></label>' +
+      '"><button type="button" class="btn small ghost" id="pNameDice" title="Suggest a name" aria-label="Suggest a name">🎲</button></span></label>' +
       '<label class="mini"><span>Presentation</span><select id="pPres"><option value="">Not specified</option><option value="fem"' +
       (p.pres === 'fem' ? ' selected' : '') +
       '>Feminine</option><option value="masc"' +
@@ -57,6 +57,16 @@
       '><summary>Choose instead of spinning</summary><div class="mini-grid">' +
       sel +
       '</div><p class="legend-key">Anything you choose here skips its wheel. Everything else is still up to fate.</p></details>';
+    // a suggested name: a given name and a house name, in a random naming style
+    $('#pNameDice').onclick = () => {
+      const N = FW.Names,
+        rng = Math.random;
+      if (!N) return;
+      const style = N.STYLES[Math.floor(rng() * N.STYLES.length)];
+      p.name = N.person(rng, style) + ' ' + N.house(rng).slice(6);
+      $('#pName').value = p.name;
+      savePerson();
+    };
     $('#pName').addEventListener('input', e => {
       p.name = e.target.value.trim().slice(0, 40);
       savePerson();
