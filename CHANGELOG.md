@@ -4,7 +4,10 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
-## Unreleased
+## 0.2.0-alpha.2 (2026-11-13)
+
+Fixes, a restyled mod kit template, and groundwork for what comes next. Thanks to everyone voting in the Discord
+poll on what to build next.
 
 ### Fixes
 

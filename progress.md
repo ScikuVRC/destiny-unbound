@@ -2,7 +2,7 @@
 
 A running record of where the game stands. Update it when something ships, starts or gets decided.
 This file is public: server addresses, account, payment and moderation details go in `private-notes.md` (not on GitHub).
-Last updated: 2026-11-13 · Current version: **0.2.0-alpha.1**
+Last updated: 2026-11-13 · Current version: **0.2.0-alpha.2**
 
 Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
@@ -22,6 +22,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 | Discord server links in the game | 0.1.0-alpha.5 | ✅ released 2026-11-13 |
 | New achievements, accessibility pass, phone layout, French, German and Japanese, Ember Dominion mod template | 0.1.0-alpha.6 | ✅ released 2026-11-13 |
 | Story arcs and endings, balance pass, spin screen redesign, world counter | 0.2.0-alpha.1 | ✅ released 2026-11-13 |
+| Content split from code, linter, CSP, transparent logos, mod theme fix | 0.2.0-alpha.2 | ✅ released 2026-11-13 |
 | Alpha test with 5-15 players | two weeks after release | ⬜ |
 | Beta (fixes from the alpha, signed build, store page) | 0.2.0-beta.1 | ⬜ |
 | 1.0 on itch.io | 1.0.0 | ⬜ |
