@@ -4,6 +4,18 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
+## 0.2.0-alpha.3.2 (2026-11-14)
+
+A small update: open, collect and fight other players' cards, and share yours with a short code.
+
+### New
+
+- **Open other players' cards.** Paste a card code (or a long Legend Code) in **Open a shared card**: the card opens
+  in a viewer, front and back, and your own hero stays as it is. Keep the ones you like in **Collected cards** in
+  the Hall of Legends, and pick them as fighters in Versus.
+- **Short card codes.** **Get a card code** on your card gives a short code like DU-7K3QXM to share instead of the
+  long Legend Code. The first time, it explains what is stored: your card's Legend Code, for 90 days.
+
 ## 0.2.0-alpha.3.1 (2026-11-14)
 
 A small update: the trading-card look, and patch notes on Discord.

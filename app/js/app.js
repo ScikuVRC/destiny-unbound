@@ -634,6 +634,8 @@
     show('card');
     drawCardNow();
     revealCard(L);
+    $('#btnShort').textContent = tr('Get a card code');
+    $('#btnShort').hidden = !FW.WORLD_URL;
     $('#cardRating').innerHTML =
       H.rating(c) +
       '<p class="legend-key" style="margin:0 0 6px">' +
@@ -938,7 +940,7 @@
         '<button class="opt" data-act="ach"><b>Achievements</b><span>Badges and the rare entries they unlock</span></button>' +
         '<button class="opt" data-act="versus"><b>Versus</b><span>Pit two legends against each other</span></button>' +
         '<button class="opt" data-act="workshop"><b>Wheel Workshop</b><span>Edit slice sizes, remove or add entries</span></button>' +
-        '<button class="opt" data-act="import"><b>Import a Legend Code</b><span>Open a character someone shared</span></button>' +
+        '<button class="opt" data-act="import"><b>Open a shared card</b><span>See and collect a card someone shared</span></button>' +
         '<button class="opt" data-act="help"><b>How the rules work</b><span>Tiers, buffs, debuffs, luck and the arena</span></button>' +
         '<a class="opt" href="https://ko-fi.com/bzrkherja" target="_blank" rel="noopener"><b>&#9749; Support on Ko-fi</b><span>Enjoying Destiny Unbound? Buy the developer a coffee</span></a>' +
         '<button class="opt" data-act="reset"><b>Reset saved data</b><span>Clears settings, Hall and Workshop edits</span></button></div>'
@@ -1012,8 +1014,16 @@
           )
           .join('')
       : '<p>No legends saved yet. Finish a spin and press <b>Save to Hall</b>.</p>';
-    openModal('<button class="btn small ghost close">Close ✕</button><h2>Hall of Legends</h2>' + rows);
+    openModal(
+      '<button class="btn small ghost close">Close ✕</button><h2>Hall of Legends</h2>' +
+        '<h3 class="opt-h">' +
+        H.esc(tr('Your legends')) +
+        '</h3>' +
+        rows +
+        (FW.Collect ? FW.Collect.hallHtml() : '')
+    );
     const root = $('#modalRoot');
+    if (FW.Collect) FW.Collect.bindHall(root, hallModal);
     root.querySelectorAll('[data-view]').forEach(b =>
       b.addEventListener('click', () => {
         const h = state.hall.find(x => x.id === b.dataset.view);
@@ -1052,14 +1062,9 @@
       return e.message || 'Invalid code';
     }
   }
+  // shared codes open in the card viewer (collect.js); your own hero is never replaced
   function importModal() {
-    openModal(
-      '<button class="btn small ghost close">Close ✕</button><h2>Import a Legend Code</h2><p>Paste a code that starts with <b>FW1.</b></p><textarea id="codeIn" rows="4" placeholder="FW1...."></textarea><p id="codeErr" style="color:var(--bad);min-height:1.4em"></p><button class="btn primary" id="codeGo">Open legend</button>'
-    );
-    $('#codeGo').onclick = () => {
-      const r = loadCode($('#codeIn').value);
-      if (r !== true) $('#codeErr').textContent = 'Could not open that code: ' + r;
-    };
+    if (FW.Collect) FW.Collect.openModal();
   }
   function helpModal() {
     openModal(
@@ -1361,6 +1366,35 @@
   });
   $('#btnPng').onclick = savePng;
   $('#btnShare').onclick = shareCard;
+  // a short card code: the first time, say what it does before anything is sent
+  $('#btnShort').onclick = () => {
+    if (!FW.Collect) return;
+    const go = async () => {
+      closeModal();
+      $('#btnShort').disabled = true;
+      const id = await FW.Collect.shareShort(state.legend);
+      $('#btnShort').disabled = false;
+      if (id) $('#btnShort').textContent = id;
+    };
+    if (store.get('fw.shortOk', false)) return go();
+    openModal(
+      '<button class="btn small ghost close">Close ✕</button><h2>' +
+        H.esc(tr('Get a card code')) +
+        '</h2><p>' +
+        H.esc(
+          tr(
+            "This stores your card's Legend Code (your hero's rolls, name and saga, nothing about you) on the Destiny Unbound server for 90 days, and gives you a short code like DU-7K3QXM. Anyone who has the code can open your card in the game."
+          )
+        ) +
+        '</p><div class="cta"><button class="btn primary" id="shortGo">' +
+        H.esc(tr('Get my code')) +
+        '</button></div>'
+    );
+    $('#shortGo').onclick = () => {
+      store.set('fw.shortOk', true);
+      go();
+    };
+  };
   $('#btnFlip').onclick = () => flipCard();
   $('#cardFlip').addEventListener('click', () => flipCard());
   $('#btnCardStyle').onclick = () => {

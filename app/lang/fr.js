@@ -871,6 +871,39 @@
       'Switch the front of the card between the arch and full art':
         'Change le recto de la carte entre arche et pleine image',
       'Saves two pictures: the front and the back': 'Enregistre deux images : le recto et le verso',
+      'Open a shared card': 'Ouvrir une carte partagée',
+      'See and collect a card someone shared': 'Voir et collectionner une carte partagée',
+      'Get a card code': 'Obtenir un code de carte',
+      'Get a short code like DU-7K3QXM that anyone can open in the game':
+        "Obtenez un code court comme DU-7K3QXM que n'importe qui peut ouvrir dans le jeu",
+      "This stores your card's Legend Code (your hero's rolls, name and saga, nothing about you) on the Destiny Unbound server for 90 days, and gives you a short code like DU-7K3QXM. Anyone who has the code can open your card in the game.":
+        'Cela enregistre le Code de Légende de votre carte (les tirages, le nom et la saga de votre héros, rien sur vous) sur le serveur de Destiny Unbound pendant 90 jours, et vous donne un code court comme DU-7K3QXM. Toute personne qui a le code peut ouvrir votre carte dans le jeu.',
+      'Get my code': 'Obtenir mon code',
+      'Card code copied:': 'Code de carte copié :',
+      'Could not make a short code:': 'Impossible de créer un code court :',
+      'Paste a card code like DU-7K3QXM, or a long Legend Code (FW1.…). It opens in a viewer; your own hero stays as it is.':
+        "Collez un code de carte comme DU-7K3QXM, ou un long Code de Légende (FW1.…). Il s'ouvre dans une visionneuse ; votre héros reste tel quel.",
+      'Open card': 'Ouvrir la carte',
+      'Could not open that card:': "Impossible d'ouvrir cette carte :",
+      'Paste a card code (DU-…) or a Legend Code (FW1.…).':
+        'Collez un code de carte (DU-…) ou un Code de Légende (FW1.…).',
+      'Short codes need the online service, which this copy does not have.':
+        'Les codes courts nécessitent le service en ligne, absent de cette copie.',
+      "The card server can't be reached right now.": 'Le serveur des cartes est injoignable pour le moment.',
+      'No card has that code (codes last 90 days).': "Aucune carte n'a ce code (les codes durent 90 jours).",
+      "Someone else's card. Opening it doesn't change your own hero.":
+        "La carte de quelqu'un d'autre. L'ouvrir ne change pas votre héros.",
+      'Add to my collection': 'Ajouter à ma collection',
+      'In your collection': 'Dans votre collection',
+      'Fight it in Versus': "L'affronter en Versus",
+      'Added to Collected cards in the Hall of Legends': 'Ajoutée aux Cartes collectionnées dans le Panthéon',
+      'Collected cards': 'Cartes collectionnées',
+      'Your legends': 'Vos légendes',
+      'Cards other players share with you go here. Open one with Open a shared card.':
+        "Les cartes que d'autres joueurs partagent avec vous arrivent ici. Ouvrez-en une avec Ouvrir une carte partagée.",
+      rating: 'score',
+      View: 'Voir',
+      Remove: 'Retirer',
     },
   };
 })(typeof window !== 'undefined' ? window : globalThis);

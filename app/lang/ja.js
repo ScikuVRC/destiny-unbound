@@ -863,6 +863,39 @@
       'Turn the card over to see the stats': 'カードを裏返して能力値を見る',
       'Switch the front of the card between the arch and full art': 'カードの表面をアーチとフルアートで切り替えます',
       'Saves two pictures: the front and the back': '表面と裏面の2枚の画像を保存します',
+      'Open a shared card': '共有されたカードを開く',
+      'See and collect a card someone shared': '誰かが共有したカードを見て集める',
+      'Get a card code': 'カードコードを取得',
+      'Get a short code like DU-7K3QXM that anyone can open in the game':
+        '誰でもゲーム内で開ける DU-7K3QXM のような短いコードを取得します',
+      "This stores your card's Legend Code (your hero's rolls, name and saga, nothing about you) on the Destiny Unbound server for 90 days, and gives you a short code like DU-7K3QXM. Anyone who has the code can open your card in the game.":
+        'カードのレジェンドコード（ヒーローの出目、名前、サーガ。あなた自身の情報は含みません）を Destiny Unbound のサーバーに90日間保存し、DU-7K3QXM のような短いコードを発行します。コードを持っている人なら誰でも、ゲーム内であなたのカードを開けます。',
+      'Get my code': 'コードを取得する',
+      'Card code copied:': 'カードコードをコピーしました：',
+      'Could not make a short code:': '短いコードを作成できませんでした：',
+      'Paste a card code like DU-7K3QXM, or a long Legend Code (FW1.…). It opens in a viewer; your own hero stays as it is.':
+        'DU-7K3QXM のようなカードコード、または長いレジェンドコード（FW1.…）を貼り付けてください。ビューアーで開くので、あなたのヒーローはそのままです。',
+      'Open card': 'カードを開く',
+      'Could not open that card:': 'そのカードを開けませんでした：',
+      'Paste a card code (DU-…) or a Legend Code (FW1.…).':
+        'カードコード（DU-…）またはレジェンドコード（FW1.…）を貼り付けてください。',
+      'Short codes need the online service, which this copy does not have.':
+        '短いコードにはオンラインサービスが必要ですが、このコピーにはありません。',
+      "The card server can't be reached right now.": '現在カードサーバーに接続できません。',
+      'No card has that code (codes last 90 days).': 'そのコードのカードはありません（コードの有効期間は90日です）。',
+      "Someone else's card. Opening it doesn't change your own hero.":
+        '他の人のカードです。開いてもあなたのヒーローは変わりません。',
+      'Add to my collection': 'コレクションに追加',
+      'In your collection': 'コレクション済み',
+      'Fight it in Versus': 'バーサスで戦う',
+      'Added to Collected cards in the Hall of Legends': '伝説の殿堂の「集めたカード」に追加しました',
+      'Collected cards': '集めたカード',
+      'Your legends': 'あなたのレジェンド',
+      'Cards other players share with you go here. Open one with Open a shared card.':
+        '他のプレイヤーが共有したカードはここに入ります。「共有されたカードを開く」で開いてください。',
+      rating: '評価',
+      View: '見る',
+      Remove: '削除',
     },
   };
 })(typeof window !== 'undefined' ? window : globalThis);

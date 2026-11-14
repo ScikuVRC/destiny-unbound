@@ -4,8 +4,10 @@
 // POST /v1/count  {"kind":"hero"} or {"kind":"end","end":"dead"}   ·   GET /v1/totals
 // Daily leaderboard (a separate opt-in): POST /v1/daily {day,pid,name,race,score,end,ch} · GET /v1/daily?day=YYYY-MM-DD
 //   It stores the hero's name (filtered), race, score, ending and chapters, and a random per-install id. No IPs.
+// Short card codes: POST /v1/card {code} -> {id}, GET /v1/card/<id> -> {code}. Only the Legend Code is stored, 90 days.
 // SPDX-License-Identifier: GPL-3.0-or-later
 import { checkEntry, KEEP_DAYS, TOP } from './board.js';
+import * as cards from './cards.js';
 
 const ENDINGS = ['dead', 'retired', 'ascended', 'lost', 'martyr', 'sealed', 'damned', 'fulfilled', 'undying', 'legend'];
 const MORTAL = { dead: 1, martyr: 1, sealed: 1, damned: 1, undying: 1 };
@@ -97,6 +99,46 @@ export default {
       const old = new Date(Date.now() - KEEP_DAYS * 864e5).toISOString().slice(0, 10);
       await env.DB.prepare('DELETE FROM daily WHERE day < ?').bind(old).run();
       return json({ ok: true, name: row.name });
+    }
+    if (req.method === 'POST' && path === '/v1/card') {
+      if (env.LIMITER) {
+        const { success } = await env.LIMITER.limit({ key: req.headers.get('cf-connecting-ip') || 'x' });
+        if (!success) return json({ error: 'slow down' }, 429);
+      }
+      let j = null;
+      try {
+        j = JSON.parse((await req.text()).slice(0, cards.MAX_CODE + 200));
+      } catch (e) {
+        return json({ error: 'bad json' }, 400);
+      }
+      const code = j && typeof j.code === 'string' ? j.code.trim() : '';
+      const bad = cards.checkCode(code);
+      if (bad) return json({ error: bad }, 400);
+      const hash = await cards.hashOf(code);
+      const day = new Date().toISOString().slice(0, 10);
+      const known = await env.DB.prepare('SELECT id FROM cards WHERE hash = ?').bind(hash).first();
+      if (known) {
+        await env.DB.prepare('UPDATE cards SET day = ? WHERE id = ?').bind(day, known.id).run();
+        return json({ id: 'DU-' + known.id, days: cards.KEEP_DAYS });
+      }
+      for (let n = 0; n < 5; n++) {
+        const id = cards.makeId();
+        const r = await env.DB.prepare('INSERT OR IGNORE INTO cards (id, code, hash, day) VALUES (?, ?, ?, ?)')
+          .bind(id, code, hash, day)
+          .run();
+        if (r.meta && r.meta.changes) {
+          const old = new Date(Date.now() - cards.KEEP_DAYS * 864e5).toISOString().slice(0, 10);
+          await env.DB.prepare('DELETE FROM cards WHERE day < ?').bind(old).run();
+          return json({ id: 'DU-' + id, days: cards.KEEP_DAYS });
+        }
+      }
+      return json({ error: 'try again' }, 503);
+    }
+    if (req.method === 'GET' && path.startsWith('/v1/card/')) {
+      const id = cards.normaliseId(decodeURIComponent(path.slice(9)));
+      if (!id) return json({ error: 'not a card code' }, 400);
+      const row = await env.DB.prepare('SELECT code FROM cards WHERE id = ?').bind(id).first();
+      return row ? json({ id: 'DU-' + id, code: row.code }) : json({ error: 'no card with that code' }, 404);
     }
     return json({ error: 'not found' }, 404);
   },

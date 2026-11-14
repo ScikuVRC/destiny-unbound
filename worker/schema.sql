@@ -13,3 +13,12 @@ CREATE TABLE IF NOT EXISTS daily (
   PRIMARY KEY (day, pid)
 );
 CREATE INDEX IF NOT EXISTS daily_top ON daily (day, score DESC);
+-- short card codes (made when a player presses "Get a short code"): the Legend Code and the day it was made;
+-- the same Legend Code always gets the same short code; rows older than 90 days are removed as new ones arrive
+CREATE TABLE IF NOT EXISTS cards (
+  id TEXT PRIMARY KEY,
+  code TEXT NOT NULL,
+  hash TEXT NOT NULL UNIQUE,
+  day TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS cards_day ON cards (day);

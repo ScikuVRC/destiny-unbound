@@ -31,6 +31,10 @@ npx wrangler deploy
   rows older than 14 days are deleted.
 - `GET /v1/daily?day=2026-11-14` returns `{ day, top: [{ name, race, score, ending, ch }], players }` (top ten)
 
+- `POST /v1/card` with `{"code":"FW1...."}` stores a Legend Code and returns `{ id: "DU-7K3QXM", days: 90 }` (the same
+  code always gets the same id); `GET /v1/card/DU-7K3QXM` returns `{ id, code }`. Checked in `src/cards.js`; rows
+  older than 90 days are deleted.
+
 After changing `schema.sql`, run it again on the live database (it only adds what is missing):
 
 ```bash

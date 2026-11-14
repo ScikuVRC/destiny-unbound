@@ -5,7 +5,7 @@ things land when they're ready, in small updates. Plans change with what players
 want most on the [Discord](https://discord.gg/McDS5HVxzJ) (there's a poll running) or in
 [GitHub issues](https://github.com/ScikuVRC/destiny-unbound/issues).
 
-Last updated 2026-11-14, at version 0.2.0-alpha.3.1. What already changed is in the [changelog](CHANGELOG.md).
+Last updated 2026-11-14, at version 0.2.0-alpha.3.2. What already changed is in the [changelog](CHANGELOG.md).
 
 ## Now: the rest of 0.2
 
@@ -47,6 +47,8 @@ in [docs/release-plan.md](docs/release-plan.md).
 
 ## Recently done
 
+- 0.2.0-alpha.3.2: open other players' cards without replacing your hero, collect them, fight them in Versus,
+  and share yours with a short code like DU-7K3QXM.
 - 0.2.0-alpha.3.1: the character card became a trading card (picture on the front, stats on the back);
   `/patchnotes` on Discord.
 - 0.2.0-alpha.3: story choices, chapters that react to your hero, painted arenas and bosses, the game's own icons,

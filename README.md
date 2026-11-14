@@ -6,7 +6,7 @@
 
 **Spin the wheels of fate. Forge a legend. Live its story, or die trying.**
 
-[![Version](https://img.shields.io/badge/version-0.2.0--alpha.3.1-8a5fd6)](progress.md)
+[![Version](https://img.shields.io/badge/version-0.2.0--alpha.3.2-8a5fd6)](progress.md)
 [![License: GPL v3](https://img.shields.io/badge/license-GPL--3.0--or--later-blue)](LICENSE)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20web-444)
 [![Play on itch.io](https://img.shields.io/badge/play-itch.io-fa5c5c?logo=itch.io&logoColor=white)](https://bzrkherja.itch.io/destiny-unbound)
@@ -146,6 +146,8 @@ The game keeps your saves and play stats on your own device. It sends nothing un
   name, race, score, ending and chapter count to that day's top ten, with a random id so you appear once a day.
   Names with rude words show as "A nameless hero". Entries are deleted after 14 days. Opening the leaderboard
   is always your own click.
+- **Card codes** (only when you press **Get a card code** on a card): your card's Legend Code (your hero's rolls,
+  name and saga) is stored on the server for 90 days so anyone with the short code can open it. Nothing about you.
 - **Feedback reports** include your play stats only if you tick the box.
 - **The Art Studio and the saga writer** only talk to an image generator or language model you connect yourself.
 

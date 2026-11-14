@@ -173,6 +173,25 @@ async function t(name, fn) {
     assert.strictEqual(JSON.parse(sent[1].body).pid, b.pid, 'the id stays the same');
   });
 
+  await t(
+    'short card codes: only Legend Codes are accepted, codes are easy to type, and lookups are forgiving',
+    async () => {
+      const C = await import('../worker/src/cards.js');
+      assert.strictEqual(C.checkCode('FW1.' + 'a'.repeat(40)), '');
+      assert(C.checkCode('hello'), 'not a code');
+      assert(C.checkCode('FW1.<script>alert(1)</script>xxxxxxxxxxxxx'), 'only base64 characters');
+      assert(C.checkCode('FW1.' + 'a'.repeat(C.MAX_CODE)), 'too long');
+      for (let i = 0; i < 200; i++) {
+        const id = C.makeId();
+        assert(/^[23456789ABCDEFGHJKMNPQRSTWXYZ]{6}$/.test(id), id);
+      }
+      ['DU-7K3QXM', 'du-7k3qxm', 'DU 7K3QXM', '7k3qxm'].forEach(s => assert.strictEqual(C.normaliseId(s), '7K3QXM', s));
+      ['DU-0OIL1U', '7K3QX', 'DU-7K3QXMM', ''].forEach(s => assert.strictEqual(C.normaliseId(s), '', s));
+      assert.strictEqual(await C.hashOf('a'), await C.hashOf('a'));
+      assert.notStrictEqual(await C.hashOf('a'), await C.hashOf('b'));
+    }
+  );
+
   fs.rmSync(dir, { recursive: true, force: true });
   console.log('\n' + pass + ' of ' + (pass + fail) + ' checks passed');
   process.exit(fail ? 1 : 0);

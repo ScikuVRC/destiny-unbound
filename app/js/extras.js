@@ -251,10 +251,16 @@
   }
 
   /* ================= versus ================= */
-  function versusModal() {
+  function versusModal(preCode) {
     const opts = [];
     if (st.legend && st.legend.picks.mark) opts.push(['cur', 'Current legend: ' + st.legend.displayName()]);
     st.hall.forEach(h => opts.push([h.id, h.title + ' (' + h.race + ', ' + h.rating + ')']));
+    const collected = FW.Collect ? FW.Collect.list() : [];
+    collected.forEach(h => opts.push(['col:' + h.id, '🃏 ' + h.title + ' (' + h.race + ', ' + h.rating + ')']));
+    const pre =
+      preCode && typeof preCode === 'string'
+        ? opts.findIndex(o => o[0] === 'col:' + ((collected.find(h => h.code === preCode) || {}).id || ''))
+        : -1;
     const sel = (id, def) =>
       '<select id="' +
       id +
@@ -273,7 +279,7 @@
         '<label class="legend-key">Fighter one</label>' +
         sel('vsA', 0) +
         '<label class="legend-key" style="display:block;margin-top:10px">Fighter two</label>' +
-        sel('vsB', opts.length > 1 ? 1 : 0) +
+        sel('vsB', pre >= 0 ? pre : opts.length > 1 ? 1 : 0) +
         '<p id="vsErr" style="color:var(--bad);min-height:1.3em"></p><button class="btn primary" id="vsGo">⚔ Fight</button>'
     );
     ['vsA', 'vsB'].forEach(id =>
@@ -285,6 +291,7 @@
       const v = $('#' + id).value;
       if (v === 'cur') return FW.Legend.fromCode(st.legend.toCode());
       if (v === 'paste') return FW.Legend.fromCode($('#' + id + 'Code').value);
+      if (v.indexOf('col:') === 0) return FW.Legend.fromCode(collected.find(h => 'col:' + h.id === v).code);
       return FW.Legend.fromCode(st.hall.find(h => h.id === v).code);
     };
     $('#vsGo').onclick = () => {
@@ -585,5 +592,6 @@
   homeDaily();
   chain('optionsModal', () => {});
   App.versusModal = versusModal;
+  FW.versusModal = versusModal;
   App.startDaily = startDaily;
 })();
