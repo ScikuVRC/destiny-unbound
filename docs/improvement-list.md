@@ -47,8 +47,8 @@ Where the game stands: about 6,800 lines of game code, 26 wheels per hero, 98 ra
    way, or lock a result you love before a risky re-spin.
 16. ⬜ **Synergies and set bonuses (M).** Reward combinations (fire element + fire weapon + dragon bloodline) with a
    named bonus shown on the card. Gives players something to hope for while spinning.
-17. ⬜ **Rarity moments (S).** A rare result gets a glow today. Add a short "legendary" reveal: slow-down, sound sting,
-   slice lighting up (the Grok mockups showed the winning slice glowing).
+17. ✅ **Rarity moments (S).** Done 2026-11-14: a rare result (under 2.5% of the wheel) stops slower, creeping over the
+   last slices, then the slice flashes five times with a thicker glowing outline, the result pops in brighter, and the rare fanfare plays.
 18. ⬜ **Quick create (S).** A "surprise me" button that builds a hero in five seconds for players who want the story.
 19. ⬜ **Hero comparison (S).** Compare two heroes from the Hall side by side.
 

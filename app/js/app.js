@@ -343,17 +343,20 @@
       setResult(cfg.mystery ? '???' : '');
       $('#resultSub').textContent = '';
       const idx = FW.weightedIndex(cfg.entries, state.rng);
+      // a rare result (under 2.5% of the wheel) gets a longer, slower stop, a stronger glow and the rare fanfare
+      const rare = cfg.entries[idx].w / total < 0.025 && cfg.entries.length > 4;
+      const dur = FW.spinDuration ? FW.spinDuration(state.speed) : state.speed === 'fast' ? 2300 : 4600;
       wheel.onLabel = (e, i, final) => {
         if (!final && !cfg.mystery) setResult(e.name);
       };
       wheel.onTick = (i, sp) => FW.Audio.tick(sp);
       await wheel.spinTo(idx, {
-        duration: FW.spinDuration ? FW.spinDuration(state.speed) : state.speed === 'fast' ? 2300 : 4600,
+        duration: rare && dur > 1000 ? Math.round(dur * 1.4) : dur,
         rng: state.rng,
+        rare,
       });
       chk();
       const e = cfg.entries[idx];
-      const rare = e.w / total < 0.025 && cfg.entries.length > 4;
       setResult(cfg.display ? cfg.display(idx) : e.name, { rare, pop: true });
       FW.Audio.reveal(rare);
       const info = (cfg.onResult && cfg.onResult(idx)) || {};

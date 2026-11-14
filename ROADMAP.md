@@ -47,6 +47,7 @@ in [docs/release-plan.md](docs/release-plan.md).
 
 ## Recently done
 
+- 0.2.0-alpha.3.5: rare results get a moment: the wheel slows before it lands, the slice flashes and the result glows.
 - 0.2.0-alpha.3.4: fewer buttons: Share and Portrait menus on the card, Share in the Hall, Record in the ☰ menu.
 - 0.2.0-alpha.3.3: painted portraits for the most common races, an illustration for every ending, bosses with
   tricks, family traits and a family tree, card frames by rank, and new names in every saga.

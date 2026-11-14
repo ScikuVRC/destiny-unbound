@@ -4,6 +4,17 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
+## 0.2.0-alpha.3.5 (2026-11-14)
+
+A small update that makes rare results feel rare.
+
+### New
+
+- **Rare results get a moment.** When the wheel is about to land on a rare slice, it slows down and creeps over the
+  last few slices so you see it coming. Then the slice flashes and stays lit with a bright outline, the result
+  pops in with a glow, and the rare fanfare plays. Reduced motion keeps it calm, and with animations off nothing
+  changes.
+
 ## 0.2.0-alpha.3.4 (2026-11-14)
 
 A small update that clears up the buttons.

@@ -508,7 +508,7 @@
           ctx.closePath();
           if (th.glow && (!FW.glowOn || FW.glowOn())) {
             ctx.shadowColor = th.glow;
-            ctx.shadowBlur = G.S * 0.05;
+            ctx.shadowBlur = G.S * (this.rareWin ? 0.11 : 0.05);
           }
           ctx.globalCompositeOperation = th.kind === 'parchment' ? 'multiply' : 'screen';
           ctx.fillStyle = th.hit;
@@ -523,7 +523,7 @@
           ctx.globalCompositeOperation = 'source-over';
           ctx.shadowBlur = 0;
           ctx.lineJoin = 'round';
-          ctx.lineWidth = Math.max(2, G.S * 0.007) * (1 + f);
+          ctx.lineWidth = Math.max(2, G.S * 0.007) * (1 + f) * (this.rareWin ? 1.6 : 1);
           ctx.strokeStyle = th.glow || th.ink || '#fff';
           ctx.stroke();
           ctx.restore();
@@ -829,14 +829,17 @@
     clearFocus() {
       this.focus = -1;
       this.flash = 0;
+      this.rareWin = false;
       this.draw();
     }
-    /* three quick pulses on the winning slice (none when motion is off; one soft pulse when reduced) */
-    flashWin() {
+    /* three quick pulses on the winning slice, five brighter ones for a rare result
+       (none when motion is off; one soft pulse when reduced) */
+    flashWin(rare) {
       const m = FW.motion ? FW.motion() : 'full';
       if (m === 'off' || typeof requestAnimationFrame !== 'function') return;
-      const pulses = m === 'reduced' ? 1 : 3,
-        dur = pulses * 260,
+      const pulses = m === 'reduced' ? 1 : rare ? 5 : 3,
+        peak = rare && m !== 'reduced' ? 1 : 0.8,
+        dur = pulses * (rare ? 300 : 260),
         t0 = performance.now(),
         focus = this.focus;
       cancelAnimationFrame(this._flashRaf);
@@ -847,7 +850,7 @@
           if (!this.spinning) this.draw();
           return;
         }
-        this.flash = 0.8 * Math.sin(Math.PI * ((x * pulses) % 1)) * (1 - x * 0.5);
+        this.flash = peak * Math.sin(Math.PI * ((x * pulses) % 1)) * (1 - x * 0.5);
         this.draw();
         this._flashRaf = requestAnimationFrame(step);
       };
@@ -871,10 +874,13 @@
       const delta = dir > 0 ? (((-alpha - r0) % TAU) + TAU) % TAU : (((r0 + alpha) % TAU) + TAU) % TAU;
       const r1 = r0 + dir * (turns * TAU + delta);
       this.focus = -1;
+      this.rareWin = false;
       this.spinning = true;
       this._skip = false;
       const t0 = performance.now();
-      const ease = x => 1 - Math.pow(1 - x, 3.8);
+      // a rare result creeps over the last slices before it stops
+      const pw = opts.rare ? 5.4 : 3.8;
+      const ease = x => 1 - Math.pow(1 - x, pw);
       return new Promise(resolve => {
         const step = now => {
           let x = Math.min(1, (now - t0) / dur);
@@ -906,9 +912,10 @@
             this.focus = idx;
             this.kick = 0;
             this._lastIdx = idx;
+            this.rareWin = !!opts.rare;
             if (this.onLabel) this.onLabel(this.entries[idx], idx, true);
             this.draw();
-            this.flashWin();
+            this.flashWin(opts.rare);
             resolve(idx);
           }
         };
