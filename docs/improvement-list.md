@@ -1,6 +1,6 @@
 # Destiny Unbound: what can be improved
 
-Written 2026-11-13, after 0.2.0-alpha.1. Based on a pass through the code, assets, tests and docs.
+Written 2026-11-13, after 0.2.0-alpha.1. Checkmarks updated 2026-11-15, at 0.2.0-alpha.4.2. Based on a pass through the code, assets, tests and docs.
 Each item has a rough size: **S** (an hour or two), **M** (a day), **L** (several days or more).
 Items marked ★ are the ones I'd do first. ✅ = done, ⬜ = not yet. Numbers stay the same as items get done.
 
@@ -70,7 +70,7 @@ Where the game stands: about 6,800 lines of game code, 26 wheels per hero, 98 ra
    winning slice.
 26. ✅ ★ **A real character card moment (M).** Done 2026-11-14: reveal, flip to the back, Share. The card is the reward for 26 spins. Animate it assembling, let players
    flip it, and add a "share" button that copies the image.
-27. ⬜ **Apply the spin-screen polish everywhere (M).** The card, home, hall and options screens haven't had the same
+27. ⬜ **Apply the spin-screen polish everywhere (M).** Partly done 2026-11-14: Options remodelled into five tabs and Content & mods built new; card, home and hall still to do. The card, home, hall and options screens haven't had the same
    alignment pass as the spin screen.
 28. ⬜ **Story screen identity (M).** Story chapters reuse the creation screen. Give them a chapter banner, a small
    portrait and the saga log as a proper journal.
@@ -80,9 +80,9 @@ Where the game stands: about 6,800 lines of game code, 26 wheels per hero, 98 ra
 31. ⬜ **Onboarding (M).** The first-run guide is four tooltips. A short guided first hero ("spin three wheels, see
    what they do") would teach buffs, tokens and luck.
 32. ⬜ **Transitions (S).** Screens cut. Short fades and a wheel "wind up" make it feel finished.
-33. ⬜ **Phone layout (M).** Not checked on real phones. The painted title menu still falls back to a list there.
+33. ⬜ **Phone layout (M).** Partly done 2026-11-15: Options and Content & mods fit at 320-412 px in emulation (scripts/layout-check.js); still not tried on a real phone. Not checked on real phones. The painted title menu still falls back to a list there.
 34. ⬜ **Controller polish (S).** Check the new Spin settings pop-up and Show upcoming with a controller.
-35. ⬜ **Settings search and reset per option (S).**
+35. ⬜ **Settings search and reset per option (S).** Partly done 2026-11-14: Options has a Reset this tab button; no search yet.
 36. ⬜ **A proper pause menu during story and spins (S).**
 
 ---
@@ -109,7 +109,7 @@ All painted art is made by hand on grok.com and credited "Created with Grok" (lo
 46. ⬜ **Wheel skins (M).** The wheel is drawn in code. Painted hubs and rims per theme, as overlays.
 47. ⬜ **Painted title menu for phones (M).**
 48. ⬜ **Store assets (M).** Capsule images, a banner, 6-8 fresh screenshots of 0.2, an animated GIF of an arc.
-49. ⬜ **Trailer (S for you).** Upload the existing one; then a 0.2 trailer showing arcs and endings.
+49. ✅ **Trailer (S for you).** Done 2026-11-14: a 1080p trailer from real gameplay, on YouTube and linked from the README and itch.io. Upload the existing one; then a 0.2 trailer showing arcs and endings.
 50. ⬜ **Fifth theme (L).** Parked: a new painted title screen, wheel, sounds and music.
 51. ⬜ **Image format (S).** The 12 title images are JPG, 3.8 MB. WebP or AVIF would cut that by half or more and speed
    up the itch.io load.
@@ -123,7 +123,7 @@ Everything is synthesized in 146 lines of code: clever and tiny, but it sounds l
 52. ⬜ ★ **Real sound effects (M).** Wheel ticks, the stop, reveal, rare reveal, button clicks, achievement, death,
    victory. Around 25 sounds. Free licensed packs (CC0) or recorded foley; the mod system already loads custom
    sound files, so the plumbing exists.
-53. ⬜ ★ **Music (L).** Each theme has a generated drone. Real tracks: a title piece, a spinning loop, a story loop, a
+53. ✅ ★ **Music (L).** Done 2026-11-14 as placeholders: optional HD music, a set of tracks per theme made with ACE-Step (an AI music model), disclosed in Options and the credits. Composed or licensed tracks can replace them later. Each theme has a generated drone. Real tracks: a title piece, a spinning loop, a story loop, a
    battle loop and stingers for death, victory and ascension, per theme or shared. Options: commission, CC0
    libraries, or compose. Disclose the source like the art.
 54. ⬜ **Adaptive layers (M).** Raise intensity as the wheel slows or a fight gets close.
@@ -209,7 +209,7 @@ Everything is synthesized in 146 lines of code: clever and tiny, but it sounds l
    `progress.md` is a start) and stop adding features for a week before each.
 94. ⬜ **Windows code signing (S, costs money).** Removes the SmartScreen warning that scares new players.
 95. ⬜ **Mac and Linux testing (M).** Never tested by a human (issues #2 and #3).
-96. ⬜ **Itch.io page refresh (S).** New screenshots, the trailer embed, the 0.2 feature list, a devlog post.
+96. ✅ **Itch.io page refresh (S).** Done 2026-11-14: page refreshed with the trailer and new screenshots. New screenshots, the trailer embed, the 0.2 feature list, a devlog post.
 97. ⬜ **Devlogs (S each).** Itch.io devlogs and a Discord post per release bring players back.
 98. ⬜ **Bot commands (M).** On the 0.2 list: `/daily`, `/legend <code>` to show a card, `/versus`.
 99. ⬜ **Mod gallery (M).** A place to share mods and wheel packs: a Discord forum channel first, a page later.

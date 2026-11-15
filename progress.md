@@ -32,8 +32,8 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 | Optional HD music (placeholder tracks made with ACE-Step), asked on first launch; music and effects volume sliders work again; new trailer and screenshots (small update) | 0.2.0-alpha.3.6 | ✅ released 2026-11-14 |
 | Every theme gets its own HD music: 21 new tracks for Astral Oracle, Iron Litany and Blood Moon (small update) | 0.2.0-alpha.3.7 | ✅ released 2026-11-14 |
 | Content & mods: one place to switch content off (presets, story rules, chapter groups), a new Wheel Workshop, packs and mods together, "Never roll this again" under results, Options down to 5 tabs; Workshop saves every change; mod switches keep their state | 0.2.0-alpha.4 | ✅ released 2026-11-14 |
-| The new menus translated (es, fr, de, ja); Workshop and Options fit on phones; English first in the Language menu (small update) | 0.2.0-alpha.4.2 | ✅ released 2026-11-15 |
 | Content & mods presets stay selected: Gentle and Classic fantasy replace each other instead of stacking (bug fix) | 0.2.0-alpha.4.1 | ✅ released 2026-11-15 |
+| The new menus translated (es, fr, de, ja); Workshop and Options fit on phones; English first in the Language menu (small update) | 0.2.0-alpha.4.2 | ✅ released 2026-11-15 |
 | Alpha test with 5-15 players | two weeks after release | ⬜ |
 | Beta (fixes from the alpha, signed build, store page) | 0.2.0-beta.1 | ⬜ |
 | 1.0 on itch.io | 1.0.0 | ⬜ |
@@ -53,7 +53,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 - ✅ Release announcements, 2026-11-13: every release tag posts an embed in #announcements through a webhook (`scripts/discord-announce.js`, the `announce` job in `release.yml`, secret `DISCORD_WEBHOOK`). `announce-test.yml` sends a manual test post
 - ✅ itch.io uploads from CI: the `itch` job in `release.yml` uploads every release tag (`BUTLER_API_KEY` secret added 2026-11-13; first run with 0.1.0-alpha.6). By hand: `node scripts/itch-push.js --web --modkit`
 - ✅ Issue forms (bug report, suggestion) and `CONTRIBUTING.md`, 2026-11-13
-- ✅ Trailer and GIF from real gameplay, 2026-11-13 (`npm run trailer`; GIF in the README and a 2.2 MB one on itch.io). ⬜ Upload the trailer to YouTube or Vimeo so the itch.io page can embed it
+- ✅ Trailer and GIF from real gameplay, 2026-11-13 (`npm run trailer`; GIF in the README and a 2.2 MB one on itch.io). ✅ Trailer on YouTube (2026-11-14), linked from the README and itch.io
 - ✅ Tester invites ready, 2026-11-13: texts in `docs/tester-invite.md` (Tester role and Testing channels, itch.io and Discord links, what to test, bug reports in #bug-reports or the GitHub issue forms), plan in `docs/alpha-testing.md`. Sent by the developer as an open call
 
 ## Ready for the next alpha (not released yet)
