@@ -10,9 +10,13 @@ const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');
 
+//   node scripts/make-trailer.js --vertical   writes dist/trailer/destiny-unbound-tiktok.mp4 (1080x1920, under a
+//                                    minute, opens on the rare spin) from `record-trailer.js --vertical` clips
+const VERT = process.argv.includes('--vertical');
 const ROOT = path.join(__dirname, '..');
 const DIR = path.join(ROOT, 'dist', 'trailer');
-const CLIPS = path.join(DIR, 'clips');
+const CLIPS = path.join(DIR, VERT ? 'clips-vertical' : 'clips');
+const [VW, VH] = VERT ? [1080, 1920] : [1920, 1080];
 const MUSIC = path.join(ROOT, 'app', 'music');
 const marks = JSON.parse(fs.readFileSync(path.join(CLIPS, 'marks.json'), 'utf8'));
 const land = name => (marks[name] && marks[name].land) || 0;
@@ -20,24 +24,41 @@ const ffmpeg = args => execFileSync('ffmpeg', ['-loglevel', 'error', '-y', ...ar
 
 // [clip, from (s), to (s), speed, zoom]: zoom slowly pushes in on still shots
 const CARD = 2.2;
-const shots = [
-  ['open', 0.3, 4.8, 1, true],
-  ['card-spin', 0.2, 0.2 + CARD, 1],
-  ['rare', 0.4, land('rare') + 2.0, 1],
-  ['forge', 0.6, 16, 2.5],
+// the short vertical cut: the hook (a rare spin landing) comes first, title cards are shorter, under a minute in all
+const vshots = [
+  ['rare', Math.max(0.4, land('rare') - 4.2), land('rare') + 1.8, 1],
+  ['card-spin', 0.2, 1.9, 1],
+  ['forge', 0.6, 13, 2.5],
   ['card', 0.2, 6.8, 1],
-  ['card-saga', 0.2, 0.2 + CARD, 1],
-  ['choice', 0.6, land('choice') + 1.6, 1],
-  ['card-boss', 0.2, 0.2 + CARD, 1],
-  ['boss', 0.8, land('boss') + 2.0, 1],
-  ['card-house', 0.2, 0.2 + CARD, 1],
-  ['house', 0.3, 4.2, 1, true],
-  ['card-end', 0.2, 0.2 + CARD, 1],
-  ['ending', 0.4, land('ending') + 3.6, 1],
-  ['card-worlds', 0.2, 0.2 + CARD, 1],
+  ['card-saga', 0.2, 2.1, 1],
+  ['choice', Math.max(0.6, land('choice') - 4.5), land('choice') + 1.6, 1],
+  ['boss', Math.max(0.8, land('boss') - 3.5), land('boss') + 1.8, 1],
+  ['house', 0.3, 3.4, 1, true],
+  ['card-end', 0.2, 2.1, 1],
+  ['ending', Math.max(0.4, land('ending') - 4.5), land('ending') + 3.2, 1],
   ['worlds', 0.1, 6.0, 1],
-  ['endcard', 0.2, 5.4, 1, true],
+  ['endcard', 0.2, 4.6, 1, true],
 ];
+const shots = VERT
+  ? vshots
+  : [
+      ['open', 0.3, 4.8, 1, true],
+      ['card-spin', 0.2, 0.2 + CARD, 1],
+      ['rare', 0.4, land('rare') + 2.0, 1],
+      ['forge', 0.6, 16, 2.5],
+      ['card', 0.2, 6.8, 1],
+      ['card-saga', 0.2, 0.2 + CARD, 1],
+      ['choice', 0.6, land('choice') + 1.6, 1],
+      ['card-boss', 0.2, 0.2 + CARD, 1],
+      ['boss', 0.8, land('boss') + 2.0, 1],
+      ['card-house', 0.2, 0.2 + CARD, 1],
+      ['house', 0.3, 4.2, 1, true],
+      ['card-end', 0.2, 0.2 + CARD, 1],
+      ['ending', 0.4, land('ending') + 3.6, 1],
+      ['card-worlds', 0.2, 0.2 + CARD, 1],
+      ['worlds', 0.1, 6.0, 1],
+      ['endcard', 0.2, 5.4, 1, true],
+    ];
 
 // build the video graph: trim, speed, optional push-in, dip to black at both ends, then join
 const inputs = [],
@@ -49,7 +70,7 @@ shots.forEach(([clip, from, to, speed, zoom], i) => {
   const len = (to - from) / speed;
   const fade = clip.startsWith('card') || clip === 'open' || clip === 'endcard' ? 0.5 : 0.3;
   const push = zoom
-    ? `,scale=2112:1188,zoompan=z='1+0.05*on/(${Math.round(len * 30)})':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s=1920x1080:fps=30`
+    ? `,scale=${Math.round(VW * 1.1)}:${Math.round(VH * 1.1)},zoompan=z='1+0.05*on/(${Math.round(len * 30)})':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s=${VW}x${VH}:fps=30`
     : '';
   parts.push(
     `[${i}:v]trim=${from}:${to},setpts=(PTS-STARTPTS)/${speed},fps=30${push},format=yuv420p,` +
@@ -64,7 +85,7 @@ parts.push(shots.map((s, i) => `[v${i}]`).join('') + `concat=n=${shots.length}:v
 
 // music: title theme until the boss card, battle theme after it, the legend stinger when the ending lands
 const n = shots.length,
-  tBoss = starts['card-boss'].at,
+  tBoss = starts[VERT ? 'boss' : 'card-boss'].at,
   tLegend = at('ending', land('ending'));
 inputs.push(
   '-i',
@@ -85,7 +106,7 @@ parts.push(
 
 const graph = path.join(DIR, 'trailer-graph.txt');
 fs.writeFileSync(graph, parts.join(';\n'));
-const mp4 = path.join(DIR, 'destiny-unbound-trailer.mp4');
+const mp4 = path.join(DIR, VERT ? 'destiny-unbound-tiktok.mp4' : 'destiny-unbound-trailer.mp4');
 ffmpeg([
   ...inputs,
   '-filter_complex_script',
@@ -111,6 +132,12 @@ ffmpeg([
   mp4,
 ]);
 
+const mb = f => (fs.statSync(f).size / 1048576).toFixed(1) + ' MB';
+if (VERT) {
+  console.log(`vertical trailer ${total.toFixed(1)} s, ${mb(mp4)}: ${mp4}`);
+  process.exit(0);
+}
+
 // a 720p copy small enough for browser uploads (under 10 MB)
 const small = path.join(DIR, 'destiny-unbound-trailer-720p.mp4');
 const kbps = Math.floor((9.3 * 8 * 1024) / total) - 128;
@@ -131,7 +158,6 @@ const itch = path.join(DIR, 'destiny-unbound-itch.gif');
 ffmpeg(['-i', gifSrc, '-vf', 'fps=12,scale=600:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=96:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle', itch]); // prettier-ignore
 fs.rmSync(gifSrc, { force: true });
 
-const mb = f => (fs.statSync(f).size / 1048576).toFixed(1) + ' MB';
 console.log(`trailer ${total.toFixed(1)} s, ${mb(mp4)}: ${mp4}`);
 console.log(`720p copy ${mb(small)}: ${small}`);
 console.log(`gif ${mb(gif)}, itch gif ${mb(itch)}`);

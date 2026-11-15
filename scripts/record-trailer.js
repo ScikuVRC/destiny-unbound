@@ -3,6 +3,8 @@
 // family tree, a rare ending, the four themes, title cards and an end card. scripts/make-trailer.js cuts them
 // together with the HD music.
 //   npx electron scripts/record-trailer.js [outDir]       (default: dist/trailer/clips)
+//   npx electron scripts/record-trailer.js --vertical     1080x1920 clips for TikTok, Shorts and Reels, in the game's
+//                                                         phone layout (default: dist/trailer/clips-vertical)
 // It renders offscreen with a fresh, throwaway profile, so it never touches your saves. Needs ffmpeg on PATH.
 // SPDX-License-Identifier: GPL-3.0-or-later
 'use strict';
@@ -13,13 +15,17 @@ const path = require('path');
 const { spawn } = require('child_process');
 
 const ROOT = path.join(__dirname, '..');
+const VERT = process.argv.includes('--vertical');
 const OUT = path.resolve(
   process.argv.find((a, i) => i > 1 && !a.startsWith('-') && !a.endsWith('.js')) ||
-    path.join(ROOT, 'dist', 'trailer', 'clips')
+    path.join(ROOT, 'dist', 'trailer', VERT ? 'clips-vertical' : 'clips')
 );
-const W = 1920,
-  H = 1080,
+const W = VERT ? 1080 : 1920,
+  H = VERT ? 1920 : 1080,
   FPS = 30;
+// vertical: the page is drawn at 2x, so the game lays out as a 540x960 phone and every frame is a sharp 1080x1920
+const ZOOM = VERT ? 2 : 1;
+const S = n => Math.round(n / ZOOM); // sizes on the title cards, in page pixels
 app.setPath('userData', fs.mkdtempSync(path.join(os.tmpdir(), 'du-trailer-')));
 app.commandLine.appendSwitch('force-device-scale-factor', '1');
 app.disableHardwareAcceleration(); // offscreen rendering is steadier in software
@@ -59,6 +65,7 @@ app.whenReady().then(async () => {
     `localStorage.setItem('fw.guide','true'); localStorage.setItem('fw.thanks','true'); localStorage.setItem('fw.prefs', JSON.stringify({ muteBg: false, hdMusic: false })); 1`
   );
   await win.loadFile(path.join(ROOT, 'app', 'index.html'));
+  win.webContents.setZoomFactor(ZOOM);
   await js('document.fonts.ready.then(() => 1)');
   // no pop-ups, guides or scrollbars in the footage
   await js(`(() => { const s = document.createElement('style'); s.textContent =
@@ -106,9 +113,9 @@ app.whenReady().then(async () => {
   const card = (line, sub) =>
     js(`(() => { document.getElementById('trCard')?.remove(); const d = document.createElement('div'); d.id = 'trCard';
       d.style.cssText = 'position:fixed;inset:0;z-index:9999;background:radial-gradient(ellipse at center,#1a120c 0%,#050403 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center';
-      d.innerHTML = '<div style="font-family:Cinzel,serif;font-weight:700;font-size:76px;letter-spacing:.08em;color:#e8c37a;text-shadow:0 0 40px rgba(232,140,60,.35)">' + ${JSON.stringify(line)} + '</div>'
-        + (${JSON.stringify(sub || '')} ? '<div style="margin-top:22px;font-family:\\'EB Garamond\\',serif;font-style:italic;font-size:38px;color:#cdbb9c">' + ${JSON.stringify(sub || '')} + '</div>' : '')
-        + '<div style="margin-top:34px;width:260px;height:1px;background:linear-gradient(90deg,transparent,#a7783f,transparent)"></div>';
+      d.innerHTML = '<div style="font-family:Cinzel,serif;font-weight:700;font-size:${S(VERT ? 92 : 76)}px;line-height:1.15;padding:0 ${S(VERT ? 70 : 0)}px;letter-spacing:.08em;color:#e8c37a;text-shadow:0 0 40px rgba(232,140,60,.35)">' + ${JSON.stringify(line)} + '</div>'
+        + (${JSON.stringify(sub || '')} ? '<div style="margin-top:${S(26)}px;font-family:\\'EB Garamond\\',serif;font-style:italic;font-size:${S(VERT ? 54 : 38)}px;color:#cdbb9c">' + ${JSON.stringify(sub || '')} + '</div>' : '')
+        + '<div style="margin-top:${S(34)}px;width:${S(260)}px;height:1px;background:linear-gradient(90deg,transparent,#a7783f,transparent)"></div>';
       document.body.appendChild(d); return 1; })()`);
   const noCard = () => js(`document.getElementById('trCard')?.remove(); 1`);
   const titleOnly = on =>
@@ -263,9 +270,10 @@ app.whenReady().then(async () => {
   // the end card: logo, call to action, platforms
   await js(`FWApp.setTheme('ashen'); 1`);
   await titleOnly(true);
+  // vertical: the text sits in the middle, clear of the caption and buttons TikTok draws over the bottom and right
   await js(`(() => { const d = document.createElement('div');
-    d.style.cssText = 'position:fixed;inset:0;z-index:99;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding-bottom:110px;background:linear-gradient(transparent 30%, rgba(5,4,3,.94) 76%);font-family:Cinzel,serif;color:#e8c37a;text-align:center;text-shadow:0 2px 14px #000';
-    d.innerHTML = '<div style="font-size:52px;font-weight:700;letter-spacing:.1em">Play free now</div><div style="font-family:\\'EB Garamond\\',serif;font-size:36px;color:#d9ccb4;margin:16px 0 26px">In your browser, or on Windows, Mac and Linux · Free and open source</div><div style="font-size:42px;letter-spacing:.05em;color:#fff">bzrkherja.itch.io/destiny-unbound</div>';
+    d.style.cssText = 'position:fixed;inset:0;z-index:99;display:flex;flex-direction:column;justify-content:${VERT ? 'center' : 'flex-end'};align-items:center;padding:0 ${S(VERT ? 70 : 0)}px ${S(VERT ? 0 : 110)}px;background:${VERT ? 'rgba(5,4,3,.82)' : 'linear-gradient(transparent 30%, rgba(5,4,3,.94) 76%)'};font-family:Cinzel,serif;color:#e8c37a;text-align:center;text-shadow:0 2px 14px #000';
+    d.innerHTML = '<div style="font-size:${S(VERT ? 84 : 52)}px;font-weight:700;letter-spacing:.1em">Play free now</div><div style="font-family:\\'EB Garamond\\',serif;font-size:${S(VERT ? 50 : 36)}px;color:#d9ccb4;margin:${S(16)}px 0 ${S(26)}px">In your browser, or on Windows, Mac and Linux · Free and open source</div><div style="font-size:${S(VERT ? 46 : 42)}px;letter-spacing:.03em;color:#fff">bzrkherja.itch.io/destiny-unbound</div>';
     document.body.appendChild(d); return 1; })()`);
   await sleep(600);
   await record('endcard', async () => sleep(5500));
