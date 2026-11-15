@@ -25,8 +25,11 @@
   function renderPerson() {
     const p = state.person;
     const sel = PRESETS.map(x => {
+      // entries removed in the Wheel Workshop aren't offered (they can never land, so picking one did nothing)
+      const removed = ((state.overrides && state.overrides[x[0]]) || {}).removed || [];
       const names = x[2]()
         .map(r => r.name)
+        .filter(n => removed.indexOf(n) < 0 || p.presets[x[0]] === n)
         .sort((a, b) => a.localeCompare(b));
       return (
         '<label class="mini"><span>' +
@@ -165,6 +168,11 @@
         /* unreadable: keep the drawn card */
       }
     }
+  };
+  const prevWorkshop = App.hooks.workshopChanged;
+  App.hooks.workshopChanged = k => {
+    if (prevWorkshop) prevWorkshop(k);
+    renderPerson();
   };
   App.hooks.reset = () => {
     idb.clear();

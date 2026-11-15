@@ -281,3 +281,38 @@ body.no-glow #chipEmoji .ico{filter:none}
 
 /* the painted ending */
 .end-art{display:block;width:calc(100% + 8px);margin:-4px -4px 10px;aspect-ratio:16/9;object-fit:cover;border-radius:var(--radius,8px);box-shadow:inset 0 0 0 1px var(--line)}
+
+/* Content & mods hub (content.js) */
+.modal.wide{width:min(1100px,100%)}
+.hub-presets{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:6px 0 14px}
+.hub-card{text-align:left;border:1px solid var(--line);border-radius:var(--radius,8px);background:var(--bg);color:var(--fg);padding:9px 12px;cursor:pointer;font:inherit}
+.hub-card b{display:block;font-family:var(--font-display);letter-spacing:.04em}
+.hub-card small{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
+.hub-card.on,.hub-card:hover,.hub-card:focus-visible{border-color:var(--accent);outline:none}
+.hub-card.on{box-shadow:inset 0 0 0 1px var(--accent)}
+.hub-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.hub-more{margin-top:12px}
+.hub-ws{display:grid;grid-template-columns:220px 1fr;gap:16px}
+.hub-search{width:100%;margin-bottom:8px}
+.hub-list{display:flex;flex-direction:column;gap:2px;margin-bottom:8px}
+.hub-list button{display:flex;justify-content:space-between;gap:6px;text-align:left;background:none;border:0;border-left:3px solid transparent;color:var(--muted);font:inherit;font-family:var(--font-display);font-size:14px;padding:7px 10px;cursor:pointer;border-radius:6px}
+.hub-list button.on,.hub-list button:hover,.hub-list button:focus-visible{color:var(--fg);background:rgba(127,127,127,.12);border-left-color:var(--accent);outline:none}
+.hub-list em{font-style:normal;font-family:var(--font);font-size:12px;color:var(--muted)}
+.ws-list{max-height:48vh;overflow:auto;border:1px solid var(--line);border-radius:var(--radius,8px);padding:4px 10px}
+.ws-e{text-align:left;display:grid;grid-template-columns:24px 1fr auto auto 130px 30px;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--line)}
+.ws-e:last-child{border-bottom:0}
+.ws-e input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);margin:0}
+.ws-e.off .ws-n{color:var(--muted);text-decoration:line-through}
+.ws-lv{font-size:12.5px;color:var(--muted);text-align:right}
+.ws-add{display:flex;gap:8px;margin-top:8px}
+.hub-hr{border:0;border-top:1px solid var(--line);margin:14px 0}
+@media (max-width:760px){.hub-presets{grid-template-columns:1fr 1fr}.hub-cols,.hub-ws{grid-template-columns:1fr}.ws-e{grid-template-columns:24px 1fr auto auto;row-gap:2px}.ws-lv{grid-column:2/-1;text-align:left}}
+
+/* "Not your thing? Never roll this again" under a result */
+.never{margin-top:10px;font-size:14px;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px}
+.never button{background:none;border:0;padding:0;font:inherit;color:var(--accent);text-decoration:underline;cursor:pointer}
+
+/* a one-time tip after the first finished saga */
+.tip-card{position:fixed;right:20px;top:76px;z-index:60;width:min(340px,calc(100% - 40px));background:var(--panel);color:var(--panel-fg);border:1px solid var(--accent);border-radius:var(--radius,8px);padding:12px 14px;box-shadow:0 12px 40px rgba(0,0,0,.6)}
+.tip-card b{display:block;font-family:var(--font-display);font-size:13px;letter-spacing:.1em;color:var(--accent);margin-bottom:4px}
+.tip-card .cta{margin:8px 0 0;justify-content:flex-start}

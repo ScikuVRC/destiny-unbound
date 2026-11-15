@@ -1,5 +1,5 @@
 /* Destiny Unbound service worker: cache-first for the app shell so it works offline */
-const CACHE = 'fatewheel-v61';
+const CACHE = 'fatewheel-v62';
 const FILES = [
   './',
   'index.html',
@@ -51,6 +51,7 @@ const FILES = [
   'js/achievements.js',
   'js/mods.js',
   'js/mods-ui.js',
+  'js/content.js',
   'official/ember-dominion/mod.json',
   'official/ember-dominion/theme.css',
 ];

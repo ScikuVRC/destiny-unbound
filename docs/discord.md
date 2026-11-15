@@ -9,7 +9,7 @@ The desktop app can show what a player is doing in their Discord status:
 
 It talks only to the Discord app on the player's own computer, through Discord's local connection
 (`electron/discord.js`). Nothing goes over the network from the game, and if Discord isn't running nothing happens.
-Players can switch it off in **Options > Gameplay > Discord status**. The browser version can't do this.
+Players can switch it off in **Options > General > Discord status**. The browser version can't do this.
 
 ## What it shows
 

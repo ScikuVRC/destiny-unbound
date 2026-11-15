@@ -1,0 +1,85 @@
+/* Shared look for the Options / Content remodel mockups (Ashen Crown). Mockups only: not loaded by the game. */
+@import url(../../app/css/fonts.css);
+:root {
+  --bg: #0b0908;
+  --panel: #15100c;
+  --panel2: #1c1510;
+  --line: #3a2c20;
+  --line2: #5a4330;
+  --gold: #e8c37a;
+  --gold2: #c9a25e;
+  --ember: #d2602a;
+  --ember2: #a8461b;
+  --text: #e9dfcc;
+  --muted: #a8977d;
+  --dim: #6f604d;
+  --good: #6fae6a;
+  --bad: #c45a4a;
+}
+* { box-sizing: border-box; margin: 0; padding: 0 }
+html, body { width: 1366px; height: 768px; overflow: hidden; background: var(--bg); color: var(--text);
+  font-family: 'EB Garamond', serif; font-size: 17px }
+h1, h2, h3, .cin { font-family: Cinzel, serif; letter-spacing: .06em }
+.topbar { height: 58px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px;
+  border-bottom: 1px solid #241a12; background: #0a0807 }
+.brand { font-family: Cinzel, serif; font-weight: 700; color: var(--gold); letter-spacing: .12em; font-size: 17px;
+  display: flex; gap: 10px; align-items: center }
+.brand i { width: 26px; height: 26px; border-radius: 50%; background: radial-gradient(#f2a33c, #6a2f10); display: inline-block }
+.tb { display: flex; gap: 8px }
+.tb span { border: 1px solid var(--line2); padding: 7px 14px; font-family: Cinzel, serif; font-size: 13px; color: var(--text) }
+.page { padding: 18px 34px }
+.title { text-align: center; font-family: Cinzel, serif; font-size: 40px; color: var(--text); letter-spacing: .1em;
+  text-shadow: 0 0 22px rgba(232, 160, 80, .25) }
+.tabs { display: flex; justify-content: center; gap: 30px; margin: 14px 0 0; border-bottom: 1px solid #2a2017 }
+.tabs span { font-family: Cinzel, serif; font-size: 15px; color: var(--muted); padding: 8px 2px 10px; letter-spacing: .08em }
+.tabs span.on { color: var(--text); border-bottom: 2px solid var(--ember) }
+.tabs span.new::after { content: 'NEW'; font-size: 9px; color: var(--bg); background: var(--ember); padding: 1px 4px;
+  margin-left: 6px; vertical-align: 3px; letter-spacing: .05em }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 16px }
+.grp { border: 1px solid var(--line); background: rgba(21, 16, 12, .9); border-radius: 8px; padding: 14px 18px }
+.grp h3 { font-size: 13px; color: var(--ember); letter-spacing: .16em; margin-bottom: 8px }
+.row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 9px 0;
+  border-bottom: 1px solid #241b13 }
+.row:last-child { border-bottom: 0 }
+.row b { font-weight: 600; font-size: 16px }
+.row small { display: block; color: var(--muted); font-size: 13px; line-height: 1.25; max-width: 330px }
+.seg { display: flex; border: 1px solid var(--line2); border-radius: 6px; overflow: hidden; flex-shrink: 0 }
+.seg span { padding: 6px 12px; font-size: 14px; color: var(--muted); border-left: 1px solid var(--line2) }
+.seg span:first-child { border-left: 0 }
+.seg span.on { background: var(--ember2); color: #fff }
+.sw { width: 46px; height: 24px; border-radius: 12px; background: #2a211a; border: 1px solid var(--line2); position: relative; flex-shrink: 0 }
+.sw::after { content: ''; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #8b7a64 }
+.sw.on { background: #7a3818; border-color: var(--ember) }
+.sw.on::after { left: 25px; background: #f0c27a }
+.slider { width: 190px; height: 4px; background: #3a2c20; border-radius: 2px; position: relative; flex-shrink: 0 }
+.slider i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--ember); border-radius: 2px }
+.slider i::after { content: ''; position: absolute; right: -7px; top: -5px; width: 14px; height: 14px; border-radius: 50%; background: #f0c27a }
+.btn { display: inline-block; border: 1px solid var(--line2); padding: 8px 16px; font-family: Cinzel, serif; font-size: 13px;
+  letter-spacing: .06em; color: var(--text); border-radius: 4px; background: #120d0a }
+.btn.pri { background: linear-gradient(#b4501f, #8a3714); border-color: #e07a3a; color: #fff }
+.btn.ghost { background: transparent }
+.foot { position: absolute; left: 34px; right: 34px; bottom: 16px; display: flex; justify-content: space-between; align-items: center;
+  border-top: 1px solid #2a2017; padding-top: 12px; color: var(--muted); font-size: 14px }
+.note { color: var(--muted); font-size: 14px }
+.anno { position: absolute; background: #f3d34a; color: #1a1406; font-family: 'EB Garamond', serif; font-weight: 600;
+  font-size: 13.5px; line-height: 1.25; padding: 7px 10px; border-radius: 6px; box-shadow: 0 4px 16px rgba(0, 0, 0, .6);
+  max-width: 250px; z-index: 50 }
+.anno::before { content: attr(data-n); display: inline-block; background: #1a1406; color: #f3d34a; border-radius: 50%;
+  width: 18px; height: 18px; text-align: center; font-size: 12px; line-height: 18px; margin-right: 6px }
+.chip { display: inline-block; font-size: 12.5px; padding: 2px 8px; border-radius: 10px; border: 1px solid var(--line2); color: var(--muted) }
+.chip.g { color: #9fd59a; border-color: #3f6b3c }
+.chip.r { color: #e59a8c; border-color: #6b3a32 }
+.card { border: 1px solid var(--line); border-radius: 8px; background: var(--panel); padding: 14px 16px }
+.card.on { border-color: var(--ember); box-shadow: 0 0 0 1px rgba(210, 96, 42, .35) inset }
+.side { display: flex; flex-direction: column; gap: 4px }
+.side span { padding: 9px 14px; border-radius: 6px; color: var(--muted); font-family: Cinzel, serif; font-size: 13.5px; letter-spacing: .05em;
+  display: flex; justify-content: space-between }
+.side span.on { background: #2a1a10; color: var(--text); border-left: 3px solid var(--ember) }
+.side em { font-style: normal; font-family: 'EB Garamond', serif; font-size: 12.5px; color: var(--dim) }
+.search { border: 1px solid var(--line2); border-radius: 6px; padding: 8px 12px; color: var(--dim); font-size: 15px; background: #100c09 }
+
+/* after testing: every switch says its state in words */
+.sw::before { content: 'Off'; position: absolute; right: 56px; top: 2px; font-size: 14px; color: var(--muted); font-family: 'EB Garamond', serif }
+.sw.on::before { content: 'On'; color: #f0c27a }
+.st { display: inline-block; border: 1px solid var(--line2); border-radius: 4px; padding: 1px 7px; font-size: 13px; color: var(--muted); white-space: nowrap }
+.tag-new { position: absolute; right: 18px; bottom: 14px; background: #2f6e5a; color: #fff; font-size: 12.5px; padding: 4px 9px; border-radius: 5px; z-index: 60 }

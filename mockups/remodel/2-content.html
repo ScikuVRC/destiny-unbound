@@ -1,0 +1,57 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Remodel 2: content filters</title><link rel="stylesheet" href="mock.css">
+<style>
+.wrap { display: grid; grid-template-columns: 230px 1fr; gap: 22px; margin-top: 14px }
+.presets { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px }
+.presets .card { padding: 10px 12px }
+.presets b { font-family: Cinzel, serif; font-size: 14px; letter-spacing: .05em }
+.presets small { display: block; color: var(--muted); font-size: 13px; margin-top: 3px; line-height: 1.2 }
+.cats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px }
+.cat { border: 1px solid var(--line); border-radius: 8px; background: var(--panel); padding: 10px 14px }
+.cat .row { padding: 6px 0 }
+.cat h4 { font-family: Cinzel, serif; font-size: 12.5px; color: var(--ember); letter-spacing: .14em; margin-bottom: 2px }
+.cat .row b { font-size: 15px }
+.cat .row small { font-size: 12.5px }
+</style></head><body>
+<div class="topbar"><div class="brand"><i></i>DESTINY UNBOUND</div><div class="tb"><span>Luck: Heroic</span><span>Ashen Crown</span><span>🔊</span><span>☰</span></div></div>
+<div class="page">
+  <div class="title">Content &amp; Mods</div>
+  <div class="tabs"><span class="on">What can happen</span><span>Wheel Workshop</span><span>Packs and mods</span></div>
+  <div class="wrap">
+    <div class="side">
+      <span class="on">Story <em>8 off</em></span><span>Heroes</span><span>Dark themes</span><span>Arena</span>
+      <div class="note" style="margin-top:14px;padding:0 6px;line-height:1.3">Anything you switch off never lands on a wheel. Your saved heroes stay as they are.</div>
+    </div>
+    <div>
+      <div class="presets">
+        <div class="card"><b>Everything</b><small>The full game, as designed</small></div>
+        <div class="card"><b>Gentle</b><small>No death, no curses, no plague</small></div>
+        <div class="card"><b>Classic fantasy</b><small>Elves, dwarves, knights. No sci-fi, no cosmic</small></div>
+        <div class="card on"><b>Custom</b><small>Your own mix (set below)</small></div>
+      </div>
+      <div class="cats">
+        <div class="cat"><h4>How sagas work</h4>
+          <div class="row"><div><b>Death</b><small>Lost battles and curses can end a saga. Old age is the separate Aging switch.</small></div><div class="sw on"></div></div>
+          <div class="row"><div><b>Aging</b><small>Old heroes retire or die of old age</small></div><div class="sw on"></div></div>
+          <div class="row"><div><b>Locked chapters</b><small>Some chapters need a kingdom, an heir…</small></div><div class="sw on"></div></div>
+          <div class="row"><div><b>Dynasty</b><small>Continue as your heir</small></div><div class="sw on"></div></div>
+        </div>
+        <div class="cat"><h4>Story chapters</h4>
+          <div class="row"><div><b>Romance and heirs</b><small>Find love, Have an heir</small></div><div class="sw on"></div></div>
+          <div class="row"><div><b>Rivals and betrayal</b><small>Nemesis, Betrayed by an ally, A rival appears</small></div><div class="sw on"></div></div>
+          <div class="row"><div><b>Kingdoms and war</b><small>Forge a kingdom, Rebellion, War of succession</small></div><div class="sw"></div></div>
+          <div class="row"><div><b>Demons and prophecy</b><small>Bargain with a demon, The evil awakens…</small></div><div class="sw on"></div></div>
+        </div>
+        <div class="cat" style="grid-column: span 2; display:flex; justify-content:space-between; align-items:center">
+          <div><b>Want to pick single chapters, races or weapons?</b> <span class="note">Every entry on every wheel can be switched off or made rarer.</span></div>
+          <span class="btn">Open the Wheel Workshop ›</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="anno" data-n="3" style="left:1030px;top:120px;max-width:300px">Presets first: most players want "no death" or "no sci-fi", not 26 wheels of numbers. One click.</div>
+<div class="anno" data-n="4" style="left:770px;top:640px;max-width:330px">Groups in plain words ("Romance and heirs"), each listing the chapters it covers. Under the hood each switch sets those entries' weight to 0, so packs, codes and the Workshop keep working.</div>
+<div class="anno" data-n="5" style="left:40px;top:520px;max-width:200px">Moves the 8 story switches out of Options › Gameplay, where they were hard to find.</div>
+<div class="tag-new">Updated after the 50-tester test</div>
+</body></html>

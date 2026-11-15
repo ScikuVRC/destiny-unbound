@@ -197,7 +197,8 @@
     return all[all.length - 1];
   }
   FW.addPack = addPack;
-  function packsModal() {
+  // box: draw inside that element (the Content & mods hub); without it, open as its own window
+  function packsModal(box) {
     const all = packs();
     const count = p => Object.keys(p.entries || {}).reduce((t, k) => t + p.entries[k].length, 0);
     const rows = all.length
@@ -229,12 +230,15 @@
           )
           .join('')
       : '<p>No packs installed yet.</p>';
-    App.openModal(
-      '<button class="btn small ghost close">Close ✕</button><h2>Wheel packs</h2><p>Packs add new entries, with their own buffs and debuffs, to any wheel, and can change slice sizes. Share them as <b>.json</b> files. A Legend Code that uses pack entries opens anywhere, but those entries only have their buffs and debuffs where the same pack is installed.</p>' +
+    (box ? html => (box.innerHTML = html) : App.openModal)(
+      (box
+        ? '<h3 class="opt-h">Wheel packs</h3><p>'
+        : '<button class="btn small ghost close">Close ✕</button><h2>Wheel packs</h2><p>') +
+        'Packs add new entries, with their own buffs and debuffs, to any wheel, and can change slice sizes. Share them as <b>.json</b> files. A Legend Code that uses pack entries opens anywhere, but those entries only have their buffs and debuffs where the same pack is installed.</p>' +
         rows +
         '<div class="cta" style="justify-content:flex-start"><button class="btn primary small" id="pkImport">Import a pack file</button><button class="btn small" id="pkExport">Export my Workshop edits as a pack</button></div><input type="file" id="pkFile" accept=".json,application/json" hidden><p id="pkErr" style="color:var(--bad);min-height:1.3em"></p><p class="legend-key">How to write a pack: see docs/modding.md (Wheel packs) and packs/example-sky-pirates.json, in the game\'s source on GitHub.</p>'
     );
-    const root = document.getElementById('modalRoot');
+    const root = box || document.getElementById('modalRoot');
     root.querySelectorAll('[data-en]').forEach(cb =>
       cb.addEventListener('change', () => {
         const a = packs(),
@@ -251,7 +255,7 @@
       b.addEventListener('click', () => {
         removeEntries(b.dataset.del);
         savePacks(packs().filter(x => x.id !== b.dataset.del));
-        packsModal();
+        packsModal(box);
       })
     );
     root.querySelectorAll('[data-exp]').forEach(b =>
@@ -269,7 +273,7 @@
         const p = FW.validatePack(JSON.parse(await f.text()));
         addPack(p);
         App.toast('Pack installed: ' + p.name);
-        packsModal();
+        packsModal(box);
       } catch (er) {
         document.getElementById('pkErr').textContent = 'Could not install: ' + (er.message || er);
       }

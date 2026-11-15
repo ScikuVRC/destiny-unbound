@@ -6,7 +6,7 @@
 
 **Spin the wheels of fate. Forge a legend. Live its story, or die trying.**
 
-[![Version](https://img.shields.io/badge/version-0.2.0--alpha.3.7-8a5fd6)](progress.md)
+[![Version](https://img.shields.io/badge/version-0.2.0--alpha.4-8a5fd6)](progress.md)
 [![License: GPL v3](https://img.shields.io/badge/license-GPL--3.0--or--later-blue)](LICENSE)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux%20%7C%20web-444)
 [![Play on itch.io](https://img.shields.io/badge/play-itch.io-fa5c5c?logo=itch.io&logoColor=white)](https://bzrkherja.itch.io/destiny-unbound)
@@ -111,8 +111,10 @@ backup made every day. Options > Data can export your whole save to move it to a
 5. **Carry on the line.** If your hero had an heir, continue as them, with the house name, an heirloom and
    any living nemesis.
 
-The story features can be switched on or off in Options > Gameplay: chapter requirements, death, aging,
-nemesis, kingdom events, companion loyalty, dynasty and achievements.
+Everything that can happen is yours to choose in **Content & mods** on the main menu: presets (Everything,
+Gentle, Classic fantasy), the story features (chapter requirements, death, aging, nemesis, kingdom events,
+companion loyalty, dynasty and achievements), whole groups of chapters such as romance or curses, and the Wheel
+Workshop for single entries. Any result can also be switched off right where it lands: "Never roll this again".
 
 ## Make it your own
 

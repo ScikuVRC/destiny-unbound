@@ -363,6 +363,17 @@
       const info = (cfg.onResult && cfg.onResult(idx)) || {};
       $('#resultSub').innerHTML = info.sub || '';
       $('#effects').innerHTML = info.fx || '';
+      // "Not your thing? Never roll this again": the quickest way to remove content, right where it lands
+      if (cfg.wsKey && window.FWApp.canNeverRoll && window.FWApp.canNeverRoll(cfg.wsKey, e.name)) {
+        const p = document.createElement('p');
+        p.className = 'never';
+        p.innerHTML =
+          H.esc(tr('Not your thing?')) + ' <button type="button">' + H.esc(tr('Never roll this again')) + '</button>';
+        p.querySelector('button').onclick = () => {
+          if (window.FWApp.neverRoll(cfg.wsKey, e.name)) p.textContent = tr('Removed from future spins.');
+        };
+        $('#effects').appendChild(p);
+      }
       if (cfg.afterResult) cfg.afterResult();
       setControls('result');
       updateTokens();
@@ -564,6 +575,7 @@
           mode: stage.mode,
           hue: stage.hue,
           mystery: stage.mystery,
+          wsKey: FW.LISTS[def.id] ? def.id : '',
           onResult: idx => {
             FW.commitPick(L, stage, idx, state.rng);
             return stageInfo(stage, idx);
@@ -969,11 +981,9 @@
       '<button class="btn small ghost close">Close ✕</button><h2>Menu</h2><div class="opt-grid">' +
         '<button class="opt" data-act="hall"><b>Hall of Legends</b><span>Your saved characters</span></button>' +
         '<button class="opt" data-act="options"><b>Options</b><span>Graphics, sound, gameplay, accessibility, controls and saves</span></button>' +
-        '<button class="opt" data-act="mods"><b>Mods</b><span>Your own themes, sounds, music and wheel entries</span></button>' +
-        '<button class="opt" data-act="packs"><b>Wheel packs</b><span>Install or share packs of new wheel entries</span></button>' +
+        '<button class="opt" data-act="content"><b>Content &amp; mods</b><span>Turn things off, change odds, add packs and mods</span></button>' +
         '<button class="opt" data-act="ach"><b>Achievements</b><span>Badges and the rare entries they unlock</span></button>' +
         '<button class="opt" data-act="versus"><b>Versus</b><span>Pit two legends against each other</span></button>' +
-        '<button class="opt" data-act="workshop"><b>Wheel Workshop</b><span>Edit slice sizes, remove or add entries</span></button>' +
         '<button class="opt" data-act="import"><b>Open a shared card</b><span>See and collect a card someone shared</span></button>' +
         (window.FWApp && window.FWApp.canRecord && window.FWApp.canRecord()
           ? '<button class="opt" data-act="rec"><b>&#9210; Record a video</b><span>A vertical video of your spins for TikTok, Shorts or Reels</span></button>'
@@ -988,7 +998,8 @@
         b.addEventListener('click', () =>
           ({
             hall: hallModal,
-            workshop: workshopModal,
+            workshop: () => window.FWApp.contentModal('workshop'),
+            content: () => window.FWApp.contentModal(),
             import: importModal,
             help: helpModal,
             reset: resetData,
@@ -1137,162 +1148,7 @@
         '<p><b>Luck levels</b> tilt the odds toward higher tiers and richer results: Mortal is fair, Divine produces cosmic heroes. <b>Fate Tokens</b> let you re-spin.</p>'
     );
   }
-  function workshopModal() {
-    const LISTS = FW.LISTS;
-    const items = [
-      ['race', 'Races'],
-      ['birth', 'Birthplaces'],
-      ['bg', 'Backgrounds'],
-      ['per', 'Personalities'],
-      ['cls', 'Classes'],
-      ['wpn', 'Weapons'],
-      ['enh', 'Enhancements'],
-      ['elem', 'Elements'],
-      ['pow', 'Powers'],
-      ['weak', 'Weaknesses'],
-      ['pet', 'Companions'],
-      ['title', 'Titles'],
-      ['mark', 'Marks of Fate'],
-      ['hair', 'Hair'],
-      ['eyes', 'Eyes'],
-      ['garb', 'Outfits'],
-    ]
-      .concat(FW.Story ? [['story', 'Story chapters']] : [])
-      .concat(Object.keys(FW.SUBS).map(k => ['sub:' + k, k + ' kinds']))
-      .concat(FW.STATS.map(s => ['ladder:' + s, LAD[s].label + ' tiers']));
-    let key = 'race';
-    const base = k => {
-      if (k.indexOf('sub:') === 0) return FW.SUBS[k.slice(4)].rows.map(r => ({ name: r.name, w: r.w }));
-      if (k === 'story') return FW.Story.CHAPTERS.filter(c => !c.retire).map(c => ({ name: c.name, w: c.w }));
-      if (k.indexOf('ladder:') === 0) {
-        const L = LAD[k.slice(7)];
-        const w = FW.ladderBase(L.names.length, L.pk, L.decay);
-        return L.names.map((n, i) => ({ name: n, w: Math.round(w[i] * 100) / 100 }));
-      }
-      return LISTS[k]().map(r => ({ name: r.name, w: r.w }));
-    };
-    let ov = {};
-    const load = () => {
-      ov = JSON.parse(JSON.stringify(state.overrides[key] || { weights: {}, removed: [], added: [] }));
-      ov.weights = ov.weights || {};
-      ov.removed = ov.removed || [];
-      ov.added = ov.added || [];
-    };
-    const render = () => {
-      const isLadder = key.indexOf('ladder:') === 0;
-      const rows = base(key)
-        .map(r => {
-          const removed = ov.removed.indexOf(r.name) >= 0;
-          const w = ov.weights[r.name] != null ? ov.weights[r.name] : r.w;
-          return (
-            '<div class="ws-row" style="' +
-            (removed ? 'opacity:.4' : '') +
-            '"><span>' +
-            H.esc(r.name) +
-            '</span><input type="number" min="0.01" step="0.1" value="' +
-            w +
-            '" data-w="' +
-            H.esc(r.name) +
-            '" ' +
-            (removed ? 'disabled' : '') +
-            '>' +
-            (isLadder
-              ? '<span></span>'
-              : '<button class="btn small ghost" data-rm="' +
-                H.esc(r.name) +
-                '" title="Remove / restore">' +
-                (removed ? '↩' : '✕') +
-                '</button>') +
-            '</div>'
-          );
-        })
-        .join('');
-      const added = ov.added
-        .map(
-          (a, i) =>
-            '<div class="ws-row"><span>' +
-            H.esc(a.name) +
-            ' <small>(custom)</small></span><input type="number" min="0.01" step="0.1" value="' +
-            a.w +
-            '" data-aw="' +
-            i +
-            '"><button class="btn small ghost" data-arm="' +
-            i +
-            '">✕</button></div>'
-        )
-        .join('');
-      $('#wsBody').innerHTML =
-        rows +
-        added +
-        (isLadder
-          ? ''
-          : '<div class="field"><input id="wsName" placeholder="New entry name" maxlength="40"><input id="wsW" type="number" value="5" min="0.01" step="0.1" style="max-width:90px"><button class="btn small" id="wsAdd">Add</button></div><p class="legend-key">Custom entries have no stat effects.</p>');
-      const body = $('#wsBody');
-      body.querySelectorAll('[data-w]').forEach(i =>
-        i.addEventListener('input', () => {
-          const v = parseFloat(i.value);
-          if (v > 0) ov.weights[i.dataset.w] = v;
-        })
-      );
-      body.querySelectorAll('[data-rm]').forEach(b =>
-        b.addEventListener('click', () => {
-          const n = b.dataset.rm;
-          const ix = ov.removed.indexOf(n);
-          if (ix >= 0) ov.removed.splice(ix, 1);
-          else ov.removed.push(n);
-          render();
-        })
-      );
-      body.querySelectorAll('[data-aw]').forEach(i =>
-        i.addEventListener('input', () => {
-          const v = parseFloat(i.value);
-          if (v > 0) ov.added[+i.dataset.aw].w = v;
-        })
-      );
-      body.querySelectorAll('[data-arm]').forEach(b =>
-        b.addEventListener('click', () => {
-          ov.added.splice(+b.dataset.arm, 1);
-          render();
-        })
-      );
-      const add = $('#wsAdd');
-      if (add)
-        add.onclick = () => {
-          const n = $('#wsName').value.trim(),
-            w = parseFloat($('#wsW').value);
-          if (!n) return toast('Give the entry a name');
-          if (!(w > 0)) return toast('Weight must be above 0');
-          ov.added.push({ name: n, w });
-          render();
-        };
-    };
-    openModal(
-      '<button class="btn small ghost close">Close ✕</button><h2>Wheel Workshop</h2><p>Make a result more or less likely, remove it, or add your own. Weights are relative: 10 is ten times as likely as 1. Changes apply to your next spins.</p><select id="wsSel">' +
-        items.map(i => '<option value="' + i[0] + '">' + i[1] + '</option>').join('') +
-        '</select><div id="wsBody" style="margin:12px 0"></div><div class="cta" style="justify-content:flex-start;margin:0"><button class="btn primary" id="wsSave">Save this wheel</button><button class="btn ghost" id="wsReset">Reset this wheel</button></div>'
-    );
-    $('#wsSel').onchange = () => {
-      key = $('#wsSel').value;
-      load();
-      render();
-    };
-    $('#wsSave').onclick = () => {
-      const empty = !Object.keys(ov.weights).length && !ov.removed.length && !ov.added.length;
-      if (empty) delete state.overrides[key];
-      else state.overrides[key] = ov;
-      store.set('fw.overrides', state.overrides);
-      toast('Saved');
-    };
-    $('#wsReset').onclick = () => {
-      delete state.overrides[key];
-      store.set('fw.overrides', state.overrides);
-      load();
-      render();
-      toast('Reset to defaults');
-    };
-    load();
-    render();
-  }
+  // the Wheel Workshop now lives in the Content & mods hub (content.js)
 
   /* ---------- wiring ---------- */
   function syncAutoBtn() {

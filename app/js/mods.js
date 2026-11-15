@@ -308,6 +308,10 @@
     const s = settings();
     s[id] = !!on;
     App.store.set('fw.mods', s);
+    // keep the loaded list in step, so reopening the Mods screen shows the saved state (it used to snap back to Off)
+    (M.loaded || []).forEach(m => {
+      if (m.id === id) m.enabled = !!on;
+    });
   };
 
   async function sources() {

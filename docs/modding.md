@@ -61,7 +61,7 @@ working.)
 ## Wheel packs
 
 A pack is a `.json` file that adds entries, with their own buffs and debuffs, to any wheel, and can change
-slice sizes. Install, switch off, export or delete packs from the menu (**Wheel packs**). Your own Workshop
+slice sizes. Install, switch off, export or delete packs in **Content & mods > Packs and mods**. Your own Workshop
 edits can be exported as a pack. See [`packs/example-sky-pirates.json`](../packs/example-sky-pirates.json):
 
 ```json

@@ -1,0 +1,176 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Remodel prototype</title><link rel="stylesheet" href="mock.css">
+<style>
+/* Clickable prototype of the remodel, for task tests. State is kept in localStorage 'proto'. */
+html, body { height: auto; min-height: 768px; overflow: auto }
+.view { display: none } .view.on { display: block }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer }
+.tabs button, .side button { font-family: Cinzel, serif; font-size: 15px; color: var(--muted); padding: 8px 2px 10px; letter-spacing: .08em }
+.tabs button.on { color: var(--text); border-bottom: 2px solid var(--ember) }
+.side button { display: flex; justify-content: space-between; padding: 9px 14px; border-radius: 6px; text-align: left; font-size: 13.5px }
+.side button.on { background: #2a1a10; color: var(--text); border-left: 3px solid var(--ember) }
+.sw { cursor: pointer } .card { cursor: pointer }
+.seg button { padding: 6px 12px; font-size: 14px; color: var(--muted); border-left: 1px solid var(--line2) }
+.seg button:first-child { border-left: 0 } .seg button.on { background: var(--ember2); color: #fff }
+.menu { width: 476px; margin: 30px 0 0 78px; border: 1px solid #4a3725; background: rgba(10, 8, 6, .82); padding: 14px 26px }
+.it { display: flex; width: 100%; align-items: center; gap: 18px; padding: 12px 6px; border-bottom: 1px solid #2a2017; font-family: Cinzel, serif;
+  font-size: 19px; letter-spacing: .14em; color: #c9b38e; text-align: left }
+.it .sub { margin-left: auto; font-family: 'EB Garamond', serif; font-size: 13px; letter-spacing: 0; color: #c9a77a }
+.e { display: grid; grid-template-columns: 26px 1fr 34px 150px 34px 140px; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 1px solid #241b13 }
+.e label { display: contents; cursor: pointer }
+.e .lvl { font-size: 12.5px; color: var(--muted); text-align: right }
+.e.off .nm { color: var(--dim); text-decoration: line-through }
+.step { border: 1px solid var(--line2); border-radius: 4px; width: 30px; height: 26px }
+.toast { position: fixed; right: 20px; bottom: 20px; background: #1a120c; border: 1px solid var(--ember); padding: 10px 14px; border-radius: 8px; display: none }
+.back { position: absolute; left: 20px; top: 70px }
+</style></head><body>
+<div class="topbar"><div class="brand"><i></i>DESTINY UNBOUND</div><div class="tb"><button class="btn" data-go="title">Main menu</button><button class="btn" data-go="options">Options</button></div></div>
+
+<!-- title menu -->
+<section class="view" id="v-title">
+  <div class="menu">
+    <button class="it" data-go="result">New legend</button>
+    <button class="it" data-go="result">Story</button>
+    <button class="it">Arena</button>
+    <button class="it">Daily challenge</button>
+    <button class="it">Hall of legends</button>
+    <button class="it" data-go="wheels">Your wheels<span class="sub">Choose what can happen</span></button>
+    <button class="it" data-go="options">Options</button>
+  </div>
+</section>
+
+<!-- a result on the wheel screen, with the quick hide -->
+<section class="view" id="v-result">
+  <div class="page" style="text-align:center;padding-top:60px">
+    <div class="chip" style="font-size:15px">Chapter 4: What happens next?</div>
+    <div class="title" style="margin:16px 0">Plague</div>
+    <button class="btn">↻ Re-spin</button> <button class="btn pri">Next ▸</button>
+    <p style="margin-top:14px" class="note">Not your thing? <button id="qh" style="text-decoration:underline;color:var(--gold)">Never roll this again</button></p>
+    <div id="qhPop" class="card" style="display:none;max-width:380px;margin:12px auto;text-align:left">
+      <b>Stop "Plague" from coming up?</b><br>
+      <button class="btn" id="qhNever" style="margin-top:6px">Never roll it again</button>
+      <button class="btn" id="qhRarer" style="margin-top:6px">Make it rarer</button>
+    </div>
+  </div>
+</section>
+
+<!-- Your wheels -->
+<section class="view" id="v-wheels">
+  <div class="page">
+    <div class="title">Your Wheels</div>
+    <div class="tabs" id="wtabs"><button data-wt="happen" class="on">What can happen</button><button data-wt="workshop">Wheel Workshop</button><button data-wt="addons">Packs and mods</button></div>
+    <div id="wt-happen" style="margin-top:14px">
+      <p class="note" style="margin-bottom:8px">Quick start: pick a preset, or switch single things off below. Changes save as you go.</p>
+      <div class="presets" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px">
+        <button class="card" data-preset="everything"><b>Everything</b><br><small class="note">The full game, as designed</small></button>
+        <button class="card" data-preset="gentle"><b>Gentle</b><br><small class="note">No death, no curses, no plague</small></button>
+        <button class="card" data-preset="classic"><b>Classic fantasy</b><br><small class="note">No sci-fi, no cosmic races</small></button>
+        <button class="card" data-preset="custom"><b>Custom</b><br><small class="note">Your own mix (set below)</small></button>
+      </div>
+      <div class="grid2" style="margin-top:0">
+        <div class="grp"><h3>HOW SAGAS WORK</h3><div id="rules"></div></div>
+        <div class="grp"><h3>STORY CHAPTERS</h3><div id="groups"></div></div>
+      </div>
+      <p class="note" style="margin-top:12px">Want to pick single chapters, races or weapons? <button class="btn" data-wt="workshop">Open the Wheel Workshop ›</button></p>
+    </div>
+    <div id="wt-workshop" style="display:none;margin-top:14px">
+      <div style="display:grid;grid-template-columns:230px 1fr;gap:20px">
+        <div><input class="search" id="wsearch" placeholder="Find a wheel or entry…" style="width:100%"><div class="side" id="wlist" style="margin-top:10px"></div></div>
+        <div><div class="note" id="wcount" style="margin-bottom:6px"></div><div id="entries"></div></div>
+      </div>
+    </div>
+    <div id="wt-addons" style="display:none;margin-top:14px">
+      <div id="banner" class="card" style="display:none;margin-bottom:12px">The Ember Dominion is switched on and saved. It loads when the game restarts. <button class="btn pri">↻ Restart now</button></div>
+      <div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div><b>The Ember Dominion</b> <span class="chip">Official</span><br><span class="note">A dying star-empire: 1 theme, 41 wheel entries. Restart needed.</span></div><div class="sw" data-addon="ember" role="switch" aria-label="The Ember Dominion"></div></div>
+      <div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div><b>Sky Pirates</b> <span class="chip">Wheel pack</span><br><span class="note">24 entries on six wheels.</span></div><div class="sw" data-addon="sky" role="switch" aria-label="Sky Pirates"></div></div>
+      <div class="card"><b>Add a pack or mod</b> <button class="btn">Choose file…</button> <button class="btn">📦 Get the mod kit</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- Options -->
+<section class="view" id="v-options">
+  <div class="page">
+    <div class="title">Options</div>
+    <div class="tabs" id="otabs"><button data-ot="general" class="on">General</button><button data-ot="sound">Sound</button><button data-ot="access">Accessibility</button><button data-ot="controls">Controls</button><button data-ot="saves">Saves and privacy</button></div>
+    <div id="ot-general" class="grid2">
+      <div class="grp"><h3>LOOK AND LANGUAGE</h3>
+        <div class="row"><b>Language</b><div class="seg"><button class="on">English</button><button>Español</button><button>Français</button></div></div>
+        <div class="row"><b>Theme</b><div class="seg"><button class="on">Ashen</button><button>Astral</button><button>Iron</button><button>Blood Moon</button></div></div>
+        <div class="row"><b>Interface size</b><div class="seg"><button>90%</button><button class="on">100%</button><button>115%</button></div></div>
+      </div>
+      <div class="grp"><h3>SPINNING</h3>
+        <div class="row"><div><b>Spin speed</b><small>Instant shows each result at once</small></div><div class="seg" id="speed"><button data-speed="normal">Normal</button><button data-speed="fast">Fast</button><button data-speed="instant">Instant</button></div></div>
+        <div class="row"><b>Spin direction</b><div class="seg"><button class="on">Anticlockwise</button><button>Clockwise</button></div></div>
+        <div class="row"><div><b>Performance</b></div><div class="seg"><button>Low</button><button class="on">Balanced</button><button>High</button></div></div>
+        <div class="row"><div><b>Choose what can happen</b><small>Switch off death, romance, sci-fi races and more</small></div><button class="btn" data-go="wheels">Your wheels ›</button></div>
+      </div>
+    </div>
+    <div id="ot-sound" class="grid2" style="display:none"><div class="grp"><h3>VOLUME</h3><div class="row"><b>Master</b><span class="note">80%</span></div><div class="row"><b>Music</b><span class="note">35%</span></div><div class="row"><b>HD music</b><div class="sw"></div></div></div></div>
+    <div id="ot-access" class="grid2" style="display:none"><div class="grp"><h3>READING</h3><div class="row"><b>Text size</b><span class="note">100%</span></div><div class="row"><b>Reduce motion and flashing</b><div class="sw"></div></div><div class="row"><b>Sound captions</b><div class="sw"></div></div></div></div>
+    <div id="ot-controls" class="grid2" style="display:none"><div class="grp"><h3>KEYBOARD</h3><div class="row"><b>Spin</b><span class="note">Space</span></div></div></div>
+    <div id="ot-saves" class="grid2" style="display:none"><div class="grp"><h3>BACKUPS</h3><div class="row"><b>Back up now</b></div><div class="row"><b>Export save</b></div></div><div class="grp"><h3>PRIVACY</h3><div class="row"><b>World counter</b><div class="sw"></div></div></div></div>
+  </div>
+</section>
+<div class="toast" id="toast"></div>
+
+<script>
+const RULES = [['death', 'Death', 'Lost battles and curses can end a saga'], ['aging', 'Aging', 'Old heroes retire or die of old age'], ['requirements', 'Locked chapters', 'Some chapters need a kingdom, an heir…'], ['dynasty', 'Dynasty', 'Continue as your heir']];
+const GROUPS = [['romance', 'Romance and heirs', ['Find love', 'Have an heir']], ['rivals', 'Rivals and betrayal', ['Your nemesis strikes', 'Betrayed by an ally', 'A rival appears']], ['war', 'Kingdoms and war', ['Forge a kingdom', 'Rebellion in your kingdom', 'War of succession']], ['dark', 'Demons and prophecy', ['Bargain with a demon', 'The demon comes to collect', 'The evil awakens']]];
+const WHEELS = {
+  Races: [['Human', 22], ['Dwarf', 8], ['Orc', 8], ['Elf', 7], ['Skeleton', 6], ['Beastkin', 7], ['Fairy', 4], ['Zombie', 3], ['Vampire', 2], ['Dragonborn', 1], ['God', 0.3]],
+  'Story chapters': [['Train', 6], ['Do a quest', 6], ['Slay a dragon', 3], ['Find love', 4], ['Have an heir', 3], ['Cursed', 3], ['Plague', 3], ['Bargain with a demon', 2], ['Retire', 4]],
+  Classes: [['Warrior', 8], ['Mage', 6], ['Thief', 6], ['Necromancer', 2]], Weapons: [['Sword', 8], ['Bow', 6], ['Staff', 5]], Powers: [['Fire', 5], ['Ice', 5], ['Time stop', 1]],
+  Weaknesses: [['Fire', 5], ['Silver', 4]], Companions: [['Wolf', 5], ['Raven', 4]], Birthplaces: [['Village', 8], ['Capital city', 5]],
+};
+const LEVELS = [[0.5, 'Legendary'], [1.5, 'Very rare'], [3, 'Rare'], [5, 'Uncommon'], [9, 'Common'], [1e9, 'Very common']];
+const load = () => { try { return JSON.parse(localStorage.getItem('proto')) || {}; } catch (e) { return {}; } };
+let S = Object.assign({ rules: {}, groups: {}, off: {}, w: {}, addons: {}, speed: 'normal', preset: 'everything' }, load());
+const save = () => localStorage.setItem('proto', JSON.stringify(S));
+const $ = s => document.querySelector(s);
+const toast = t => { const e = $('#toast'); e.textContent = t; e.style.display = 'block'; clearTimeout(e._t); e._t = setTimeout(() => (e.style.display = 'none'), 2500); };
+function go(v) { document.querySelectorAll('.view').forEach(x => x.classList.toggle('on', x.id === 'v-' + v)); render(); }
+let wheel = 'Races', wtab = 'happen', otab = 'general';
+function render() {
+  $('#rules').innerHTML = RULES.map(([k, n, d]) => `<div class="row"><div><b>${n}</b><small>${d}</small></div><div class="sw ${S.rules[k] === false ? '' : 'on'}" data-rule="${k}" role="switch" aria-label="${n}"></div></div>`).join('');
+  $('#groups').innerHTML = GROUPS.map(([k, n, l]) => `<div class="row"><div><b>${n}</b><small>${l.join(', ')}</small></div><div class="sw ${S.groups[k] === false ? '' : 'on'}" data-group="${k}" role="switch" aria-label="${n}"></div></div>`).join('');
+  ['happen', 'workshop', 'addons'].forEach(t => { $('#wt-' + t).style.display = t === wtab ? 'block' : 'none'; });
+  document.querySelectorAll('#wtabs button').forEach(b => b.classList.toggle('on', b.dataset.wt === wtab));
+  const q = ($('#wsearch').value || '').toLowerCase();
+  const names = Object.keys(WHEELS).filter(n => !q || n.toLowerCase().includes(q) || WHEELS[n].some(([e]) => e.toLowerCase().includes(q)));
+  $('#wlist').innerHTML = names.map(n => { const ch = WHEELS[n].filter(([e]) => S.off[n + '/' + e] || S.w[n + '/' + e]).length; return `<button data-wheel="${n}" class="${n === wheel ? 'on' : ''}">${n}<em>${ch ? ch + ' changed' : ''}</em></button>`; }).join('') + '<button>More wheels (37) ▾</button>';
+  if (q && !WHEELS[wheel].some(([e]) => e.toLowerCase().includes(q)) && !wheel.toLowerCase().includes(q)) { const hit = Object.keys(WHEELS).find(n => WHEELS[n].some(([e]) => e.toLowerCase().includes(q))); if (hit) wheel = hit; }
+  const list = WHEELS[wheel].filter(([e]) => !q || wheel.toLowerCase().includes(q) || e.toLowerCase().includes(q));
+  $('#wcount').textContent = wheel + ': ' + WHEELS[wheel].length + ' entries, ' + WHEELS[wheel].filter(([e]) => !S.off[wheel + '/' + e]).length + ' on. Changes save as you go.';
+  $('#entries').innerHTML = list.map(([e, w0]) => { const id = wheel + '/' + e, w = S.w[id] || w0, off = S.off[id]; const tot = WHEELS[wheel].reduce((a, [n, b]) => a + (S.off[wheel + '/' + n] ? 0 : S.w[wheel + '/' + n] || b), 0); const lvl = off ? 'Off' : LEVELS.find(([m]) => w < m)[1] + ' · ' + (w / tot * 100).toFixed(1) + '%';
+    return `<div class="e ${off ? 'off' : ''}"><input type="checkbox" ${off ? '' : 'checked'} data-entry="${id}" aria-label="${e}"><span class="nm" data-entry="${id}">${e}</span><button class="step" data-rarer="${id}" aria-label="Rarer: ${e}">−</button><div class="slider"><i style="width:${Math.min(100, Math.round(Math.log2(w * 2 + 1) * 18))}%"></i></div><button class="step" data-likelier="${id}" aria-label="More likely: ${e}">+</button><div class="lvl" style="width:auto">${lvl}</div></div>`; }).join('');
+  document.querySelectorAll('[data-preset]').forEach(c => { c.classList.toggle('on', c.dataset.preset === S.preset); c.setAttribute('aria-pressed', c.dataset.preset === S.preset); });
+  document.querySelectorAll('[data-addon]').forEach(s => s.classList.toggle('on', !!S.addons[s.dataset.addon]));
+  $('#banner').style.display = S.addons.ember ? 'block' : 'none';
+  ['general', 'sound', 'access', 'controls', 'saves'].forEach(t => { $('#ot-' + t).style.display = t === otab ? 'grid' : 'none'; });
+  document.querySelectorAll('#otabs button').forEach(b => b.classList.toggle('on', b.dataset.ot === otab));
+  document.querySelectorAll('#speed button').forEach(b => b.classList.toggle('on', b.dataset.speed === S.speed));
+  document.querySelectorAll('.seg button').forEach(b => b.setAttribute('aria-pressed', b.classList.contains('on')));
+}
+document.addEventListener('click', ev => {
+  const t = ev.target.closest('button, .sw, input, .nm'); if (!t) return;
+  const d = t.dataset;
+  if (d.go) go(d.go);
+  else if (d.wt) { wtab = d.wt; render(); }
+  else if (d.ot) { otab = d.ot; render(); }
+  else if (d.rule) { S.rules[d.rule] = S.rules[d.rule] === false; S.preset = 'custom'; save(); render(); toast('Saved'); }
+  else if (d.group) { S.groups[d.group] = S.groups[d.group] === false; S.preset = 'custom'; save(); render(); toast('Saved'); }
+  else if (d.preset) { S.preset = d.preset; if (d.preset === 'gentle') { S.rules.death = false; S.off['Story chapters/Cursed'] = true; S.off['Story chapters/Plague'] = true; } if (d.preset === 'everything') { S.rules = {}; S.groups = {}; S.off = {}; } save(); render(); toast('Preset applied'); }
+  else if (d.wheel) { wheel = d.wheel; render(); }
+  else if (d.entry) { S.off[d.entry] = !S.off[d.entry]; save(); render(); toast('Saved'); }
+  else if (d.rarer || d.likelier) { const id = d.rarer || d.likelier, base = WHEELS[id.split('/')[0]].find(([e]) => e === id.split('/')[1])[1]; const w = S.w[id] || base; S.w[id] = +(d.rarer ? w / 2 : w * 2).toFixed(2); save(); render(); toast('Saved'); }
+  else if (d.speed) { S.speed = d.speed; save(); render(); toast('Spin speed: ' + d.speed + '. Saved'); }
+  else if (d.addon) { S.addons[d.addon] = !S.addons[d.addon]; save(); render(); }
+  else if (t.id === 'qh') $('#qhPop').style.display = 'block';
+  else if (t.id === 'qhNever') { S.off['Story chapters/Plague'] = true; save(); $('#qhPop').style.display = 'none'; toast('"Plague" will never come up again. Undo in Your wheels.'); }
+  else if (t.id === 'qhRarer') { S.w['Story chapters/Plague'] = 1.5; save(); $('#qhPop').style.display = 'none'; toast('"Plague" is rarer now.'); }
+});
+$('#wsearch').addEventListener('input', render);
+go('title');
+</script>
+</body></html>

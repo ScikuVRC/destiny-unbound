@@ -1,0 +1,49 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Remodel 4: packs and mods</title><link rel="stylesheet" href="mock.css">
+<style>
+.wrap { display: grid; grid-template-columns: 1fr 330px; gap: 22px; margin-top: 16px }
+.addon { display: grid; grid-template-columns: 74px 1fr auto; gap: 16px; align-items: center; margin-bottom: 12px }
+.thumb { width: 74px; height: 74px; border-radius: 8px; border: 1px solid var(--line2); background: linear-gradient(135deg, #3a1e10, #120c08) }
+.addon b { font-family: Cinzel, serif; font-size: 16px; letter-spacing: .04em }
+.addon .meta { margin-top: 5px; display: flex; gap: 6px; flex-wrap: wrap }
+.banner { border: 1px solid #7a5530; background: rgba(160, 80, 30, .18); border-radius: 8px; padding: 10px 14px; display: flex;
+  justify-content: space-between; align-items: center; margin-bottom: 14px }
+</style></head><body>
+<div class="topbar"><div class="brand"><i></i>DESTINY UNBOUND</div><div class="tb"><span>Luck: Heroic</span><span>Ashen Crown</span><span>🔊</span><span>☰</span></div></div>
+<div class="page">
+  <div class="title">Content &amp; Mods</div>
+  <div class="tabs"><span>What can happen</span><span>Wheel Workshop</span><span class="on">Packs and mods</span></div>
+  <div class="wrap">
+    <div>
+      <div class="banner"><span>The Ember Dominion is on and saved. <b>It loads when the game restarts.</b></span><span class="btn pri">↻ Restart now</span></div>
+      <div class="card on addon"><div class="thumb" style="background:linear-gradient(135deg,#5a1e10,#1a0c08)"></div>
+        <div><b>The Ember Dominion</b> <span class="chip">Official</span>
+          <div class="note">A dying star-empire of endless war, templars, machine-priests and void ships.</div>
+          <div class="meta"><span class="chip g">1 theme</span><span class="chip g">41 wheel entries</span><span class="chip" style="color:#f0c27a;border-color:#7a5530">On · loads after restart</span></div></div>
+        <div class="sw on"></div></div>
+      <div class="card addon"><div class="thumb" style="background:linear-gradient(135deg,#1e3a5a,#0a1220)"></div>
+        <div><b>Sky Pirates</b> <span class="chip">Wheel pack</span>
+          <div class="note">Airships, cloud islands and sky-corsairs, added to six wheels.</div>
+          <div class="meta"><span class="chip g">24 entries</span><span class="chip">Works right away</span></div></div>
+        <div class="sw on"></div></div>
+      <div class="card addon" style="border-style:dashed;opacity:.85"><div class="thumb" style="display:flex;align-items:center;justify-content:center;font-size:30px;color:var(--gold)">+</div>
+        <div><b>Add a pack or mod</b><div class="note">Drop a .json pack or a mod folder here, or choose one.</div></div>
+        <span class="btn">Choose file…</span></div>
+    </div>
+    <div>
+      <div class="grp">
+        <h3>MAKE YOUR OWN</h3>
+        <div class="note" style="margin-bottom:10px">Turn your Workshop changes into a pack to share, or start a full mod with themes, sounds and music.</div>
+        <div style="display:flex;flex-direction:column;gap:8px"><span class="btn">Share my Workshop changes as a pack</span><span class="btn">📦 Get the mod kit</span></div>
+      </div>
+      <div class="grp" style="margin-top:14px">
+        <h3>SAFE BY DESIGN</h3>
+        <div class="note">Packs and mods can't run code. Everything in them is checked when it loads. Only install ones you trust.</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="anno" data-n="9" style="left:820px;top:640px;max-width:300px">Packs and mods in one list with real switches (no bare "on" checkbox). Each card says what it adds and whether it needs a restart.</div>
+<div class="anno" data-n="10" style="left:420px;top:640px;max-width:300px">"Restart to apply" only appears when it is needed, as a banner.</div>
+<div class="tag-new">Updated after the 50-tester test</div>
+</body></html>

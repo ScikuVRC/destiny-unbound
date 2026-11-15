@@ -4,6 +4,42 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
+## 0.2.0-alpha.4 (2026-11-14)
+
+Players told us they didn't know they could remove content they don't want to play, and that the menus were hard to
+find their way around. This update puts all of it in one place. The design was tried by 50 test players first; the
+results are in [mockups/remodel/test-results.md](mockups/remodel/test-results.md).
+
+### New
+
+- **Content & mods**, on the main menu (it replaces Mods). Three tabs:
+  - **What can happen:** one-click presets (Everything, Gentle, Classic fantasy, Custom), the story rules (death,
+    aging, nemesis and the rest, moved here from Options), and whole groups of chapters to switch off: Romance and
+    heirs, Rivals and betrayal, Kingdoms and war, Demons and prophecy, Curses and plague.
+  - **Wheel Workshop**, rebuilt: search, the main wheels first, a checkbox for each entry, **Rarer** and **More
+    common** buttons instead of typing numbers, and each entry's chance shown ("Rare · 2.6%").
+  - **Packs and mods** together on one page.
+- **"Never roll this again"** under a result: two clicks and that race, class or chapter never comes up again. Undo
+  it in Content & mods.
+- After your first finished saga, a one-time tip shows where to switch things off.
+
+### Changed
+
+- **Options has five tabs instead of seven:** General, Sound, Accessibility, Controls, and Saves and privacy. One
+  **Performance** choice (Low, Balanced, High) replaces frame limit, wheel sharpness and glows. Luck stays on the
+  home screen; Sound captions are in Accessibility only.
+- The in-game ☰ menu has one Content & mods entry instead of Wheel Workshop, Wheel packs and Mods.
+
+### Fixed
+
+- **The Wheel Workshop saves every change.** It used to throw edits away unless you pressed "Save this wheel", so a
+  removed race could still come up.
+- **Mods keep their state.** A mod switched on showed "Off" again after closing and reopening the Mods screen; the
+  switch now says On or Off.
+- Races removed in the Workshop are no longer offered under "Choose instead of spinning".
+
+The new text is in English for now; the other languages follow.
+
 ## 0.2.0-alpha.3.7 (2026-11-14)
 
 A small update: every theme sounds like itself.

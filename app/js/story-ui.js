@@ -98,6 +98,7 @@
       hue: cfg.hue,
       hint: cfg.hint,
       preFx: isBattle ? H.battle(L.displayName(), cfg.foe, cfg.arena, cfg.report) : '',
+      wsKey: cfg.kind === 'story' ? 'story' : '', // offers "Never roll this again" under a chapter
       onResult: idx => {
         $('#btnStoryExit').hidden = true;
         const e = cfg.entries[idx];
@@ -185,6 +186,7 @@
     else FW.Audio.reveal(true);
     FW.Audio.sting(S.MORTAL[s.end] ? 'defeat' : S.RARE_END[s.end] ? 'legend' : 'victory');
     if (window.FWAchieve) window.FWAchieve.check(L);
+    if (window.FWApp.contentTip) window.FWApp.contentTip(); // once: where to switch content off
     sheet();
     $('#btnSpin').hidden = true;
     F.setControls('result');

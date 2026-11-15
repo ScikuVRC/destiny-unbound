@@ -1,4 +1,5 @@
-/* Destiny Unbound Options screen: Graphics, Audio, Gameplay, Accessibility, Controls, Language and Data.
+/* Destiny Unbound Options screen: General, Sound, Accessibility, Controls, and Saves and privacy.
+   (Content filters, the Wheel Workshop, packs and mods live in the Content & mods hub, content.js.)
    Settings apply as soon as they change; display changes in the desktop app ask to be kept (and undo themselves after 12 seconds).
    SPDX-License-Identifier: GPL-3.0-or-later */
 (function () {
@@ -7,21 +8,25 @@
     H = FW.html,
     App = window.FWApp,
     P = FW.prefs,
-    S = FW.Story,
     SYS = FW.System,
     D = window.fatewheelDesktop || null;
   const $ = s => document.querySelector(s);
   const t = s => (FW.t ? FW.t(s) : s);
   const LOOKS = ['ashen', 'astral', 'iron', 'bloodmoon'];
   const TABS = [
-    ['graphics', 'Graphics'],
-    ['audio', 'Audio'],
-    ['gameplay', 'Gameplay'],
+    ['general', 'General'],
+    ['audio', 'Sound'],
     ['access', 'Accessibility'],
     ['controls', 'Controls'],
-    ['language', 'Language'],
-    ['data', 'Data'],
+    ['data', 'Saves and privacy'],
   ];
+  // one Performance choice instead of frame limit, wheel sharpness and glows
+  const PERF = {
+    low: { fps: 30, quality: 'low', glow: false },
+    balanced: { fps: 60, quality: 'medium', glow: true },
+    high: { fps: 0, quality: 'high', glow: true },
+  };
+  const perfNow = () => Object.keys(PERF).find(k => Object.keys(PERF[k]).every(p => P[p] === PERF[k][p])) || '';
   const ACTIONS = [
     ['advance', 'Spin / skip / next'],
     ['next', 'Next (second key)'],
@@ -39,7 +44,7 @@
     [2560, 1440],
     [3840, 2160],
   ];
-  let tab = 'graphics',
+  let tab = 'general',
     back = 'title',
     win = null,
     restartNote = false;
@@ -56,7 +61,7 @@
     O.capturing = false;
     App.flow.show(back === 'options' ? 'title' : back);
   };
-  App.hooks.optionsModal = () => O.open('gameplay');
+  App.hooks.optionsModal = () => O.open('general');
 
   /* ---------------- controls ---------------- */
   const row = (label, control, note) =>
@@ -135,6 +140,58 @@
 
   /* ---------------- tabs ---------------- */
   const BODY = {
+    general() {
+      const g = BODY.graphics();
+      let h = g.slice(0, g.indexOf('</div><div class="o-grp">')) + '</div>'; // the Display group only
+      const packs = Object.keys(FW.LANG_PACKS || { en: { name: 'English' } });
+      h += '<div class="o-grp"><h3>' + H.esc(t('Look and language')) + '</h3>';
+      h += row(
+        'Theme',
+        sel(
+          'theme',
+          Object.keys(FW.THEMES).map(k => [k, FW.THEMES[k].name + (FW.THEMES[k].mod ? ' (mod)' : '')]),
+          App.state.theme
+        )
+      );
+      h += row(
+        'Language',
+        sel(
+          'lang',
+          packs.map(id => [id, FW.LANG_PACKS[id].name]),
+          FW.lang || 'en'
+        ),
+        'The game restarts in the new language.'
+      );
+      h += '</div>' + BODY.gameplay();
+      h += '<div class="o-grp"><h3>' + H.esc(t('Performance')) + '</h3>';
+      h += row(
+        'Performance',
+        seg(
+          'perf',
+          [
+            ['low', 'Low'],
+            ['balanced', 'Balanced'],
+            ['high', 'High'],
+          ],
+          perfNow()
+        ),
+        'Low is lighter on older PCs: fewer glows, 30 frames a second.'
+      );
+      h += row(
+        'Animations',
+        seg(
+          'anim',
+          [
+            ['full', 'Full'],
+            ['reduced', 'Reduced'],
+            ['off', 'Off'],
+          ],
+          P.anim
+        ),
+        'Reduced spins faster with fewer effects; Off shows results at once.'
+      );
+      return h + '</div>';
+    },
     graphics() {
       const look = LOOKS.indexOf(App.state.theme) >= 0 ? App.state.theme : 'ashen';
       let h = '<div class="o-grp"><h3>' + H.esc(t('Display')) + '</h3>';
@@ -275,11 +332,6 @@
         tog('muteBg', P.muteBg, 'Mute in background'),
         'Silence the game when its window is not in focus.'
       );
-      h += row(
-        'Sound captions',
-        tog('captions', P.captions, 'Sound captions'),
-        'Show a short line saying what each sound means.'
-      );
       h +=
         '<p class="o-note">' +
         H.esc(
@@ -291,7 +343,6 @@
       return h + '</div>';
     },
     gameplay() {
-      const o = FW.gameOptions ? FW.gameOptions() : {};
       let h = '<div class="o-grp"><h3>' + H.esc(t('Spinning')) + '</h3>';
       h += row(
         'Spin speed',
@@ -316,36 +367,17 @@
         )
       );
       h += row(
-        'Luck',
-        seg(
-          'luck',
-          FW.LUCK.map(l => [l.id, l.name]),
-          App.state.luck
-        ),
-        "Shifts every wheel's odds for your next legend."
+        'Choose what can happen',
+        btn('content', 'Content & mods ›'),
+        'Switch off death, romance, sci-fi races and more, or change the odds.'
       );
-      h += row('First-run guide', btn('guide', 'Show it again'));
       if (FW.discordAvailable)
         h += row(
           'Discord status',
           tog('discord', P.discord !== false, 'Discord status'),
           'Show what you\'re playing in your Discord status, for example "Living a saga · Chapter 4". It only talks to the Discord app on this computer.'
         );
-      h += '</div>';
-      if (S && S.OPTIONS) {
-        h +=
-          '<div class="o-grp"><h3>' +
-          H.esc(t('Story')) +
-          '</h3><p class="o-note">' +
-          H.esc(
-            t(
-              'Switch story features on or off. Changes apply from the next chapter. Chapters themselves can be removed or made rarer in the Wheel Workshop.'
-            )
-          ) +
-          '</p>';
-        h += S.OPTIONS.map(x => row(x.name, tog('story:' + x.id, !!o[x.id], x.name), x.blurb)).join('') + '</div>';
-      }
-      return h;
+      return h + '</div>';
     },
     access() {
       let h = '<div class="o-grp"><h3>' + H.esc(t('Reading')) + '</h3>';
@@ -379,7 +411,16 @@
         tog('reduceMotion', P.reduceMotion, 'Reduce motion and flashing'),
         'No shaking, sliding or flashing; shorter spins.'
       );
-      h += row('Sound captions', tog('captions', P.captions, 'Sound captions'));
+      h += row(
+        'Sound captions',
+        tog('captions', P.captions, 'Sound captions'),
+        'Show a short line saying what each sound means.'
+      );
+      h += row(
+        'Emoji instead of drawn icons',
+        tog('emojiIcons', P.emojiIcons, 'Emoji instead of drawn icons'),
+        "The game's own icons match each theme. Switch this on to see your system's emoji instead."
+      );
       h +=
         '<p class="o-note">' +
         H.esc(
@@ -534,6 +575,8 @@
         (D ? ' ' + btn('updates', 'Check for updates') : '') +
         ' ' +
         btn('credits', 'Credits', 'ghost') +
+        ' ' +
+        btn('guide', 'Show the first-run guide again', 'ghost') +
         '</p><p class="o-note" id="oUpd"></p>' +
         (D
           ? row(
@@ -603,11 +646,11 @@
       listBackups();
       listWorld();
     }
-    if (tab === 'graphics' && D && D.windowInfo && !win)
+    if (tab === 'general' && D && D.windowInfo && !win)
       D.windowInfo().then(w => {
         if (w) {
           win = w;
-          if (tab === 'graphics' && O.isOpen()) render();
+          if (tab === 'general' && O.isOpen()) render();
         }
       });
   }
@@ -667,6 +710,12 @@
   function setSeg(id, v) {
     const num = /^-?\d+$/.test(v) ? +v : v;
     if (id === 'display') return display({ mode: v });
+    if (id === 'perf' && PERF[v]) {
+      Object.keys(PERF[v]).forEach(k => FW.setPref(k, PERF[v][k]));
+      rebuildWheel();
+      render();
+      return keepFocus('[data-seg="perf"] [data-v="' + v + '"]');
+    }
     if (id === 'speed') {
       App.state.speed = v;
       App.syncSpeedBtn();
@@ -953,6 +1002,7 @@
         D.checkForUpdates();
       },
       credits: () => App.creditsModal(),
+      content: () => App.contentModal(),
       resetAll: () => App.resetData(),
       resetPrefs: () => {
         FW.resetPrefs();
@@ -964,9 +1014,9 @@
         const d = FW.PREF_DEFAULTS,
           keys =
             {
-              graphics: ['uiScale', 'fps', 'anim', 'quality', 'glow', 'emojiIcons'],
-              audio: ['uiVol', 'muteBg', 'captions'],
-              access: ['textSize', 'contrast', 'cbSafe', 'reduceMotion', 'captions'],
+              general: ['uiScale', 'fps', 'anim', 'quality', 'glow'],
+              audio: ['uiVol', 'muteBg'],
+              access: ['textSize', 'contrast', 'cbSafe', 'reduceMotion', 'captions', 'emojiIcons'],
               controls: ['keys'],
             }[tab] || [];
         keys.forEach(k => {
@@ -978,7 +1028,7 @@
           FW.Audio.setVolume({ master: 0.8, sfx: 0.9, music: 0.35 });
           App.store.set('fw.audio', FW.Audio.vol);
         }
-        if (tab === 'gameplay') {
+        if (tab === 'general') {
           App.state.speed = 'normal';
           App.state.spinDir = 'ccw';
           App.syncSpeedBtn();

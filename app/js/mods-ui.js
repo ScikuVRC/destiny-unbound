@@ -30,7 +30,8 @@
     return p.join(' · ');
   }
   let changed = false;
-  function modsModal() {
+  // box: draw inside that element (the Content & mods hub); without it, open as its own window
+  function modsModal(box) {
     const row = m =>
       '<div class="hall-item' +
       (m.official ? ' official' : '') +
@@ -47,7 +48,11 @@
       H.esc(m.id) +
       '"' +
       (m.enabled ? ' checked' : '') +
-      '> on</label>' +
+      ' aria-label="' +
+      H.esc(m.name) +
+      '"> <span data-modstate>' +
+      H.esc(FW.t(m.enabled ? 'On' : 'Off')) +
+      '</span></label>' +
       (m.source === 'imported' ? ' <button class="btn small ghost" data-rm="' + H.esc(m.key) + '">✕</button>' : '') +
       '</div></div>';
     const official = M.loaded.filter(m => m.official),
@@ -70,8 +75,11 @@
         M.errors.map(e => '<li>' + H.esc(e) + '</li>').join('') +
         '</ul></div>'
       : '';
-    App.openModal(
-      '<button class="btn small ghost close">Close ✕</button><h2>Mods</h2><p>Mods add your own themes (colours, fonts, wheel colours, card style), sounds and music, and new wheel entries. Mods cannot run code, and their style only applies while their theme is selected. Use mods at your own discretion; only install mods you trust.</p>' +
+    (box ? html => (box.innerHTML = html) : App.openModal)(
+      (box
+        ? '<h3 class="opt-h">Mods</h3><p>'
+        : '<button class="btn small ghost close">Close ✕</button><h2>Mods</h2><p>') +
+        'Mods add your own themes (colours, fonts, wheel colours, card style), sounds and music, and new wheel entries. Mods cannot run code, and their style only applies while their theme is selected. Use mods at your own discretion; only install mods you trust.</p>' +
         rows +
         errs +
         '<p id="modNote" class="legend-key">' +
@@ -88,12 +96,14 @@
         MODKIT_URL +
         '" target="_blank" rel="noopener">📦 Get the mod kit</a></div>'
     );
-    const root = $('#modalRoot');
+    const root = box || $('#modalRoot');
     root.querySelectorAll('[data-mod]').forEach(cb =>
       cb.addEventListener('change', () => {
         M.setEnabled(cb.dataset.mod, cb.checked);
         changed = true;
-        $('#modNote').textContent = 'Restart to apply your changes.';
+        cb.parentElement.querySelector('[data-modstate]').textContent = FW.t(cb.checked ? 'On' : 'Off');
+        $('#modNote').textContent = FW.t('Restart to apply your changes.');
+        $('#modReload').classList.add('primary'); // the restart button lights up once it's needed
       })
     );
     root.querySelectorAll('[data-rm]').forEach(b =>
@@ -101,7 +111,7 @@
         await M.remove(b.dataset.rm);
         M.loaded = M.loaded.filter(x => x.key !== b.dataset.rm);
         changed = true;
-        modsModal();
+        modsModal(box);
       })
     );
     if (D) $('#modOpen').onclick = () => D.openModsFolder();

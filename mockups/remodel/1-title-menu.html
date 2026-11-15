@@ -1,0 +1,30 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Remodel 1: title menu</title><link rel="stylesheet" href="mock.css">
+<style>
+body { background: url(../../app/art/ashen-bg.jpg) center/cover }
+.logo { position: absolute; left: 110px; top: 14px; width: 420px; height: 180px; background: url(../../app/art/ashen-logo.jpg) center/contain no-repeat; mix-blend-mode: screen }
+.tag { position: absolute; left: 130px; top: 194px; font-family: Cinzel, serif; color: #b89a6a; letter-spacing: .18em; font-size: 13px }
+.menu { position: absolute; left: 78px; top: 222px; width: 476px; bottom: 40px; border: 1px solid #4a3725; background: rgba(10, 8, 6, .82); padding: 14px 26px }
+.it { display: flex; align-items: center; gap: 18px; padding: 12px 6px; border-bottom: 1px solid #2a2017; font-family: Cinzel, serif;
+  font-size: 19px; letter-spacing: .14em; color: #9d8a6e }
+.it i { width: 22px; height: 22px; border: 1.5px solid #8a7558; border-radius: 50% }
+.it.sel { color: #f3d79a; background: linear-gradient(90deg, rgba(160, 80, 30, .35), transparent); border: 1px solid #7a5530 }
+.it { white-space: nowrap }
+.it .sub { margin-left: auto; white-space: normal; max-width: 150px; line-height: 1.15; font-family: 'EB Garamond', serif; font-size: 13px; letter-spacing: 0; color: #c9a77a; text-transform: none }
+.wheel { position: absolute; right: 30px; top: 60px; width: 640px; height: 640px; background: url(../../app/art/ashen-wheel.jpg) center/contain no-repeat; mix-blend-mode: screen }
+</style></head><body>
+<div class="logo"></div><div class="tag">THE WHEEL TURNS. LEGENDS ARE WRITTEN.</div>
+<div class="wheel"></div>
+<div class="menu">
+  <div class="it"><i></i>New legend</div>
+  <div class="it"><i></i>Story</div>
+  <div class="it"><i></i>Arena</div>
+  <div class="it"><i></i>Daily challenge</div>
+  <div class="it"><i></i>Hall of legends</div>
+  <div class="it sel"><i></i>Content &amp; mods<span class="sub">Turn things off, change odds, add mods</span></div>
+  <div class="it"><i></i>Options</div>
+</div>
+<div class="anno" data-n="1" style="left:575px;top:400px;max-width:300px">"Mods" becomes <b>Content &amp; mods</b> (testers found "Your wheels" unclear, and one looked for the word "Mods"): one home for everything that changes what can roll (content filters, the Wheel Workshop, packs and mods). The subtitle says what it is for, in plain words.</div>
+<div class="anno" data-n="2" style="left:575px;top:590px;max-width:300px">The Workshop leaves the in-game ☰ menu, where most players never saw it. The ☰ menu gets one link: "Content &amp; mods".</div>
+<div class="tag-new">Updated after the 50-tester test</div>
+</body></html>
