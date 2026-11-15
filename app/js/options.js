@@ -49,6 +49,11 @@
     win = null,
     restartNote = false;
   const O = (FW.Options = { capturing: false });
+  // English first, then the other languages by name (same order as the language picker on the title screen)
+  const langIds = () =>
+    Object.keys(FW.LANG_PACKS || { en: { name: 'English' } }).sort((a, b) =>
+      a === 'en' ? -1 : b === 'en' ? 1 : FW.LANG_PACKS[a].name.localeCompare(FW.LANG_PACKS[b].name)
+    );
   O.isOpen = () => App.state.screen === 'options';
   O.open = function (which) {
     if (which) tab = which;
@@ -143,7 +148,7 @@
     general() {
       const g = BODY.graphics();
       let h = g.slice(0, g.indexOf('</div><div class="o-grp">')) + '</div>'; // the Display group only
-      const packs = Object.keys(FW.LANG_PACKS || { en: { name: 'English' } });
+      const packs = langIds();
       h += '<div class="o-grp"><h3>' + H.esc(t('Look and language')) + '</h3>';
       h += row(
         'Theme',
@@ -466,7 +471,7 @@
       return h + '</div>';
     },
     language() {
-      const packs = Object.keys(FW.LANG_PACKS || { en: { name: 'English' } });
+      const packs = langIds();
       return (
         '<div class="o-grp"><h3>' +
         H.esc(t('Language')) +

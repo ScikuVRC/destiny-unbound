@@ -306,7 +306,7 @@ body.no-glow #chipEmoji .ico{filter:none}
 .ws-lv{font-size:12.5px;color:var(--muted);text-align:right}
 .ws-add{display:flex;gap:8px;margin-top:8px}
 .hub-hr{border:0;border-top:1px solid var(--line);margin:14px 0}
-@media (max-width:760px){.hub-presets{grid-template-columns:1fr 1fr}.hub-cols,.hub-ws{grid-template-columns:1fr}.ws-e{grid-template-columns:24px 1fr auto auto;row-gap:2px}.ws-lv{grid-column:2/-1;text-align:left}}
+@media (max-width:760px){.hub-presets{grid-template-columns:1fr 1fr}.hub-cols,.hub-ws{grid-template-columns:minmax(0,1fr)}.hub-ws>*{min-width:0}.ws-e{grid-template-columns:24px 1fr auto auto;row-gap:2px}.ws-lv{grid-column:2/-1;text-align:left}}
 
 /* "Not your thing? Never roll this again" under a result */
 .never{margin-top:10px;font-size:14px;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px}
@@ -316,3 +316,4 @@ body.no-glow #chipEmoji .ico{filter:none}
 .tip-card{position:fixed;right:20px;top:76px;z-index:60;width:min(340px,calc(100% - 40px));background:var(--panel);color:var(--panel-fg);border:1px solid var(--accent);border-radius:var(--radius,8px);padding:12px 14px;box-shadow:0 12px 40px rgba(0,0,0,.6)}
 .tip-card b{display:block;font-family:var(--font-display);font-size:13px;letter-spacing:.1em;color:var(--accent);margin-bottom:4px}
 .tip-card .cta{margin:8px 0 0;justify-content:flex-start}
+@media (max-width:480px){.ws-e{grid-template-columns:24px auto auto 1fr}.ws-e>:first-child{grid-row:1;grid-column:1}.ws-n{grid-row:1;grid-column:2/-1}.ws-e>[data-rarer]{grid-row:2;grid-column:2}.ws-e>[data-common]{grid-row:2;grid-column:3}.ws-e>:last-child{grid-row:2;grid-column:4;justify-self:end}.ws-lv{grid-row:3;grid-column:2/-1}.o-btns{flex-wrap:wrap}.o-hint{order:3;flex-basis:100%;text-align:center}}

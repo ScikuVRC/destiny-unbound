@@ -22,11 +22,11 @@
   /* ---------------- Mods screen ---------------- */
   function summary(m) {
     const p = [];
-    if (m.themes.length) p.push(m.themes.length + ' theme' + (m.themes.length > 1 ? 's' : ''));
+    if (m.themes.length) p.push(m.themes.length + ' ' + FW.t(m.themes.length > 1 ? 'themes' : 'theme'));
     const snd = Object.keys(m.sounds).length + m.themes.reduce((t, x) => t + Object.keys(x.sounds).length, 0);
-    if (snd) p.push(snd + ' sound' + (snd > 1 ? 's' : ''));
+    if (snd) p.push(snd + ' ' + FW.t(snd > 1 ? 'sounds' : 'sound'));
     const ent = m.packs.reduce((t, x) => t + Object.keys(x.entries).reduce((a, k) => a + x.entries[k].length, 0), 0);
-    if (ent) p.push(ent + ' wheel entries');
+    if (ent) p.push(ent + ' ' + FW.t('wheel entries'));
     return p.join(' · ');
   }
   let changed = false;

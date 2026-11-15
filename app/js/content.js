@@ -263,7 +263,13 @@
               : 'Very common';
   function matches(k, q) {
     if (!q) return true;
-    if (nameOf(k).toLowerCase().indexOf(q) >= 0) return true;
+    if (
+      nameOf(k).toLowerCase().indexOf(q) >= 0 ||
+      String(t(nameOf(k)))
+        .toLowerCase()
+        .indexOf(q) >= 0
+    )
+      return true;
     const o = ovOf(k);
     return (
       base(k).some(r => r.name.toLowerCase().indexOf(q) >= 0) || o.added.some(a => a.name.toLowerCase().indexOf(q) >= 0)
@@ -392,7 +398,7 @@
       '<div class="hub-ws"><div class="hub-side">' +
       side +
       '</div><div><p class="legend-key">' +
-      esc(nameOf(wheel)) +
+      esc(t(nameOf(wheel))) +
       ': ' +
       all.length +
       ' ' +

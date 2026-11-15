@@ -1,7 +1,9 @@
 // Layout check for desktop windows and the itch.io frame: opens every main screen at common window sizes, saves a
 // screenshot of each, and reports what doesn't fit: sideways scrolling, SPIN below the bottom edge, text that
 // overflows its box, things past the right edge, and very small text.
-//   npx electron scripts/layout-check.js [outDir] [--only=960x540,1280x800] [--screens=title,spin]
+//   npx electron scripts/layout-check.js [outDir] [--only=960x540,1280x800] [--screens=title,spin] [--lang=de]
+// Extra screens (not in the default run): options-audio, options-access, options-controls, options-data,
+// content-happen, content-workshop, content-addons.
 // It runs in its own hidden window with a fresh, throwaway profile, so it never touches your saves.
 // SPDX-License-Identifier: GPL-3.0-or-later
 'use strict';
@@ -21,6 +23,7 @@ const OUT = path.resolve(
 const SIZES = (
   arg('only') || ['960x540', '1024x600', '1280x720', '1280x800', '1366x768', '1600x900', '1920x1080', '2560x1440']
 ).map(s => s.split('x').map(Number));
+const LANG = (arg('lang') || [''])[0]; // es, fr, de or ja (default: English)
 const THEME = (arg('theme') || [''])[0]; // ashen, astral, iron or bloodmoon (default: the game's default)
 const SCREENS = arg('screens') || [
   'title',
@@ -59,6 +62,13 @@ const OPEN = {
   card: `${LEGEND}; FWApp.showCard()`,
   story: `${LEGEND}; FWApp.showCard(); FWApp.runStory()`,
   options: `FW.Options.open()`,
+  'options-audio': `FW.Options.open('audio')`,
+  'options-access': `FW.Options.open('access')`,
+  'options-controls': `FW.Options.open('controls')`,
+  'options-data': `FW.Options.open('data')`,
+  'content-happen': `FWApp.contentModal('happen')`,
+  'content-workshop': `FWApp.contentModal('workshop')`,
+  'content-addons': `FWApp.contentModal('addons')`,
   hall: `FWApp.hallModal()`,
   achievements: `FWApp.achievementsModal()`,
   ending: `(() => { const L = ${LEGEND}; FW.Story.newSaga(L, {}, FW.makeRng('end')); L.saga.ch = 14; L.saga.end = 'fulfilled'; L.saga.endText = L.displayName() + ' takes the crown, rules for a day and rides away into legend.'; FWApp.showCard(); FWApp.runStory(); })()`,
@@ -118,7 +128,7 @@ app.whenReady().then(async () => {
     };
     await load();
     await js(
-      `localStorage.setItem('fw.guide','true'); localStorage.setItem('fw.thanks','true'); localStorage.setItem('fw.prefs', JSON.stringify({ muteBg: false, sound: false })); 1`
+      `localStorage.setItem('fw.guide','true'); localStorage.setItem('fw.thanks','true'); ${LANG ? "localStorage.setItem('fw.lang', '\"" + LANG + '"\');' : ''} localStorage.setItem('fw.prefs', JSON.stringify({ muteBg: false, sound: false })); 1`
     );
     for (const sc of SCREENS) {
       await load();
@@ -145,7 +155,7 @@ app.whenReady().then(async () => {
       if (img) fs.writeFileSync(path.join(OUT, key + '-' + (THEME ? THEME + '-' : '') + sc + '.jpg'), img.toJPEG(70));
       console.log(
         key.padEnd(10) +
-          sc.padEnd(13) +
+          sc.padEnd(17) +
           (res.problems.length ? res.problems.join('\n' + ' '.repeat(23)) : 'ok') +
           (res.pageHeight > h + 1 ? '   [page scrolls: ' + res.pageHeight + 'px]' : '')
       );

@@ -234,7 +234,7 @@
       (box
         ? '<h3 class="opt-h">Wheel packs</h3><p>'
         : '<button class="btn small ghost close">Close ✕</button><h2>Wheel packs</h2><p>') +
-        'Packs add new entries, with their own buffs and debuffs, to any wheel, and can change slice sizes. Share them as <b>.json</b> files. A Legend Code that uses pack entries opens anywhere, but those entries only have their buffs and debuffs where the same pack is installed.</p>' +
+        'Packs add new entries, with their own buffs and debuffs, to any wheel, and can change slice sizes. Share them as .json files. A Legend Code that uses pack entries opens anywhere, but those entries only have their buffs and debuffs where the same pack is installed.</p>' +
         rows +
         '<div class="cta" style="justify-content:flex-start"><button class="btn primary small" id="pkImport">Import a pack file</button><button class="btn small" id="pkExport">Export my Workshop edits as a pack</button></div><input type="file" id="pkFile" accept=".json,application/json" hidden><p id="pkErr" style="color:var(--bad);min-height:1.3em"></p><p class="legend-key">How to write a pack: see docs/modding.md (Wheel packs) and packs/example-sky-pirates.json, in the game\'s source on GitHub.</p>'
     );

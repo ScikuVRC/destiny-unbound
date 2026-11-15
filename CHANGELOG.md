@@ -4,6 +4,22 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
+## 0.2.0-alpha.4.2 (2026-11-15)
+
+A small update: the new menus in every language, and on phones.
+
+### Changed
+
+- **Content & mods, the Wheel Workshop, packs and mods and the new Options tabs are translated** into Spanish, French,
+  German and Japanese. Story chapter names stay in English, like the rest of the story text for now.
+
+### Fixed
+
+- **The Wheel Workshop fits on phones.** On narrow screens the list stuck out past the right edge; the Rarer and More
+  common buttons now sit under each name.
+- **The Options buttons fit on small phones** in longer languages such as German.
+- **The Language menu in Options lists English first**, then the other languages in order.
+
 ## 0.2.0-alpha.4.1 (2026-11-15)
 
 A bug fix.
