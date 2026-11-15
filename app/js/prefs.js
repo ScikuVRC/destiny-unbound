@@ -87,12 +87,61 @@
     // UI scale: the desktop app zooms the whole window; the browser uses CSS zoom
     const z = (P.uiScale || 100) / 100;
     if (g.fatewheelDesktop && g.fatewheelDesktop.setZoom) {
-      g.fatewheelDesktop.setZoom(z);
-      g.document.documentElement.style.zoom = '';
-    } else g.document.documentElement.style.zoom = z === 1 ? '' : z;
+      // the window's zoom lands a moment later and doesn't always send a resize, so measure again once it has
+      const p = g.fatewheelDesktop.setZoom(z);
+      if (p && p.then)
+        p.then(
+          () => setTimeout(applyZoom, 30),
+          () => 0
+        );
+    }
+    applyZoom();
   };
+  // The interface is laid out for about 1440x810. On bigger windows (1920x1080, 1440p, 4K) everything grows with the
+  // window, so text keeps the same share of the screen; the player's UI scale multiplies on top. CSS zoom on <html>
+  // doesn't change innerWidth, so this never feeds back into itself.
+  const BASE_W = 1440,
+    BASE_H = 810;
+  FW.autoScale = function () {
+    const z = (P.uiScale || 100) / 100,
+      desktop = !!(g.fatewheelDesktop && g.fatewheelDesktop.setZoom);
+    // measured on the real window, so the player's UI scale still makes everything bigger or smaller on top
+    // (the desktop app's zoom shrinks innerWidth; CSS zoom in the browser doesn't)
+    const W = desktop ? g.innerWidth * z : g.innerWidth,
+      H = desktop ? g.innerHeight * z : g.innerHeight;
+    if (!W || !H || W < 900) return 1; // phones and small windows keep their own layouts
+    return Math.max(1, Math.min(3, W / BASE_W, H / BASE_H));
+  };
+  // the zoom on <html> right now (the wheel draws its canvas this much sharper)
+  FW.pageZoom = () => parseFloat(g.document && g.document.documentElement.style.zoom) || 1;
+  function applyZoom() {
+    const d = g.document && g.document.documentElement;
+    if (!d) return;
+    const desktop = !!(g.fatewheelDesktop && g.fatewheelDesktop.setZoom),
+      z = desktop ? 1 : (P.uiScale || 100) / 100,
+      total = Math.round(z * FW.autoScale() * 1000) / 1000;
+    const next = total === 1 ? '' : String(total);
+    // CSS zoom doesn't shrink vw/vh, so the stylesheets read these instead (base.css); unzoomed, the real units apply
+    if (total === 1) ['--vw', '--vh', '--dvh'].forEach(k => d.style.removeProperty(k));
+    else {
+      const vw = g.innerWidth / total / 100 + 'px',
+        vh = g.innerHeight / total / 100 + 'px';
+      d.style.setProperty('--vw', vw);
+      d.style.setProperty('--vh', vh);
+      d.style.setProperty('--dvh', vh);
+    }
+    if (d.style.zoom === next) return;
+    d.style.zoom = next;
+    // let the wheel, the title menu and the panels re-measure at the new size
+    if (g.dispatchEvent && g.Event) g.dispatchEvent(new g.Event('resize'));
+  }
   if (g.document) {
     if (g.document.body) FW.applyPrefs();
     else g.document.addEventListener('DOMContentLoaded', FW.applyPrefs);
+    let t = 0;
+    g.addEventListener('resize', () => {
+      clearTimeout(t);
+      t = setTimeout(applyZoom, 60);
+    });
   }
 })(typeof window !== 'undefined' ? window : globalThis);

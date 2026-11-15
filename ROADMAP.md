@@ -47,6 +47,7 @@ in [docs/release-plan.md](docs/release-plan.md).
 
 ## Recently done
 
+- 0.2.0-alpha.4.3: the interface scales with big screens (1080p, 1440p, 4K).
 - 0.2.0-alpha.4.2: the new menus in Spanish, French, German and Japanese, and a better fit on phones.
 - 0.2.0-alpha.4.1: the Gentle and Classic fantasy presets stay selected.
 - 0.2.0-alpha.4: Content & mods, one place to choose what can happen; a friendlier Wheel Workshop; Options down to five tabs.

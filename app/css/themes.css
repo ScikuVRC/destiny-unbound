@@ -81,7 +81,7 @@ body[data-theme="bloodmoon"]{background:radial-gradient(10% 10% at 86% 9%,#c41e3
 [data-theme="bloodmoon"] .card-panel,[data-theme="bloodmoon"] .sheet,[data-theme="bloodmoon"] .fx-card,[data-theme="bloodmoon"] .modal{background:linear-gradient(#100e16,#0b0a10);border:1px solid rgba(201,206,222,.22);box-shadow:inset 0 0 0 4px #0b0a10,inset 0 0 0 5px rgba(201,206,222,.12)}
 [data-theme="bloodmoon"] .card-panel h2,[data-theme="bloodmoon"] .sheet h2{color:#c41e3a;letter-spacing:.14em;font-size:17px}
 [data-theme="bloodmoon"] .card-panel h2::after{content:" ❧";color:#c41e3a}
-[data-theme="bloodmoon"] .chip{font-style:italic;font-weight:700;font-size:clamp(16px,4vw,21px)}
+[data-theme="bloodmoon"] .chip{font-style:italic;font-weight:700;font-size:clamp(16px,calc(4 * var(--vw)),21px)}
 [data-theme="bloodmoon"] .result{color:#f1ecf7;letter-spacing:.04em;text-shadow:0 0 30px rgba(196,30,58,.6)}
 [data-theme="bloodmoon"] .result.rare{color:#d8ff9a;text-shadow:0 0 26px rgba(159,211,106,.7)}
 [data-theme="bloodmoon"] .btn{font-family:"Cormorant SC",serif;font-size:17px;border-color:rgba(201,206,222,.3)}

@@ -4,6 +4,22 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
+## 0.2.0-alpha.4.3 (2026-11-15)
+
+A small update: the game fills big screens properly.
+
+### Changed
+
+- **The interface scales with your screen.** On 1920x1080, 1440p, ultrawide and 4K screens everything grows with the
+  window (about a third larger at 1080p), so text keeps a comfortable size instead of staying small in the middle of
+  the screen. The UI scale setting in Options still works on top of it. Phones and small windows are unchanged.
+
+### Fixed
+
+- **The spin screen keeps the wheel beside the buttons on 1440p and taller screens**, instead of stacking it below.
+- **The UI scale setting no longer makes pages taller than the window** in the browser version.
+- **The wheel stays sharp** when the interface is zoomed.
+
 ## 0.2.0-alpha.4.2 (2026-11-15)
 
 A small update: the new menus in every language, and on phones.

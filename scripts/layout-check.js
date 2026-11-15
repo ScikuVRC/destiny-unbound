@@ -83,19 +83,19 @@ const CHECK = `(() => {
   const spin = document.getElementById('btnSpin');
   if (spin && vis(spin) && document.querySelector('#screen-spin.active') && !document.querySelector('#modalRoot .modal')) { const r = spin.getBoundingClientRect(); if (r.bottom > H + 1) out.push('SPIN below the bottom edge (bottom ' + Math.round(r.bottom) + ' of ' + H + ')'); }
   const root = document.querySelector('#modalRoot .modal') || document.querySelector('.screen.active') || document.body;
-  let over = 0, right = 0, tiny = 0; const ex = { over: [], right: [], tiny: [] };
+  let over = 0, right = 0, tiny = 0, minPx = 99; const Z = (window.FW && FW.pageZoom && FW.pageZoom()) || 1; // text sizes are measured as shown, after page zoom const ex = { over: [], right: [], tiny: [] };
   root.querySelectorAll('*').forEach(e => {
     if (!vis(e)) return; const s = getComputedStyle(e), r = e.getBoundingClientRect();
     if (r.width <= 2 || r.height <= 2 || parseFloat(s.fontSize) === 0 || e.closest('[aria-hidden=true], .optbg, .sr-only, .visually-hidden')) return;   // screen-reader-only text and decoration
     if (r.right > W + 2 && s.position !== 'fixed') { right++; if (ex.right.length < 4) ex.right.push(name(e) + ' right=' + Math.round(r.right)); }
     const clip = /(hidden|clip)/.test(s.overflowX) || /(hidden|clip)/.test(s.overflow);
     if (!/(auto|scroll)/.test(s.overflowX) && e.children.length === 0 && e.textContent.trim() && e.scrollWidth > e.clientWidth + 2 && e.clientWidth > 0 && s.textOverflow !== 'ellipsis' && !(e.closest('svg,canvas'))) { over++; if (ex.over.length < 6) ex.over.push(name(e) + (clip ? ' (clipped)' : '') + ' ' + e.scrollWidth + '>' + e.clientWidth); }
-    if (e.children.length === 0 && e.textContent.trim() && parseFloat(s.fontSize) < 10.5) { tiny++; if (ex.tiny.length < 4) ex.tiny.push(name(e) + ' ' + s.fontSize); }
+    if (e.children.length === 0 && e.textContent.trim()) { const px = parseFloat(s.fontSize) * Z; if (px < minPx) minPx = px; if (px < 10.5) { tiny++; if (ex.tiny.length < 4) ex.tiny.push(name(e) + ' ' + px.toFixed(1) + 'px'); } }
   });
   if (right) out.push(right + ' element(s) past the right edge: ' + ex.right.join('; '));
   if (over) out.push(over + ' text box(es) overflowing: ' + ex.over.join('; '));
   if (tiny) out.push(tiny + ' text(s) under 10.5px: ' + ex.tiny.join('; '));
-  return { problems: out, pageHeight: doc.scrollHeight, viewport: W + 'x' + H };
+  return { problems: out, pageHeight: doc.scrollHeight, viewport: W + 'x' + H, zoom: Z, minText: Math.round(minPx * 10) / 10 };
 })()`;
 
 app.on('window-all-closed', () => {}); // keep running between window sizes
@@ -157,7 +157,12 @@ app.whenReady().then(async () => {
         key.padEnd(10) +
           sc.padEnd(17) +
           (res.problems.length ? res.problems.join('\n' + ' '.repeat(23)) : 'ok') +
-          (res.pageHeight > h + 1 ? '   [page scrolls: ' + res.pageHeight + 'px]' : '')
+          (res.pageHeight > h + 1 ? '   [page scrolls: ' + res.pageHeight + 'px]' : '') +
+          '   [zoom ' +
+          res.zoom +
+          ', smallest text ' +
+          res.minText +
+          'px]'
       );
     }
     win.destroy();

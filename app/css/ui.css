@@ -8,7 +8,7 @@ body:has(#screen-options.active) .top{display:none}
 .optscr{position:absolute;inset:0;display:flex;justify-content:center;align-items:stretch;background:var(--bg);color:var(--fg)}
 .optbg{position:absolute;inset:-30px;background:center/cover no-repeat;filter:blur(16px) brightness(.3) saturate(.9)}
 .optbox{position:relative;display:flex;flex-direction:column;width:min(1080px,100%);padding:26px 28px 18px;min-height:0}
-.optbox h2{font-family:var(--font-display);font-size:clamp(28px,4vw,42px);letter-spacing:.1em;margin:0 0 10px;text-shadow:0 0 22px color-mix(in srgb,var(--accent) 45%,transparent)}
+.optbox h2{font-family:var(--font-display);font-size:clamp(28px,calc(4 * var(--vw)),42px);letter-spacing:.1em;margin:0 0 10px;text-shadow:0 0 22px color-mix(in srgb,var(--accent) 45%,transparent)}
 .o-tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;margin-bottom:14px;border-bottom:1px solid var(--line)}
 .o-tabs button{background:none;border:0;border-bottom:2px solid transparent;color:var(--muted);font-family:var(--font-display);font-size:15px;letter-spacing:.08em;padding:9px 14px;cursor:pointer}
 .o-tabs button.on,.o-tabs button:hover,.o-tabs button:focus-visible{color:var(--fg);border-bottom-color:var(--accent);outline:none}
@@ -140,11 +140,11 @@ body.anim-off *,body.calm *{animation:none!important;transition:none!important}
 }
 @media (max-width:640px) and (orientation:portrait){
   /* leave room above for the bar, question and result, and below for the Spin button */
-  .wheel-wrap{width:min(100%,520px,max(220px,calc(100dvh - 380px)))}
+  .wheel-wrap{width:min(100%,520px,max(220px,calc(calc(100 * var(--dvh)) - 380px)))}
 }
 @media (max-width:640px){
   .overlay{padding:10px}
-  .modal{max-height:calc(100dvh - 20px);padding:16px 14px}
+  .modal{max-height:calc(calc(100 * var(--dvh)) - 20px);padding:16px 14px}
   .modal .close{position:sticky;top:-6px;z-index:3;margin:-6px -4px 0 8px;background:var(--panel);min-height:40px}
 }
 
@@ -187,24 +187,24 @@ body #sheet .tiny-mods{justify-content:flex-end}
   .spin-layout{grid-template-columns:minmax(0,1fr) minmax(360px,440px);justify-content:stretch}
   .stage>.effects{max-width:680px;margin-left:auto;margin-right:auto}
 }
-/* Landscape windows up to 1200px tall (the itch.io player, laptops, 1366x768 and 1600x900 screens, phones turned
-   sideways): put the wheel beside the question, result and buttons, sized to the window's height, so a whole spin
-   fits on screen without scrolling. Taller windows (2560x1440 and up) use the stacked layout. */
-@media (orientation:landscape) and (max-height:1200px) and (min-width:700px) and (min-aspect-ratio:13/10){
+/* Landscape windows (the itch.io player, laptops, 1080p and up, phones turned sideways): put the wheel beside the
+   question, result and buttons, sized to the window's height, so a whole spin fits on screen without scrolling.
+   Big screens are zoomed by prefs.js, so they reach this layout at about 1440x810. */
+@media (orientation:landscape) and (min-width:700px) and (min-aspect-ratio:13/10){
   .spin-layout{grid-template-columns:minmax(0,1fr)}
-  .stage{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:clamp(16px,3vw,40px);align-items:center;align-content:start}
+  .stage{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:clamp(16px,calc(3 * var(--vw)),40px);align-items:center;align-content:start}
   .stage>*{grid-column:2}
   .stage>.steps{grid-column:1/-1;grid-row:1}
-  .stage>.wheel-wrap{grid-column:1;grid-row:2/span 7;align-self:start;width:min(calc(100dvh - 130px),48vw,640px);margin:4px 0 0}
+  .stage>.wheel-wrap{grid-column:1;grid-row:2/span 7;align-self:start;width:min(calc(calc(100 * var(--dvh)) - 130px),calc(48 * var(--vw)),640px);margin:4px 0 0}
   .chip-emoji{height:auto;font-size:36px}
   /* two lines' room at a size that follows the window, so long results ("Prophecy fulfilled") wrap instead of spilling */
-  .stage>.result{margin-top:16px;font-size:clamp(24px,2.4vw,42px);height:2.5em;line-height:1.08}
+  .stage>.result{margin-top:16px;font-size:clamp(24px,calc(2.4 * var(--vw)),42px);height:2.5em;line-height:1.08}
   .stage>.effects{align-self:start}
 }
-@media (orientation:landscape) and (max-height:1200px) and (min-width:1280px) and (min-aspect-ratio:13/10){
-  .spin-layout{grid-template-columns:minmax(0,1fr) minmax(320px,min(440px,28vw))}
+@media (orientation:landscape) and (min-width:1280px) and (min-aspect-ratio:13/10){
+  .spin-layout{grid-template-columns:minmax(0,1fr) minmax(320px,min(440px,calc(28 * var(--vw))))}
   /* with the legend panel beside it, the wheel gives the question and buttons a wider middle column */
-  .stage>.wheel-wrap{width:min(calc(100dvh - 130px),40vw,720px)}
+  .stage>.wheel-wrap{width:min(calc(calc(100 * var(--dvh)) - 170px),calc(40 * var(--vw)),720px)}
   #screen-spin{max-width:1760px}   /* three columns need more than the usual 1180px */
 }
 /* The first-run guide sits to the side on short windows instead of over the menu */
@@ -214,7 +214,7 @@ body #sheet .tiny-mods{justify-content:flex-end}
 
 /* buff and debuff chips explain themselves on hover (title) and on tap (a toast) */
 .mod[data-tip]{cursor:help}
-.toast.tip{max-width:min(92vw,520px);text-align:center;line-height:1.35}
+.toast.tip{max-width:min(calc(92 * var(--vw)),520px);text-align:center;line-height:1.35}
 
 /* ---------------- the card moment ----------------
    The card turns over into view the first time it is shown, flips to its back on a click or the Flip button, and a
@@ -260,7 +260,7 @@ body.no-glow #chipEmoji .ico{filter:none}
 .saga-log li>span .ico{color:var(--accent2)}
 
 /* painted arena backdrop and foe portrait in the battle report */
-.fx-card.battle .battle-art{position:relative;height:clamp(96px,16vh,150px);margin:6px -4px 10px;border-radius:var(--radius,8px);background:#000 center/cover no-repeat;box-shadow:inset 0 -40px 40px -20px rgba(0,0,0,.55),inset 0 0 0 1px var(--line);overflow:hidden}
+.fx-card.battle .battle-art{position:relative;height:clamp(96px,calc(16 * var(--vh)),150px);margin:6px -4px 10px;border-radius:var(--radius,8px);background:#000 center/cover no-repeat;box-shadow:inset 0 -40px 40px -20px rgba(0,0,0,.55),inset 0 0 0 1px var(--line);overflow:hidden}
 .fx-card.battle .battle-art .foe-art{position:absolute;right:10px;bottom:8px;height:calc(100% - 16px);aspect-ratio:1;border-radius:50%;object-fit:cover;border:2px solid var(--accent2);box-shadow:0 0 0 3px rgba(0,0,0,.55),0 6px 22px rgba(0,0,0,.6)}
 
 /* a shared card in the viewer */
@@ -298,7 +298,7 @@ body.no-glow #chipEmoji .ico{filter:none}
 .hub-list button{display:flex;justify-content:space-between;gap:6px;text-align:left;background:none;border:0;border-left:3px solid transparent;color:var(--muted);font:inherit;font-family:var(--font-display);font-size:14px;padding:7px 10px;cursor:pointer;border-radius:6px}
 .hub-list button.on,.hub-list button:hover,.hub-list button:focus-visible{color:var(--fg);background:rgba(127,127,127,.12);border-left-color:var(--accent);outline:none}
 .hub-list em{font-style:normal;font-family:var(--font);font-size:12px;color:var(--muted)}
-.ws-list{max-height:48vh;overflow:auto;border:1px solid var(--line);border-radius:var(--radius,8px);padding:4px 10px}
+.ws-list{max-height:calc(48 * var(--vh));overflow:auto;border:1px solid var(--line);border-radius:var(--radius,8px);padding:4px 10px}
 .ws-e{text-align:left;display:grid;grid-template-columns:24px 1fr auto auto 130px 30px;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--line)}
 .ws-e:last-child{border-bottom:0}
 .ws-e input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);margin:0}

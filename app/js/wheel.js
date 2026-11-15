@@ -166,6 +166,8 @@
         });
         this._ro.observe(canvas.parentElement || canvas);
       }
+      // a page zoom change keeps the canvas the same size in CSS pixels, so the observer above misses it
+      g.addEventListener('resize', () => this.resize());
       if (document.fonts && document.fonts.ready)
         document.fonts.ready.then(() => {
           this.buildFace();
@@ -193,7 +195,8 @@
     }
     resize() {
       const w = this.cv.clientWidth || (this.cv.parentElement && this.cv.parentElement.clientWidth) || 320;
-      const dpr = Math.min(FW.maxDpr ? FW.maxDpr() : 3, g.devicePixelRatio || 1);
+      // CSS zoom on the page (UI scale, big screens) shows the canvas bigger: draw it that much sharper
+      const dpr = Math.min(FW.maxDpr ? FW.maxDpr() : 3, (g.devicePixelRatio || 1) * (FW.pageZoom ? FW.pageZoom() : 1));
       if (Math.abs(w - this.size) < 1 && dpr === this.dpr && this.cv.width) return;
       this.size = w;
       this.dpr = dpr;
