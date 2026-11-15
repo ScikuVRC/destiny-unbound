@@ -57,9 +57,91 @@
             )
           )
           .join('');
-    h += '<h2 style="margin-top:12px">Saga so far</h2>' + logHtml(s.log.slice(-8));
+    h += '<h2 style="margin-top:12px">' + H.esc(tt('Journal')) + '</h2>' + journalHtml(s.log);
     $('#sheetTitle').textContent = 'Your Saga';
     $('#sheetBody').innerHTML = h;
+  }
+  const tt = x => (FW.t ? FW.t(x) : x);
+  // the saga as a journal: one entry per chapter, newest first, with what happened in it
+  function journalHtml(log) {
+    if (!log.length) return '<p class="legend-key">' + H.esc(tt('Nothing has happened yet.')) + '</p>';
+    const groups = [];
+    log.forEach(x => {
+      const g = groups[groups.length - 1];
+      if (g && g.ch === (x.ch || 0) && g.chapter === x.chapter) g.items.push(x);
+      else groups.push({ ch: x.ch || 0, chapter: x.chapter, emoji: x.emoji, items: [x] });
+    });
+    return (
+      '<div class="journal">' +
+      groups
+        .reverse()
+        .map(
+          (g, i) =>
+            '<section class="jr-ch' +
+            (i === 0 ? ' latest' : '') +
+            (g.items.some(x => x.end) ? ' end' : '') +
+            '"><h4>' +
+            (g.emoji ? FW.icon(g.emoji) : '') +
+            '<span>' +
+            (g.ch ? H.esc(tt('Chapter')) + ' ' + g.ch + ' · ' : '') +
+            H.esc(g.chapter ? tt(g.chapter) : '') +
+            '</span></h4>' +
+            g.items.map(x => '<p class="' + (x.tone || '') + '">' + H.esc(x.text) + '</p>').join('') +
+            '</section>'
+        )
+        .join('') +
+      '</div>'
+    );
+  }
+
+  /* ---------------- the chapter banner above the question: who, which chapter, what kind ---------------- */
+  let inStory = false,
+    curCh = null,
+    storyRun = null; // which runStory call owns the banner
+  function portraitSrc(L) {
+    if (st.image && st.image.src) return st.image.src; // the player's own picture
+    const f = FW.portraitFile ? FW.portraitFile(L) : '';
+    return f ? 'art/portraits/' + f + '.webp' : '';
+  }
+  function banner(kind) {
+    const b = $('#storyBanner'),
+      L = st.legend,
+      s = L && L.saga;
+    document.body.classList.toggle('story-on', inStory && !!s);
+    if (!b) return;
+    if (!inStory || !s) {
+      b.hidden = true;
+      return;
+    }
+    const age = S.age(L),
+      n = kind === 'story' || kind === 'picked' ? s.ch + 1 : s.ch,
+      src = portraitSrc(L);
+    let icon = '📖',
+      title = tt('A new chapter');
+    if (kind === 'end') {
+      icon = S.endIcon[s.end] || '📖';
+      title = tt(S.endLabel[s.end] || 'The End');
+    } else if (kind !== 'story' && curCh) {
+      icon = curCh.emoji || icon;
+      title = curCh.name;
+    }
+    b.innerHTML =
+      '<div class="sb-por">' +
+      (src
+        ? '<img src="' + H.esc(src) + '" alt="">'
+        : '<span>' + H.esc((L.displayName() || '?').charAt(0)) + '</span>') +
+      '</div><div class="sb-txt"><span class="sb-kicker">' +
+      H.esc(kind === 'end' ? tt('The end') : tt('Chapter') + ' ' + n) +
+      (age ? ' · ' + H.esc(tt('Age')) + ' ' + age : '') +
+      '</span><b class="sb-title">' +
+      FW.icon(icon) +
+      '<span>' +
+      H.esc(title) +
+      '</span></b><span class="sb-sub">' +
+      H.esc(L.displayName()) +
+      (s.dyn ? ' · ' + H.esc(s.dyn.house) : '') +
+      '</span></div>';
+    b.hidden = false;
   }
   function logHtml(log) {
     return log.length
@@ -87,12 +169,15 @@
   /* ---------------- one wheel, as the story asks for it ---------------- */
   function spinUI(cfg) {
     const L = st.legend;
+    if (cfg.kind === 'story') curCh = null;
+    banner(cfg.kind);
     sheet();
     $('#btnStoryExit').hidden = cfg.kind !== 'story';
     const isBattle = cfg.kind === 'battle';
     return F.playStep({
       emoji: cfg.emoji,
-      title: cfg.title,
+      // the banner above already says which chapter this is
+      title: cfg.kind === 'story' ? 'What happens next?' : cfg.title,
       entries: cfg.entries,
       mode: cfg.mode,
       hue: cfg.hue,
@@ -105,7 +190,12 @@
         if (isBattle) return { fx: H.battle(L.displayName(), cfg.foe, cfg.arena, cfg.report) };
         if (cfg.kind === 'story') {
           const ch = S.CHAPTER_BY_ID[e.id];
-          return { sub: 'Chapter ' + (L.saga.ch + 1), fx: H.fxCard((ch.emoji || '') + ' ' + ch.name, '', '', []) };
+          curCh = ch;
+          banner('picked'); // the chapter is chosen but not counted yet
+          return {
+            sub: tt('Chapter') + ' ' + (L.saga.ch + 1),
+            fx: H.fxCard((ch.emoji || '') + ' ' + ch.name, '', '', []),
+          };
         }
         const chips = e.dsl ? FW.chips(FW.parse(e.dsl)) : [];
         return {
@@ -130,6 +220,8 @@
     }
     st.auto = false;
     F.syncAutoBtn();
+    inStory = true;
+    const myRun = (storyRun = {});
     F.show('spin');
     FW.Audio.setScene('story');
     F.renderSteps(0, 0);
@@ -138,6 +230,7 @@
       rng: st.rng,
       spin: spinUI,
       choose: cfg => {
+        banner('chapter');
         sheet();
         $('#btnStoryExit').hidden = true;
         return F.chooseStep(cfg);
@@ -168,12 +261,18 @@
       if (e !== F.ABORT) throw e;
     } finally {
       $('#btnStoryExit').hidden = true;
+      // a newer run (a restarted story) owns the banner now
+      if (storyRun === myRun) {
+        inStory = false;
+        banner();
+      }
     }
   }
   async function ending(L, run) {
     const s = L.saga,
       icon = S.endIcon[s.end] || '📖';
     F.setChip(icon, 'The end of ' + L.displayName(), 0);
+    banner('end');
     F.setResult(S.endLabel[s.end] || 'The End', { pop: true, rare: !!S.RARE_END[s.end] });
     $('#resultSub').textContent = s.endText;
     const art =

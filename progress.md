@@ -2,7 +2,7 @@
 
 A running record of where the game stands. Update it when something ships, starts or gets decided.
 This file is public: server addresses, account, payment and moderation details go in `private-notes.md` (not on GitHub).
-Last updated: 2026-11-15 · Current version: **0.2.0-alpha.4.3**
+Last updated: 2026-11-15 · Current version: **0.2.0-alpha.4.4**
 
 Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
@@ -35,6 +35,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 | Content & mods presets stay selected: Gentle and Classic fantasy replace each other instead of stacking (bug fix) | 0.2.0-alpha.4.1 | ✅ released 2026-11-15 |
 | The new menus translated (es, fr, de, ja); Workshop and Options fit on phones; English first in the Language menu (small update) | 0.2.0-alpha.4.2 | ✅ released 2026-11-15 |
 | The interface scales with big screens (1080p, 1440p, ultrawide, 4K); UI scale works on top; wheel stays sharp (small update) | 0.2.0-alpha.4.3 | ✅ released 2026-11-15 |
+| Story screen: chapter banner with portrait, saga journal; spin screen balanced to the wheel, more room under SPIN (small update) | 0.2.0-alpha.4.4 | ✅ released 2026-11-15 |
 | Alpha test with 5-15 players | two weeks after release | ⬜ |
 | Beta (fixes from the alpha, signed build, store page) | 0.2.0-beta.1 | ⬜ |
 | 1.0 on itch.io | 1.0.0 | ⬜ |

@@ -1,5 +1,5 @@
 /* Destiny Unbound service worker: cache-first for the app shell so it works offline */
-const CACHE = 'fatewheel-v65';
+const CACHE = 'fatewheel-v66';
 const FILES = [
   './',
   'index.html',

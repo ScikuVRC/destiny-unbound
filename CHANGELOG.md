@@ -4,6 +4,23 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
+## 0.2.0-alpha.4.4 (2026-11-15)
+
+A small update: the story screen gets its own look.
+
+### New
+
+- **A chapter banner in story mode.** Above the question: your hero’s portrait, the chapter number and age, the
+  chapter’s icon and name, and your hero’s name and house. At the end of a saga it shows the ending.
+- **The saga journal.** "Saga so far" became a Journal: one entry per chapter, newest first, with what happened in
+  it. It keeps the whole saga instead of the last eight lines.
+
+### Changed
+
+- **The spin screen is balanced.** The middle column spans the wheel’s height: the question (or the banner) lines up
+  with the top of the wheel and the result box with its bottom. SPIN and Next stay in the same place between spins.
+- **More room under SPIN**, so a slightly low click no longer lands on Auto or Spin settings.
+
 ## 0.2.0-alpha.4.3 (2026-11-15)
 
 A small update: the game fills big screens properly.

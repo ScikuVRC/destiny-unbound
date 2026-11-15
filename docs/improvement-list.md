@@ -72,7 +72,7 @@ Where the game stands: about 6,800 lines of game code, 26 wheels per hero, 98 ra
    flip it, and add a "share" button that copies the image.
 27. ⬜ **Apply the spin-screen polish everywhere (M).** Partly done 2026-11-14: Options remodelled into five tabs and Content & mods built new; card, home and hall still to do. The card, home, hall and options screens haven't had the same
    alignment pass as the spin screen.
-28. ⬜ **Story screen identity (M).** Story chapters reuse the creation screen. Give them a chapter banner, a small
+28. ✅ **Story screen identity (M).** Done 2026-11-15 in 0.2.0-alpha.4.4: a chapter banner with the hero's portrait, chapter, age and icon, and the saga as a journal. Story chapters reuse the creation screen. Give them a chapter banner, a small
    portrait and the saga log as a proper journal.
 29. ⬜ **Wheel readability with many slices (M).** The race wheel has 98 slices; labels at the small end are unreadable.
    Options: zoom the wheel near the pointer while it slows, or show the five slices around the pointer in a strip.

@@ -1028,6 +1028,11 @@
       'Export my Workshop edits as a pack': '工房での変更をパックとして書き出す',
       "How to write a pack: see docs/modding.md (Wheel packs) and packs/example-sky-pirates.json, in the game's source on GitHub.":
         'パックの作り方：GitHubにあるゲームのソースの docs/modding.md（Wheel packs）と packs/example-sky-pirates.json を見てください。',
+      /* the story screen: chapter banner and journal */
+      Journal: '日誌',
+      'What happens next?': '次は何が起こる？',
+      'A new chapter': '新たな章',
+      'The end': '終幕',
     },
   };
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -1048,6 +1048,11 @@
       'Export my Workshop edits as a pack': 'Exportar mis cambios del Taller como paquete',
       "How to write a pack: see docs/modding.md (Wheel packs) and packs/example-sky-pirates.json, in the game's source on GitHub.":
         'Cómo escribir un paquete: consulta docs/modding.md (Wheel packs) y packs/example-sky-pirates.json, en el código del juego en GitHub.',
+      /* the story screen: chapter banner and journal */
+      Journal: 'Diario',
+      'What happens next?': '¿Qué pasa ahora?',
+      'A new chapter': 'Un nuevo capítulo',
+      'The end': 'Fin',
     },
   };
 })(typeof window !== 'undefined' ? window : globalThis);
