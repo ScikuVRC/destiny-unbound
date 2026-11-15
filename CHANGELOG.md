@@ -4,6 +4,16 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
+## 0.2.0-alpha.4.1 (2026-11-15)
+
+A bug fix.
+
+### Fixed
+
+- **The presets in Content & mods stick now.** Choosing Gentle after Classic fantasy (or the other way round) used to
+  add both presets' changes together, so neither stayed selected and the screen showed Custom. Each preset now starts
+  from the full game and applies only its own changes, and the one you picked stays selected.
+
 ## 0.2.0-alpha.4 (2026-11-14)
 
 Players told us they didn't know they could remove content they don't want to play, and that the menus were hard to

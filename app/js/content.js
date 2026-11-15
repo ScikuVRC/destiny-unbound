@@ -149,19 +149,24 @@
     const classicOff = NOT_CLASSIC.filter(n => raceNames().indexOf(n) >= 0).every(n => races.indexOf(n) >= 0);
     const anyClassicOff = NOT_CLASSIC.some(n => races.indexOf(n) >= 0);
     if (allOn && !anyGroupOff && !anyClassicOff && !story.length) return 'everything';
-    const gentle = o.death === false && GENTLE_CH.every(n => story.indexOf(n) >= 0);
+    const othersOn = (S ? S.OPTIONS : []).every(x => x.id === 'death' || o[x.id] !== false);
+    const gentle =
+      o.death === false &&
+      othersOn &&
+      GENTLE_CH.every(n => story.indexOf(n) >= 0) &&
+      story.every(n => GENTLE_CH.indexOf(n) >= 0);
     if (gentle && !anyClassicOff) return 'gentle';
-    if (classicOff && allOn && !anyGroupOff) return 'classic';
+    if (classicOff && allOn && !anyGroupOff && !story.length) return 'classic';
     return 'custom';
   }
   function applyPreset(p) {
     const allGroup = GROUPS.reduce((a, g) => a.concat(groupNames(g)), []);
     const classic = NOT_CLASSIC.filter(n => raceNames().indexOf(n) >= 0);
-    if (p === 'everything') {
-      (S ? S.OPTIONS : []).forEach(x => setOpt(x.id, true));
-      setRemoved('story', allGroup.concat(GENTLE_CH), false);
-      setRemoved('race', classic, false);
-    } else if (p === 'gentle') {
+    // presets replace each other: start from the full game, then apply this preset's changes
+    (S ? S.OPTIONS : []).forEach(x => setOpt(x.id, true));
+    setRemoved('story', allGroup.concat(GENTLE_CH), false);
+    setRemoved('race', classic, false);
+    if (p === 'gentle') {
       setOpt('death', false);
       setRemoved('story', GENTLE_CH, true);
     } else if (p === 'classic') setRemoved('race', classic, true);

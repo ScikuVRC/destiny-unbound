@@ -47,6 +47,7 @@ in [docs/release-plan.md](docs/release-plan.md).
 
 ## Recently done
 
+- 0.2.0-alpha.4.1: the Gentle and Classic fantasy presets stay selected.
 - 0.2.0-alpha.4: Content & mods, one place to choose what can happen; a friendlier Wheel Workshop; Options down to five tabs.
 - 0.2.0-alpha.3.7: every theme has its own HD music (21 new tracks for Astral Oracle, Iron Litany and Blood Moon).
 - 0.2.0-alpha.3.6: optional HD music, asked on first launch; the music and effects volume sliders work again; a new trailer.

@@ -2,7 +2,7 @@
 
 A running record of where the game stands. Update it when something ships, starts or gets decided.
 This file is public: server addresses, account, payment and moderation details go in `private-notes.md` (not on GitHub).
-Last updated: 2026-11-14 · Current version: **0.2.0-alpha.4**
+Last updated: 2026-11-15 · Current version: **0.2.0-alpha.4.1**
 
 Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
@@ -32,6 +32,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 | Optional HD music (placeholder tracks made with ACE-Step), asked on first launch; music and effects volume sliders work again; new trailer and screenshots (small update) | 0.2.0-alpha.3.6 | ✅ released 2026-11-14 |
 | Every theme gets its own HD music: 21 new tracks for Astral Oracle, Iron Litany and Blood Moon (small update) | 0.2.0-alpha.3.7 | ✅ released 2026-11-14 |
 | Content & mods: one place to switch content off (presets, story rules, chapter groups), a new Wheel Workshop, packs and mods together, "Never roll this again" under results, Options down to 5 tabs; Workshop saves every change; mod switches keep their state | 0.2.0-alpha.4 | ✅ released 2026-11-14 |
+| Content & mods presets stay selected: Gentle and Classic fantasy replace each other instead of stacking (bug fix) | 0.2.0-alpha.4.1 | ✅ released 2026-11-15 |
 | Alpha test with 5-15 players | two weeks after release | ⬜ |
 | Beta (fixes from the alpha, signed build, store page) | 0.2.0-beta.1 | ⬜ |
 | 1.0 on itch.io | 1.0.0 | ⬜ |
