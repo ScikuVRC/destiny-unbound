@@ -4,6 +4,28 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
+## 0.2.0-alpha.4.5 (2026-11-16)
+
+A small update with fixes from the first alpha tester report on Discord. Thank you, Bobs!
+
+### Changed
+
+- **Fate Tokens say what they are: re-spins.** Wheel results read "+1 Fate Token (re-spin)", the counter says
+  "Re-spins", and the first-run guide explains them, so nobody throws them away thinking they are a score.
+- **Auto-play waits on each result so you can read it.** Options > General > Auto-play pause: Short (1.5 s, as
+  before), Normal (3 s, the new default) or Long (5 s).
+
+### New
+
+- **What the heir inherits.** Before an heir’s wheels, a screen lists what carries over: race, house, the
+  parent’s best stat, renown, the family trait, the kingdom, a heirloom and an unbeaten nemesis.
+- **A tip when you first rule a kingdom**: news arrives between chapters, and a coup can cost you the throne.
+
+### Fixed
+
+- **The first-run guide shows up** even if the HD music question was closed without answering.
+- The update banner no longer covers the guide, and tips no longer cover achievement pop-ups.
+
 ## 0.2.0-alpha.4.4 (2026-11-15)
 
 A small update: the story screen gets its own look.

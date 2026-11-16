@@ -47,6 +47,7 @@ in [docs/release-plan.md](docs/release-plan.md).
 
 ## Recently done
 
+- 0.2.0-alpha.4.5: fixes from the first tester report (re-spins named, auto-play pause, heir inheritance screen, kingdom tip, guide fix).
 - 0.2.0-alpha.4.4: a chapter banner and a saga journal in story mode; a balanced spin screen with more room under SPIN.
 - 0.2.0-alpha.4.3: the interface scales with big screens (1080p, 1440p, 4K).
 - 0.2.0-alpha.4.2: the new menus in Spanish, French, German and Japanese, and a better fit on phones.
