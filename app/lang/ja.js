@@ -1073,6 +1073,13 @@
       'Not your thing?': '好みじゃない？',
       'Never roll this again': '今後これを出さない',
       'Removed from future spins.': '今後の回転から除外しました。',
+      /* save warnings */
+      'Could not save: storage on this device is full. Export your save in Options > Data to keep it safe.':
+        '保存できません：この端末の保存領域がいっぱいです。設定 > データでセーブを書き出して守ってください。',
+      'Could not save: this browser is blocking storage, so progress will not be kept.':
+        '保存できません：このブラウザーが保存を止めているため、進行状況は残りません。',
+      'This save comes from a newer version of the game. Update the game so nothing gets lost.':
+        'このセーブは新しいバージョンのゲームで作られました。何も失わないようにゲームを更新してください。',
     },
   };
 })(typeof window !== 'undefined' ? window : globalThis);

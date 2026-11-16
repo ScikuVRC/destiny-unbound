@@ -37,10 +37,12 @@
       }
     },
     set(k, v) {
+      const s = JSON.stringify(v);
+      if (FW.Save) return FW.Save.write(k, s);
       try {
-        localStorage.setItem(k, JSON.stringify(v));
+        localStorage.setItem(k, s);
       } catch (e) {
-        /* ignore */
+        /* storage blocked */
       }
     },
   };

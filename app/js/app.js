@@ -18,10 +18,12 @@
       }
     },
     set(k, v) {
+      const s = JSON.stringify(v);
+      if (FW.Save) return FW.Save.write(k, s); // save.js warns the player once if storage is full or blocked
       try {
-        localStorage.setItem(k, JSON.stringify(v));
+        localStorage.setItem(k, s);
       } catch (e) {
-        /* private mode: ignore */
+        /* storage blocked */
       }
     },
   };
@@ -81,6 +83,24 @@
     t.textContent = msg;
     document.body.appendChild(t);
     setTimeout(() => t.remove(), kind === 'tip' ? 4500 : 2200);
+  }
+  if (FW.Save) {
+    FW.Save.setWarn(why =>
+      toast(
+        tr(
+          why === 'full'
+            ? 'Could not save: storage on this device is full. Export your save in Options > Data to keep it safe.'
+            : 'Could not save: this browser is blocking storage, so progress will not be kept.'
+        ),
+        'tip'
+      )
+    );
+    if (FW.Save.startup && FW.Save.startup.newer)
+      setTimeout(
+        () =>
+          toast(tr('This save comes from a newer version of the game. Update the game so nothing gets lost.'), 'tip'),
+        1500
+      );
   }
   function copy(text, okMsg) {
     const done = () => toast(okMsg || 'Copied');

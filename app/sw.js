@@ -12,6 +12,7 @@ const FILES = [
   'css/menu.css',
   'css/ui.css',
   'js/version.js',
+  'js/save.js',
   'js/prefs.js',
   'js/system.js',
   'js/menu-data.js',

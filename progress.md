@@ -58,10 +58,13 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 - ✅ Issue forms (bug report, suggestion) and `CONTRIBUTING.md`, 2026-11-13
 - ✅ Trailer and GIF from real gameplay, 2026-11-13 (`npm run trailer`; GIF in the README and a 2.2 MB one on itch.io). ✅ Trailer on YouTube (2026-11-14), linked from the README and itch.io
 - ✅ Tester invites ready, 2026-11-13: texts in `docs/tester-invite.md` (Tester role and Testing channels, itch.io and Discord links, what to test, bug reports in #bug-reports or the GitHub issue forms), plan in `docs/alpha-testing.md`. Sent by the developer as an open call
+- ✅ First alpha tester report, 2026-11-16: Bobs in #feedback on Discord (five points: the guide never showed, Fate Tokens unclear, auto-play too fast to read, heirs unexplained, kingdoms unexplained). All five fixed and shipped the same day in 0.2.0-alpha.4.5, thanked in the changelog
+- ✅ Vertical trailer for TikTok, Shorts and Reels, 2026-11-15: `npx electron scripts/record-trailer.js --vertical`, then `node scripts/make-trailer.js --vertical` (1080×1920, 55 s, hook first; output in `dist/trailer/`, not committed). ⬜ Posting it is up to the developer (the AI-generated content label goes on)
+- ✅ YouTube trailer description links are clickable (channel advanced features on, 2026-11-15)
 
 ## Ready for the next alpha (not released yet)
 
-- Nothing yet
+- ✅ Save versioning (improvement 77): saves carry a layout number (`fw.schema`) and are brought up to date step by step at startup, after an untouched copy is kept as a backup; saves from a newer game are left alone and refused on import; a full or blocked storage now shows a warning instead of silently losing progress. `tests/save.test.js` loads real saves made by 0.1.0-alpha.1, 0.2.0-alpha.1, 0.2.0-alpha.3 and 0.2.0-alpha.4.5 (`node scripts/make-save-fixture.js <tag>` adds one)
 
 ## Released
 
@@ -95,6 +98,13 @@ Newest first. Fixed bugs ship in the next alpha build.
 
 | Status | Bug | Cause and fix |
 | --- | --- | --- |
+| ✅ Shipped in 0.2.0-alpha.4.5 | The first-run guide never appears (tester report) | The guide waited for an answer to the HD music question; closing that question another way (Esc, a click outside) skipped it. The guide now starts whenever the question closes (`app/js/menu.js`). The update banner moves above the guide so it no longer covers it. |
+| ✅ Shipped in 0.2.0-alpha.4.5 | "What are Fate Tokens? I threw them away thinking they were points" (tester report) | Results now read "+1 Fate Token (re-spin)", the counter says "Re-spins", and the guide's first step explains them (`engine.js`, `render.js`, `menu.js`). |
+| ✅ Shipped in 0.2.0-alpha.4.5 | Auto-play moves on before you can read the result (tester report) | New Options > General > Auto-play pause: Short 1.5 s (the old speed), Normal 3 s (default), Long 5 s (`app/js/app.js`, `options.js`, `prefs.js`). |
+| ✅ Shipped in 0.2.0-alpha.4.5 | Playing as the heir: unclear what carries over (tester report) | A "What the heir inherits" screen before the heir's wheels lists race, house, talent, renown, family trait, kingdom, heirloom, blessing and nemesis (`app/js/story-ui.js`). |
+| ✅ Shipped in 0.2.0-alpha.4.5 | Ruling a kingdom: unclear what it does (tester report) | A one-time tip explains kingdom news, coups and losing the throne; tips moved to the bottom right so they never cover achievement pop-ups (`story-ui.js`, `ui.css`). |
+| ⬜ Not fixed | Phone held sideways (740×360): SPIN sits 5 px below the bottom edge | Known since the 0.2.0-alpha.4.4 layout pass; needs a tighter short-landscape rule. |
+| 💭 Not reproduced | A game crash reported 2026-11-15 | No error in the game log, no crash dump and no error event; waiting for steps or a second report. |
 | ✅ Shipped in 0.1.0-alpha.3 | itch.io: you can't see the whole game, it doesn't scale, and you can't scroll even in fullscreen | itch.io's "Enable scrollbars" embed option was off, which blocks scrolling inside the game frame, and the spin screen was too tall for the 960×540 frame. Scrollbars are now on, and short landscape windows put the wheel beside the question and buttons, sized to the window, so a whole spin fits (`app/css/ui.css`). The first-run guide moves aside on short windows. |
 | ✅ Shipped in 0.1.0-alpha.3 | Phones: the title screen's footer runs off the right edge and cuts off "Support on Ko-fi" | The footer never wrapped. On narrow screens it now wraps and centres, and hides the keyboard hint (`app/css/ui.css`). |
 | ✅ Shipped in 0.1.0-alpha.3 | The card says "0 ally allies" / "2 ally allies" | Broken plural in the card's rating line; also now translated (`app/js/app.js`). |
@@ -173,7 +183,7 @@ Newest first. Fixed bugs ship in the next alpha build.
 
 | What | Now | Where it comes from |
 | --- | --- | --- |
-| Automated checks | 84 passing (7 suites) | `npm test` |
+| Automated checks | 113 passing (9 suites) | `npm test` |
 | Arena average win chance (Mortal / Heroic / Mythic / Divine) | 43% / 57% / 72% / 85% (was 36 / 51 / 69 / 84) | `node scripts/balance-report.js 10000 10000` |
 | Mortal-luck arena fights at 10% or less | 12% (was 23%) | balance report |
 | Story battles, average win chance (Heroic) | 54% (was 45%) | balance report |
@@ -198,3 +208,6 @@ Newest first. Fixed bugs ship in the next alpha build.
 | 2026-11-13 | 0.1.0-alpha.6 is the last 0.1 release; the next focus is the 0.2 major update |
 | 2026-11-13 | Balance patch after tester feedback ("the odds are against us"), checked with 10,000 legends and 10,000 sagas per luck level: tighter arena matchmaking, bosses and dragons matched to your power, ordinary story foes 5 points easier, more second chances. Mortal stays the hard mode |
 | 2026-11-13 | Story wheel variety: Train, Study, Find treasure and Do a quest have smaller slices, Cursed and Exiled are about half as likely, and a repeatable chapter keeps 60% of its slice each time it happens |
+| 2026-11-15 | The interface scales with the window on big screens (1440×810 is 1×, up to 3×), and the player's UI scale applies on top |
+| 2026-11-16 | Fate Tokens are called re-spins wherever the player sees them; auto-play waits 3 s on a result by default |
+| 2026-11-16 | Social posts (TikTok, Discord) only go out after the developer confirms the exact text |

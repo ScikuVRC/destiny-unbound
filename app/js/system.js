@@ -41,12 +41,14 @@
   );
 
   /* ---------------- saves: everything the game keeps under fw.* (API keys are never included) ---------------- */
-  SYS.collect = function () {
-    const data = {};
-    for (let i = 0; i < localStorage.length; i++) {
-      const k = localStorage.key(i);
+  SYS.collect = function (src) {
+    const data = {},
+      keys = [];
+    if (src) keys.push(...Object.keys(src));
+    else for (let i = 0; i < localStorage.length; i++) keys.push(localStorage.key(i));
+    for (const k of keys) {
       if (!k || k.indexOf('fw.') !== 0) continue;
-      let v = localStorage.getItem(k);
+      let v = src ? src[k] : localStorage.getItem(k);
       if (k === 'fw.art') {
         try {
           const a = JSON.parse(v);
@@ -74,6 +76,10 @@
       throw new Error('That file is not a Destiny Unbound save.');
     const keys = Object.keys(s.data);
     if (!keys.length) throw new Error('That save is empty.');
+    if (FW.Save && FW.Save.schemaOf(s.data) > FW.Save.SCHEMA)
+      throw new Error(
+        'That save comes from a newer version of the game (' + (s.game || '?') + '). Update the game first.'
+      );
     keys.forEach(k => {
       if (!/^fw\.[\w.-]{1,40}$/.test(k) || typeof s.data[k] !== 'string')
         throw new Error('That save contains something unexpected (' + String(k).slice(0, 30) + ').');
@@ -168,14 +174,17 @@
 
   /* ---------------- backups: one a day automatically (desktop: the newest 10 files; browser: the newest 3) ---------------- */
   const BK_KEY = 'du.backups';
-  SYS.backup = async function (manual) {
-    const snap = SYS.collect();
+  SYS.backup = async function (manual, src, note) {
+    const snap = SYS.collect(src);
     if (!Object.keys(snap.data).length) return null;
     const json = JSON.stringify(snap);
     if (D && D.writeBackup) return D.writeBackup(json, !!manual);
     try {
       const list = JSON.parse(localStorage.getItem(BK_KEY) || '[]');
-      list.unshift({ name: snap.date.slice(0, 19).replace('T', ' ') + (manual ? ' (manual)' : ''), json });
+      list.unshift({
+        name: snap.date.slice(0, 19).replace('T', ' ') + (note ? ' (' + note + ')' : manual ? ' (manual)' : ''),
+        json,
+      });
       localStorage.setItem(BK_KEY, JSON.stringify(list.slice(0, 3)));
       return list[0].name;
     } catch (e) {
@@ -211,6 +220,19 @@
       return null;
     }
   };
+  /* the save was just brought up to date (save.js): keep the untouched copy as a backup too */
+  (function afterMigration() {
+    const st = FW.Save && FW.Save.startup;
+    if (!st || !st.migrated) return;
+    const pre = FW.Save.premigrate();
+    SYS.log(
+      'info',
+      'save updated from layout ' + st.from + ' to ' + st.to + (st.changed.length ? ': ' + st.changed.join(', ') : '')
+    );
+    if (pre && pre.data) SYS.backup(true, pre.data, 'before update');
+  })();
+  if (FW.Save && FW.Save.startup && FW.Save.startup.error)
+    SYS.log('error', 'save update failed: ' + FW.Save.startup.error);
   (function daily() {
     const today = fileDate();
     if (App.store.get('fw.lastBackup', '') === today) return;

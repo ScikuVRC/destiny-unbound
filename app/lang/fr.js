@@ -1083,6 +1083,13 @@
       'Not your thing?': 'Pas pour toi ?',
       'Never roll this again': 'Ne plus jamais tirer ça',
       'Removed from future spins.': 'Retiré des prochains tirages.',
+      /* save warnings */
+      'Could not save: storage on this device is full. Export your save in Options > Data to keep it safe.':
+        'Sauvegarde impossible : le stockage de cet appareil est plein. Exporte ta sauvegarde dans Options > Données pour la garder.',
+      'Could not save: this browser is blocking storage, so progress will not be kept.':
+        'Sauvegarde impossible : ce navigateur bloque le stockage, ta progression ne sera pas conservée.',
+      'This save comes from a newer version of the game. Update the game so nothing gets lost.':
+        'Cette sauvegarde vient d’une version plus récente du jeu. Mets le jeu à jour pour ne rien perdre.',
     },
   };
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -40,10 +40,11 @@
   }
   const P = (FW.prefs = load());
   FW.savePrefs = function () {
+    if (FW.Save) return FW.Save.write(KEY, JSON.stringify(P));
     try {
       localStorage.setItem(KEY, JSON.stringify(P));
     } catch (e) {
-      /* private mode */
+      /* storage blocked */
     }
   };
   FW.setPref = function (k, v) {

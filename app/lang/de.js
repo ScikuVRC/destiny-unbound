@@ -1083,6 +1083,13 @@
       'Not your thing?': 'Nicht dein Ding?',
       'Never roll this again': 'Nie wieder drehen',
       'Removed from future spins.': 'Aus künftigen Drehungen entfernt.',
+      /* save warnings */
+      'Could not save: storage on this device is full. Export your save in Options > Data to keep it safe.':
+        'Speichern fehlgeschlagen: Der Speicher dieses Geräts ist voll. Exportiere deinen Spielstand unter Optionen > Daten, um ihn zu sichern.',
+      'Could not save: this browser is blocking storage, so progress will not be kept.':
+        'Speichern fehlgeschlagen: Dieser Browser blockiert den Speicher, dein Fortschritt wird nicht behalten.',
+      'This save comes from a newer version of the game. Update the game so nothing gets lost.':
+        'Dieser Spielstand stammt aus einer neueren Version des Spiels. Aktualisiere das Spiel, damit nichts verloren geht.',
     },
   };
 })(typeof window !== 'undefined' ? window : globalThis);

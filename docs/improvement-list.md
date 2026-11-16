@@ -172,7 +172,7 @@ Everything is synthesized in 146 lines of code: clever and tiny, but it sounds l
    through this week (a wrong field name, a missing argument) without rewriting anything.
 76. ⬜ **Browser tests in CI (M).** The 87 checks run in Node. Add a few Playwright tests: finish a hero, play three
    chapters, open every modal, switch language. `scripts/layout-check.js` could run in CI too.
-77. ⬜ **Save format versioning and migration tests (S).** Saves are in localStorage across about 20 keys. Add a schema
+77. ✅ **Save format versioning and migration tests (S).** Done 2026-11-16: `fw.schema` and step-by-step updates in `app/js/save.js` (an untouched copy is kept as a backup first), real saves from four releases in `tests/saves/` (made with `scripts/make-save-fixture.js`), and a warning when a save cannot be written. Saves are in localStorage across about 20 keys. Add a schema
    version, a migration step, and tests that old saves still load.
 78. ⬜ **Bigger saves in IndexedDB (M).** localStorage is limited (about 5 MB) and synchronous. The Hall of Legends and
    portraits will outgrow it.
