@@ -2,7 +2,7 @@
 
 A running record of where the game stands. Update it when something ships, starts or gets decided.
 This file is public: server addresses, account, payment and moderation details go in `private-notes.md` (not on GitHub).
-Last updated: 2026-11-16 · Current version: **0.2.0-alpha.4.5**
+Last updated: 2026-11-16 · Current version: **0.2.0-alpha.4.6**
 
 Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
@@ -37,6 +37,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 | The interface scales with big screens (1080p, 1440p, ultrawide, 4K); UI scale works on top; wheel stays sharp (small update) | 0.2.0-alpha.4.3 | ✅ released 2026-11-15 |
 | Story screen: chapter banner with portrait, saga journal; spin screen balanced to the wheel, more room under SPIN (small update) | 0.2.0-alpha.4.4 | ✅ released 2026-11-15 |
 | Tester feedback: Fate Tokens named as re-spins, auto-play pause setting, heir inheritance screen, kingdom tip, guide after the music question (small update) | 0.2.0-alpha.4.5 | ✅ released 2026-11-16 |
+| Save versioning: saves update themselves with a backup first, newer saves left alone, a warning when the game cannot save (small update) | 0.2.0-alpha.4.6 | ✅ released 2026-11-16 |
 | Alpha test with 5-15 players | two weeks after release | ⬜ |
 | Beta (fixes from the alpha, signed build, store page) | 0.2.0-beta.1 | ⬜ |
 | 1.0 on itch.io | 1.0.0 | ⬜ |
@@ -64,7 +65,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
 ## Ready for the next alpha (not released yet)
 
-- ✅ Save versioning (improvement 77): saves carry a layout number (`fw.schema`) and are brought up to date step by step at startup, after an untouched copy is kept as a backup; saves from a newer game are left alone and refused on import; a full or blocked storage now shows a warning instead of silently losing progress. `tests/save.test.js` loads real saves made by 0.1.0-alpha.1, 0.2.0-alpha.1, 0.2.0-alpha.3 and 0.2.0-alpha.4.5 (`node scripts/make-save-fixture.js <tag>` adds one)
+- Nothing yet
 
 ## Released
 

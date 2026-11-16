@@ -4,6 +4,23 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
+## 0.2.0-alpha.4.6 (2026-11-16)
+
+A small update that keeps your saves safe as the game changes.
+
+### Changed
+
+- **Saves know which version made them.** When an update changes how something is saved, your save is brought
+  up to date the first time you start the game, and an untouched copy is kept first as a backup (Options > Data >
+  Backups, marked "before update"). Heroes, sagas and achievements from the very first alpha still load.
+- **A save from a newer version is left alone.** If you go back to an older version, it warns you instead of
+  changing the save, and importing a newer save file asks you to update the game first.
+
+### Fixed
+
+- **The game tells you when it cannot save.** If this device’s storage is full or the browser blocks it, a
+  warning appears once, instead of progress quietly not being kept.
+
 ## 0.2.0-alpha.4.5 (2026-11-16)
 
 A small update with fixes from the first alpha tester report on Discord. Thank you, Bobs!
