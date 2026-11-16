@@ -11,6 +11,7 @@
     fps: 0, // frame limit for the wheel: 0 = match the display
     vsync: true, // desktop app, applies after a restart
     anim: 'full', // full | reduced | off
+    autoPause: 3, // seconds Auto waits on each result before moving on
     quality: 'high', // wheel sharpness: low | medium | high
     glow: true, // glows, embers, stars and shadows
     emojiIcons: false, // show emoji instead of the game's drawn icons

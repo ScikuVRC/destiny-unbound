@@ -1033,6 +1033,46 @@
       'What happens next?': '次は何が起こる？',
       'A new chapter': '新たな章',
       'The end': '終幕',
+      /* tester feedback, 0.2.0-alpha.4.5: re-spins, auto pause, heirs, kingdoms; HD music question */
+      'Fate Token (re-spin)': '運命のトークン（振り直し）',
+      'Fate Tokens (re-spins)': '運命のトークン（振り直し）',
+      'Fate Tokens: re-spin a result': '運命のトークン：結果を振り直す',
+      'Re-spins': '振り直し',
+      'Fate Tokens are your re-spins: each one lets you spin a result you dislike again. Losing one means one re-spin fewer.':
+        '運命のトークンは振り直しの回数です。1枚で気に入らない結果を1回振り直せます。失うと振り直しが1回減ります。',
+      'Spin the wheels of fate to forge a legend: race, powers, weapon, weakness and more. Bigger slices are likelier. Fate Tokens are your re-spins: spend one to spin a result you dislike again. Start here with New Legend.':
+        '運命のルーレットを回して伝説を作ろう：種族、能力、武器、弱点など。大きい枠ほど出やすくなります。運命のトークンは振り直しの回数です。気に入らない結果は1枚使って振り直せます。まずは「新しい伝説」から。',
+      'Auto-play pause': 'オートの待ち時間',
+      Short: '短め',
+      Long: '長め',
+      'How long Auto waits on each result, so you can read it.':
+        'オートで各結果を表示しておく時間。読む余裕を作れます。',
+      'What the heir inherits': '跡継ぎが受け継ぐもの',
+      'heir of': '親：',
+      Talent: '才能',
+      "the parent's best stat": '親の最も高い能力',
+      Renown: '名声',
+      'the family name is worth more with every generation': '家名は世代を重ねるごとに重みを増す',
+      'the world': '世界',
+      Heirloom: '家宝',
+      Blessing: '祝福',
+      'a prophesied child': '予言の子',
+      'still hunting your family': 'まだあなたの一族を狙っている',
+      'Everything else (class, powers, weapon, looks and the rest) is spun fresh for the heir, and the story starts again at chapter 1.':
+        'それ以外（クラス、能力、武器、見た目など）は跡継ぎのために新しく回し、物語は第1章から始まります。',
+      'Spin the heir': '跡継ぎを回す',
+      'You rule a kingdom now': 'あなたは王国を治めています',
+      'Between chapters, news comes from your kingdom: golden ages and trade booms help you, famine and plague cost you, and a dragon or a coup must be fought off. Lose the coup and you lose the throne.':
+        '章の合間に王国から知らせが届きます。黄金時代や交易の繁栄は助けになり、飢饉や疫病は損失になり、竜やクーデターは撃退しなければなりません。クーデターに敗れると王位を失います。',
+      'Use HD music?': 'HD音楽を使いますか？',
+      'HD music plays recorded tracks for the menus, hero making, stories and battles. They are placeholders made with an AI music model. Classic keeps the original music, synthesized live in code.':
+        'HD音楽では、メニュー、主人公作り、物語、戦闘で収録済みの曲が流れます。音楽AIモデルで作った仮の曲です。クラシックはコードでその場で合成する元の音楽のままです。',
+      'Use HD music': 'HD音楽を使う',
+      'Keep classic': 'クラシックのまま',
+      'You can change this any time in Options > Audio.': '設定 > サウンドでいつでも変更できます。',
+      'Not your thing?': '好みじゃない？',
+      'Never roll this again': '今後これを出さない',
+      'Removed from future spins.': '今後の回転から除外しました。',
     },
   };
 })(typeof window !== 'undefined' ? window : globalThis);

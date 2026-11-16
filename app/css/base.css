@@ -222,6 +222,8 @@ a.opt{text-decoration:none;color:inherit}
 .vol-row{display:grid;grid-template-columns:70px 1fr 34px;gap:10px;align-items:center;margin:6px 0}.vol-row input{width:100%}.vol-row b{text-align:right;font-size:13px}
 .opt-h{font-family:var(--font-display);font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin:16px 0 6px}
 .upd-banner{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:60;display:flex;gap:10px;align-items:center;padding:10px 12px 10px 16px;border-radius:calc(var(--radius) + 6px);background:var(--panel);color:var(--panel-fg);border:1px solid var(--accent);box-shadow:0 12px 40px rgba(0,0,0,.5);max-width:calc(100% - 32px)}
+/* while the first-run guide is open it sits at the bottom too: move the update banner to the top so neither covers the other */
+body:has(#coach) .upd-banner{bottom:auto;top:64px}
 /* ---------- centred text everywhere ---------- */
 body{text-align:center}
 body :is(.card-panel,.sheet,.modal,.fx-card,.opt,.hall-item,.table th,.table td,.saga-log li,.ach,.opt-row,.how li,.chron li,.legend-key,.result-sub,.effects,.warn,.note,.daily-line,.saga-tale,.rows .row,.row .k,.row .v,input,textarea,select,.mini span,.field,.status){text-align:center}

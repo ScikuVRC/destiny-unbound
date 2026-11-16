@@ -166,6 +166,31 @@
       : '<p class="legend-key">Nothing has happened yet.</p>';
   }
 
+  /* ---------------- once: what ruling a kingdom means (testers missed that it has its own events) ---------------- */
+  function kingdomTip() {
+    const L = st.legend;
+    if (!L || !L.saga || !L.saga.kingdom || App.store.get('fw.tipKingdom', false) || $('.tip-card')) return;
+    App.store.set('fw.tipKingdom', true);
+    const d = document.createElement('div');
+    d.className = 'tip-card';
+    d.setAttribute('role', 'status');
+    d.innerHTML =
+      '<b>' +
+      H.esc(tt('You rule a kingdom now')) +
+      '</b>' +
+      H.esc(
+        tt(
+          'Between chapters, news comes from your kingdom: golden ages and trade booms help you, famine and plague cost you, and a dragon or a coup must be fought off. Lose the coup and you lose the throne.'
+        )
+      ) +
+      '<div class="cta"><button class="btn small primary" data-tip="ok">' +
+      H.esc(tt('Got it')) +
+      '</button></div>';
+    document.body.appendChild(d);
+    d.querySelector('[data-tip="ok"]').onclick = () => d.remove();
+    setTimeout(() => d.remove(), 25000);
+  }
+
   /* ---------------- one wheel, as the story asks for it ---------------- */
   function spinUI(cfg) {
     const L = st.legend;
@@ -203,7 +228,10 @@
           fx: H.fxCard(e.name, e.tone === 'bad' ? '' : e.text, e.tone === 'bad' ? e.text : '', chips),
         };
       },
-      afterResult: sheet,
+      afterResult: () => {
+        sheet();
+        kingdomTip();
+      },
     });
   }
 
@@ -294,10 +322,75 @@
   }
 
   /* ---------------- dynasty: play on as the heir ---------------- */
+  // before the heir's wheels: what carries over from the parent and what will be spun fresh
+  function heirIntro(P, inh) {
+    return new Promise(resolve => {
+      const s = P.saga,
+        tr = inh.dyn && inh.dyn.trait,
+        lad = FW.LADDERS && FW.LADDERS[inh.best],
+        li = (what, detail, chips) =>
+          '<li><b>' +
+          H.esc(tt(what)) +
+          '</b>' +
+          (detail ? ' <span>' + H.esc(detail) + '</span>' : '') +
+          (chips ? H.chips(FW.chips(FW.parse(chips))) : '') +
+          '</li>';
+      let list =
+        li('Race', inh.race + (inh.sub ? ' (' + inh.sub + ')' : '')) +
+        li('House', inh.dyn ? inh.dyn.house + ' · ' + tt('Gen') + ' ' + (inh.dyn.gen + 1) : '') +
+        li('Talent', tt("the parent's best stat") + (lad ? ': ' + tt(lad.label) : ''), inh.best + '+1') +
+        li(
+          'Renown',
+          tt('the family name is worth more with every generation'),
+          inh.dsl.replace(/^\S+\+1\s*/, '').replace(/fate\+1\s*/, '')
+        );
+      if (tr) list += li('Family trait', tt(tr.name), tr.dsl);
+      if (inh.kingdom) list += li('Kingdom', inh.kingdom.name + (s.world ? ' (' + tt('the world') + ')' : ''));
+      if (inh.artifact) list += li('Heirloom', inh.artifact.name, inh.artifact.dsl || 'pwr+1');
+      if (inh.heir && inh.heir.blessed) list += li('Blessing', tt('a prophesied child'), 'fate+1');
+      if (inh.nem) list += li('Nemesis', inh.nem.name + ' · ' + tt('still hunting your family'));
+      App.openModal(
+        '<button class="btn small ghost close">' +
+          H.esc(tt('Close')) +
+          ' ✕</button><h2>' +
+          H.esc(tt('What the heir inherits')) +
+          '</h2><p class="legend-key">' +
+          H.esc(inh.heir.name + ' · ' + tt('heir of') + ' ' + inh.parent) +
+          '</p><ul class="heir-list">' +
+          list +
+          '</ul><p class="legend-key">' +
+          H.esc(
+            tt(
+              'Everything else (class, powers, weapon, looks and the rest) is spun fresh for the heir, and the story starts again at chapter 1.'
+            )
+          ) +
+          '</p><div class="cta"><button class="btn primary" id="heirGo">' +
+          H.esc(tt('Spin the heir')) +
+          '</button></div>'
+      );
+      let go = false;
+      $('#heirGo').onclick = () => {
+        go = true;
+        App.closeModal();
+      };
+      const root = $('#modalRoot'),
+        mo = new MutationObserver(() => {
+          if (root.firstChild && $('#heirGo')) return;
+          mo.disconnect();
+          resolve(go);
+        });
+      mo.observe(root, { childList: true });
+      setTimeout(() => {
+        const b = $('#heirGo');
+        if (b) b.focus();
+      }, 30);
+    });
+  }
   async function continueAsHeir() {
     const P = st.legend;
     if (!S.canContinue(P, opts())) return;
     const inh = S.inheritance(P);
+    if (!(await heirIntro(P, inh))) return; // closed without starting
     App.saveToHall(); // keep the parent in the Hall of Legends
     const person = JSON.parse(JSON.stringify(st.person));
     const surname = inh.dyn.house.replace(/^House /, '');

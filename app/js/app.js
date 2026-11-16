@@ -378,7 +378,8 @@
       setControls('result');
       updateTokens();
       const p2 = waitFor();
-      if (state.auto) autoFire('next', cfg.autoDelay || 1500);
+      // the player's reading pause (Options > General > Auto-play pause); a step can ask for its own
+      if (state.auto) autoFire('next', cfg.autoDelay || Math.round((parseFloat(FW.prefs.autoPause) || 3) * 1000));
       const b = await p2;
       chk();
       if (b === 'respin') {
@@ -658,7 +659,7 @@
       '<p class="legend-key" style="margin:0 0 6px">' +
       c.fateTokens +
       ' ' +
-      tr(c.fateTokens === 1 ? 'Fate Token' : 'Fate Tokens') +
+      tr(c.fateTokens === 1 ? 'Fate Token (re-spin)' : 'Fate Tokens (re-spins)') +
       ' &middot; ' +
       L.ally.length +
       ' ' +

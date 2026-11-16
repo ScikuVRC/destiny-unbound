@@ -1043,6 +1043,46 @@
       'What happens next?': 'Was passiert als Nächstes?',
       'A new chapter': 'Ein neues Kapitel',
       'The end': 'Ende',
+      /* tester feedback, 0.2.0-alpha.4.5: re-spins, auto pause, heirs, kingdoms; HD music question */
+      'Fate Token (re-spin)': 'Schicksalsmarke (Neudrehung)',
+      'Fate Tokens (re-spins)': 'Schicksalsmarken (Neudrehungen)',
+      'Fate Tokens: re-spin a result': 'Schicksalsmarken: ein Ergebnis neu drehen',
+      'Re-spins': 'Neudrehungen',
+      'Fate Tokens are your re-spins: each one lets you spin a result you dislike again. Losing one means one re-spin fewer.':
+        'Schicksalsmarken sind deine Neudrehungen: Mit jeder kannst du ein Ergebnis, das dir nicht gefällt, neu drehen. Verlierst du eine, hast du eine Neudrehung weniger.',
+      'Spin the wheels of fate to forge a legend: race, powers, weapon, weakness and more. Bigger slices are likelier. Fate Tokens are your re-spins: spend one to spin a result you dislike again. Start here with New Legend.':
+        'Dreh die Schicksalsräder und schmiede eine Legende: Volk, Kräfte, Waffe, Schwäche und mehr. Größere Felder kommen öfter. Schicksalsmarken sind deine Neudrehungen: Gib eine aus, um ein Ergebnis, das dir nicht gefällt, neu zu drehen. Fang hier mit Neue Legende an.',
+      'Auto-play pause': 'Pause bei Auto',
+      Short: 'Kurz',
+      Long: 'Lang',
+      'How long Auto waits on each result, so you can read it.':
+        'Wie lange Auto bei jedem Ergebnis wartet, damit du es lesen kannst.',
+      'What the heir inherits': 'Was der Erbe erbt',
+      'heir of': 'Erbe von',
+      Talent: 'Talent',
+      "the parent's best stat": 'der beste Wert des Elternteils',
+      Renown: 'Ruhm',
+      'the family name is worth more with every generation': 'der Familienname ist mit jeder Generation mehr wert',
+      'the world': 'die Welt',
+      Heirloom: 'Erbstück',
+      Blessing: 'Segen',
+      'a prophesied child': 'ein prophezeites Kind',
+      'still hunting your family': 'jagt deine Familie noch immer',
+      'Everything else (class, powers, weapon, looks and the rest) is spun fresh for the heir, and the story starts again at chapter 1.':
+        'Alles andere (Klasse, Kräfte, Waffe, Aussehen und der Rest) wird für den Erben neu gedreht, und die Geschichte beginnt wieder bei Kapitel 1.',
+      'Spin the heir': 'Erben drehen',
+      'You rule a kingdom now': 'Du regierst jetzt ein Königreich',
+      'Between chapters, news comes from your kingdom: golden ages and trade booms help you, famine and plague cost you, and a dragon or a coup must be fought off. Lose the coup and you lose the throne.':
+        'Zwischen den Kapiteln kommen Nachrichten aus deinem Reich: Goldene Zeitalter und Handelsblüten helfen dir, Hunger und Seuche kosten dich, und Drachen oder Putsche musst du abwehren. Verlierst du den Putsch, verlierst du den Thron.',
+      'Use HD music?': 'HD-Musik verwenden?',
+      'HD music plays recorded tracks for the menus, hero making, stories and battles. They are placeholders made with an AI music model. Classic keeps the original music, synthesized live in code.':
+        'HD-Musik spielt aufgenommene Stücke für Menüs, Heldenerschaffung, Geschichten und Kämpfe. Es sind Platzhalter, erstellt mit einem KI-Musikmodell. Klassisch behält die ursprüngliche, live im Code erzeugte Musik.',
+      'Use HD music': 'HD-Musik verwenden',
+      'Keep classic': 'Klassisch behalten',
+      'You can change this any time in Options > Audio.': 'Du kannst das jederzeit unter Optionen > Ton ändern.',
+      'Not your thing?': 'Nicht dein Ding?',
+      'Never roll this again': 'Nie wieder drehen',
+      'Removed from future spins.': 'Aus künftigen Drehungen entfernt.',
     },
   };
 })(typeof window !== 'undefined' ? window : globalThis);

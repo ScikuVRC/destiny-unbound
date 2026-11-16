@@ -159,7 +159,18 @@
   H.tokens = function (left, total) {
     let s = '';
     for (let i = 0; i < Math.max(total, left); i++) s += '<b class="' + (i < left ? '' : 'off') + '"></b>';
-    return '<span class="tokens" title="Fate Tokens: re-spin a result">' + s + ' Fate ' + left + '</span>';
+    const t = FW.t || (x => x);
+    return (
+      '<span class="tokens" title="' +
+      esc(t('Fate Tokens: re-spin a result')) +
+      '">' +
+      s +
+      ' ' +
+      esc(t('Re-spins')) +
+      ' ' +
+      left +
+      '</span>'
+    );
   };
   H.partsBars = function (comp) {
     const items = [

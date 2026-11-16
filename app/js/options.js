@@ -372,6 +372,19 @@
         )
       );
       h += row(
+        'Auto-play pause',
+        seg(
+          'autoPause',
+          [
+            [1.5, 'Short'],
+            [3, 'Normal'],
+            [5, 'Long'],
+          ],
+          P.autoPause
+        ),
+        'How long Auto waits on each result, so you can read it.'
+      );
+      h += row(
         'Choose what can happen',
         btn('content', 'Content & mods ›'),
         'Switch off death, romance, sci-fi races and more, or change the odds.'
@@ -1019,7 +1032,7 @@
         const d = FW.PREF_DEFAULTS,
           keys =
             {
-              general: ['uiScale', 'fps', 'anim', 'quality', 'glow'],
+              general: ['uiScale', 'fps', 'anim', 'quality', 'glow', 'autoPause'],
               audio: ['uiVol', 'muteBg'],
               access: ['textSize', 'contrast', 'cbSafe', 'reduceMotion', 'captions', 'emojiIcons'],
               controls: ['keys'],

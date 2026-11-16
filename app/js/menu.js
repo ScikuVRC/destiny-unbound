@@ -262,6 +262,16 @@
     };
     $('#hdYes').onclick = () => choose(true);
     $('#hdNo').onclick = () => choose(false);
+    // closed some other way (Esc, a click outside, the update banner): still start the guide, and ask again next time
+    const root = $('#modalRoot');
+    if (root && typeof MutationObserver !== 'undefined') {
+      const mo = new MutationObserver(() => {
+        if (root.firstChild) return;
+        mo.disconnect();
+        setTimeout(firstRun, 200);
+      });
+      mo.observe(root, { childList: true });
+    }
     setTimeout(() => {
       const b = $('#hdYes');
       if (b) b.focus();
@@ -499,7 +509,7 @@
     {
       item: 'New Legend',
       title: 'Welcome to Destiny Unbound',
-      text: 'Spin the wheels of fate to forge a legend: race, powers, weapon, weakness and more. Bigger slices are likelier. Start here with New Legend.',
+      text: 'Spin the wheels of fate to forge a legend: race, powers, weapon, weakness and more. Bigger slices are likelier. Fate Tokens are your re-spins: spend one to spin a result you dislike again. Start here with New Legend.',
     },
     {
       item: 'Story',

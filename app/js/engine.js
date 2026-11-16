@@ -130,7 +130,14 @@
       out.push({ t, k: sumMods(c.mods) >= 0 ? 'cond-buff' : 'cond-debuff', cond: true });
     });
     if (p.fate)
-      out.push({ t: (p.fate > 0 ? '+' : '−') + Math.abs(p.fate) + ' Fate Token', k: p.fate > 0 ? 'buff' : 'debuff' });
+      // say what a token is for: testers read a bare "Fate Token" as a reputation score
+      out.push({
+        t:
+          (p.fate > 0 ? '+' : '−') +
+          Math.abs(p.fate) +
+          (Math.abs(p.fate) === 1 ? ' Fate Token (re-spin)' : ' Fate Tokens (re-spins)'),
+        k: p.fate > 0 ? 'buff' : 'debuff',
+      });
     if (p.rt) out.push({ t: (p.rt > 0 ? '+' : '−') + Math.abs(p.rt) + ' Renown', k: p.rt > 0 ? 'buff' : 'debuff' });
     p.weak.forEach(w => out.push({ t: 'Weak to ' + cap(w), k: 'debuff' }));
     p.res.forEach(w => out.push({ t: 'Resists ' + cap(w), k: 'buff' }));
@@ -165,7 +172,8 @@
           .join(', ') +
         '. Dashed chips count only in a matching arena or moment.'
       );
-    if (/^[+−-]\d+ Fate Token/.test(t)) return 'Fate Tokens let you re-spin a result you dislike.';
+    if (/^[+−-]\d+ Fate Token/.test(t))
+      return 'Fate Tokens are your re-spins: each one lets you spin a result you dislike again. Losing one means one re-spin fewer.';
     if (/^[+−-]\d+ Renown$/.test(t)) return 'Renown adds straight to your power rating.';
     if ((m = /^Weak to (.+)$/.exec(t)))
       return 'Foes who attack with ' + m[1] + ' have a much better chance against you.';
