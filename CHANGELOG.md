@@ -4,6 +4,24 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
+## 0.2.0-alpha.4.7 (2026-11-16)
+
+A small update: send a report when something goes wrong, and phones held sideways fit the spin screen.
+
+### New
+
+- **Send an error report.** When something goes wrong, or the desktop game stopped unexpectedly last time, a small
+  note offers to send a report to the developer. You see exactly what it contains first (the game version, your
+  platform, the screen, the error and recent log lines, and a note if you write one); home folders and e-mail
+  addresses are taken out, and nothing is sent until you press Send. Also in Send feedback; Options > Data can turn
+  the offer off. Reports are kept 30 days.
+
+### Fixed
+
+- **Phones held sideways**: SPIN was below the bottom edge on most sideways phones, on both the hero and the story
+  screens. The wheel now sits beside the question in a tighter layout, from 568×320 up.
+- **The desktop app recovers from a crash** by reloading the game, instead of leaving an empty window.
+
 ## 0.2.0-alpha.4.6 (2026-11-16)
 
 A small update that keeps your saves safe as the game changes.

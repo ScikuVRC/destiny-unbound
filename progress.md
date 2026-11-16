@@ -2,7 +2,7 @@
 
 A running record of where the game stands. Update it when something ships, starts or gets decided.
 This file is public: server addresses, account, payment and moderation details go in `private-notes.md` (not on GitHub).
-Last updated: 2026-11-16 · Current version: **0.2.0-alpha.4.6**
+Last updated: 2026-11-16 · Current version: **0.2.0-alpha.4.7**
 
 Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
@@ -38,6 +38,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 | Story screen: chapter banner with portrait, saga journal; spin screen balanced to the wheel, more room under SPIN (small update) | 0.2.0-alpha.4.4 | ✅ released 2026-11-15 |
 | Tester feedback: Fate Tokens named as re-spins, auto-play pause setting, heir inheritance screen, kingdom tip, guide after the music question (small update) | 0.2.0-alpha.4.5 | ✅ released 2026-11-16 |
 | Save versioning: saves update themselves with a backup first, newer saves left alone, a warning when the game cannot save (small update) | 0.2.0-alpha.4.6 | ✅ released 2026-11-16 |
+| Error reports you choose to send (with a crash offer on desktop), phones held sideways fit the spin and story screens (small update) | 0.2.0-alpha.4.7 | ✅ released 2026-11-16 |
 | Alpha test with 5-15 players | two weeks after release | ⬜ |
 | Beta (fixes from the alpha, signed build, store page) | 0.2.0-beta.1 | ⬜ |
 | 1.0 on itch.io | 1.0.0 | ⬜ |
@@ -65,8 +66,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
 ## Ready for the next alpha (not released yet)
 
-- ✅ Phones held sideways: the spin and story screens fit, with SPIN on screen from 568×320 up (see Bugs)
-- ✅ Error reports (improvement 79): when a script error happens, or the desktop game stopped unexpectedly last time, a small note offers **Send report**. The player sees exactly what will be sent (version, platform, screen, the error and recent log lines, an optional note; home folders and e-mail addresses removed) and nothing goes out until they press Send. Also in Send feedback; Options > Data can turn the offer off. The desktop app now reloads the game page after a crash. Server: `POST /v1/error` in the world counter worker (kept 30 days); read them with `node scripts/error-reports.js`. Worker deployed 2026-11-16 (errors table added to the live database; checked with a test report, then removed)
+- Nothing yet
 
 ## Released
 
@@ -105,9 +105,9 @@ Newest first. Fixed bugs ship in the next alpha build.
 | ✅ Shipped in 0.2.0-alpha.4.5 | Auto-play moves on before you can read the result (tester report) | New Options > General > Auto-play pause: Short 1.5 s (the old speed), Normal 3 s (default), Long 5 s (`app/js/app.js`, `options.js`, `prefs.js`). |
 | ✅ Shipped in 0.2.0-alpha.4.5 | Playing as the heir: unclear what carries over (tester report) | A "What the heir inherits" screen before the heir's wheels lists race, house, talent, renown, family trait, kingdom, heirloom, blessing and nemesis (`app/js/story-ui.js`). |
 | ✅ Shipped in 0.2.0-alpha.4.5 | Ruling a kingdom: unclear what it does (tester report) | A one-time tip explains kingdom news, coups and losing the throne; tips moved to the bottom right so they never cover achievement pop-ups (`story-ui.js`, `ui.css`). |
-| ✅ Fixed, in the next alpha | Phones held sideways: SPIN below the bottom edge (5 px at 740×360, far off-screen at 667×375 and 568×320, and on the story screen) | Short landscape windows (up to 460 px tall) now put the wheel beside the question from 560 px wide, drop the icon, keep one line of room for the question and banner and use a smaller result line; the smallest sizes also get the compact phone header. Checked with `scripts/layout-check.js` at 568×320, 667×375, 740×360, 844×390 and 932×430 (`app/css/ui.css`). |
-| ✅ Fixed, in the next alpha | `scripts/layout-check.js` crashed instead of reporting when text overflowed or was too small | Since 0.2.0-alpha.4.3 a comment swallowed the line that set up the list of examples. Fixed; it now reports problems again. |
-| 💭 Not reproduced | A game crash reported 2026-11-15 | No error in the game log, no crash dump and no error event. From the next alpha the desktop app reloads the page after a crash and offers to send a report, so a second one can be looked at. |
+| ✅ Shipped in 0.2.0-alpha.4.7 | Phones held sideways: SPIN below the bottom edge (5 px at 740×360, far off-screen at 667×375 and 568×320, and on the story screen) | Short landscape windows (up to 460 px tall) now put the wheel beside the question from 560 px wide, drop the icon, keep one line of room for the question and banner and use a smaller result line; the smallest sizes also get the compact phone header. Checked with `scripts/layout-check.js` at 568×320, 667×375, 740×360, 844×390 and 932×430 (`app/css/ui.css`). |
+| ✅ Shipped in 0.2.0-alpha.4.7 | `scripts/layout-check.js` crashed instead of reporting when text overflowed or was too small | Since 0.2.0-alpha.4.3 a comment swallowed the line that set up the list of examples. Fixed; it now reports problems again. |
+| 💭 Not reproduced | A game crash reported 2026-11-15 | No error in the game log, no crash dump and no error event. Since 0.2.0-alpha.4.7 the desktop app reloads the page after a crash and offers to send a report, so a second one can be looked at. |
 | 💭 Not reproduced | The art tests failed once (every local-server check at once: "Could not reach") | Passed 15 runs in a row afterwards; most likely the machine briefly blocked local connections. A failure now prints the network error underneath. |
 | ✅ Shipped in 0.1.0-alpha.3 | itch.io: you can't see the whole game, it doesn't scale, and you can't scroll even in fullscreen | itch.io's "Enable scrollbars" embed option was off, which blocks scrolling inside the game frame, and the spin screen was too tall for the 960×540 frame. Scrollbars are now on, and short landscape windows put the wheel beside the question and buttons, sized to the window, so a whole spin fits (`app/css/ui.css`). The first-run guide moves aside on short windows. |
 | ✅ Shipped in 0.1.0-alpha.3 | Phones: the title screen's footer runs off the right edge and cuts off "Support on Ko-fi" | The footer never wrapped. On narrow screens it now wraps and centres, and hides the keyboard hint (`app/css/ui.css`). |
