@@ -1,6 +1,6 @@
 # Destiny Unbound: what can be improved
 
-Written 2026-11-13, after 0.2.0-alpha.1. Checkmarks updated 2026-11-15, at 0.2.0-alpha.4.2. Based on a pass through the code, assets, tests and docs.
+Written 2026-11-13, after 0.2.0-alpha.1. Checkmarks updated 2026-11-16, after 0.2.0-alpha.4.6 (29 of 102 done). Based on a pass through the code, assets, tests and docs.
 Each item has a rough size: **S** (an hour or two), **M** (a day), **L** (several days or more).
 Items marked ★ are the ones I'd do first. ✅ = done, ⬜ = not yet. Numbers stay the same as items get done.
 
@@ -77,10 +77,10 @@ Where the game stands: about 6,800 lines of game code, 26 wheels per hero, 98 ra
 29. ⬜ **Wheel readability with many slices (M).** The race wheel has 98 slices; labels at the small end are unreadable.
    Options: zoom the wheel near the pointer while it slows, or show the five slices around the pointer in a strip.
 30. ✅ **Tooltips for tags (S).** Done 2026-11-14. "+1 FGT", "In the wilds: +1 ALL" mean nothing to a new player. Hover or tap to explain.
-31. ⬜ **Onboarding (M).** The first-run guide is four tooltips. A short guided first hero ("spin three wheels, see
+31. ⬜ **Onboarding (M).** Partly done 2026-11-16 (0.2.0-alpha.4.5): the guide now always appears after the music question, its first step explains Fate Tokens as re-spins, and one-time tips explain kingdoms and what an heir inherits. The guided first hero is still to do. The first-run guide is four tooltips. A short guided first hero ("spin three wheels, see
    what they do") would teach buffs, tokens and luck.
 32. ⬜ **Transitions (S).** Screens cut. Short fades and a wheel "wind up" make it feel finished.
-33. ⬜ **Phone layout (M).** Partly done 2026-11-15: Options and Content & mods fit at 320-412 px in emulation (scripts/layout-check.js); still not tried on a real phone. Not checked on real phones. The painted title menu still falls back to a list there.
+33. ⬜ **Phone layout (M).** Partly done 2026-11-15 and 2026-11-16: Options and Content & mods fit at 320-412 px, and phones held sideways (568×320 to 932×430) put the wheel beside the question with SPIN on screen, all in emulation (scripts/layout-check.js); still not tried on a real phone. Not checked on real phones. The painted title menu still falls back to a list there.
 34. ⬜ **Controller polish (S).** Check the new Spin settings pop-up and Show upcoming with a controller.
 35. ⬜ **Settings search and reset per option (S).** Partly done 2026-11-14: Options has a Reset this tab button; no search yet.
 36. ⬜ **A proper pause menu during story and spins (S).**

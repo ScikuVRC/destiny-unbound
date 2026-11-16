@@ -371,3 +371,41 @@ body.story-on #screen-spin .story-banner{margin-top:0}
 .er-lab{display:block;margin:12px 0 6px;font-weight:700}
 .er-body{text-align:left;max-height:min(calc(38 * var(--vh)),320px);overflow:auto;white-space:pre-wrap;word-break:break-word;font-size:.82em;line-height:1.4;padding:10px 12px;border-radius:8px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.12);margin:0 0 12px}
 #erNote{width:100%;box-sizing:border-box;text-align:left}
+/* Phones held sideways and other short windows (up to 460px tall): the wheel beside the question from 560px wide, and
+   a tighter middle column (no icon, one line of room for the question and the banner, a smaller result) so SPIN fits */
+@media (orientation:landscape) and (max-height:460px) and (min-width:560px){
+  .spin-layout{grid-template-columns:minmax(0,1fr)}
+  .stage{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:clamp(12px,calc(3 * var(--vw)),32px);align-items:center;align-content:start}
+  .stage>*{grid-column:2}
+  .stage>.steps{grid-column:1/-1;grid-row:1}
+  #screen-spin .stage>.wheel-wrap{grid-column:1;grid-row:2/span 7;align-self:start;width:min(calc(calc(100 * var(--dvh)) - 112px),calc(46 * var(--vw)),640px);margin:2px 0 0}
+  body.story-on #screen-spin .stage>.wheel-wrap{grid-row:1/span 8;margin-top:0}
+  #screen-spin .stage{grid-template-rows:auto auto auto auto auto auto auto minmax(0,1fr)}
+  #screen-spin .stage>.story-banner{grid-row:1;min-height:0;margin:0 auto 6px;padding:6px 12px 6px 6px;gap:10px}
+  #screen-spin .stage>.chip-emoji{display:none}
+  #screen-spin .stage>.chip{grid-row:3;min-height:0;padding:8px 14px}
+  #screen-spin .stage>.result{grid-row:4;margin-top:6px;font-size:clamp(18px,calc(2.4 * var(--vw)),26px);height:1.25em;line-height:1.2}
+  #screen-spin .stage>.result-sub{grid-row:5;align-self:start}
+  #screen-spin .stage>#controls{grid-row:6}
+  #screen-spin .stage>.ctl-row2{grid-row:7;margin-top:8px}
+  #screen-spin .stage>.effects{grid-row:8;min-height:0}
+  .sb-por{width:44px;height:44px;font-size:20px}
+  .sb-kicker{font-size:11px}
+  .sb-title{font-size:17px}
+  .sb-sub{font-size:12.5px}
+}
+/* the smallest sideways phones: the compact phone header, so the top bar stays one row */
+@media (orientation:landscape) and (max-height:460px) and (max-width:700px){
+  .top{padding:8px 10px;gap:6px}
+  .brand span:last-child{display:none}
+  .top-actions{flex-wrap:nowrap;gap:6px}
+  .pill{padding:6px 10px;font-size:12px}
+  .icon-btn{width:34px;height:34px}
+}
+/* 340px tall or less (the smallest sideways phones): the banner drops its sub-line and the question gets smaller */
+@media (orientation:landscape) and (max-height:340px) and (min-width:560px){
+  #screen-spin .stage>.story-banner .sb-sub{display:none}
+  #screen-spin .stage>.chip{padding:6px 12px;font-size:15px}
+  #screen-spin .stage>.result{margin-top:4px}
+  #screen-spin .ctl-row2 .btn{padding-left:9px;padding-right:9px}
+}

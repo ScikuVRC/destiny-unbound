@@ -259,10 +259,12 @@
       r = await fetch(url, Object.assign({}, init, { signal }));
     } catch (e) {
       if (e && e.name === 'AbortError') throw new ArtError('Cancelled.');
-      throw new ArtError(
+      const err = new ArtError(
         'Could not reach ' + name + ' at ' + url.replace(/\?.*$/, '') + '.',
         'Check that it is running and the address is right. Local tools must also allow requests from a web page (CORS) - see the setup note for this provider.'
       );
+      err.cause = e; // the network error underneath, for the log and the tests
+      throw err;
     }
     if (!r.ok) {
       let detail = '';

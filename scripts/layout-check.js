@@ -83,7 +83,8 @@ const CHECK = `(() => {
   const spin = document.getElementById('btnSpin');
   if (spin && vis(spin) && document.querySelector('#screen-spin.active') && !document.querySelector('#modalRoot .modal')) { const r = spin.getBoundingClientRect(); if (r.bottom > H + 1) out.push('SPIN below the bottom edge (bottom ' + Math.round(r.bottom) + ' of ' + H + ')'); }
   const root = document.querySelector('#modalRoot .modal') || document.querySelector('.screen.active') || document.body;
-  let over = 0, right = 0, tiny = 0, minPx = 99; const Z = (window.FW && FW.pageZoom && FW.pageZoom()) || 1; // text sizes are measured as shown, after page zoom const ex = { over: [], right: [], tiny: [] };
+  let over = 0, right = 0, tiny = 0, minPx = 99; const ex = { over: [], right: [], tiny: [] };
+  const Z = (window.FW && FW.pageZoom && FW.pageZoom()) || 1; // text sizes are measured as shown, after page zoom
   root.querySelectorAll('*').forEach(e => {
     if (!vis(e)) return; const s = getComputedStyle(e), r = e.getBoundingClientRect();
     if (r.width <= 2 || r.height <= 2 || parseFloat(s.fontSize) === 0 || e.closest('[aria-hidden=true], .optbg, .sr-only, .visually-hidden')) return;   // screen-reader-only text and decoration

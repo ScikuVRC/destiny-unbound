@@ -545,7 +545,10 @@ server.listen(0, '127.0.0.1', async () => {
       passed++;
       console.log('  ok   ' + name);
     } catch (e) {
-      console.log('  FAIL ' + name + '\n       ' + String(e.stack).split('\n').slice(0, 4).join('\n       '));
+      // a connection failure also says why (the network error underneath), so a one-off can be told from a bug
+      const c = e && e.cause,
+        why = c ? '\n       because: ' + ((c.cause && c.cause.code) || c.name) + ' ' + c.message : '';
+      console.log('  FAIL ' + name + '\n       ' + String(e.stack).split('\n').slice(0, 4).join('\n       ') + why);
       process.exitCode = 1;
     }
   }
