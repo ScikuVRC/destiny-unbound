@@ -65,7 +65,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
 ## Ready for the next alpha (not released yet)
 
-- Nothing yet
+- ✅ Error reports (improvement 79): when a script error happens, or the desktop game stopped unexpectedly last time, a small note offers **Send report**. The player sees exactly what will be sent (version, platform, screen, the error and recent log lines, an optional note; home folders and e-mail addresses removed) and nothing goes out until they press Send. Also in Send feedback; Options > Data can turn the offer off. The desktop app now reloads the game page after a crash. Server: `POST /v1/error` in the world counter worker (kept 30 days); read them with `node scripts/error-reports.js`. Worker deployed 2026-11-16 (errors table added to the live database; checked with a test report, then removed)
 
 ## Released
 
@@ -184,7 +184,7 @@ Newest first. Fixed bugs ship in the next alpha build.
 
 | What | Now | Where it comes from |
 | --- | --- | --- |
-| Automated checks | 113 passing (9 suites) | `npm test` |
+| Automated checks | 116 passing (9 suites) | `npm test` |
 | Arena average win chance (Mortal / Heroic / Mythic / Divine) | 43% / 57% / 72% / 85% (was 36 / 51 / 69 / 84) | `node scripts/balance-report.js 10000 10000` |
 | Mortal-luck arena fights at 10% or less | 12% (was 23%) | balance report |
 | Story battles, average win chance (Heroic) | 54% (was 45%) | balance report |
@@ -212,3 +212,4 @@ Newest first. Fixed bugs ship in the next alpha build.
 | 2026-11-15 | The interface scales with the window on big screens (1440×810 is 1×, up to 3×), and the player's UI scale applies on top |
 | 2026-11-16 | Fate Tokens are called re-spins wherever the player sees them; auto-play waits 3 s on a result by default |
 | 2026-11-16 | Social posts (TikTok, Discord) only go out after the developer confirms the exact text |
+| 2026-11-16 | Error reports are never automatic: a note offers to send one, the player sees the exact text, and only their click sends it (kept 30 days, no IPs or IDs) |

@@ -1100,6 +1100,23 @@
         'No se pudo guardar: este navegador bloquea el almacenamiento, así que el progreso no se conservará.',
       'This save comes from a newer version of the game. Update the game so nothing gets lost.':
         'Esta partida viene de una versión más nueva del juego. Actualiza el juego para no perder nada.',
+      /* error reports */
+      'Send an error report': 'Enviar un informe de error',
+      'This sends the report below to the developer so the problem can be fixed. Nothing else is sent: no saves, names or anything about you. Nothing is sent until you press Send.':
+        'Esto envía el informe de abajo al desarrollador para que pueda arreglar el problema. No se envía nada más: ni partidas, ni nombres, ni nada sobre ti. No se envía nada hasta que pulses Enviar.',
+      'Anything to add? (optional)': '¿Algo que añadir? (opcional)',
+      'What were you doing when it happened?': '¿Qué estabas haciendo cuando pasó?',
+      'What will be sent': 'Lo que se enviará',
+      'Send report': 'Enviar informe',
+      'Sending…': 'Enviando…',
+      'Report sent. Thank you!': 'Informe enviado. ¡Gracias!',
+      'Could not send the report. Check your connection, or use Send feedback instead.':
+        'No se pudo enviar el informe. Revisa tu conexión o usa Enviar comentarios.',
+      'The game stopped unexpectedly last time.': 'La última vez el juego se cerró inesperadamente.',
+      'Something went wrong.': 'Algo salió mal.',
+      'Offer to send error reports': 'Ofrecer enviar informes de error',
+      'When something goes wrong, a small note offers to send a report. You see exactly what it contains first, and nothing is sent unless you press Send.':
+        'Cuando algo sale mal, un pequeño aviso ofrece enviar un informe. Primero ves exactamente lo que contiene, y no se envía nada a menos que pulses Enviar.',
     },
   };
 })(typeof window !== 'undefined' ? window : globalThis);

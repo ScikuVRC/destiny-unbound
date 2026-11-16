@@ -1090,6 +1090,23 @@
         'Speichern fehlgeschlagen: Dieser Browser blockiert den Speicher, dein Fortschritt wird nicht behalten.',
       'This save comes from a newer version of the game. Update the game so nothing gets lost.':
         'Dieser Spielstand stammt aus einer neueren Version des Spiels. Aktualisiere das Spiel, damit nichts verloren geht.',
+      /* error reports */
+      'Send an error report': 'Fehlerbericht senden',
+      'This sends the report below to the developer so the problem can be fixed. Nothing else is sent: no saves, names or anything about you. Nothing is sent until you press Send.':
+        'Damit geht der Bericht unten an den Entwickler, damit das Problem behoben werden kann. Sonst wird nichts gesendet: keine Spielstände, keine Namen, nichts über dich. Gesendet wird erst, wenn du auf Senden drückst.',
+      'Anything to add? (optional)': 'Möchtest du etwas ergänzen? (optional)',
+      'What were you doing when it happened?': 'Was hast du gemacht, als es passiert ist?',
+      'What will be sent': 'Was gesendet wird',
+      'Send report': 'Bericht senden',
+      'Sending…': 'Wird gesendet…',
+      'Report sent. Thank you!': 'Bericht gesendet. Danke!',
+      'Could not send the report. Check your connection, or use Send feedback instead.':
+        'Der Bericht konnte nicht gesendet werden. Prüfe deine Verbindung oder nutze stattdessen Feedback senden.',
+      'The game stopped unexpectedly last time.': 'Das Spiel wurde beim letzten Mal unerwartet beendet.',
+      'Something went wrong.': 'Etwas ist schiefgelaufen.',
+      'Offer to send error reports': 'Fehlerberichte anbieten',
+      'When something goes wrong, a small note offers to send a report. You see exactly what it contains first, and nothing is sent unless you press Send.':
+        'Wenn etwas schiefgeht, bietet ein kleiner Hinweis an, einen Bericht zu senden. Du siehst vorher genau, was er enthält, und nichts wird gesendet, bevor du auf Senden drückst.',
     },
   };
 })(typeof window !== 'undefined' ? window : globalThis);

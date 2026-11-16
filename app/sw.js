@@ -15,6 +15,7 @@ const FILES = [
   'js/save.js',
   'js/prefs.js',
   'js/system.js',
+  'js/report.js',
   'js/menu-data.js',
   'js/menu.js',
   'js/options.js',

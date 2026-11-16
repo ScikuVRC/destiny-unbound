@@ -1090,6 +1090,23 @@
         'Sauvegarde impossible : ce navigateur bloque le stockage, ta progression ne sera pas conservée.',
       'This save comes from a newer version of the game. Update the game so nothing gets lost.':
         'Cette sauvegarde vient d’une version plus récente du jeu. Mets le jeu à jour pour ne rien perdre.',
+      /* error reports */
+      'Send an error report': 'Envoyer un rapport d’erreur',
+      'This sends the report below to the developer so the problem can be fixed. Nothing else is sent: no saves, names or anything about you. Nothing is sent until you press Send.':
+        'Ceci envoie le rapport ci-dessous au développeur pour qu’il puisse corriger le problème. Rien d’autre n’est envoyé : ni sauvegardes, ni noms, ni rien sur toi. Rien n’est envoyé tant que tu n’appuies pas sur Envoyer.',
+      'Anything to add? (optional)': 'Quelque chose à ajouter ? (facultatif)',
+      'What were you doing when it happened?': 'Que faisais-tu quand c’est arrivé ?',
+      'What will be sent': 'Ce qui sera envoyé',
+      'Send report': 'Envoyer le rapport',
+      'Sending…': 'Envoi…',
+      'Report sent. Thank you!': 'Rapport envoyé. Merci !',
+      'Could not send the report. Check your connection, or use Send feedback instead.':
+        'Impossible d’envoyer le rapport. Vérifie ta connexion, ou utilise Envoyer un avis.',
+      'The game stopped unexpectedly last time.': 'La dernière fois, le jeu s’est arrêté de façon inattendue.',
+      'Something went wrong.': 'Un problème est survenu.',
+      'Offer to send error reports': 'Proposer d’envoyer des rapports d’erreur',
+      'When something goes wrong, a small note offers to send a report. You see exactly what it contains first, and nothing is sent unless you press Send.':
+        'Quand un problème survient, une petite note propose d’envoyer un rapport. Tu vois d’abord exactement ce qu’il contient, et rien n’est envoyé sans que tu appuies sur Envoyer.',
     },
   };
 })(typeof window !== 'undefined' ? window : globalThis);

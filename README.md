@@ -158,6 +158,10 @@ The game keeps your saves and play stats on your own device. It sends nothing un
   is always your own click.
 - **Card codes** (only when you press **Get a card code** on a card): your card's Legend Code (your hero's rolls,
   name and saga) is stored on the server for 90 days so anyone with the short code can open it. Nothing about you.
+- **Error reports** (only when you press **Send report**): when something goes wrong, a small note offers to send a
+  report. You see exactly what it holds first: the game version, your platform, the screen, the error and recent log
+  lines, and a note if you write one. Home folders and e-mail addresses are taken out. Reports are kept 30 days.
+  Options > Data can turn the offer off.
 - **Feedback reports** include your play stats only if you tick the box.
 - **The Art Studio and the saga writer** only talk to an image generator or language model you connect yourself.
 

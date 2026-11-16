@@ -176,7 +176,7 @@ Everything is synthesized in 146 lines of code: clever and tiny, but it sounds l
    version, a migration step, and tests that old saves still load.
 78. ⬜ **Bigger saves in IndexedDB (M).** localStorage is limited (about 5 MB) and synchronous. The Hall of Legends and
    portraits will outgrow it.
-79. ⬜ **Error reporting (S).** Errors go to a local log. An opt-in "send this error" button (to the existing
+79. ✅ **Error reporting (S).** Done 2026-11-16: when something goes wrong, or the desktop game crashed last time, a note offers "Send report"; the player sees exactly what is sent first (`app/js/report.js`, `worker/src/errors.js`), and `node scripts/error-reports.js` shows them. Errors go to a local log. An opt-in "send this error" button (to the existing
    Cloudflare worker) would surface real bugs.
 80. ⬜ **Performance budget (S).** Measure load time on itch.io and frame time during a spin; fail CI if they regress.
 81. ⬜ **Accessibility tests in CI (S).** The axe audit was run by hand once; automate it.

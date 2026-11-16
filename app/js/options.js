@@ -596,6 +596,13 @@
         ' ' +
         btn('guide', 'Show the first-run guide again', 'ghost') +
         '</p><p class="o-note" id="oUpd"></p>' +
+        (FW.Report && FW.Report.available()
+          ? row(
+              'Offer to send error reports',
+              tog('errorAsk', FW.prefs.errorAsk !== false, 'Offer to send error reports'),
+              'When something goes wrong, a small note offers to send a report. You see exactly what it contains first, and nothing is sent unless you press Send.'
+            )
+          : '') +
         (D
           ? row(
               'Check for updates automatically',

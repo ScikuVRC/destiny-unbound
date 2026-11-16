@@ -1080,6 +1080,23 @@
         '保存できません：このブラウザーが保存を止めているため、進行状況は残りません。',
       'This save comes from a newer version of the game. Update the game so nothing gets lost.':
         'このセーブは新しいバージョンのゲームで作られました。何も失わないようにゲームを更新してください。',
+      /* error reports */
+      'Send an error report': 'エラー報告を送る',
+      'This sends the report below to the developer so the problem can be fixed. Nothing else is sent: no saves, names or anything about you. Nothing is sent until you press Send.':
+        '下の報告を開発者に送り、問題の修正に役立てます。それ以外は何も送りません。セーブデータや名前、あなたに関する情報は含まれません。「送信」を押すまで何も送られません。',
+      'Anything to add? (optional)': '補足はありますか？（任意）',
+      'What were you doing when it happened?': '起きたとき、何をしていましたか？',
+      'What will be sent': '送信される内容',
+      'Send report': '報告を送る',
+      'Sending…': '送信中…',
+      'Report sent. Thank you!': '報告を送りました。ありがとうございます！',
+      'Could not send the report. Check your connection, or use Send feedback instead.':
+        '報告を送れませんでした。接続を確認するか、「フィードバックを送る」を使ってください。',
+      'The game stopped unexpectedly last time.': '前回、ゲームが予期せず停止しました。',
+      'Something went wrong.': '問題が発生しました。',
+      'Offer to send error reports': 'エラー報告の送信を提案する',
+      'When something goes wrong, a small note offers to send a report. You see exactly what it contains first, and nothing is sent unless you press Send.':
+        '問題が起きると、報告を送るかどうかを尋ねる小さなお知らせが出ます。内容を先に確認でき、「送信」を押さない限り何も送られません。',
     },
   };
 })(typeof window !== 'undefined' ? window : globalThis);

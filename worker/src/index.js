@@ -5,9 +5,12 @@
 // Daily leaderboard (a separate opt-in): POST /v1/daily {day,pid,name,race,score,end,ch} · GET /v1/daily?day=YYYY-MM-DD
 //   It stores the hero's name (filtered), race, score, ending and chapters, and a random per-install id. No IPs.
 // Short card codes: POST /v1/card {code} -> {id}, GET /v1/card/<id> -> {code}. Only the Legend Code is stored, 90 days.
+// Error reports (only when a player presses Send): POST /v1/error {version,platform,kind,screen,message,detail,note}
+//   -> {id}. Kept 30 days; there is no public way to read them (scripts/error-reports.js).
 // SPDX-License-Identifier: GPL-3.0-or-later
 import { checkEntry, KEEP_DAYS, TOP } from './board.js';
 import * as cards from './cards.js';
+import * as errors from './errors.js';
 
 const ENDINGS = ['dead', 'retired', 'ascended', 'lost', 'martyr', 'sealed', 'damned', 'fulfilled', 'undying', 'legend'];
 const MORTAL = { dead: 1, martyr: 1, sealed: 1, damned: 1, undying: 1 };
@@ -133,6 +136,31 @@ export default {
         }
       }
       return json({ error: 'try again' }, 503);
+    }
+    if (req.method === 'POST' && path === '/v1/error') {
+      if (env.LIMITER) {
+        const { success } = await env.LIMITER.limit({ key: req.headers.get('cf-connecting-ip') || 'x' });
+        if (!success) return json({ error: 'slow down' }, 429);
+      }
+      let j = null;
+      try {
+        j = JSON.parse((await req.text()).slice(0, 12000));
+      } catch (e) {
+        return json({ error: 'bad json' }, 400);
+      }
+      const row = errors.checkReport(j);
+      if (row.error) return json({ error: row.error }, 400);
+      const r = await env.DB.prepare(
+        'INSERT INTO errors (day, version, platform, kind, screen, message, detail, note) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+      )
+        .bind(row.day, row.version, row.platform, row.kind, row.screen, row.message, row.detail, row.note)
+        .run();
+      const old = new Date(Date.now() - errors.KEEP_DAYS * 864e5).toISOString().slice(0, 10);
+      await env.DB.prepare('DELETE FROM errors WHERE day < ?').bind(old).run();
+      await env.DB.prepare('DELETE FROM errors WHERE id <= (SELECT MAX(id) FROM errors) - ?')
+        .bind(errors.MAX_ROWS)
+        .run();
+      return json({ ok: true, id: (r.meta && r.meta.last_row_id) || 0 });
     }
     if (req.method === 'GET' && path.startsWith('/v1/card/')) {
       const id = cards.normaliseId(decodeURIComponent(path.slice(9)));

@@ -22,3 +22,17 @@ CREATE TABLE IF NOT EXISTS cards (
   day TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS cards_day ON cards (day);
+-- error reports: only sent when a player presses "Send report" after seeing what it holds (worker/src/errors.js);
+-- rows older than 30 days are removed as new ones arrive, and at most 2000 are kept
+CREATE TABLE IF NOT EXISTS errors (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  day TEXT NOT NULL,
+  version TEXT NOT NULL,
+  platform TEXT NOT NULL,
+  kind TEXT NOT NULL,
+  screen TEXT NOT NULL DEFAULT '',
+  message TEXT NOT NULL DEFAULT '',
+  detail TEXT NOT NULL DEFAULT '',
+  note TEXT NOT NULL DEFAULT ''
+);
+CREATE INDEX IF NOT EXISTS errors_day ON errors (day);

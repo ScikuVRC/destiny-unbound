@@ -35,9 +35,27 @@ function log(level, msg) {
 }
 process.on('uncaughtException', e => log('crash', (e && e.stack) || e));
 process.on('unhandledRejection', e => log('error', (e && e.stack) || e));
-app.on('render-process-gone', (e, wc, d) =>
-  log('crash', 'game page stopped: ' + d.reason + ' (exit ' + d.exitCode + ')')
-);
+/* the game page stopped (it crashed or ran out of memory): note it, and bring the game back. On the next start the
+   page offers to send a report about it (app/js/report.js); nothing is sent without the player's click. */
+const CRASH_FILE = path.join(LOG_DIR, 'last-crash.json');
+let lastReload = 0;
+app.on('render-process-gone', (e, wc, d) => {
+  log('crash', 'game page stopped: ' + d.reason + ' (exit ' + d.exitCode + ')');
+  if (d.reason === 'clean-exit') return;
+  try {
+    fs.mkdirSync(LOG_DIR, { recursive: true });
+    fs.writeFileSync(
+      CRASH_FILE,
+      JSON.stringify({ date: new Date().toISOString(), reason: d.reason, exitCode: d.exitCode })
+    );
+  } catch (err) {
+    /* the disk is not writable */
+  }
+  if (Date.now() - lastReload > 30000 && wc && !wc.isDestroyed()) {
+    lastReload = Date.now();
+    setTimeout(() => !wc.isDestroyed() && wc.reload(), 800);
+  }
+});
 app.on('child-process-gone', (e, d) => {
   if (d.reason !== 'clean-exit') log('crash', d.type + ' process stopped: ' + d.reason);
 });
@@ -264,6 +282,22 @@ ipcMain.handle('app:relaunch', () => {
 });
 ipcMain.handle('app:quit', () => app.quit());
 ipcMain.handle('log:write', (e, level, msg) => log(level === 'error' ? 'error' : 'info', 'game: ' + msg));
+/* the last crash, once: the page asks at startup; the file is removed so it is offered only one time */
+ipcMain.handle('crash:last', () => {
+  let c = null;
+  try {
+    c = JSON.parse(fs.readFileSync(CRASH_FILE, 'utf8'));
+    fs.unlinkSync(CRASH_FILE);
+  } catch (e) {
+    return null;
+  }
+  try {
+    c.log = fs.readFileSync(LOG_FILE, 'utf8').split('\n').filter(Boolean).slice(-40);
+  } catch (e) {
+    c.log = [];
+  }
+  return c;
+});
 ipcMain.handle('log:open', () => {
   fs.mkdirSync(LOG_DIR, { recursive: true });
   return shell.openPath(LOG_DIR);

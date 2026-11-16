@@ -24,6 +24,7 @@
     reduceMotion: false, // no flashing, shaking or sliding
     cbSafe: false, // colour-blind-safe wheel slices
     discord: true, // desktop app: show what you're playing in your Discord status (Rich Presence)
+    errorAsk: true, // offer to send an error report when something goes wrong (nothing is sent without a click)
     keys: { advance: ' ', next: 'Enter', back: 'Escape', respin: 'r', auto: 'a', options: 'o', menu: 'm' },
   };
   FW.PREF_DEFAULTS = DEFAULTS;

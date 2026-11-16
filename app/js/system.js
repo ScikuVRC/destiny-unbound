@@ -376,8 +376,13 @@
         ) +
         '">Report a bug online</a><a class="btn ghost" id="fbDiscord" target="_blank" rel="noopener" href="' +
         H.esc(FW.DISCORD_URL) +
-        '">Talk on Discord</a></div>'
+        '">Talk on Discord</a>' +
+        (FW.Report && FW.Report.available()
+          ? '<button class="btn ghost" id="fbErr">Send an error report</button>'
+          : '') +
+        '</div>'
     );
+    if (document.getElementById('fbErr')) document.getElementById('fbErr').onclick = () => FW.Report.modal('manual');
     document.getElementById('fbGo').onclick = async () => {
       const text = document.getElementById('fbText').value.trim();
       if (!text) return App.toast('Write a few words first');

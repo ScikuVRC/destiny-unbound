@@ -20,6 +20,7 @@ contextBridge.exposeInMainWorld('fatewheelDesktop', {
   quit: () => ipcRenderer.invoke('app:quit'),
   log: (level, msg) => ipcRenderer.invoke('log:write', level, String(msg).slice(0, 4000)),
   openLogs: () => ipcRenderer.invoke('log:open'),
+  lastCrash: () => ipcRenderer.invoke('crash:last'),
   saveFeedback: o => ipcRenderer.invoke('feedback:save', o),
   writeBackup: (json, manual) => ipcRenderer.invoke('backup:write', json, manual),
   listBackups: () => ipcRenderer.invoke('backup:list'),
