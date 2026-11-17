@@ -406,12 +406,30 @@
       if (this.name) j.n = this.name;
       if (this.pres) j.g = this.pres;
       if (this.chosen.length) j.h = this.chosen;
-      if (this.saga) j.y = this.saga;
+      const St = FW.Story;
+      if (this.saga) j.y = St && St.forCode ? St.forCode(this.saga) : this.saga;
       if (this.daily) j.d = this.daily;
-      const s = JSON.stringify(j);
-      const b64 =
-        typeof btoa !== 'undefined' ? btoa(unescape(encodeURIComponent(s))) : Buffer.from(s, 'utf8').toString('base64');
-      return 'FW1.' + b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+      // story chronicle lines carry an empty text; leave it out
+      j.c = this.chron.map(c => {
+        if (c && c.text === '') {
+          const o = Object.assign({}, c);
+          delete o.text;
+          return o;
+        }
+        return c;
+      });
+      const enc = () => {
+        const s = JSON.stringify(j);
+        const b64 =
+          typeof btoa !== 'undefined'
+            ? btoa(unescape(encodeURIComponent(s)))
+            : Buffer.from(s, 'utf8').toString('base64');
+        return 'FW1.' + b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+      };
+      let code = enc();
+      // a very long saga: leave out its oldest ordinary log lines until the code fits (story.js, trimForCode)
+      while (j.y && St && St.trimForCode && code.length > St.CODE_MAX && St.trimForCode(j.y)) code = enc();
+      return code;
     }
     static fromCode(code) {
       code = String(code || '').trim();
@@ -851,6 +869,8 @@
     if (legend.saga && legend.saga.log.length && FW.Story) {
       lines.push('', 'SAGA (' + FW.Story.summary(legend) + ')');
       legend.saga.log.forEach(x => lines.push((x.ch ? 'Chapter ' + x.ch + ' - ' : '') + x.chapter + ': ' + x.text));
+      const epi = FW.Story.epilogue ? FW.Story.epilogue(legend) : [];
+      if (epi.length) lines.push('', 'EPILOGUE', epi.join(' '));
     }
     return lines.join('\n');
   };

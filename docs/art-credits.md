@@ -7,7 +7,7 @@ playable wheels, character cards, icons and interface) is drawn in code.
 This file keeps a record of each image and the prompt that made it, as xAI's terms make the user responsible for
 their outputs. The `app/art` copies are the ones the game ships (the title art as WebP since 0.2.0-alpha.4.8); `mockups/menu/art` holds the same files plus the
 retired Adventurer's Sheet look. Images made from these (the store covers and itch.io backgrounds in
-`docs/store`, the store screenshots and the trailer) contain this art too.
+`docs/store`, the Steam library hero (enlarged with the open-source Real-ESRGAN upscaler), the store screenshots and the trailer) contain this art too.
 
 ## Terms checked
 

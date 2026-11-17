@@ -2,7 +2,7 @@
 
 ## Build and run
 
-Needs Node.js 20 or newer.
+Needs Node.js 22.13 or newer (the tests use its built-in SQLite).
 
 ```bash
 npm install
@@ -29,59 +29,95 @@ python -m http.server 5173 --bind 127.0.0.1
 Run that from the `app` folder; on Windows, `Start FateWheel.bat` does the same. Serving over http also lets
 the game install as a web app (PWA).
 
-## Tests and tools
+## Tests and checks
 
 ```bash
-npm test              # the test suites
+npm test              # the test suites (the bot's need its packages once: npm ci --prefix bot)
 npm run lint          # ESLint: real mistakes such as undefined names and duplicate keys
 npm run format        # Prettier: formats JavaScript and JSON (CSS and HTML keep their compact form)
 ```
 
-CI runs all three on every push, the lint and format check in their own job.
+134 checks in 10 suites:
 
-Balance tools: `node scripts/balance-report.js 10000 10000` (ratings, arena odds, how sagas end, per luck
-level) and `node scripts/win-rates.js 20000 heroic` (every race and class against all arena foes). The release
-rules are in [release-plan.md](release-plan.md).
-
-82 checks in 7 suites:
-
-- **engine (26):** data validity, unique names, tier shifts, odds, conditional buffs, Legend Codes, arena maths.
+- **engine (27):** data validity, unique names, tier shifts, odds, conditional buffs, Legend Codes, arena maths.
 - **art (18):** every generator and language-model connector against a mock server.
-- **story (8):** 500 full sagas with random options, requirements, every option switched off, dynasty.
-- **extras (5):** packs, achievements, translations.
-- **mods (10):** validation, CSS that tries to escape its theme or load outside pictures, every mod kit template loads, the kit's generated reference is up to date.
-- **system (8):** version, preferences, save import checks, no API keys in exported saves, title-screen art,
-  offline caching, arena matchmaking.
-- **bot (10):** the Discord bot's commands with stand-in interactions (`/spin` cooldown and channel, `/stats`,
-  `/patchnotes` and its autocomplete, the traffic warning). Needs `npm ci --prefix bot`.
-- **discord (7):** the Discord status against a stand-in Discord (handshake, activity, rate limit, switching off,
+- **story (15):** 500 full sagas with random options, requirements, every option switched off, dynasty, arcs and
+  endings, the saga recap, epilogues, and Legend Codes that stay under the card-code limit.
+- **extras (6):** packs, achievements, translations.
+- **mods (11):** validation, CSS that tries to escape its theme or load outside pictures, every mod kit template
+  loads, the kit's generated reference is up to date.
+- **system (12):** version and cache numbers agree, a release bump on a copy, preferences, save import checks, no API
+  keys in exported saves, title-screen art, offline caching, arena matchmaking.
+- **save (15):** real saves from four older releases load and update step by step (`tests/saves/`, made with
+  `scripts/make-save-fixture.js <tag>`), a backup comes first, newer saves are left alone.
+- **discord (8):** the Discord status against a stand-in Discord (handshake, activity, rate limit, switching off,
   pings, Discord not running), the text for each screen, and the release announcement.
+- **world (12):** the world counter, leaderboard, card codes, error reports and "where I stop playing", in the game
+  and on the server. The server tests run the worker against node's built-in SQLite with the real schema
+  (`tests/d1.js`), including the daily cap per address and `/v1/health`.
+- **bot (10):** the Discord bot's commands with stand-in interactions (`/spin` cooldown and channel, `/stats`,
+  `/patchnotes` and its autocomplete, the traffic warning).
 
-| Script | What it does |
+**On every push** (`.github/workflows/ci.yml`), in four jobs:
+
+| Job | What it runs |
 | --- | --- |
-| `node scripts/achievement-report.js` | Plays legends, arena fights and sagas and shows how often each achievement unlocks; one at 0% may be impossible (Dynasty and Creature of Habit need choices and days the script doesn't play) |
-| `node scripts/balance-report.js` | Plays thousands of legends, fights and sagas per luck level; prints rank spread, arena odds and how sagas end. `--check` (run in CI) fails when a number leaves its target range (`TARGETS` in the script) |
-| `npx electron scripts/a11y-check.js` | The axe accessibility audit (WCAG 2.1 A/AA) on the main screens and dialogs; run in CI |
-| `node scripts/bump-version.js` | `--cache`: bumps every `?v=` and the service worker cache. `<version> --summary "..." --notes notes.md`: a whole release bump (package files, version.js, badge, docs, progress, roadmap, changelog, cache). `--check`: every place agrees (run in CI) |
-| `node scripts/make-menu-css.js` | Rebuilds the title-screen CSS and art from the approved mockups in `mockups/menu/_gen-art.js` |
-| `node scripts/make-icons.js` | Makes every icon size from `app/icons/icon-source.png` (runs before every build) |
-| `node scripts/make-slideshow.js` | Builds `docs/store/trailer.mp4`, a slideshow of the store screenshots (needs ffmpeg) |
+| test | `npm test`, `node scripts/bump-version.js --check`, `node scripts/balance-report.js --check` |
+| accessibility | `scripts/a11y-check.js`: the axe audit (WCAG 2.1 A and AA) on 14 screens and dialogs |
+| performance | `scripts/perf-check.js`: start time, what the title screen loads, smooth spins, against fixed limits |
+| lint | ESLint, the Prettier check, and `scripts/deps-check.js`: the licence of everything that ships (fonts too) and high or critical security advisories |
+
+The Electron checks run on a virtual display in CI (`xvfb-run`). Locally they open hidden windows with a throwaway
+profile, so they never touch your saves.
+
+## Tools
+
+**Checks you can run by hand**
+
+| Command | What it does |
+| --- | --- |
+| `node scripts/balance-report.js [legends] [sagas] [--check]` | Plays thousands of legends, fights and sagas per luck level: ranks, arena odds, how sagas end. `--check` fails when a number leaves its range (`TARGETS` in the script) |
+| `node scripts/win-rates.js [heroes] [luck]` | Every race and class against all arena foes: average rating and chance to win |
+| `node scripts/achievement-report.js` | How often each achievement unlocks (plays heirs too); marks the ones it cannot simulate |
+| `npx electron scripts/layout-check.js [outDir] [--only=WxH] [--screens=...] [--lang=de] [--theme=wild]` | Opens each main screen at common window sizes, saves screenshots and reports what doesn't fit. Extra screens: `recap`, `options-audio`, `options-access`, `options-controls`, `options-data`, `content-happen`, `content-workshop`, `content-addons` |
+| `npx electron scripts/a11y-check.js [--screens=...] [--theme=...]` | The axe accessibility audit |
+| `npx electron scripts/perf-check.js [--cpu=4]` | The performance budget. `--cpu=4` slows the CPU like a cheap phone (limits not applied) |
+| `node scripts/deps-check.js [--no-audit]` | Licences and security advisories of everything that ships |
+| `npx electron scripts/ui-mockups.js` | Shows one moment of play in each layout variant and measures it |
+
+**What players send** (all opt-in; the server ones need `npx wrangler login` once, see [worker/README.md](../worker/README.md))
+
+| Command | What it shows |
+| --- | --- |
+| `node scripts/world-vs-sim.js` | Real saga endings from the world counter next to simulated ones (needs 50 real sagas) |
+| `node scripts/quit-report.js [n]` | Where players who share it stopped playing |
+| `node scripts/error-reports.js [n] [--full]` | Error reports players chose to send |
+
+**Making things**
+
+| Command | What it makes |
+| --- | --- |
+| `node scripts/bump-version.js` | `--cache`: every `?v=` and the service worker cache, after changing app files. `<version> --summary "..." --notes notes.md`: a whole release bump. `--check`: every place agrees |
+| `npm run modkit` | `dist/DestinyUnbound-ModKit-<version>.zip` from `modkit/`, and its generated reference from the game's data (a test fails if the reference is out of date) |
+| `node scripts/make-icons.js` | Every icon size from `app/icons/icon-source.png` (runs before every build) |
+| `node scripts/make-menu-css.js` | The title-screen CSS and WebP art from the approved mockups in `mockups/menu/_gen-art.js` |
+| `python scripts/make-wheel-skins.py` | The painted wheel rims and hubs (`app/art/skins/`, `app/js/skins-data.js`) |
+| `node scripts/make-chapter-art.js` | The chapter illustrations (`app/art/chapters/`, needs ffmpeg) |
+| `python scripts/make-transparent-logos.py` | Transparent theme logos in `brand/` |
+| `npx electron scripts/make-store-art.js` | itch.io and Steam capsules in `docs/store/capsules/` |
+| `uv run --project ../ACE-Step-1.5 python scripts/make-music.py` | HD music takes with ACE-Step ([music-credits.md](music-credits.md)) |
+| `node scripts/fetch-fonts.js` | Downloads the theme fonts into `app/fonts` (already done; fonts are committed) |
+| `node scripts/make-example-sounds.js` | The example mod's two WAV sounds |
+| `node scripts/make-save-fixture.js <tag>` | A sample save made with an older release's own code, for the save tests |
 | `npm run trailer` | Records real gameplay and makes the trailer and GIF in `dist/trailer/` (see below) |
-| `npm run modkit` | Builds `dist/DestinyUnbound-ModKit-<version>.zip` from `modkit/` and refreshes its generated reference (`reference/theme-variables.md`, `reference/wheels.md`) from the game's data. The release workflow builds and attaches it too; a test fails if the reference is out of date |
-| `npm run itch` | Uploads the Windows installer and portable `.exe` from `dist/` to itch.io with [butler](https://itch.io/docs/butler/) (`-- --web` adds the browser build, `-- --modkit` the mod kit, `-- --no-windows` skips the Windows builds, `-- --dry` only shows what it would do). Log butler in once with `butler login` |
+| `node scripts/make-slideshow.js` | `docs/store/trailer.mp4`, a slideshow of the store screenshots (needs ffmpeg) |
 
-The desktop app understands a few test switches (environment variables):
+**Publishing**
 
-| Variable | Effect |
+| Command | What it does |
 | --- | --- |
-| `FATEWHEEL_SMOKE=1` | Plays one legend (and its story, unless `FATEWHEEL_SMOKE_SHORT=1`) in a hidden window, prints the result as JSON and quits |
-| `FATEWHEEL_USERDATA=<folder>` | Uses another save folder (a clean first launch) |
-| `FATEWHEEL_MODS_DIR=<folder>` | Uses another Mods folder |
-| `FATEWHEEL_OFFLINE=1` | Cuts the app off from the network |
-| `FATEWHEEL_UPDATE_URL=<url>` | Reads updates from a plain web folder instead of GitHub |
-| `FATEWHEEL_DISCORD_ID=<id>` | Uses this Discord Application ID instead of `discordAppId` in package.json |
-| `FATEWHEEL_DISCORD_PIPE=<name>` | Sends the Discord status to a stand-in instead of the Discord app (also during `FATEWHEEL_SMOKE`) |
-| `FATEWHEEL_UPDATE_TEST=1` | With an installed build: checks for an update, prints each step, installs it |
+| `npm run itch` | Uploads the Windows builds from `dist/` to itch.io with [butler](https://itch.io/docs/butler/) (`-- --web` adds the browser build, `-- --modkit` the mod kit, `-- --no-windows` skips the Windows builds, `-- --dry` only shows what it would do). Log butler in once with `butler login` |
+| `node scripts/discord-announce.js <tag> [--dry]` | The "new version is out" post in #announcements (the release workflow runs it) |
 
 **Trailer and GIF.** `npm run trailer` plays the game in a hidden window with a throwaway profile (the four title
 themes, an auto-spun legend, its card and the start of its story), then makes
@@ -93,16 +129,24 @@ run spins a new legend, so the footage is different every time. The README's GIF
 
 To release:
 
-1. Set the new `version` in `package.json` and `app/js/version.js`. A test checks they match.
-2. Commit.
-3. Push a matching tag, for example:
+1. Write the release notes (the `### New`, `### Changed`, `### Fixed` sections) in a file, for example `notes.md`.
+2. Bump every place at once:
 
    ```bash
-   git tag v0.1.0-alpha.2
+   node scripts/bump-version.js 0.2.0-alpha.5.1 --summary "What changed, one line" --notes notes.md
+   ```
+
+   This sets the version in `package.json` and its lock, `app/js/version.js`, the README badge, the bug form and
+   `docs/alpha-testing.md`; adds the CHANGELOG section, the ROADMAP line and the row in `progress.md`; and raises
+   the cache numbers. `node scripts/bump-version.js --check` (also in CI) confirms every place agrees.
+3. Commit, then push a matching tag, for example:
+
+   ```bash
+   git tag -a v0.2.0-alpha.5.1 -m "0.2.0-alpha.5.1"
    ```
 
    ```bash
-   git push origin v0.1.0-alpha.2
+   git push origin main v0.2.0-alpha.5.1
    ```
 
 GitHub Actions then runs the tests, builds Windows, macOS and Linux, and attaches the files to a release
@@ -145,27 +189,32 @@ Uninstalling keeps all of these.
 | Path | What it is |
 | --- | --- |
 | `app/official/` | Official mods that ship with the game, off until switched on in the Mods screen ([modding.md](modding.md)) |
-| `app/data/` | Wheel content, as plain data grouped by topic (format: [app/data/README.md](../app/data/README.md)) |
+| `app/data/` | Wheel content, as plain data grouped by topic (format: [app/data/README.md](../app/data/README.md)); `music.js` lists the HD music |
 | `app/js/data.js` | The row parser the content uses; in node it also loads all of `app/data/` |
-| `app/js/engine.js` | Rules: stages, buffs and debuffs, rating, arena |
-| `app/js/story.js`, `story-ui.js` | Story mode rules and screens |
+| `app/js/engine.js` | Rules: stages, buffs and debuffs, rating, arena, Legend Codes |
+| `app/js/story.js`, `story-ui.js` | Story mode rules (chapters, fights, endings, dynasty, the saga recap) and screens |
 | `app/js/wheel.js`, `card.js`, `render.js`, `app.js` | Wheel canvas, card renderer, HTML helpers, main flow |
+| `app/js/skins-data.js`, `chapter-art.js`, `badges.js`, `icons.js` | Painted wheel rims and hubs, chapter illustrations, achievement badges, the icon set |
 | `app/js/menu.js`, `menu-data.js`, `css/menu.css` | Themed title screen, keyboard and controller input, guide, credits, thank-you screen |
-| `app/js/options.js`, `prefs.js`, `css/ui.css` | Options screen and the preferences every part reads |
-| `app/js/system.js`, `version.js` | Error log, backups, save export and import, play stats, feedback; version |
-| `app/js/audio.js` | Themed sound effects and generative music (WebAudio) |
+| `app/js/options.js`, `prefs.js`, `content.js`, `css/ui.css` | Options, the preferences every part reads, Content & mods |
+| `app/js/save.js` | Save format versions: updates old saves step by step, with a backup first |
+| `app/js/system.js`, `report.js`, `version.js` | Error log, backups, save export and import, play stats, feedback; error reports; version |
+| `app/js/world.js` | The opt-in world counter, daily leaderboard, card codes and "where I stop playing" |
+| `app/js/audio.js` | Themed sound effects and generative music (WebAudio), and the HD music player |
 | `app/js/art.js`, `studio.js` | Art prompt builder, generator connectors, the Art Studio |
 | `app/js/extras.js` | Saga writer, daily challenge, versus, video recorder |
 | `app/js/packs.js`, `achievements.js`, `i18n.js`, `app/lang/` | Wheel packs, achievements, translations |
 | `app/js/mods.js`, `mods-ui.js` | Mod loading and safety checks; Mods screen and desktop updates |
-| `app/art/`, `app/icons/`, `app/fonts/` | Painted title art, icons, bundled fonts |
+| `app/art/`, `app/music/`, `app/icons/`, `app/fonts/` | Painted art (title, wheels, chapters, endings, portraits), HD music, icons, bundled fonts |
 | `electron/discord.js`, `app/js/presence.js` | Discord status: the local connection to Discord, and what the game shows. Setup: [discord.md](discord.md) |
-| `electron/main.js`, `preload.js` | Desktop shell and the small set of desktop features the page can reach |
+| `electron/main.js`, `preload.js` | Desktop shell, crash recovery and the small set of desktop features the page can reach |
+| `worker/` | The Cloudflare Worker behind the opt-in online features: world counter, leaderboard, card codes, error reports, abuse protection ([worker/README.md](../worker/README.md)) |
+| `bot/` | The Discord bot: `/spin`, `/stats`, `/patchnotes` and the traffic warning ([bot/README.md](../bot/README.md)) |
 | `modkit/` | The mod kit: guide, reference, JSON schemas and templates (zipped by `npm run modkit`) |
 | `mockups/` | Design mockups; `menu/` holds the painted main menus the game is built from |
-| `docs/` | This guide, modding, Art Studio, alpha test plan, store kit, art credits (every AI image and its prompt) |
-| `tests/` | Test suites |
-| `brand/` | Transparent logos for store pages and mod themes (rebuild with `python scripts/make-transparent-logos.py`) |
+| `docs/` | This guide, modding, Art Studio, alpha test plan, store kit, art and music credits (every AI image and track) |
+| `tests/` | Test suites, sample saves from older releases (`saves/`) and the stand-in database (`d1.js`) |
+| `brand/` | Transparent logos for store pages and mod themes |
 
 ## Contributing
 

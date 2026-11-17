@@ -36,6 +36,17 @@ jobs:
       # the axe audit on the main screens and dialogs, in a hidden Electron window on a virtual display
       - run: xvfb-run -a npx electron --no-sandbox scripts/a11y-check.js
 
+  performance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      # start time, what the title screen loads, and smooth spins, against the limits in scripts/perf-check.js
+      - run: xvfb-run -a npx electron --no-sandbox scripts/perf-check.js
+
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -48,3 +59,6 @@ jobs:
           ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
       - run: npm run lint
       - run: npm run format:check
+      # licences of everything that ships, fonts included, and high or critical security advisories
+      - run: npm ci --prefix bot
+      - run: node scripts/deps-check.js

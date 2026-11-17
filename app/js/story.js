@@ -133,6 +133,7 @@
       ch: 0,
       used: [],
       log: [],
+      fights: null,
       years: 0,
       end: null,
       endText: '',
@@ -192,6 +193,7 @@
       ch: +s.ch || 0,
       used: arr(s.used).filter(x => typeof x === 'string'),
       log: arr(s.log).slice(-200),
+      fights: S.cleanFights(s.fights),
       years: +s.years || 0,
       end: typeof s.end === 'string' ? s.end : null,
       endText: String(s.endText || ''),
@@ -206,6 +208,7 @@
       nem: s.nem && typeof s.nem === 'object' ? s.nem : null,
       flags: s.flags && typeof s.flags === 'object' ? s.flags : {},
       dyn: s.dyn && typeof s.dyn === 'object' ? s.dyn : { house: 'House Unknown', gen: 1 },
+      cut: Math.max(0, Math.floor(+s.cut || 0)), // log lines left out of a long Legend Code
     };
   };
 
@@ -292,6 +295,7 @@
       ],
     });
     if (i === 0 && rep.pWin < 0.2 && L.saga) L.saga.flags.underdog = true;
+    if (L.saga) S.noteFight(L.saga, enemy.name, rep.pWin, ['win', 'draw', 'lose'][i]);
     // a boss with two phases rises again: win the second fight too
     if (i === 0 && rep.phases) return fight(L, io, ctx, FW.phaseTwo(enemy), Object.assign({}, cfg, phaseCfg(enemy)));
     return ['win', 'draw', 'lose'][i];
@@ -334,16 +338,13 @@
     if (e.years) s.years += e.years;
     const text = fill(e.text || e.name, ctx, L);
     if (!e.quiet)
-      s.log.push({
-        ch: s.ch,
-        chapter: ctx.chName,
-        emoji: ctx.emoji,
-        text,
-        tone: e.tone || '',
-        end: e.end || null,
-        foe: ctx.lastFoe || '',
-        arena: ctx.lastArena || '',
-      });
+      s.log.push(
+        Object.assign(
+          { ch: s.ch, chapter: ctx.chName, emoji: ctx.emoji, text },
+          e.tone ? { tone: e.tone } : {},
+          e.end ? { end: e.end } : {}
+        )
+      );
     if (e.end) {
       s.end = e.end;
       s.endText = text;
@@ -2889,6 +2890,305 @@
     else if (s.kingdom) parts.push('ruler of ' + s.kingdom.name);
     if (s.dyn && s.dyn.gen > 1) parts.push(s.dyn.house + ', gen ' + s.dyn.gen);
     return parts.join(' · ');
+  };
+  /* ---------------- the saga recap: the story at a glance, for the end of a saga ----------------
+     Turning points are the log lines from chapters that change a life (a kingdom, love, an heir, a dragon...), fights
+     won against the odds and the ending; at most RECAP_MAX of them, the ending always included. */
+  // how much a chapter changes a life: 2 for the big turns, 1 for the rest worth remembering
+  S.TURNING = {
+    kingdom: 2,
+    conquerWorld: 2,
+    love: 2,
+    heir: 2,
+    ascend: 2,
+    loseAll: 2,
+    fate: 2,
+    awaken: 2,
+    lastStand: 2,
+    heirGrown: 2,
+    found: 2,
+    religion: 2,
+    pact: 2,
+    otherworld: 2,
+    boss: 1,
+    dragon: 1,
+    evolve: 1,
+    artifact: 1,
+    conquerRace: 1,
+    guild: 1,
+    tournament: 1,
+    apprentice: 1,
+    betrayal: 1,
+    nemesis: 1,
+    showdown: 1,
+    rival: 1,
+    curse: 1,
+    exile: 1,
+    rebellion: 1,
+    debt: 1,
+    succession: 1,
+    mentor: 1,
+    duel: 1,
+  };
+  S.RECAP_MAX = 8;
+  /* ---------------- the saga inside a Legend Code ----------------
+     Codes carry the whole saga, and the server keeps short card codes up to 20,000 characters. forCode makes a lean
+     copy (no empty fields); if a code is still too long, trimForCode drops one log line at a time, the oldest
+     ordinary line first, and never a turning point or the ending. `cut` says how many were left out. */
+  S.CODE_MAX = 19000;
+  S.forCode = function (s) {
+    const c = Object.assign({}, s);
+    c.log = (s.log || []).map(x =>
+      Object.assign(
+        { ch: x.ch, chapter: x.chapter, emoji: x.emoji, text: x.text },
+        x.tone ? { tone: x.tone } : {},
+        x.end ? { end: x.end } : {}
+      )
+    );
+    if (!c.cut) delete c.cut;
+    return c;
+  };
+  S.trimForCode = function (c) {
+    const byName = {};
+    S.CHAPTERS.forEach(ch => (byName[ch.name] = ch.id));
+    let i = c.log.findIndex(x => !x.end && !S.TURNING[byName[x.chapter]]);
+    if (i < 0) i = c.log.findIndex(x => !x.end);
+    if (i < 0) return false;
+    c.log.splice(i, 1);
+    c.cut = (c.cut || 0) + 1;
+    return true;
+  };
+  /* fights, kept small because the saga travels inside Legend Codes: the counts, the chapters of wins against the
+     odds, and only the three fights the recap names */
+  S.UPSET = 0.35; // a win at these odds or worse is a turning point
+  S.noteFight = function (s, foe, p, res) {
+    const F = (s.fights = s.fights || { w: 0, l: 0, d: 0, up: [] });
+    const x = { ch: s.ch, foe: String(foe || ''), p: Math.round(p * 100) / 100 };
+    F[res === 'win' ? 'w' : res === 'lose' ? 'l' : 'd']++;
+    if (res === 'win' && x.p < S.UPSET && F.up.indexOf(s.ch) < 0) F.up.push(s.ch);
+    if (!F.closest || Math.abs(x.p - 0.5) < Math.abs(F.closest.p - 0.5)) F.closest = Object.assign({ res }, x);
+    if (res === 'win' && x.p < 0.5 && (!F.upset || x.p < F.upset.p)) F.upset = x;
+    if (res === 'lose' && x.p > 0.5 && (!F.heartbreak || x.p > F.heartbreak.p)) F.heartbreak = x;
+  };
+  S.cleanFights = function (F) {
+    if (!F || typeof F !== 'object' || Array.isArray(F)) return null;
+    const one = x =>
+      x && typeof x === 'object'
+        ? Object.assign(
+            { ch: +x.ch || 0, foe: String(x.foe || '').slice(0, 80), p: Math.min(1, Math.max(0, +x.p || 0)) },
+            x.res ? { res: String(x.res).slice(0, 4) } : {}
+          )
+        : null;
+    const out = {
+      w: +F.w || 0,
+      l: +F.l || 0,
+      d: +F.d || 0,
+      up: (Array.isArray(F.up) ? F.up : [])
+        .map(Number)
+        .filter(n => n > 0)
+        .slice(0, 50),
+    };
+    ['closest', 'upset', 'heartbreak'].forEach(k => {
+      const v = one(F[k]);
+      if (v) out[k] = v;
+    });
+    return out;
+  };
+  S.recap = function (L) {
+    const s = L.saga;
+    if (!s) return null;
+    const byName = {};
+    S.CHAPTERS.forEach(c => (byName[c.name] = c.id));
+    const F = s.fights || { w: 0, l: 0, d: 0, up: [] };
+    const upsetAt = {};
+    (F.up || []).forEach(ch => (upsetAt[ch] = true));
+    // one line per chapter at most: its first line, or the ending
+    const seen = {},
+      picks = [];
+    (s.log || []).forEach((x, i) => {
+      const id = byName[x.chapter] || '';
+      const score = x.end ? 4 : upsetAt[x.ch] ? 3 : S.TURNING[id] || 0;
+      if (!score) return;
+      if (seen[x.ch] && !x.end) return;
+      seen[x.ch] = true;
+      picks.push({ i, score, x, upset: !!upsetAt[x.ch] && !x.end });
+    });
+    const keep = picks
+      .slice()
+      .sort((a, b) => b.score - a.score || a.i - b.i)
+      .slice(0, S.RECAP_MAX)
+      .sort((a, b) => a.i - b.i)
+      .map(p => ({
+        ch: p.x.ch,
+        emoji: p.x.emoji || '',
+        chapter: p.x.chapter || '',
+        text: p.x.text || '',
+        tone: p.x.tone || '',
+        end: !!p.x.end,
+        upset: p.upset,
+      }));
+    const age = S.age(L);
+    return {
+      name: L.displayName(),
+      end: s.end,
+      endLabel: S.endLabel[s.end] || '',
+      chapters: s.ch,
+      years: s.years || 0,
+      ageEnd: age,
+      ageStart: age != null ? age - (s.years || 0) : null,
+      fights: { total: F.w + F.l + F.d, won: F.w, lost: F.l, draw: F.d },
+      closest: F.closest || null,
+      upset: F.upset || null,
+      heartbreak: F.heartbreak || null,
+      timeline: keep,
+      family: S.familyTree(L),
+      heir: s.heir ? s.heir.name + ' (' + s.heir.kind + ')' : '',
+      love: s.love || '',
+      kingdom: s.world ? 'the world' : s.kingdom ? s.kingdom.name : '',
+      artifacts: (s.artifacts || []).map(a => a.name).filter(Boolean),
+      conquered: (s.conquered || []).slice(),
+    };
+  };
+  /* ---------------- the epilogue: what became of everything, after the end ----------------
+     A few sentences built from what the saga left behind: the kingdom, the heir, the nemesis, a love or an unfinished
+     thread, and a closing line for the ending. The wording is picked with the hero's own seed, so the same hero always
+     gets the same epilogue (also when opened from a Legend Code). Story text, so English for now. */
+  S.EPILOGUE_MAX = 4;
+  S.epilogue = function (L) {
+    const s = L.saga;
+    if (!s || !s.end) return [];
+    const rng = FW.makeRng((L.seed || L.displayName()) + ':epilogue'),
+      one = list => list[Math.floor(rng() * list.length) % list.length];
+    const Hero = L.displayName(),
+      hero = Hero.replace(/^The /, 'the '),
+      dead = !!S.MORTAL[s.end],
+      gone = dead || s.end === 'lost' || s.end === 'ascended',
+      heir = s.heir && s.heir.name,
+      house = s.dyn && s.dyn.house,
+      out = [];
+    // the kingdom
+    if (s.world)
+      out.push(
+        gone
+          ? heir
+            ? 'The empire passes to ' + heir + ', who spends a lifetime holding it together.'
+            : one([
+                'Without ' + hero + ', the empire splinters into a dozen quarrelling crowns.',
+                'The world ' + hero + ' conquered falls apart within a year, and nobody agrees on what to call it.',
+              ])
+          : 'The empire holds for a generation, long enough for the roads and the songs to outlive it.'
+      );
+    else if (s.kingdom) {
+      const k = s.kingdom.name,
+        strong = (s.kingdom.power || 0) >= 60;
+      out.push(
+        heir
+          ? k + ' passes to ' + heir + (strong ? ', strong and at peace.' : ', along with its debts and its enemies.')
+          : gone
+            ? strong
+              ? k + ' mourns ' + hero + ' for a year, then crowns a council of old friends.'
+              : one([
+                  'With no heir, ' + k + ' falls to its neighbours within a decade.',
+                  k + ' does not survive the first winter without ' + hero + '.',
+                ])
+            : strong
+              ? k + ' prospers, and still keeps a chair empty for ' + hero + ' at every feast.'
+              : k + ' limps on, ruled by whoever shouts the loudest.'
+      );
+    }
+    // the heir
+    if (heir && !s.world && !s.kingdom)
+      out.push(
+        s.heir.blessed
+          ? heir + ', the prophesied child, grows up knowing exactly what is expected of them.'
+          : one([
+              heir + ' grows up on stories of ' + hero + ', and believes about half of them.',
+              heir + ' carries the name of ' + (house || 'the family') + ' into a new age.',
+            ])
+      );
+    // the nemesis, if they ever met
+    const n = s.nem;
+    if (n && n.met > 0)
+      out.push(
+        !n.alive
+          ? one(['Nobody mourns ' + n.name + '.', 'The grave of ' + n.name + ' stays unmarked, as everyone agreed.'])
+          : n.ally
+            ? n.name +
+              ', once an enemy, ' +
+              (dead ? 'keeps watch over the grave of ' + hero + '.' : 'becomes an old friend.')
+            : heir
+              ? n.name + ' is still out there, and has started asking about ' + heir + '.'
+              : one([
+                  n.name + ' is still out there, waiting for a rematch that will never come.',
+                  n.name + ' tells everyone the fight with ' + hero + ' was a draw.',
+                ])
+      );
+    // a love, or a thread left hanging
+    const F = s.flags || {};
+    if (s.love && out.length < S.EPILOGUE_MAX - 1)
+      out.push(
+        dead
+          ? 'The one ' + hero + ' loved (' + s.love + ') never quite forgives the world.'
+          : gone
+            ? 'The one ' + hero + ' loved (' + s.love + ') waits for a long time, and then stops waiting.'
+            : Hero + ' grows old beside ' + s.love + ', which turns out to be the bravest thing of all.'
+      );
+    else if (F.pact && F.pact.stage === 1 && out.length < S.EPILOGUE_MAX - 1)
+      out.push('Somewhere below, a demon is still waiting to collect what it is owed.');
+    else if (F.seal && F.seal.stage < 3 && s.end !== 'sealed' && out.length < S.EPILOGUE_MAX - 1)
+      out.push('Far beneath the world, the ancient seal still holds. For now.');
+    else if (F.prophecy && F.prophecy.stage < 3 && !F.fulfilled && out.length < S.EPILOGUE_MAX - 1)
+      out.push('The prophecy is never fulfilled, and scholars still argue about who it meant.');
+    else if (F.city && out.length < S.EPILOGUE_MAX - 1)
+      out.push('The city of ' + F.city + ' still celebrates its founding day with too much wine.');
+    // fillers for a quieter life: an artifact, the guild
+    const art0 = (s.artifacts || []).map(x => x && x.name).filter(Boolean)[0],
+      // 'the Amulet of Dawn', but 'Loreriel's Amulet' as it is (also when the name starts with 'The')
+      bare = art0 && art0.replace(/^the /i, ''),
+      art = bare && (/'s\b/.test(bare) ? bare : 'the ' + bare),
+      Art = art && art[0].toUpperCase() + art.slice(1);
+    if (art && out.length < S.EPILOGUE_MAX - 1)
+      out.push(
+        heir
+          ? Art + ' passes to ' + heir + '.'
+          : one([
+              Art + ' ends up behind glass, guarded by a very nervous guard.',
+              'Nobody knows what became of ' + art + '.',
+            ])
+      );
+    if (s.guild && out.length < S.EPILOGUE_MAX - 1)
+      out.push(
+        'The ' +
+          s.guild +
+          ' hangs a portrait of ' +
+          hero +
+          ' in its hall' +
+          (s.guild.indexOf('Thieves') === 0 || s.guild.indexOf('Assassins') === 0
+            ? ', and pretends never to have met them.'
+            : '.')
+      );
+    // the closing line
+    const close = {
+      dead: ['The stories about ' + hero + ' get bigger every year.', 'A small stone marks where ' + hero + ' fell.'],
+      martyr: ['Every year, on the day ' + hero + ' fell, someone leaves flowers.'],
+      retired: [
+        'Bards still get the life of ' + hero + ' wrong, and nobody minds.',
+        'On quiet evenings, ' + hero + ' still reaches for a sword that is no longer there.',
+      ],
+      legend: [
+        'Children still play at being ' + hero + '.',
+        'Bards still sing of ' + hero + ', each version grander than the last.',
+      ],
+      ascended: ['Some nights, a new star seems to watch over the land.'],
+      lost: ['Sailors swear they sometimes see ' + hero + ' at the edge of the world.'],
+      sealed: ['The seal holds, and the world never learns what ' + hero + ' gave to keep it shut.'],
+      damned: ['Mothers use the name ' + hero + ' to frighten children into bed.'],
+      fulfilled: ['The prophecy is carved over the city gate, with the name of ' + hero + ' beneath it.'],
+      undying: ['Something that was once ' + hero + ' still walks the roads at night.'],
+    }[s.end] || ['And so the saga of ' + hero + ' ends.'];
+    out.splice(S.EPILOGUE_MAX - 1);
+    out.push(one(close));
+    return out;
   };
   S.artFacts = function (L) {
     const s = L.saga;

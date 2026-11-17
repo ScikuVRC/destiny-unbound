@@ -33,6 +33,8 @@ const OPEN = {
   workshop: `FWApp.contentModal('workshop')`,
   hall: `FWApp.hallModal()`,
   achievements: `FWApp.achievementsModal()`,
+  // a real saga played to its end, then the Saga recap opened from the ending screen
+  recap: `(async () => { const L = ${LEGEND}, S = FW.Story, rng = FW.makeRng('a11y:story'), o = {}; S.OPTIONS.forEach(x => (o[x.id] = x.def !== false)); S.newSaga(L, o, rng); const io = { rng, spin: async c => FW.weightedIndex(c.entries, rng) }; while (!L.saga.end) await S.playTurn(L, io, o); FWApp.showCard(); FWApp.runStory(); setTimeout(() => document.getElementById('btnRecap').click(), 1200); })()`,
 };
 const SCREENS = arg('screens') || Object.keys(OPEN);
 // rules left out, with the reason (none at the moment; axe can't see inside the wheel's canvas, which has its own
@@ -72,7 +74,7 @@ app.whenReady().then(async () => {
     if (THEME) await js(`FWApp.setTheme('${THEME}'); 1`);
     const err = await js(`try { ${OPEN[sc]}; 1 } catch (e) { 'error: ' + e.message }`);
     if (err !== 1) fail(sc + ': ' + err);
-    await sleep(900);
+    await sleep(sc === 'recap' ? 3000 : 900);
     await js(AXE + '; 1');
     const res = await js(`axe.run(document, {
         runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'] },

@@ -36,7 +36,7 @@ ffmpeg -i music-src/title.mp3 -af "loudnorm=I=-18:TP=-1.5:LRA=11,silenceremove=s
 
 ## Theme tracks
 
-Ashen Crown and mod themes use the shared tracks above. The other three themes have their own set, made with
+Ashen Crown and mod themes use the shared tracks above. The other four themes have their own set, made with
 `scripts/make-music.py -q high --theme <theme>` (the slot's prompt plus the theme's flavour words).
 
 | Theme | Slot | File | Length | Model and seed | Made |
@@ -62,6 +62,13 @@ Ashen Crown and mod themes use the shared tracks above. The other three themes h
 | Blood Moon | `story` | `music/bloodmoon/story.ogg` | 3:00 | ACE-Step 1.5 SFT, 50 steps, seed 424930345 | 2026-11-14 |
 | Blood Moon | `title` | `music/bloodmoon/title.ogg` | 2:30 | ACE-Step 1.5 SFT, 50 steps, seed 234542652 | 2026-11-14 |
 | Blood Moon | `victory` | `music/bloodmoon/victory.ogg` | 0:12 | ACE-Step 1.5 SFT, 50 steps, seed 715281467 | 2026-11-14 |
+| Verdant Wild | `battle` | `music/wild/battle.ogg` | 2:00 | ACE-Step 1.5 SFT, 50 steps, seed 1998502637 | 2026-11-17 |
+| Verdant Wild | `defeat` | `music/wild/defeat.ogg` | 0:11 | ACE-Step 1.5 SFT, 50 steps, seed 2024093850 | 2026-11-17 |
+| Verdant Wild | `legend` | `music/wild/legend.ogg` | 0:14 | ACE-Step 1.5 SFT, 50 steps, seed 1164973264 | 2026-11-17 |
+| Verdant Wild | `spin` | `music/wild/spin.ogg` | 2:00 | ACE-Step 1.5 SFT, 50 steps, seed 976234630 | 2026-11-17 |
+| Verdant Wild | `story` | `music/wild/story.ogg` | 3:00 | ACE-Step 1.5 SFT, 50 steps, seed 2032862606 | 2026-11-17 |
+| Verdant Wild | `title` | `music/wild/title.ogg` | 2:29 | ACE-Step 1.5 SFT, 50 steps, seed 1559914425 | 2026-11-17 |
+| Verdant Wild | `victory` | `music/wild/victory.ogg` | 0:12 | ACE-Step 1.5 SFT, 50 steps, seed 1804516958 | 2026-11-17 |
 
 ## Prompts
 
@@ -79,7 +86,7 @@ the lyrics box. For loops, add `seamless loop, no intro, no outro`.
 | `legend` | short glorious ascension fanfare, orchestral, full choir, shimmering bells, harp glissando, rising to a radiant major chord, 8 seconds |
 
 For per-theme versions, add one of these to a prompt: `ash and embers` (Ashen Crown), `celestial, ethereal` (Astral
-Oracle), `pipe organ, industrial` (Iron Litany), `gothic, eerie` (Blood Moon).
+Oracle), `pipe organ, industrial` (Iron Litany), `gothic, eerie` (Blood Moon), `ancient forest, celtic folk, wooden flute, birdsong` (Verdant Wild).
 
 ## Using a hosted service instead
 

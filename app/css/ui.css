@@ -419,3 +419,24 @@ body.no-glow .ach.got>span:has(.badge){filter:none}
 .story-banner.has-art{background-color:var(--panel);background-size:100% 100%,cover;background-position:0 0,60% 45%;background-repeat:no-repeat;animation:fadein .5s ease}
 body.anim-off .story-banner.has-art,body.anim-reduced .story-banner.has-art{animation:none}
 .story-banner.has-art .sb-title,.story-banner.has-art .sb-kicker,.story-banner.has-art .sb-sub{text-shadow:0 1px 3px rgba(0,0,0,.85)}
+/* saga recap */
+.recap-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin:10px 0}
+.recap-stats>div{display:grid;gap:2px;padding:8px 6px;border-radius:10px;background:rgba(255,255,255,.05);text-align:center}
+.recap-stats b{font-size:20px;font-family:var(--font-display,inherit);color:var(--accent)}
+.recap-stats span{font-size:12px;opacity:.75}
+.recap-fights{list-style:none;margin:6px 0 4px;padding:0;display:grid;gap:6px}
+.recap-fights li{display:grid;gap:1px;font-size:13.5px;line-height:1.35}
+.recap-fights li b{display:block;font-size:11.5px;font-weight:600;color:var(--accent2,inherit)}
+.recap-fights li b .ico{vertical-align:-2px}
+.recap-line li.upset{border-left:3px solid var(--accent,#d4a24a)}
+.recap-legacy{display:grid;grid-template-columns:1fr 1.4fr;gap:4px 12px;margin:6px 0;font-size:13.5px}
+.recap-legacy dt{opacity:.7;font-weight:600;text-align:right}
+.recap-legacy dd{margin:0;text-align:left}
+.recap-family{list-style:none;margin:6px 0;padding:0;display:grid;gap:4px;font-size:13.5px}
+.recap-family li{display:grid;gap:1px;padding:6px 8px;border-radius:10px;background:rgba(255,255,255,.04)}
+.recap-family li.cur{background:rgba(255,255,255,.1)}
+.recap-family li span{opacity:.75;font-size:12.5px}
+/* epilogue (end of a saga) */
+.epilogue{margin:10px auto 6px;max-width:62ch;padding:10px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--line,rgba(255,255,255,.12))}
+.epilogue h4{margin:0 0 4px;font-family:var(--font-display,inherit);font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent2,var(--accent))}
+.epilogue p{margin:0;font-style:italic;line-height:1.5;font-size:14.5px}

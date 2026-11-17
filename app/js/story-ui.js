@@ -57,7 +57,7 @@
             )
           )
           .join('');
-    h += '<h2 style="margin-top:12px">' + H.esc(tt('Journal')) + '</h2>' + journalHtml(s.log);
+    h += '<h2 style="margin-top:12px">' + H.esc(tt('Journal')) + '</h2>' + journalHtml(s.log) + cutNote(s);
     $('#sheetTitle').textContent = 'Your Saga';
     $('#sheetBody').innerHTML = h;
   }
@@ -72,7 +72,10 @@
       else groups.push({ ch: x.ch || 0, chapter: x.chapter, emoji: x.emoji, items: [x] });
     });
     return (
-      '<div class="journal">' +
+      // it scrolls on its own, so it takes keyboard focus (arrow keys scroll it)
+      '<div class="journal" tabindex="0" role="region" aria-label="' +
+      H.esc(tt('Journal')) +
+      '">' +
       groups
         .reverse()
         .map(
@@ -152,6 +155,11 @@
       '</span></div>';
     b.hidden = false;
   }
+  // a saga opened from a very long Legend Code: its oldest ordinary lines were left out of the code
+  const cutNote = s =>
+    s && s.cut
+      ? '<p class="legend-key">' + H.esc(tt('Some early lines were left out to keep this Legend Code short.')) + '</p>'
+      : '';
   function logHtml(log) {
     return log.length
       ? '<ol class="saga-log">' +
@@ -319,7 +327,21 @@
         ? '<img class="end-art" src="art/endings/' + s.end + '.webp" alt="">'
         : '';
     $('#effects').innerHTML =
-      '<div class="fx-card">' + art + '<h3>' + H.esc(S.summary(L)) + '</h3>' + logHtml(s.log) + '</div>';
+      // what happened next and the recap first, where they are seen without scrolling; then the painting and the log
+      '<div class="fx-card"><h3>' +
+      H.esc(S.summary(L)) +
+      '</h3>' +
+      epilogueHtml(L) +
+      '<div class="cta"><button class="btn primary" id="btnRecap">' +
+      FW.icon('📜') +
+      ' ' +
+      H.esc(tt('Saga recap')) +
+      '</button></div>' +
+      art +
+      logHtml(s.log) +
+      cutNote(s) +
+      '</div>';
+    $('#btnRecap').onclick = () => recapModal(L);
     if (S.MORTAL[s.end]) FW.Audio.bad();
     else FW.Audio.reveal(true);
     FW.Audio.sting(S.MORTAL[s.end] ? 'defeat' : S.RARE_END[s.end] ? 'legend' : 'victory');
@@ -422,6 +444,130 @@
     App.toast(C.displayName() + ' carries on ' + inh.dyn.house);
   }
 
+  /* ---------------- the epilogue: what became of everything (story.js, S.epilogue) ---------------- */
+  function epilogueHtml(L) {
+    const lines = S.epilogue ? S.epilogue(L) : [];
+    return lines.length
+      ? '<div class="epilogue"><h4>' + H.esc(tt('Epilogue')) + '</h4><p>' + H.esc(lines.join(' ')) + '</p></div>'
+      : '';
+  }
+
+  /* ---------------- the saga recap: the whole story at a glance ---------------- */
+  function recapModal(L) {
+    const r = S.recap(L);
+    if (!r) return;
+    const t = tt,
+      pct = p => Math.round(p * 100) + '%';
+    const stat = (n, label) => '<div><b>' + H.esc(String(n)) + '</b><span>' + H.esc(t(label)) + '</span></div>';
+    // the upset is always a win and the cruel loss always a loss; only the closest fight stores its result
+    const fight = (icon, label, f, res) =>
+      f
+        ? '<li><b>' +
+          FW.icon(icon) +
+          ' ' +
+          H.esc(t(label)) +
+          '</b><span>' +
+          H.esc(
+            t('Ch.') +
+              ' ' +
+              f.ch +
+              ' · ' +
+              f.foe +
+              ' · ' +
+              pct(f.p) +
+              ' ' +
+              t('to win') +
+              ' · ' +
+              t(RES[res || f.res] || '')
+          ) +
+          '</span></li>'
+        : '';
+    const fights =
+      fight('⚖️', 'Closest fight', r.closest) +
+      fight('🔥', 'Biggest upset', r.upset, 'win') +
+      fight('💔', 'Cruellest loss', r.heartbreak, 'lose');
+    const legacy = [
+      r.kingdom && [t('Ruled'), r.kingdom],
+      r.conquered.length && [t('Conquered'), r.conquered.join(', ')],
+      r.artifacts.length && [t('Artifacts'), r.artifacts.join(', ')],
+      r.love && [t('Loved'), r.love],
+      r.heir && [t('Heir'), r.heir],
+    ].filter(Boolean);
+    const line = r.timeline
+      .map(
+        x =>
+          '<li class="' +
+          (x.end ? 'end ' : '') +
+          (x.upset ? 'upset ' : '') +
+          (x.tone || '') +
+          '"><span>' +
+          (x.emoji ? FW.icon(x.emoji) : '•') +
+          '</span><div><b>' +
+          H.esc(t('Ch.') + ' ' + x.ch + ' · ' + t(x.chapter)) +
+          (x.upset ? ' · ' + H.esc(t('against the odds')) : '') +
+          '</b>' +
+          H.esc(x.text) +
+          '</div></li>'
+      )
+      .join('');
+    const fam =
+      r.family.length > 1
+        ? '<h3>' +
+          H.esc(t('Family')) +
+          '</h3><ol class="recap-family">' +
+          r.family
+            .map(
+              m =>
+                '<li class="' +
+                (m.current ? 'cur' : '') +
+                '"><b>' +
+                H.esc(t('Gen') + ' ' + m.gen + ' · ' + m.name) +
+                '</b><span>' +
+                H.esc(
+                  (m.end ? (S.endLabel[m.end] ? t(S.endLabel[m.end]) : m.end) : '') +
+                    (m.ch ? ' · ' + m.ch + ' ' + t('chapters') : '')
+                ) +
+                '</span></li>'
+            )
+            .join('') +
+          '</ol>'
+        : '';
+    App.openModal(
+      '<button class="btn small ghost close">' +
+        H.esc(t('Close')) +
+        ' ✕</button><h2>' +
+        H.esc(t('Saga recap')) +
+        '</h2><p class="legend-key">' +
+        H.esc(r.name + (r.endLabel ? ' · ' + t(r.endLabel) : '')) +
+        '</p><div class="recap-stats">' +
+        stat(r.chapters, r.chapters === 1 ? 'chapter' : 'chapters') +
+        stat(r.years, r.years === 1 ? 'year' : 'years') +
+        (r.ageEnd != null ? stat(r.ageStart + ' → ' + r.ageEnd, 'age') : '') +
+        stat(
+          r.fights.won + ' / ' + r.fights.lost + (r.fights.draw ? ' / ' + r.fights.draw : ''),
+          r.fights.draw ? 'won / lost / drawn' : 'won / lost'
+        ) +
+        '</div>' +
+        (fights ? '<ul class="recap-fights">' + fights + '</ul>' : '') +
+        '<h3>' +
+        H.esc(t('Turning points')) +
+        '</h3>' +
+        (line
+          ? '<ol class="saga-log recap-line">' + line + '</ol>'
+          : '<p class="legend-key">' + H.esc(t('A quiet life.')) + '</p>') +
+        epilogueHtml(L) +
+        (legacy.length
+          ? '<h3>' +
+            H.esc(t('Legacy')) +
+            '</h3><dl class="recap-legacy">' +
+            legacy.map(([k, v]) => '<dt>' + H.esc(k) + '</dt><dd>' + H.esc(v) + '</dd>').join('') +
+            '</dl>'
+          : '') +
+        fam
+    );
+  }
+  const RES = { win: 'won', lose: 'lost', draw: 'drawn' };
+
   /* ---------------- the family tree ---------------- */
   function houseModal() {
     const L = st.legend,
@@ -487,7 +633,7 @@
         '🏰 ' + s.dyn.house + (s.dyn.gen > 1 ? ' · ' + (FW.t ? FW.t('Gen') : 'Gen') + ' ' + s.dyn.gen : '');
     if (s) {
       $('#sagaSum').textContent = S.summary(L);
-      $('#sagaList').innerHTML = logHtml(s.log);
+      $('#sagaList').innerHTML = logHtml(s.log) + cutNote(s);
     }
     $('#btnStory').hidden = !!(s && s.end);
     $('#btnStory').textContent = s ? '📖 Continue the story' : '📖 Begin the story';

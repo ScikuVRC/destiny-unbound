@@ -1,7 +1,7 @@
 {
   "name": "fatewheel",
   "productName": "Destiny Unbound",
-  "version": "0.2.0-alpha.5.0",
+  "version": "0.3.0-alpha.1",
   "description": "Spin-the-wheel fantasy character generator with buffs, debuffs, arena fights and optional AI portraits.",
   "license": "GPL-3.0-or-later",
   "author": "Destiny Unbound contributors",
@@ -23,6 +23,7 @@
     "format:check": "prettier --check .",
     "balance": "node scripts/balance-report.js --check",
     "a11y": "electron scripts/a11y-check.js",
+    "perf": "electron scripts/perf-check.js",
     "bump": "node scripts/bump-version.js"
   },
   "build": {

@@ -2,7 +2,7 @@
 
 A running record of where the game stands. Update it when something ships, starts or gets decided.
 This file is public: server addresses, account, payment and moderation details go in `private-notes.md` (not on GitHub).
-Last updated: 2026-11-16 · Current version: **0.2.0-alpha.5.0**
+Last updated: 2026-11-17 · Current version: **0.3.0-alpha.1**
 
 Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
@@ -42,6 +42,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 | New art: Verdant Wild theme, painted wheel rims and hubs, chapter illustrations, achievement badges, painted title on phones, WebP title art (small update) | 0.2.0-alpha.4.8 | ✅ released 2026-11-16 |
 | The back of the card: the weak/resist line no longer overlaps the saga line (bug fix) | 0.2.0-alpha.4.9 | ✅ released 2026-11-16 |
 | More varied saga endings, opt-in "where I stop playing" counts, achievement report plays heirs (small update) | 0.2.0-alpha.5.0 | ✅ released 2026-11-16 |
+| The saga update: saga recap, epilogues, Verdant Wild HD music, long sagas can be shared again | 0.3.0-alpha.1 | ✅ released 2026-11-17 |
 | Alpha test with 5-15 players | two weeks after release | ⬜ |
 | Beta (fixes from the alpha, signed build, store page) | 0.2.0-beta.1 | ⬜ |
 | 1.0 on itch.io | 1.0.0 | ⬜ |
@@ -69,10 +70,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
 ## Ready for the next alpha (not released yet)
 
-- ✅ Developer tools (no change for players): `scripts/bump-version.js` does the version and cache bump; CI now runs the
-  balance check, the axe accessibility audit and tests for the Discord bot
-- ✅ Server abuse protection: a daily cap per address without storing addresses, `GET /v1/health`, an optional bot
-  warning when traffic jumps (needs the worker deployed and the schema run)
+- Nothing yet
 
 ## Released
 

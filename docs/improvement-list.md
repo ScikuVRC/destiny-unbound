@@ -26,9 +26,9 @@ Where the game stands: about 6,800 lines of game code, 26 wheels per hero, 98 ra
    that change with each meeting, and an ending where you become friends or they take your place.
 6. ⬜ **Kingdom management light (M).** A kingdom is one object with a "power" number. Add two or three stats (gold,
    army, loyalty) that kingdom events move and that wars read.
-7. ⬜ **A saga recap screen (S).** At the end, show a timeline with the turning points, the closest fight, years lived
+7. ✅ **A saga recap screen (S).** Done 2026-11-17: a Saga recap button on the ending screen: chapters, years, age, fights won and lost, the closest fight, biggest upset and cruellest loss, up to eight turning points, legacy and family. At the end, show a timeline with the turning points, the closest fight, years lived
    and the family tree, not only the log.
-8. ⬜ **Epilogues (S).** One paragraph built from flags: what happened to the kingdom, the heir, the nemesis.
+8. ✅ **Epilogues (S).** Done 2026-11-17: up to four sentences at the end of a saga (the kingdom, the heir, the nemesis, a love or an unfinished thread, a closing line for the ending), on the ending screen, in the recap and in the shared text. Story text, so English for now. One paragraph built from flags: what happened to the kingdom, the heir, the nemesis.
 9. ✅ **Dynasty depth (M).** Done 2026-11-14: family traits, house history, growing renown, family tree. Heirs inherit one stat and a kingdom. Add family traits, a family tree view and a house
    history that carries across generations (the "Dynasty" achievement is earned by 0% of simulated sagas).
 10. ⬜ **Difficulty presets for the story (S).** "Gentle / Standard / Brutal" on top of the luck level, changing the
@@ -43,8 +43,9 @@ Where the game stands: about 6,800 lines of game code, 26 wheels per hero, 98 ra
 14. ⬜ **Team fights (L).** Use your companions: three against three.
 
 ### Character creation
-15. ⬜ ★ **Reroll with consequences (S).** Fate Tokens only re-spin. Let a token also "nudge" the wheel one slice either
-   way, or lock a result you love before a risky re-spin.
+15. ✅ **Reroll with consequences (S).** Decided 2026-11-17: re-spins stay as they are, because players like them. A
+   "nudge one slice" or "lock and re-spin" option could come back as an extra if players ask for more ways to use
+   tokens; no penalty for re-spinning.
 16. ⬜ **Synergies and set bonuses (M).** Reward combinations (fire element + fire weapon + dragon bloodline) with a
    named bonus shown on the card. Gives players something to hope for while spinning.
 17. ✅ **Rarity moments (S).** Done 2026-11-14: a rare result (under 2.5% of the wheel) stops slower, creeping over the
@@ -108,7 +109,7 @@ All painted art is made on grok.com and credited "Created with Grok" (logged in 
 45. ✅ **Achievement badges (M).** Done 2026-11-16: drawn in code (`app/js/badges.js`), bronze, silver or gold by how often players earn them. 34 small emblems instead of emoji.
 46. ✅ **Wheel skins (M).** Done 2026-11-16: a painted rim and hub per theme (`art/skins`), with an Options switch. The wheel is drawn in code. Painted hubs and rims per theme, as overlays.
 47. ✅ **Painted title menu for phones (M).** Done 2026-11-16: the painted wheel now rises behind the menu on phones too.
-48. ✅ **Store assets (M).** Done 2026-11-16: itch.io covers, Steam capsules, a banner, 5 new screenshots and a story GIF (`docs/store`). The Steam library hero still needs a wider painting. Capsule images, a banner, 6-8 fresh screenshots of 0.2, an animated GIF of an arc.
+48. ✅ **Store assets (M).** Done 2026-11-16: itch.io covers, Steam capsules, a banner, 5 new screenshots and a story GIF (`docs/store`). The Steam library hero (2026-11-17) is the Ashen Crown painting enlarged with Real-ESRGAN. Capsule images, a banner, 6-8 fresh screenshots of 0.2, an animated GIF of an arc.
 49. ✅ **Trailer (S for you).** Done 2026-11-14: a 1080p trailer from real gameplay, on YouTube and linked from the README and itch.io. Upload the existing one; then a 0.2 trailer showing arcs and endings.
 50. ✅ **Fifth theme (L).** Done 2026-11-16: Verdant Wild, a fae forest with its own title screen, wheel rim, sounds, synthesized music and card frame (no HD music tracks yet). Parked: a new painted title screen, wheel, sounds and music.
 51. ✅ **Image format (S).** Done 2026-11-16: the title art is WebP, 3.8 MB down to 1.6 MB. The 12 title images are JPG, 3.8 MB. WebP or AVIF would cut that by half or more and speed
@@ -178,14 +179,14 @@ Everything is synthesized in 146 lines of code: clever and tiny, but it sounds l
    portraits will outgrow it.
 79. ✅ **Error reporting (S).** Done 2026-11-16: when something goes wrong, or the desktop game crashed last time, a note offers "Send report"; the player sees exactly what is sent first (`app/js/report.js`, `worker/src/errors.js`), and `node scripts/error-reports.js` shows them. Errors go to a local log. An opt-in "send this error" button (to the existing
    Cloudflare worker) would surface real bugs.
-80. ⬜ **Performance budget (S).** Measure load time on itch.io and frame time during a spin; fail CI if they regress.
+80. ✅ **Performance budget (S).** Done 2026-11-17: `scripts/perf-check.js` in CI (start time, bytes and scripts the title screen loads, frame gaps and long frames during Auto-spin; `--cpu=4` for a slow-phone view). Measure load time on itch.io and frame time during a spin; fail CI if they regress.
 81. ✅ **Accessibility tests in CI (S).** Done 2026-11-17: `scripts/a11y-check.js` runs axe (WCAG 2.1 A/AA, contrast included) on 13 screens and dialogs in CI. The axe audit was run by hand once; automate it.
-82. ⬜ **Dependency and licence check in CI (S).**
+82. ✅ **Dependency and licence check in CI (S).** Done 2026-11-17: `scripts/deps-check.js` (licences of everything that ships, fonts included, and high or critical advisories). It found an old web library in the Discord bot; discord.js updated to 14.28.1.
 83. ✅ **Bot: tests and structure (S).** Done 2026-11-17: `bot/handler.js` (the commands) and `bot/embeds.js` (the cards), tested with stand-in interactions in `tests/bot.test.js`. `bot/index.js` has no tests of its own; the stats store does.
 84. ✅ **Worker: abuse protection (S).** Done 2026-11-17: a daily cap per address and route without storing addresses (`worker/src/guard.js`), `GET /v1/health`, and an optional bot warning when traffic jumps. Worker tests now run on real SQLite. The counter trusts any client. Rate limiting is on; add a daily cap per
    address and an alert if totals jump.
 85. ⬜ **Electron: auto-update channel choice (S).** Let players pick stable or alpha once a stable build exists.
-86. ⬜ **Developer docs (S).** `docs/development.md` predates the worker, the layout tools and the balance report.
+86. ✅ **Developer docs (S).** Done 2026-11-17: tests, CI jobs, every tool by purpose, the one-command release bump, and the worker and bot in the code layout. `docs/development.md` predates the worker, the layout tools and the balance report.
 
 ---
 

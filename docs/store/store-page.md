@@ -102,8 +102,10 @@ Made with `npx electron scripts/make-store-art.js` from the painted backgrounds 
 - Screenshots 11-15 in `screenshots/` show the 0.2 art: the Verdant Wild title, a painted wheel, a chapter
   illustration, achievement badges and a Verdant Wild card
 
-Still to make: the Steam library hero (3840×1240) needs a painting at least that wide; the backgrounds are about
-1800 px.
+Steam library hero 3840×1240 (`steam-library-hero.jpg`, no logo or text, as Steam asks): a band of the Ashen Crown
+painting (`mockups/menu/art/ashen-bg.jpg`, rows 220-597 of 784, full width), enlarged 4× with Real-ESRGAN
+(`RealESRGAN_x4plus`, BSD-3-Clause, run locally) and resized to 3840×1240 with Lanczos. Real-ESRGAN only enlarges
+the painting; it adds no new content.
 
 ## Content notes
 

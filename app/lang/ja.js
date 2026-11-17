@@ -1108,6 +1108,33 @@
       'Share where I stop playing': 'どこでやめたかを共有',
       'Off by default. When on, closing the game sends one anonymous count of where you stopped: the screen, or the hero wheel or story chapter you were on. No names, codes or IDs. It shows which parts make people leave.':
         '既定ではオフ。オンにすると、ゲームを閉じたときにどこでやめたかを匿名で1件送ります（画面、または主人公作りのルーレットや物語の章）。名前、コード、IDは送りません。どこで離れる人が多いかがわかります。',
+      /* saga recap */
+      'Saga recap': 'サーガのまとめ',
+      'Ch.': '章',
+      'to win': '勝率',
+      won: '勝利',
+      lost: '敗北',
+      drawn: '引き分け',
+      'Closest fight': '最も接戦だった戦い',
+      'Biggest upset': '最大の番狂わせ',
+      'Cruellest loss': '最もつらい敗北',
+      Ruled: '統治',
+      Loved: '愛した相手',
+      Family: '家族',
+      chapter: '章',
+      year: '年',
+      years: '年',
+      age: '年齢',
+      'won / lost': '勝ち / 負け',
+      'won / lost / drawn': '勝ち / 負け / 引き分け',
+      'Turning points': '転機',
+      'A quiet life.': '穏やかな人生。',
+      Legacy: '遺したもの',
+      'against the odds': '下馬評を覆して',
+      /* epilogue, long Legend Codes */
+      Epilogue: 'エピローグ',
+      'Some early lines were left out to keep this Legend Code short.':
+        'このレジェンドコードを短くするため、序盤の記録の一部を省きました。',
     },
   };
 })(typeof window !== 'undefined' ? window : globalThis);

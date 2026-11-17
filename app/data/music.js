@@ -21,6 +21,6 @@
   // A theme's own tracks, used instead of the shared ones (app/music/<theme>/<slot>.ogg).
   const SLOTS = ['title', 'spin', 'story', 'battle', 'victory', 'defeat', 'legend'];
   const set = theme => Object.fromEntries(SLOTS.map(s => [s, 'music/' + theme + '/' + s + '.ogg']));
-  FW.MUSIC_THEMES = { astral: set('astral'), iron: set('iron'), bloodmoon: set('bloodmoon') };
+  FW.MUSIC_THEMES = { astral: set('astral'), iron: set('iron'), bloodmoon: set('bloodmoon'), wild: set('wild') };
   FW.hasMusicFiles = () => Object.keys(FW.MUSIC_FILES).some(k => FW.MUSIC_FILES[k]);
 })(typeof window !== 'undefined' ? window : globalThis);

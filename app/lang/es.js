@@ -1128,6 +1128,33 @@
       'Share where I stop playing': 'Compartir dónde dejo de jugar',
       'Off by default. When on, closing the game sends one anonymous count of where you stopped: the screen, or the hero wheel or story chapter you were on. No names, codes or IDs. It shows which parts make people leave.':
         'Desactivado por defecto. Si lo activas, al cerrar el juego se envía un recuento anónimo de dónde lo dejaste: la pantalla, o la rueda del héroe o el capítulo de la historia en que estabas. Sin nombres, códigos ni identificadores. Muestra qué partes hacen que la gente lo deje.',
+      /* saga recap */
+      'Saga recap': 'Resumen de la saga',
+      'Ch.': 'Cap.',
+      'to win': 'de ganar',
+      won: 'ganado',
+      lost: 'perdido',
+      drawn: 'empate',
+      'Closest fight': 'El combate más reñido',
+      'Biggest upset': 'La mayor sorpresa',
+      'Cruellest loss': 'La derrota más cruel',
+      Ruled: 'Gobernó',
+      Loved: 'Amó a',
+      Family: 'Familia',
+      chapter: 'capítulo',
+      year: 'año',
+      years: 'años',
+      age: 'edad',
+      'won / lost': 'ganados / perdidos',
+      'won / lost / drawn': 'ganados / perdidos / empates',
+      'Turning points': 'Momentos decisivos',
+      'A quiet life.': 'Una vida tranquila.',
+      Legacy: 'Legado',
+      'against the odds': 'contra todo pronóstico',
+      /* epilogue, long Legend Codes */
+      Epilogue: 'Epílogo',
+      'Some early lines were left out to keep this Legend Code short.':
+        'Algunas líneas antiguas se omitieron para que este Código de Leyenda sea corto.',
     },
   };
 })(typeof window !== 'undefined' ? window : globalThis);

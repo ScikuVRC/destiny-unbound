@@ -24,7 +24,7 @@ Come say hi on the Discord first if you like: <https://discord.gg/McDS5HVxzJ>
 
 ## Working on the code
 
-You need Node.js 20 or newer.
+You need Node.js 22.13 or newer.
 
 ```bash
 npm install

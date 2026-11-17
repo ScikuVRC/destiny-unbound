@@ -4,6 +4,34 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
+## 0.3.0-alpha.1 (2026-11-17)
+
+The saga update: every saga now ends with a look back at how it went and what became of everything.
+
+### New
+
+- **Saga recap.** At the end of a saga, press **Saga recap** for the whole story at a glance: chapters, years
+  lived, your age from start to end, fights won and lost, the closest fight, the biggest upset and the cruellest
+  loss, up to eight turning points, your legacy (kingdom, conquests, artifacts, love, heir) and your family line.
+- **Epilogues.** A few sentences about what happened after the end: who rules your kingdom, what your heir becomes,
+  whether your nemesis is still out there, and loose ends such as an unpaid demon pact. A hero always gets the same
+  epilogue, also when opened from a Legend Code. The epilogue is in English for now, like the rest of the story.
+- **HD music for Verdant Wild.** The fifth theme has its own seven tracks, like the other themes (placeholders made
+  with ACE-Step, an AI music model; see the music credits).
+
+### Fixed
+
+- **Long sagas can be shared again.** Legend Codes are about 12% shorter, and a very long saga no longer fails to
+  get a card code: its oldest ordinary lines are left out of the code (never a turning point or the ending), and
+  the journal says so.
+- **The story journal can be scrolled with the keyboard.**
+
+### Behind the scenes
+
+- Every push is now checked for accessibility, speed (start time, download size, smooth spins), the licences of
+  everything that ships, and the balance numbers.
+- The Discord bot got a security update.
+
 ## 0.2.0-alpha.5.0 (2026-11-16)
 
 A small update: more varied saga endings, and a new opt-in to help find where the game loses people.

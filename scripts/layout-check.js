@@ -2,7 +2,7 @@
 // screenshot of each, and reports what doesn't fit: sideways scrolling, SPIN below the bottom edge, text that
 // overflows its box, things past the right edge, and very small text.
 //   npx electron scripts/layout-check.js [outDir] [--only=960x540,1280x800] [--screens=title,spin] [--lang=de]
-// Extra screens (not in the default run): options-audio, options-access, options-controls, options-data,
+// Extra screens (not in the default run): recap, endingReal, options-audio, options-access, options-controls, options-data,
 // content-happen, content-workshop, content-addons.
 // It runs in its own hidden window with a fresh, throwaway profile, so it never touches your saves.
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -72,6 +72,10 @@ const OPEN = {
   hall: `FWApp.hallModal()`,
   achievements: `FWApp.achievementsModal()`,
   ending: `(() => { const L = ${LEGEND}; FW.Story.newSaga(L, {}, FW.makeRng('end')); L.saga.ch = 14; L.saga.end = 'fulfilled'; L.saga.endText = L.displayName() + ' takes the crown, rules for a day and rides away into legend.'; FWApp.showCard(); FWApp.runStory(); })()`,
+  // a real saga played to its end: the ending screen with its epilogue
+  endingReal: `(async () => { const L = ${LEGEND}, S = FW.Story, rng = FW.makeRng('recap:story'), o = {}; S.OPTIONS.forEach(x => (o[x.id] = x.def !== false)); S.newSaga(L, o, rng); const io = { rng, spin: async c => FW.weightedIndex(c.entries, rng) }; while (!L.saga.end) await S.playTurn(L, io, o); FWApp.showCard(); FWApp.runStory(); })()`,
+  // a real saga played to its end, then the Saga recap opened from the ending screen
+  recap: `(async () => { const L = ${LEGEND}, S = FW.Story, rng = FW.makeRng('recap:story'), o = {}; S.OPTIONS.forEach(x => (o[x.id] = x.def !== false)); S.newSaga(L, o, rng); const io = { rng, spin: async c => FW.weightedIndex(c.entries, rng) }; while (!L.saga.end) await S.playTurn(L, io, o); FWApp.showCard(); FWApp.runStory(); setTimeout(() => document.getElementById('btnRecap').click(), 1200); })()`,
 };
 // what doesn't fit, measured inside the page
 const CHECK = `(() => {
@@ -141,7 +145,9 @@ app.whenReady().then(async () => {
       } catch (e) {
         /* async flows keep running; that's fine */
       }
-      await sleep(sc === 'spin' || sc === 'story' || sc === 'ending' ? 1800 : 900);
+      await sleep(
+        sc === 'recap' || sc === 'endingReal' ? 3000 : sc === 'spin' || sc === 'story' || sc === 'ending' ? 1800 : 900
+      );
       const res = await js(CHECK);
       const key = w + 'x' + h;
       (report[key] = report[key] || {})[sc] = res;

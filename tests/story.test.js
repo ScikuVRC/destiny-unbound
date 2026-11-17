@@ -66,7 +66,8 @@ async function playSaga(seed, opts, ov) {
   await t('500 sagas always end, never crash, and their codes round-trip', async () => {
     const ends = {};
     let maxCh = 0,
-      totalCh = 0;
+      totalCh = 0,
+      trimmed = 0;
     for (let i = 0; i < 500; i++) {
       const opts = {};
       S.OPTIONS.forEach(o => (opts[o.id] = (i + o.id.length) % 3 !== 0));
@@ -77,11 +78,141 @@ async function playSaga(seed, opts, ov) {
       totalCh += L.saga.ch;
       const c = FW.compute(L);
       assert(isFinite(c.rating), 'rating');
-      const L2 = FW.Legend.fromCode(L.toCode());
-      assert.strictEqual(FW.legendText(L2), FW.legendText(L));
+      const code = L.toCode(),
+        L2 = FW.Legend.fromCode(code);
+      assert(code.length <= S.CODE_MAX, 'code too long: ' + code.length);
+      // a very long saga leaves its oldest ordinary lines out of the code (and says so); the rest is identical
+      if (!L2.saga.cut) assert.strictEqual(FW.legendText(L2), FW.legendText(L));
+      else trimmed++;
       assert.strictEqual(L2.saga.ch, L.saga.ch);
+      assert.strictEqual(L2.saga.end, L.saga.end);
     }
-    console.log('       endings', JSON.stringify(ends), ' avg chapters', (totalCh / 500).toFixed(1), ' longest', maxCh);
+    console.log(
+      '       endings',
+      JSON.stringify(ends),
+      ' avg chapters',
+      (totalCh / 500).toFixed(1),
+      ' longest',
+      maxCh,
+      ' codes trimmed',
+      trimmed
+    );
+    assert(trimmed <= 10, 'too many trimmed codes: ' + trimmed);
+  });
+
+  await t(
+    'saga recap: counts every fight, names the notable ones, keeps the ending, survives a Legend Code',
+    async () => {
+      const opts = {};
+      S.OPTIONS.forEach(o => (opts[o.id] = o.def !== false));
+      let withFights = 0,
+        withUpset = 0;
+      for (let i = 0; i < 120; i++) {
+        // count the battles the player is shown, to compare with the recap
+        const { L, io } = await playSaga('recap' + i, opts);
+        const r = S.recap(L);
+        const battles = io.seen.filter(c => c.kind === 'battle').length;
+        assert.strictEqual(r.fights.total, battles, 'every fight counted');
+        assert.strictEqual(r.fights.won + r.fights.lost + r.fights.draw, r.fights.total);
+        if (r.fights.total) {
+          withFights++;
+          assert(r.closest && r.closest.foe && r.closest.p >= 0 && r.closest.p <= 1, 'a closest fight');
+        }
+        if (r.upset) {
+          withUpset++;
+          assert(r.upset.p < 0.5, 'an upset is a win at bad odds');
+        }
+        if (r.heartbreak) assert(r.heartbreak.p > 0.5, 'a cruel loss is a loss at good odds');
+        assert(r.timeline.length >= 1 && r.timeline.length <= S.RECAP_MAX, 'timeline size ' + r.timeline.length);
+        assert(r.timeline[r.timeline.length - 1].end, 'the ending closes the timeline');
+        for (let k = 1; k < r.timeline.length; k++) assert(r.timeline[k - 1].ch <= r.timeline[k].ch, 'in order');
+        assert.strictEqual(r.chapters, L.saga.ch);
+        if (r.ageEnd != null) assert.strictEqual(r.ageEnd - r.ageStart, L.saga.years);
+        // through a Legend Code and back: the same recap
+        const back = S.recap(FW.Legend.fromCode(L.toCode()));
+        assert.deepStrictEqual(back.fights, r.fights);
+        assert.deepStrictEqual(back.closest, r.closest);
+        assert.deepStrictEqual(back.timeline, r.timeline);
+      }
+      assert(withFights > 60 && withUpset > 3, 'fights ' + withFights + ', upsets ' + withUpset);
+      // a saga from before the recap (no fight record) still gets one, and junk is cleaned away
+      const { L } = await playSaga('recap-old', opts);
+      delete L.saga.fights;
+      const r = S.recap(L);
+      assert.deepStrictEqual(r.fights, { total: 0, won: 0, lost: 0, draw: 0 });
+      assert(r.timeline.length && r.closest === null);
+      assert.strictEqual(S.cleanFights('junk'), null);
+      const c = S.cleanFights({ w: '2', l: 1, up: [3, 'x', -1], closest: { ch: 3, foe: 'X'.repeat(500), p: 7 } });
+      assert(c.w === 2 && c.up.length === 1 && c.closest.foe.length === 80 && c.closest.p === 1);
+    }
+  );
+
+  await t('Legend Codes stay short enough for card codes, even for a very long saga', async () => {
+    const opts = {};
+    S.OPTIONS.forEach(o => (opts[o.id] = o.def !== false));
+    const { L } = await playSaga('long-code', opts);
+    // an old save's log lines still carry empty fields and a leftover foe: the code leaves them out
+    L.saga.log.forEach(x => Object.assign(x, { foe: 'the ambushers', arena: 'Swamp of Whispers', end: x.end || null }));
+    const lean = L.toCode();
+    assert(!/ambushers|Swamp of Whispers/.test(Buffer.from(lean.slice(4), 'base64').toString()), 'no leftover foe');
+    // stuff it with ordinary chapters until the code would be far too long
+    const keep = L.saga.log.slice();
+    for (let i = 0; i < 400; i++)
+      L.saga.log.splice(1, 0, { ch: 1, chapter: 'Train', emoji: '⚔️', text: 'Hours of practice. ' + 'x'.repeat(60) });
+    const code = L.toCode();
+    assert(code.length <= S.CODE_MAX, 'code is ' + code.length);
+    const back = FW.Legend.fromCode(code);
+    assert(back.saga.cut > 0, 'says lines were left out');
+    assert.strictEqual(back.saga.end, L.saga.end);
+    // every original line that is a turning point or the ending survives
+    const byName = {};
+    S.CHAPTERS.forEach(c => (byName[c.name] = c.id));
+    keep
+      .filter(x => x.end || S.TURNING[byName[x.chapter]])
+      .forEach(x =>
+        assert(
+          back.saga.log.some(y => y.text === x.text),
+          'kept: ' + x.text
+        )
+      );
+    assert.strictEqual(L.saga.log.length, keep.length + 400, 'the saga itself is untouched');
+  });
+
+  await t('epilogues: a few sentences about what happened next, always the same for the same hero', async () => {
+    const opts = {};
+    S.OPTIONS.forEach(o => (opts[o.id] = o.def !== false));
+    const seen = new Set();
+    let withKingdom = 0,
+      longOnes = 0;
+    for (let i = 0; i < 150; i++) {
+      const { L } = await playSaga('epi' + i, opts);
+      const e = S.epilogue(L);
+      assert(e.length >= 1 && e.length <= S.EPILOGUE_MAX, 'size ' + e.length);
+      e.forEach(x => {
+        assert(/^[A-Z"'].*[.!?]$/.test(x), 'a whole sentence: ' + x);
+        assert(!/undefined|null|NaN|\{|\}|\bThe The\b|\s{2}/.test(x), 'clean text: ' + x);
+        assert(!/[a-z] The [A-Z]/.test(x), 'a title inside a sentence starts with a small "the": ' + x);
+        seen.add(x);
+      });
+      if (L.saga.kingdom && !L.saga.world) {
+        withKingdom++;
+        assert(
+          e.some(x => x.indexOf(L.saga.kingdom.name) >= 0),
+          'the kingdom is named'
+        );
+      }
+      if (e.length >= 3) longOnes++;
+      // the same hero, the same epilogue, also from a Legend Code
+      assert.deepStrictEqual(S.epilogue(L), e);
+      const back = FW.Legend.fromCode(L.toCode());
+      if (!back.saga.cut) assert.deepStrictEqual(S.epilogue(back), e);
+      assert(FW.legendText(L).indexOf('EPILOGUE') >= 0, 'in the shared text');
+    }
+    assert(withKingdom > 10 && longOnes > 30 && seen.size > 40, [withKingdom, longOnes, seen.size].join(' '));
+    // no epilogue before the end
+    const L = makeLegend('epi-open');
+    S.newSaga(L, opts, FW.makeRng('x'));
+    assert.deepStrictEqual(S.epilogue(L), []);
   });
 
   await t('used chapters turn grey and never land again; repeatable ones stay', async () => {

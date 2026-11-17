@@ -44,6 +44,7 @@ THEMES = {
     "astral": "celestial, ethereal",
     "iron": "pipe organ, industrial",
     "bloodmoon": "gothic, eerie",
+    "wild": "ancient forest, celtic folk, wooden flute, birdsong",
 }
 
 

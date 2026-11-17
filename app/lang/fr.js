@@ -1118,6 +1118,33 @@
       'Share where I stop playing': 'Partager où j’arrête de jouer',
       'Off by default. When on, closing the game sends one anonymous count of where you stopped: the screen, or the hero wheel or story chapter you were on. No names, codes or IDs. It shows which parts make people leave.':
         'Désactivé par défaut. Si tu l’actives, fermer le jeu envoie un décompte anonyme de l’endroit où tu t’es arrêté : l’écran, ou la roue du héros ou le chapitre de l’histoire où tu étais. Ni noms, ni codes, ni identifiants. Ça montre quelles parties font partir les joueurs.',
+      /* saga recap */
+      'Saga recap': 'Récap de la saga',
+      'Ch.': 'Ch.',
+      'to win': 'de victoire',
+      won: 'gagné',
+      lost: 'perdu',
+      drawn: 'nul',
+      'Closest fight': 'Le combat le plus serré',
+      'Biggest upset': 'Le plus bel exploit',
+      'Cruellest loss': 'La défaite la plus cruelle',
+      Ruled: 'A régné sur',
+      Loved: 'A aimé',
+      Family: 'Famille',
+      chapter: 'chapitre',
+      year: 'an',
+      years: 'ans',
+      age: 'âge',
+      'won / lost': 'gagnés / perdus',
+      'won / lost / drawn': 'gagnés / perdus / nuls',
+      'Turning points': 'Tournants',
+      'A quiet life.': 'Une vie paisible.',
+      Legacy: 'Héritage',
+      'against the odds': 'contre toute attente',
+      /* epilogue, long Legend Codes */
+      Epilogue: 'Épilogue',
+      'Some early lines were left out to keep this Legend Code short.':
+        'Quelques premières lignes ont été omises pour garder ce Code de Légende court.',
     },
   };
 })(typeof window !== 'undefined' ? window : globalThis);
