@@ -901,7 +901,23 @@
     if (legend.has('weak') && !legend.isNone('weak')) facts.push({ k: 'WEAKNESS', v: legend.pickName('weak') });
     if (legend.has('pet') && !legend.isNone('pet')) facts.push({ k: 'COMPANION', v: legend.pickName('pet') });
     y += 26;
-    facts.slice(0, 8).forEach(f => {
+    // the facts, the weak/resist line and the saga must all fit above the footer: tighten the rows first (down to
+    // 48px), then leave out the last facts if a hero still has too many
+    const wr = [];
+    if (comp.weak.length) wr.push(tr('Weak to') + ' ' + comp.weak.map(FW.cap).join(', '));
+    if (comp.res.length) wr.push(tr('Resists') + ' ' + comp.res.map(FW.cap).join(', '));
+    let sagaLines = [];
+    if (legend.saga && legend.saga.ch && FW.Story) {
+      c.font = 'italic 500 30px ' + th.font;
+      sagaLines = wrap(c, FW.Story.summary(legend), R - L).slice(0, 2);
+    }
+    const tail = (wr.length ? 56 : 0) + (sagaLines.length ? 20 + sagaLines.length * 38 : 0);
+    const room = H - 128 - y; // the footer sits at H - 76
+    let rows = Math.min(8, facts.length),
+      rowH = 60;
+    while (rows * rowH + tail > room && rowH > 48) rowH -= 2;
+    while (rows * rowH + tail > room && rows > 4) rows--;
+    facts.slice(0, rows).forEach(f => {
       c.textAlign = 'left';
       c.font = '700 24px ' + th.font;
       c.fillStyle = th.key;
@@ -910,12 +926,9 @@
       fit(c, String(f.v), R - L - 280, 32, '500', th.font);
       c.fillStyle = th.val;
       c.fillText(String(f.v), L + 280, y);
-      y += 60;
+      y += rowH;
     });
     // weaknesses and resistances in one line
-    const wr = [];
-    if (comp.weak.length) wr.push(tr('Weak to') + ' ' + comp.weak.map(FW.cap).join(', '));
-    if (comp.res.length) wr.push(tr('Resists') + ' ' + comp.res.map(FW.cap).join(', '));
     if (wr.length) {
       c.textAlign = 'center';
       fit(c, wr.join('   ·   '), R - L, 28, '600', th.font);
@@ -924,13 +937,11 @@
       y += 56;
     }
     // the saga, if one was played
-    if (legend.saga && legend.saga.ch && FW.Story) {
+    if (sagaLines.length) {
       c.textAlign = 'center';
       c.font = 'italic 500 30px ' + th.font;
       c.fillStyle = th.val;
-      wrap(c, FW.Story.summary(legend), R - L)
-        .slice(0, 2)
-        .forEach((l, i) => c.fillText(l, W / 2, Math.min(H - 170, y + 20) + i * 38));
+      sagaLines.forEach((l, i) => c.fillText(l, W / 2, y + 20 + i * 38));
     }
     c.textAlign = 'center';
     c.font = '600 22px ' + th.font;
