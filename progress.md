@@ -56,7 +56,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 - ✅ itch.io page published 2026-11-12: https://bzrkherja.itch.io/destiny-unbound (playable in the browser, Windows builds via `npm run itch`, AI disclosure)
 - ✅ Discord channels, 2026-11-13: Start here (#welcome, #rules, #announcements), Community (#general, #share-your-legends, #mods-and-packs, #spin-the-wheel, #art-and-portraits, #off-topic), Testing (#bug-reports, #suggestions, #feedback, #tester-chat for Testers), a staff area and General voice. Permissions set per role, and anti-spam and moderation protection turned on. `/spin` only works in #spin-the-wheel
 - ✅ Discord bot, 2026-11-13: `/spin` (and `/spin luck:Mythic`) rolls a legend with the game's real wheels (`bot/`). Runs on a small Linux server; setup and updates in `bot/README.md`
-- ✅ Discord server, 2026-11-13: created ("Destiny Unbound", emblem icon). Channels: Start here (#welcome, #rules, #announcements, read-only for members), Community (#general, #share-your-legends, #mods-and-packs, General voice), Testing (#bug-reports and #suggestions forums, #feedback). Permanent invite: https://discord.gg/McDS5HVxzJ. Roles: Developer (owner), Moderator, Tester, Modder. Community mode and Onboarding on: new members answer "What brings you to Destiny Unbound?" (Help test the alpha → Tester, Make mods and wheel packs → Modder, Play and hang out), get a welcome sign and three to-dos. #bug-reports and #suggestions have posting guidelines and tags (Fixed and Planned are moderator-only). Tester invite texts and checklist: `docs/tester-invite.md`. Welcome and rules posted and pinned; linked from the README and the itch.io page. In the game (since 0.1.0-alpha.5): a Discord link in the title-screen footer, a "Talk on Discord" button in Send feedback, and a Community section in Credits (`FW.DISCORD_URL` in `app/js/system.js`)
+- ✅ Discord server, 2026-11-13: created ("Destiny Unbound"; icon: the Ashen Crown wheel painting since 2026-11-16). Channels: Start here (#welcome, #rules, #announcements, read-only for members), Community (#general, #share-your-legends, #mods-and-packs, General voice), Testing (#bug-reports and #suggestions forums, #feedback). Permanent invite: https://discord.gg/McDS5HVxzJ. Roles: Developer (owner), Moderator, Tester, Modder. Community mode and Onboarding on: new members answer "What brings you to Destiny Unbound?" (Help test the alpha → Tester, Make mods and wheel packs → Modder, Play and hang out), get a welcome sign and three to-dos. #bug-reports and #suggestions have posting guidelines and tags (Fixed and Planned are moderator-only). Tester invite texts and checklist: `docs/tester-invite.md`. Welcome and rules posted and pinned; linked from the README and the itch.io page. In the game (since 0.1.0-alpha.5): a Discord link in the title-screen footer, a "Talk on Discord" button in Send feedback, and a Community section in Credits (`FW.DISCORD_URL` in `app/js/system.js`)
 - ✅ Discord welcome post updated 2026-11-13: "Where to go" now lists #off-topic, #spin-the-wheel and #art-and-portraits, and tells Testers about #tester-chat (still pinned)
 - ✅ Release announcements, 2026-11-13: every release tag posts an embed in #announcements through a webhook (`scripts/discord-announce.js`, the `announce` job in `release.yml`, secret `DISCORD_WEBHOOK`). `announce-test.yml` sends a manual test post
 - ✅ itch.io uploads from CI: the `itch` job in `release.yml` uploads every release tag (`BUTLER_API_KEY` secret added 2026-11-13; first run with 0.1.0-alpha.6). By hand: `node scripts/itch-push.js --web --modkit`
@@ -69,7 +69,10 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
 ## Ready for the next alpha (not released yet)
 
-- Nothing yet
+- ✅ Developer tools (no change for players): `scripts/bump-version.js` does the version and cache bump; CI now runs the
+  balance check, the axe accessibility audit and tests for the Discord bot
+- ✅ Server abuse protection: a daily cap per address without storing addresses, `GET /v1/health`, an optional bot
+  warning when traffic jumps (needs the worker deployed and the schema run)
 
 ## Released
 

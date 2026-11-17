@@ -52,13 +52,17 @@ rules are in [release-plan.md](release-plan.md).
 - **mods (10):** validation, CSS that tries to escape its theme or load outside pictures, every mod kit template loads, the kit's generated reference is up to date.
 - **system (8):** version, preferences, save import checks, no API keys in exported saves, title-screen art,
   offline caching, arena matchmaking.
+- **bot (10):** the Discord bot's commands with stand-in interactions (`/spin` cooldown and channel, `/stats`,
+  `/patchnotes` and its autocomplete, the traffic warning). Needs `npm ci --prefix bot`.
 - **discord (7):** the Discord status against a stand-in Discord (handshake, activity, rate limit, switching off,
   pings, Discord not running), the text for each screen, and the release announcement.
 
 | Script | What it does |
 | --- | --- |
 | `node scripts/achievement-report.js` | Plays legends, arena fights and sagas and shows how often each achievement unlocks; one at 0% may be impossible (Dynasty and Creature of Habit need choices and days the script doesn't play) |
-| `node scripts/balance-report.js` | Plays thousands of legends, fights and sagas per luck level; prints rank spread, arena odds and how sagas end |
+| `node scripts/balance-report.js` | Plays thousands of legends, fights and sagas per luck level; prints rank spread, arena odds and how sagas end. `--check` (run in CI) fails when a number leaves its target range (`TARGETS` in the script) |
+| `npx electron scripts/a11y-check.js` | The axe accessibility audit (WCAG 2.1 A/AA) on the main screens and dialogs; run in CI |
+| `node scripts/bump-version.js` | `--cache`: bumps every `?v=` and the service worker cache. `<version> --summary "..." --notes notes.md`: a whole release bump (package files, version.js, badge, docs, progress, roadmap, changelog, cache). `--check`: every place agrees (run in CI) |
 | `node scripts/make-menu-css.js` | Rebuilds the title-screen CSS and art from the approved mockups in `mockups/menu/_gen-art.js` |
 | `node scripts/make-icons.js` | Makes every icon size from `app/icons/icon-source.png` (runs before every build) |
 | `node scripts/make-slideshow.js` | Builds `docs/store/trailer.mp4`, a slideshow of the store screenshots (needs ffmpeg) |

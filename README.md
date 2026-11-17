@@ -165,6 +165,8 @@ The game keeps your saves and play stats on your own device. It sends nothing un
   report. You see exactly what it holds first: the game version, your platform, the screen, the error and recent log
   lines, and a note if you write one. Home folders and e-mail addresses are taken out. Reports are kept 30 days.
   Options > Data can turn the offer off.
+- **Limits on the server:** to stop abuse, the server counts how many writes come from one address each day. It
+  keeps only a scrambled tally (mixed with a random value that is thrown away the next day), never the address.
 - **Feedback reports** include your play stats only if you tick the box.
 - **The Art Studio and the saga writer** only talk to an image generator or language model you connect yourself.
 

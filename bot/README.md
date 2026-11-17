@@ -53,6 +53,17 @@ WORLD_URL=https://destiny-unbound-counter.destiny-unbound.workers.dev
 Without `WORLD_URL`, `/stats` shows only the Discord spins. (`stats.js` can also serve the counter itself over HTTP:
 set `STATS_PORT`, and put it behind HTTPS.)
 
+## Traffic warning (optional)
+
+With `ALERT_CHANNEL_ID=<channel id>` in `/etc/destiny-bot.env` (and `WORLD_URL` set), the bot checks the world
+counter's `/v1/health` every hour and posts one warning a day in that channel when writes jump. Use a staff-only
+channel. Without it, nothing is checked or posted.
+
+## Code
+
+`index.js` connects to Discord; `handler.js` decides what each command does and `embeds.js` builds the cards.
+`tests/bot.test.js` drives the handler with stand-in interactions (run `npm ci --prefix bot` once first).
+
 ## /patchnotes
 
 `/patchnotes` shows the newest release's notes from `CHANGELOG.md`; `/patchnotes version:0.2.0-alpha.3` shows an

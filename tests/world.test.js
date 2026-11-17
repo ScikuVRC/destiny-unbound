@@ -4,6 +4,7 @@ const fs = require('fs'),
   os = require('os'),
   path = require('path');
 const { createStore, startServer, ENDINGS } = require('../bot/stats.js');
+const { makeD1 } = require('./d1.js');
 let pass = 0,
   fail = 0;
 async function t(name, fn) {
@@ -244,23 +245,20 @@ async function t(name, fn) {
 
   await t('error reports: POST /v1/error stores the row, trims old ones and returns its number', async () => {
     const W = (await import('../worker/src/index.js')).default;
-    const calls = [];
-    const DB = {
-      prepare: sql => ({
-        bind: (...a) => ({
-          run: async () => (calls.push([sql, a]), { meta: { last_row_id: 7, changes: 1 } }),
-        }),
-      }),
-    };
+    const DB = makeD1();
+    for (let i = 0; i < 6; i++)
+      DB.sql
+        .prepare("INSERT INTO errors (day, version, platform, kind) VALUES (?, '1.0.0', 'browser', 'error')")
+        .run(i ? '2099-01-01' : '2000-01-01');
     const post = body => W.fetch(new Request('https://x/v1/error', { method: 'POST', body }), { DB });
     const res = await post(
       JSON.stringify({ version: '0.2.0-alpha.4.6', platform: 'browser', kind: 'manual', message: '', note: 'a note' })
     );
     assert.strictEqual(res.status, 200);
     assert.deepStrictEqual(await res.json(), { ok: true, id: 7 });
-    assert(/INSERT INTO errors/.test(calls[0][0]));
-    assert.strictEqual(calls[0][1][7], 'a note');
-    assert(calls.some(c => /DELETE FROM errors WHERE day/.test(c[0])) && calls.some(c => /MAX\(id\)/.test(c[0])));
+    const kept = DB.sql.prepare('SELECT id, note FROM errors ORDER BY id').all();
+    assert.strictEqual(kept[kept.length - 1].note, 'a note');
+    assert(!kept.some(r => r.id === 1), 'a report older than 30 days was removed');
     assert.strictEqual((await post('{nope')).status, 400);
     assert.strictEqual(
       (await post(JSON.stringify({ version: '1', platform: 'browser', kind: 'error', message: 'm' }))).status,
@@ -344,22 +342,15 @@ async function t(name, fn) {
       else delete globalThis.navigator;
 
       const Wk = (await import('../worker/src/index.js')).default;
-      const rows = new Map();
-      const DB = {
-        prepare: sql => ({
-          bind: (...a) => ({
-            run: async () => (rows.set(a[0], (rows.get(a[0]) || 0) + 1), {}),
-            first: async () => (rows.has(a[0]) ? { 1: 1 } : null),
-          }),
-          first: async () => ({ n: [...rows.keys()].filter(k => k.startsWith('quit:')).length }),
-        }),
-      };
+      const DB = makeD1();
+      const count = k => (DB.sql.prepare('SELECT n FROM counts WHERE k = ?').get(k) || {}).n;
       const post = body =>
         Wk.fetch(new Request('https://x/v1/count', { method: 'POST', body: JSON.stringify(body) }), { DB });
       assert.strictEqual((await post({ kind: 'quit', where: 'story:dragon' })).status, 204);
-      assert.strictEqual(rows.get('quit:story:dragon'), 1);
+      assert.strictEqual(count('quit:story:dragon'), 1);
       assert.strictEqual((await post({ kind: 'quit', where: 'free text here' })).status, 400);
-      for (let i = rows.size; i < 400; i++) rows.set('quit:make:w' + i, 1);
+      const add = DB.sql.prepare('INSERT INTO counts (k, n) VALUES (?, 1)');
+      for (let i = 1; i < 400; i++) add.run('quit:make:w' + i);
       assert.strictEqual((await post({ kind: 'quit', where: 'story:another' })).status, 400, 'capped at 400 places');
       assert.strictEqual(
         (await post({ kind: 'quit', where: 'story:dragon' })).status,
@@ -368,6 +359,52 @@ async function t(name, fn) {
       );
     }
   );
+
+  await t('abuse protection: a daily cap per address, no address stored, and yesterday forgotten', async () => {
+    const G = await import('../worker/src/guard.js');
+    const DB = makeD1(),
+      env = { DB },
+      day1 = Date.parse('2026-11-16T12:00:00Z'),
+      day2 = day1 + 864e5;
+    for (let i = 0; i < G.CAPS.error; i++) assert.strictEqual(await G.guard(env, '203.0.113.9', 'error', day1), null);
+    assert.deepStrictEqual(await G.guard(env, '203.0.113.9', 'error', day1), [429, 'daily limit reached']);
+    assert.strictEqual(await G.guard(env, '198.51.100.4', 'error', day1), null, 'another address is not affected');
+    assert.strictEqual(await G.guard(env, '203.0.113.9', 'card', day1), null, 'each route has its own cap');
+    const dump = JSON.stringify(DB.sql.prepare('SELECT * FROM caps').all());
+    assert(!/203\.0\.113|198\.51/.test(dump), 'no address in the database');
+    const tr = DB.sql.prepare("SELECT n, capped FROM traffic WHERE route = 'error'").get();
+    assert.deepStrictEqual({ ...tr }, { n: G.CAPS.error + 2, capped: 1 });
+    // the next day: a fresh salt, yesterday's hashes gone, the cap starts again
+    const salt1 = DB.sql.prepare('SELECT s FROM salt').get().s;
+    assert.strictEqual(await G.guard(env, '203.0.113.9', 'error', day2), null);
+    const salts = DB.sql.prepare('SELECT s FROM salt').all();
+    assert(salts.length === 1 && salts[0].s !== salt1, 'one salt, a new one');
+    assert.strictEqual(DB.sql.prepare('SELECT COUNT(*) AS n FROM caps').get().n, 1);
+    // the per-minute limiter still comes first
+    const slow = { DB, LIMITER: { limit: async () => ({ success: false }) } };
+    assert.deepStrictEqual(await G.guard(slow, '203.0.113.9', 'count', day2), [429, 'slow down']);
+  });
+
+  await t('abuse protection: /v1/health shows writes per day and flags a sudden jump', async () => {
+    const G = await import('../worker/src/guard.js');
+    const now = Date.parse('2026-11-16T12:00:00Z');
+    const week = [10, 11, 12, 13, 14, 15].map(d => ({ day: '2026-11-' + d, route: 'count', n: 40, capped: 0 }));
+    const calm = G.health([...week, { day: '2026-11-16', route: 'count', n: 60, capped: 0 }], now);
+    assert(!calm.jump && calm.weekAverage === 40 && calm.today.total === 60);
+    const loud = G.health(
+      [...week, { day: '2026-11-16', route: 'count', n: 900, capped: 12 }, { day: '2026-11-16', route: 'error', n: 5 }],
+      now
+    );
+    assert(loud.jump && loud.today.total === 905 && loud.today.capped === 12, JSON.stringify(loud.today));
+    assert(!G.health([{ day: '2026-11-16', route: 'count', n: 150 }], now).jump, 'a small first day is not a jump');
+    const W = (await import('../worker/src/index.js')).default;
+    const DB = makeD1();
+    const r = await W.fetch(new Request('https://x/v1/count', { method: 'POST', body: '{"kind":"hero"}' }), { DB });
+    assert.strictEqual(r.status, 204);
+    const h = await (await W.fetch(new Request('https://x/v1/health'), { DB })).json();
+    assert.strictEqual(h.today.count, 1);
+    assert(!/ip|addr/i.test(JSON.stringify(h)), 'nothing about addresses');
+  });
 
   fs.rmSync(dir, { recursive: true, force: true });
   console.log('\n' + pass + ' of ' + (pass + fail) + ' checks passed');

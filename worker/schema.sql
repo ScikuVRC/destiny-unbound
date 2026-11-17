@@ -36,3 +36,15 @@ CREATE TABLE IF NOT EXISTS errors (
   note TEXT NOT NULL DEFAULT ''
 );
 CREATE INDEX IF NOT EXISTS errors_day ON errors (day);
+-- abuse protection (src/guard.js): a daily cap per address without storing addresses. caps holds a hash of
+-- (today's random salt + address + route); the salt and hashes are deleted the next day
+CREATE TABLE IF NOT EXISTS salt (day TEXT PRIMARY KEY, s TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS caps (day TEXT NOT NULL, h TEXT NOT NULL, n INTEGER NOT NULL DEFAULT 0, PRIMARY KEY (day, h));
+-- writes per route per day (and how many hit the cap), kept 30 days, shown by GET /v1/health
+CREATE TABLE IF NOT EXISTS traffic (
+  day TEXT NOT NULL,
+  route TEXT NOT NULL,
+  n INTEGER NOT NULL DEFAULT 0,
+  capped INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (day, route)
+);

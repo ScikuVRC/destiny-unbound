@@ -1,11 +1,30 @@
 // Balance report: plays thousands of legends, arena fights and sagas with honest odds and prints how the numbers
-// come out per luck level. Run: node scripts/balance-report.js [legendsPerLuck] [sagasPerLuck]
+// come out per luck level. Run: node scripts/balance-report.js [legendsPerLuck] [sagasPerLuck] [--check]
+// --check (run in CI): also compares the numbers with the target ranges below and fails when one is outside.
+// The seeds are fixed, so the same code always gives the same numbers; a failure means a change moved the balance.
 // SPDX-License-Identifier: GPL-3.0-or-later
 ['data.js', 'engine.js', 'story.js'].forEach(f => require('../app/js/' + f));
 const FW = globalThis.FW,
   S = FW.Story;
-const N = +process.argv[2] || 3000,
-  NS = +process.argv[3] || 600;
+const ARGS = process.argv.slice(2).filter(a => !a.startsWith('--')),
+  CHECK = process.argv.includes('--check');
+const N = +ARGS[0] || 3000,
+  NS = +ARGS[1] || 600;
+
+// Target ranges, in percent unless named otherwise. Rare endings stay rare on purpose (docs/improvement-list.md 89).
+const TARGETS = {
+  arena: { mortal: [40, 55], heroic: [52, 68], mythic: [65, 82], divine: [78, 92] }, // average arena win chance
+  all: {
+    retired: [30, 50],
+    legend: [8, 25],
+    death: [28, 48], // sagas ending in any death
+    firstDeath: [0, 5], // died in chapter 1
+    chaptersMedian: [8, 20], // chapters, not percent
+    good: [52, 72], // share of good events
+    raceSpread: [0, 16], // rating points between the strongest and weakest race (races with 15+ legends)
+  },
+  rare: { ascended: 6, damned: 4, fulfilled: 6, lost: 6, sealed: 5, undying: 3, martyr: 8 }, // at most
+};
 
 function legend(seed, luck) {
   const L = new FW.Legend({ luck, seed }),
@@ -82,7 +101,32 @@ for (const lk of FW.LUCK.map(l => l.id)) {
   report.luck[lk] = { ranks, ratings, races, wins, sagas };
 }
 
+const problems = [];
+const within = (what, v, [lo, hi]) => {
+  if (!(v >= lo && v <= hi)) problems.push(what + ' is ' + v.toFixed(1) + ', outside ' + lo + '-' + hi);
+};
+function checkLuck(lk, R) {
+  const n = R.sagas.ch.length,
+    p = k => (100 * (R.sagas.ends[k] || 0)) / n;
+  const avg = a => a.reduce((x, y) => x + y, 0) / a.length;
+  within(lk + ' arena win chance', 100 * avg(R.wins), TARGETS.arena[lk]);
+  const A = TARGETS.all;
+  within(lk + ' retired', p('retired'), A.retired);
+  within(lk + ' legend', p('legend'), A.legend);
+  const died = Object.keys(R.sagas.ends)
+    .filter(k => S.MORTAL[k])
+    .reduce((t, k) => t + p(k), 0);
+  within(lk + ' sagas ending in a death', died, A.death);
+  within(lk + ' died in chapter 1', (100 * R.sagas.firstDeath) / n, A.firstDeath);
+  within(lk + ' median chapters', quant(R.sagas.ch, 0.5), A.chaptersMedian);
+  within(lk + ' good events', (100 * R.sagas.good) / (R.sagas.good + R.sagas.bad), A.good);
+  const big = R.races.filter(x => x.n >= 15);
+  if (big.length > 1) within(lk + ' race spread', big[0].avg - big[big.length - 1].avg, A.raceSpread);
+  for (const [k, max] of Object.entries(TARGETS.rare)) within(lk + ' ' + k, p(k), [0, max]);
+}
+
 (async () => {
+  let lastMedian = -1;
   for (const lk of Object.keys(report.luck)) {
     const R = report.luck[lk];
     await Promise.all(R.sagas.pending);
@@ -158,5 +202,18 @@ for (const lk of FW.LUCK.map(l => l.id)) {
         '   sagas ending in a death ' +
         pct(died, n)
     );
+    if (CHECK) {
+      checkLuck(lk, R);
+      const med = quant(R.ratings, 0.5);
+      if (med <= lastMedian) problems.push(lk + ' median rating ' + med.toFixed(1) + ' is not above the luck below it');
+      lastMedian = med;
+    }
   }
+  if (!CHECK) return;
+  if (problems.length) {
+    console.error('\nBalance check failed (' + problems.length + '):\n  ' + problems.join('\n  '));
+    console.error('If the change was meant to move the balance, update TARGETS in scripts/balance-report.js.');
+    process.exit(1);
+  }
+  console.log('\nBalance check: every number is inside its target range.');
 })();

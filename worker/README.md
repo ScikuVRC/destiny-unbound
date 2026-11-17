@@ -41,6 +41,16 @@ npx wrangler deploy
   player chose to send (checked and cleaned in `src/errors.js`) and returns `{ ok, id }`. Kept 30 days, at most 2000.
   There is no way to read them over the web: run `node scripts/error-reports.js [count] [--full]` (uses wrangler).
 
+- `GET /v1/health` returns writes per day for the last week (`days`), `today`, `weekAverage` and `jump` (today is
+  over 5x the week's average and at least 200 writes). No personal data. The bot can warn about a jump (bot/README.md).
+
+## Abuse protection
+
+Every write route (`/v1/count`, `/v1/daily`, `/v1/card`, `/v1/error`) has the per-minute rate limit in `wrangler.toml`
+and a daily cap per address (`src/guard.js`: 300 counts, 40 leaderboard posts, 60 card codes, 20 error reports).
+Addresses are not stored: the cap keeps a hash of a random salt made fresh each day, the address and the route,
+and the salt and hashes are deleted the next day, so a hash can't be traced back or linked across days.
+
 After changing `schema.sql`, run it again on the live database (it only adds what is missing):
 
 ```bash

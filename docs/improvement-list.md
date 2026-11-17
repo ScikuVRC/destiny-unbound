@@ -166,7 +166,7 @@ Everything is synthesized in 146 lines of code: clever and tiny, but it sounds l
 73. ⬜ **Modules instead of 31 script tags (M).** Files attach to a global `FW` and load in a fixed order. ES modules
    with a bundler (esbuild) would give real imports, dead-code checks, one cache-busted file instead of bumping
    `?v=` in 35 places by hand, and a smaller download.
-74. ⬜ **Automate the version and cache bump (S).** `?v=57` and `fatewheel-v47` are edited by hand each change; today's
+74. ✅ **Automate the version and cache bump (S).** Done 2026-11-17: `node scripts/bump-version.js` (`--cache` for the cache numbers only, `<version> --summary --notes` for a release, `--check` in CI). `?v=57` and `fatewheel-v47` are edited by hand each change; today's
    work bumped them more than ten times. A build step or a script should do it.
 75. ⬜ **Type checking (M).** JSDoc types checked by TypeScript (`checkJs`) would catch the mistakes that slipped
    through this week (a wrong field name, a missing argument) without rewriting anything.
@@ -179,10 +179,10 @@ Everything is synthesized in 146 lines of code: clever and tiny, but it sounds l
 79. ✅ **Error reporting (S).** Done 2026-11-16: when something goes wrong, or the desktop game crashed last time, a note offers "Send report"; the player sees exactly what is sent first (`app/js/report.js`, `worker/src/errors.js`), and `node scripts/error-reports.js` shows them. Errors go to a local log. An opt-in "send this error" button (to the existing
    Cloudflare worker) would surface real bugs.
 80. ⬜ **Performance budget (S).** Measure load time on itch.io and frame time during a spin; fail CI if they regress.
-81. ⬜ **Accessibility tests in CI (S).** The axe audit was run by hand once; automate it.
+81. ✅ **Accessibility tests in CI (S).** Done 2026-11-17: `scripts/a11y-check.js` runs axe (WCAG 2.1 A/AA, contrast included) on 13 screens and dialogs in CI. The axe audit was run by hand once; automate it.
 82. ⬜ **Dependency and licence check in CI (S).**
-83. ⬜ **Bot: tests and structure (S).** `bot/index.js` has no tests of its own; the stats store does.
-84. ⬜ **Worker: abuse protection (S).** The counter trusts any client. Rate limiting is on; add a daily cap per
+83. ✅ **Bot: tests and structure (S).** Done 2026-11-17: `bot/handler.js` (the commands) and `bot/embeds.js` (the cards), tested with stand-in interactions in `tests/bot.test.js`. `bot/index.js` has no tests of its own; the stats store does.
+84. ✅ **Worker: abuse protection (S).** Done 2026-11-17: a daily cap per address and route without storing addresses (`worker/src/guard.js`), `GET /v1/health`, and an optional bot warning when traffic jumps. Worker tests now run on real SQLite. The counter trusts any client. Rate limiting is on; add a daily cap per
    address and an alert if totals jump.
 85. ⬜ **Electron: auto-update channel choice (S).** Let players pick stable or alpha once a stable build exists.
 86. ⬜ **Developer docs (S).** `docs/development.md` predates the worker, the layout tools and the balance report.
@@ -196,7 +196,7 @@ Everything is synthesized in 146 lines of code: clever and tiny, but it sounds l
 88. ✅ **Achievement rates (S).** Done 2026-11-16: the report plays heirs (Dynasty 7%), marks what it cannot simulate, and Born Divine stays rare on purpose. "Dynasty" is at 0% and "Creature of Habit" can't be simulated; tune or redesign.
 89. ✅ **Ending spread (S).** Done 2026-11-16: retiring 54% to 43%, legend 7% to 14%; Ascended, Undying and Damned stay rare on purpose. "Prophecy fulfilled" (about 1%) and "sealed away" (about 2%) are rare enough that most
    players will never see them. Decide which should be rare on purpose.
-90. ⬜ **Run the balance report in CI (S)** and fail when a number leaves its target range.
+90. ✅ **Run the balance report in CI (S)** Done 2026-11-17: `node scripts/balance-report.js --check` with target ranges per luck level, and fail when a number leaves its target range.
 91. ✅ **Use the world counter data (S).** Done 2026-11-16: `scripts/world-vs-sim.js` compares real and simulated endings (waits for 50 real sagas). Once players opt in, compare real endings with the simulated ones.
 92. ✅ **Telemetry for fun, not only fairness (M).** Done 2026-11-16: the opt-in "Share where I stop playing" and `scripts/quit-report.js`. Which chapters make people quit? The local stats already count
    "quit on screen"; an opt-in aggregate would answer it.
@@ -225,7 +225,7 @@ Everything is synthesized in 146 lines of code: clever and tiny, but it sounds l
 1. **Feel:** winning slice lights up (25), real sound effects (52), tag tooltips (30), card reveal (26).
 2. **Play:** choices in story chapters (1), chapters that react to class and personality (2).
 3. **Look:** ✅ transparent logo (37), default portraits for the most common races (38), a custom icon set (43).
-4. **Foundations:** ✅ linter and formatter (69), ✅ CSP (70), ✅ data split from logic (71), automated version bump (74),
+4. **Foundations:** ✅ linter and formatter (69), ✅ CSP (70), ✅ data split from logic (71), automated version bump (✅ 74),
    browser tests in CI (76).
 5. **Reach:** story text translated (60), native-speaker reviews (61), itch.io page refresh (96), trailer (49).
 6. **Depth:** companion and nemesis arcs (4, 5), arena gauntlet (11), collection book (23), daily leaderboard (20).

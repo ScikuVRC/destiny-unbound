@@ -46,6 +46,55 @@ t('the game version matches package.json', () => {
   assert.strictEqual(FW.VERSION, require(path.join(root, 'package.json')).version);
 });
 
+t('every version and cache number agrees (scripts/bump-version.js --check)', () => {
+  const bad = require('../scripts/bump-version.js').check(root);
+  assert.deepStrictEqual(bad, []);
+});
+
+t('a release bump on a copy changes every place at once and still checks out', () => {
+  const B = require('../scripts/bump-version.js');
+  const os = require('os'),
+    tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'du-bump-'));
+  const list = [
+    'package.json',
+    'package-lock.json',
+    'app/js/version.js',
+    'README.md',
+    '.github/ISSUE_TEMPLATE/bug.yml',
+    'docs/alpha-testing.md',
+    'progress.md',
+    'ROADMAP.md',
+    'CHANGELOG.md',
+    'app/index.html',
+    'app/sw.js',
+  ];
+  for (const f of list) {
+    fs.mkdirSync(path.dirname(path.join(tmp, f)), { recursive: true });
+    fs.copyFileSync(path.join(root, f), path.join(tmp, f));
+  }
+  const F = B.files(tmp);
+  const before = B.files(tmp),
+    oldV = +/\?v=(\d+)/.exec(before.get('app/index.html'))[1];
+  const done = B.release(F, '9.9.9-alpha.1', {
+    summary: 'A test bump',
+    notes: '### Fixed\n\n- Something',
+    date: '2030-01-02',
+  });
+  for (const [f, s] of Object.entries(F.changed())) fs.writeFileSync(path.join(tmp, f), s);
+  assert.deepStrictEqual(B.check(tmp), []);
+  assert.strictEqual(done.v, oldV + 1);
+  const html = fs.readFileSync(path.join(tmp, 'app/index.html'), 'utf8');
+  assert(!html.includes('?v=' + oldV + '"'), 'an old ?v= was left behind');
+  const cl = fs.readFileSync(path.join(tmp, 'CHANGELOG.md'), 'utf8');
+  assert(cl.indexOf('## 9.9.9-alpha.1 (2030-01-02)') < cl.indexOf('## ' + done.from + ' ('), 'new section first');
+  assert(
+    fs
+      .readFileSync(path.join(tmp, 'progress.md'), 'utf8')
+      .includes('| A test bump | 9.9.9-alpha.1 | ✅ released 2030-01-02 |')
+  );
+  fs.rmSync(tmp, { recursive: true, force: true });
+});
+
 t('preferences have safe defaults and survive a reload', () => {
   assert.strictEqual(FW.prefs.anim, 'full');
   assert.strictEqual(FW.prefs.keys.advance, ' ');

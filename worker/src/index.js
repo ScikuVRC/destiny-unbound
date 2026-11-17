@@ -9,10 +9,13 @@
 // Short card codes: POST /v1/card {code} -> {id}, GET /v1/card/<id> -> {code}. Only the Legend Code is stored, 90 days.
 // Error reports (only when a player presses Send): POST /v1/error {version,platform,kind,screen,message,detail,note}
 //   -> {id}. Kept 30 days; there is no public way to read them (scripts/error-reports.js).
+// Every write route has a per-minute limit and a daily cap per address (guard.js; addresses are not stored).
+// GET /v1/health: writes per day for the last week, and whether today jumped (no personal data).
 // SPDX-License-Identifier: GPL-3.0-or-later
 import { checkEntry, KEEP_DAYS, TOP } from './board.js';
 import * as cards from './cards.js';
 import * as errors from './errors.js';
+import { guard, health } from './guard.js';
 
 const ENDINGS = ['dead', 'retired', 'ascended', 'lost', 'martyr', 'sealed', 'damned', 'fulfilled', 'undying', 'legend'];
 const MORTAL = { dead: 1, martyr: 1, sealed: 1, damned: 1, undying: 1 };
@@ -52,11 +55,15 @@ export default {
       }
       return json(out);
     }
+    if (req.method === 'GET' && path === '/v1/health') {
+      const { results } = await env.DB.prepare('SELECT day, route, n, capped FROM traffic WHERE day >= ?')
+        .bind(new Date(Date.now() - 8 * 864e5).toISOString().slice(0, 10))
+        .all();
+      return json(health(results));
+    }
     if (req.method === 'POST' && path === '/v1/count') {
-      if (env.LIMITER) {
-        const { success } = await env.LIMITER.limit({ key: req.headers.get('cf-connecting-ip') || 'x' });
-        if (!success) return json({ error: 'slow down' }, 429);
-      }
+      const stop = await guard(env, req.headers.get('cf-connecting-ip'), 'count');
+      if (stop) return json({ error: stop[1] }, stop[0]);
       const text = (await req.text()).slice(0, 200);
       let j = null;
       try {
@@ -93,10 +100,8 @@ export default {
       return json({ day, top: results, players: (count && count.n) || 0 });
     }
     if (req.method === 'POST' && path === '/v1/daily') {
-      if (env.LIMITER) {
-        const { success } = await env.LIMITER.limit({ key: req.headers.get('cf-connecting-ip') || 'x' });
-        if (!success) return json({ error: 'slow down' }, 429);
-      }
+      const stop = await guard(env, req.headers.get('cf-connecting-ip'), 'daily');
+      if (stop) return json({ error: stop[1] }, stop[0]);
       let j = null;
       try {
         j = JSON.parse((await req.text()).slice(0, 600));
@@ -117,10 +122,8 @@ export default {
       return json({ ok: true, name: row.name });
     }
     if (req.method === 'POST' && path === '/v1/card') {
-      if (env.LIMITER) {
-        const { success } = await env.LIMITER.limit({ key: req.headers.get('cf-connecting-ip') || 'x' });
-        if (!success) return json({ error: 'slow down' }, 429);
-      }
+      const stop = await guard(env, req.headers.get('cf-connecting-ip'), 'card');
+      if (stop) return json({ error: stop[1] }, stop[0]);
       let j = null;
       try {
         j = JSON.parse((await req.text()).slice(0, cards.MAX_CODE + 200));
@@ -151,10 +154,8 @@ export default {
       return json({ error: 'try again' }, 503);
     }
     if (req.method === 'POST' && path === '/v1/error') {
-      if (env.LIMITER) {
-        const { success } = await env.LIMITER.limit({ key: req.headers.get('cf-connecting-ip') || 'x' });
-        if (!success) return json({ error: 'slow down' }, 429);
-      }
+      const stop = await guard(env, req.headers.get('cf-connecting-ip'), 'error');
+      if (stop) return json({ error: stop[1] }, stop[0]);
       let j = null;
       try {
         j = JSON.parse((await req.text()).slice(0, 12000));

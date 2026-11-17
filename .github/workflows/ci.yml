@@ -1,4 +1,5 @@
-# Runs the tests, the linter and the formatting check on every push and pull request.
+# Runs the tests, the balance check, the accessibility audit, the linter and the formatting check on every push and
+# pull request.
 name: Tests
 
 on:
@@ -17,7 +18,23 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      # the Discord bot's own packages, for tests/bot.test.js
+      - run: npm ci --prefix bot
       - run: npm test
+      - run: node scripts/bump-version.js --check
+      # fails when a change moves a balance number outside its target range (scripts/balance-report.js)
+      - run: node scripts/balance-report.js --check
+
+  accessibility:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      # the axe audit on the main screens and dialogs, in a hidden Electron window on a virtual display
+      - run: xvfb-run -a npx electron --no-sandbox scripts/a11y-check.js
 
   lint:
     runs-on: ubuntu-latest
