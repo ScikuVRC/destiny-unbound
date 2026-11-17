@@ -14,6 +14,7 @@
     autoPause: 3, // seconds Auto waits on each result before moving on
     quality: 'high', // wheel sharpness: low | medium | high
     glow: true, // glows, embers, stars and shadows
+    wheelSkin: true, // painted rim and hub on the wheel (art/skins)
     emojiIcons: false, // show emoji instead of the game's drawn icons
     uiVol: 0.6, // interface clicks
     muteBg: true, // silence the game when its window is not in focus

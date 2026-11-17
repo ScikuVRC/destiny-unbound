@@ -1107,6 +1107,13 @@
       'Offer to send error reports': 'Fehlerberichte anbieten',
       'When something goes wrong, a small note offers to send a report. You see exactly what it contains first, and nothing is sent unless you press Send.':
         'Wenn etwas schiefgeht, bietet ein kleiner Hinweis an, einen Bericht zu senden. Du siehst vorher genau, was er enthält, und nichts wird gesendet, bevor du auf Senden drückst.',
+      /* art: fifth theme, painted rims */
+      'Verdant Wild': 'Grüne Wildnis',
+      'Fae forest': 'Feenwald',
+      'The old wood remembers every legend.': 'Der alte Wald erinnert sich an jede Legende.',
+      'Painted wheel rims': 'Gemalte Radränder',
+      'A painted rim and hub for each theme. Switch off for the drawn rim and slightly bigger slices.':
+        'Ein gemalter Rand und eine Nabe für jedes Design. Schalte es aus für den gezeichneten Rand und etwas größere Felder.',
     },
   };
 })(typeof window !== 'undefined' ? window : globalThis);

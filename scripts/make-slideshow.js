@@ -7,7 +7,7 @@ const fs = require('fs'),
   path = require('path');
 const root = path.join(__dirname, '..'),
   shots = path.join(root, 'docs', 'store', 'screenshots');
-const logo = path.join(root, 'app', 'art', 'ashen-logo.jpg');
+const logo = path.join(root, 'app', 'art', 'ashen-logo.webp');
 const clips = [logo]
   .concat(
     fs
@@ -16,7 +16,7 @@ const clips = [logo]
       .sort()
       .map(f => path.join(shots, f))
   )
-  .concat([path.join(root, 'app', 'art', 'astral-logo.jpg')]);
+  .concat([path.join(root, 'app', 'art', 'astral-logo.webp')]);
 const SEC = 3.6,
   FADE = 0.6,
   FPS = 30,

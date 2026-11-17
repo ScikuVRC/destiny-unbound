@@ -10,6 +10,7 @@
     ashen: {
       name: 'Ashen Crown',
       kind: 'ember',
+      skin: 'ashen', // painted rim and hub (art/skins, scripts/make-wheel-skins.py)
       font: '"Cinzel", "Palatino Linotype", serif',
       weight: '700',
       upper: true,
@@ -31,6 +32,7 @@
     astral: {
       name: 'Astral Oracle',
       kind: 'celestial',
+      skin: 'astral',
       font: '"Cormorant SC", "Cormorant Garamond", Georgia, serif',
       weight: '700',
       upper: false,
@@ -52,6 +54,7 @@
     iron: {
       name: 'Iron Litany',
       kind: 'gothic',
+      skin: 'iron',
       font: '"Share Tech Mono", Consolas, monospace',
       weight: '400',
       upper: true,
@@ -72,6 +75,7 @@
     bloodmoon: {
       name: 'Blood Moon',
       kind: 'eldritch',
+      skin: 'bloodmoon',
       font: '"Cormorant Garamond", Georgia, serif',
       weight: '700',
       upper: false,
@@ -89,6 +93,29 @@
       hit: 'rgba(182,255,92,.5)',
       glow: '#b6ff5c',
       dim: 0.6,
+    },
+    wild: {
+      name: 'Verdant Wild',
+      kind: 'ember',
+      skin: 'wild',
+      sound: 'wild',
+      font: '"IM Fell English SC", "IM Fell English", Georgia, serif',
+      weight: '400',
+      upper: false,
+      italic: false,
+      pal: [
+        ['#132216', '#24402a'],
+        ['#1d2a12', '#3a4a1c'],
+        ['#10201f', '#1f3f38'],
+      ],
+      lad: ['#f2f0c8', '#b9d27a', '#3f6a2a', '#0c1a0c'],
+      gray: ['#0f140e', '#0b100a'],
+      line: 'rgba(214,200,120,.32)',
+      ink: '#eef0d6',
+      inkDark: '#122010',
+      hit: 'rgba(190,255,120,.5)',
+      glow: '#c6f26a',
+      dim: 0.58,
     },
   };
   FW.THEME_ALIAS = { classic: 'ashen', gilded: 'ashen', neon: 'iron', grimoire: 'astral', tabletop: 'astral' }; // older themes and the ones they became
@@ -136,6 +163,34 @@
     return { inner: p[0], outer: p[1], light: lum(p[0]) > 0.55 };
   };
 
+  /* painted rims and hubs: loaded once per theme, then every wheel that uses them redraws */
+  const SKIN_IMG = {},
+    SKIN_WAIT = {};
+  FW.skinOn = () => !(FW.prefs && FW.prefs.wheelSkin === false);
+  function skinFor(th) {
+    const k = th && th.skin,
+      m = k && FW.SKINS && FW.SKINS[k];
+    if (!m || !FW.skinOn() || typeof Image === 'undefined') return null;
+    const im = SKIN_IMG[k];
+    if (im && im.rim.complete && im.rim.naturalWidth && im.hub.complete && im.hub.naturalWidth) return { m, im };
+    if (!im) {
+      const rim = new Image(),
+        hub = new Image(),
+        done = () => {
+          if (rim.complete && hub.complete) (SKIN_WAIT[k] || []).splice(0).forEach(f => f());
+        };
+      rim.onload = hub.onload = done;
+      rim.src = 'art/skins/' + k + '-rim.webp';
+      hub.src = 'art/skins/' + k + '-hub.webp';
+      SKIN_IMG[k] = { rim, hub };
+    }
+    return null;
+  }
+  function whenSkin(th, fn) {
+    const k = th && th.skin;
+    if (k) (SKIN_WAIT[k] = SKIN_WAIT[k] || []).push(fn);
+  }
+
   class Wheel {
     constructor(canvas, themeName) {
       this.cv = canvas;
@@ -179,6 +234,19 @@
       this.buildFace();
       this.draw();
     }
+    /* a painted rim and hub for this theme, or null (not loaded yet: the wheel redraws when it is) */
+    skin() {
+      const sk = skinFor(this.theme);
+      if (!sk && this.theme.skin && FW.skinOn() && !this._skinWait) {
+        this._skinWait = true;
+        whenSkin(this.theme, () => {
+          this._skinWait = false;
+          this.buildFace();
+          this.draw();
+        });
+      }
+      return sk;
+    }
     setEntries(entries, style) {
       this.entries = entries;
       this.style = style || this.style;
@@ -215,6 +283,21 @@
       const rimW = S * ({ ember: 0.058, parchment: 0.045, celestial: 0.055, gothic: 0.075, eldritch: 0.05 }[k] || 0.05);
       const R = S / 2 - rimW - S * 0.012; // slices
       const hubR = R * ({ ember: 0.19, parchment: 0.23, celestial: 0.22, gothic: 0.22, eldritch: 0.25 }[k] || 0.2);
+      const sk = this.skin();
+      if (sk) {
+        // the painted ring fills the canvas; the slices reach a little under its inner edge
+        const Rp = (S / 2) * (sk.m.inner + 0.02);
+        return {
+          S,
+          cx: S / 2,
+          cy: S / 2,
+          R: Rp,
+          Rs: Rp,
+          rimW: S / 2 - Rp,
+          hubR: Math.max(hubR * 0.92, Rp * 0.2),
+          skin: sk,
+        };
+      }
       return { S, cx: S / 2, cy: S / 2, R, Rs: R, rimW, hubR };
     }
     /* static parts: the rim behind the slices (rim canvas) and the slices with labels (off canvas, rotated while spinning) */
@@ -332,6 +415,13 @@
         W = G.rimW;
       c.setTransform(d, 0, 0, d, 0, 0);
       c.clearRect(0, 0, G.S, G.S);
+      if (G.skin) {
+        c.beginPath();
+        c.arc(G.cx, G.cy, G.S / 2 - G.S * 0.03, 0, TAU);
+        c.fillStyle = (th.gray && th.gray[1]) || '#100d0c';
+        c.fill();
+        return;
+      }
       c.save();
       c.translate(G.cx, G.cy);
       if (th.kind === 'ember') {
@@ -546,8 +636,14 @@
         eldritch: '#c9cede',
       }[th.kind];
       ctx.lineWidth = th.kind === 'gothic' ? 2.5 : 2;
-      ctx.stroke();
-      this.drawHub(ctx, G);
+      if (G.skin) {
+        const h = G.hubR * 1.18;
+        ctx.drawImage(G.skin.im.rim, -G.cx, -G.cy, G.S, G.S);
+        ctx.drawImage(G.skin.im.hub, -h, -h, h * 2, h * 2);
+      } else {
+        ctx.stroke();
+        this.drawHub(ctx, G);
+      }
       ctx.restore();
       this.drawPointer(ctx, G);
     }

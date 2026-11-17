@@ -409,3 +409,13 @@ body.story-on #screen-spin .story-banner{margin-top:0}
   #screen-spin .stage>.result{margin-top:4px}
   #screen-spin .ctl-row2 .btn{padding-left:9px;padding-right:9px}
 }
+/* achievement badges (badges.js): the medal fills the round slot; locked ones stay grey and dim (.ach>span above) */
+.ach>span:has(.badge),.ach-pop span:has(.badge){background:none;width:52px;height:52px}
+.badge{width:100%;height:100%;display:block;overflow:visible}
+.ach.got>span:has(.badge){box-shadow:none;filter:drop-shadow(0 0 8px color-mix(in srgb,var(--accent) 55%,transparent))}
+body.no-glow .ach.got>span:has(.badge){filter:none}
+.badge-emoji{font-size:28px}
+/* chapter illustrations (story-ui.js): the painting sits behind the banner and fades into the panel under the text */
+.story-banner.has-art{background-color:var(--panel);background-size:100% 100%,cover;background-position:0 0,60% 45%;background-repeat:no-repeat;animation:fadein .5s ease}
+body.anim-off .story-banner.has-art,body.anim-reduced .story-banner.has-art{animation:none}
+.story-banner.has-art .sb-title,.story-banner.has-art .sb-kicker,.story-banner.has-art .sb-sub{text-shadow:0 1px 3px rgba(0,0,0,.85)}

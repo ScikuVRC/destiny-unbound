@@ -230,6 +230,28 @@
       },
     },
   };
+  // Verdant Wild: a wooden knock, a harp-like rising chord, a hollow drum
+  FX.wild = {
+    tick(sp) {
+      const t = T();
+      noise(t, 0.025, 0.07 + 0.05 * sp, 'bandpass', 900 + 300 * sp, 6);
+      osc('triangle', 520 + 120 * sp, t, 0.05, 0.03, null, { to: 300 });
+    },
+    reveal(rare) {
+      const t = T();
+      [196, 246.9, 293.7, 392].forEach((f, i) =>
+        osc('triangle', f, t + i * 0.07, rare ? 1.8 : 1.1, 0.045, null, { a: 0.005 })
+      );
+      osc('sine', 98, t, 0.8, 0.08, null, { a: 0.02 });
+      if (rare) [784, 987.8, 1174.7, 1568].forEach((f, i) => osc('sine', f, t + 0.35 + i * 0.12, 1.6, 0.025));
+    },
+    bad() {
+      const t = T();
+      [0, 0.18].forEach(d => osc('sine', 82, t + d, 0.35, 0.22, null, { to: 55 }));
+      noise(t, 0.3, 0.08, 'lowpass', 260);
+      osc('triangle', 196, t + 0.45, 1.2, 0.035, null, { a: 0.2, to: 185 });
+    },
+  };
   const fx = () => FX[A.theme] || FX[(FW.THEMES && FW.THEMES[A.theme] && FW.THEMES[A.theme].sound) || ''] || FX.ashen;
   let lastTick = 0;
   A.tick = function (speed) {
@@ -320,6 +342,44 @@
         drones.forEach(o => o.stop());
         lfo.stop();
       };
+    },
+    wild(ctx, out, every) {
+      // a forest at dusk: a soft open-fifth drone, wind in the leaves, and now and then a harp phrase or a bird
+      const lp = ctx.createBiquadFilter();
+      lp.type = 'lowpass';
+      lp.frequency.value = 520;
+      lp.connect(out);
+      const drones = [98, 146.8, 196.4].map((f, i) => {
+        const o = ctx.createOscillator(),
+          gn = ctx.createGain();
+        o.type = 'triangle';
+        o.frequency.value = f;
+        o.detune.value = (i - 1) * 4;
+        gn.gain.value = 0.035;
+        o.connect(gn);
+        gn.connect(lp);
+        o.start();
+        return o;
+      });
+      every(2.4, t => {
+        if (Math.random() < 0.5)
+          noise(t, 1.6 + Math.random(), 0.018 + Math.random() * 0.02, 'bandpass', 700 + Math.random() * 900, 0.7, out);
+      });
+      const harp = [293.7, 329.6, 392, 440, 493.9, 587.3];
+      every(9, t => {
+        let x = Math.floor(Math.random() * 3);
+        for (let k = 0; k < 4; k++) {
+          osc('triangle', harp[x], t + k * 0.32, 2.4, 0.02, out, { a: 0.005 });
+          x = Math.min(harp.length - 1, x + 1 + Math.floor(Math.random() * 2));
+        }
+      });
+      every(5.5, t => {
+        if (Math.random() < 0.35) {
+          const f = 2200 + Math.random() * 900;
+          [0, 0.14].forEach(d => osc('sine', f, t + d, 0.09, 0.008, out, { to: f * 1.25 }));
+        }
+      });
+      return () => drones.forEach(o => o.stop());
     },
     astral(ctx, out, every) {
       // a slow shimmering pad under a sky of twinkling bells

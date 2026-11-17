@@ -1,6 +1,6 @@
 # Destiny Unbound: what can be improved
 
-Written 2026-11-13, after 0.2.0-alpha.1. Checkmarks updated 2026-11-16, after 0.2.0-alpha.4.6 (29 of 102 done). Based on a pass through the code, assets, tests and docs.
+Written 2026-11-13, after 0.2.0-alpha.1. Checkmarks updated 2026-11-16, after 0.2.0-alpha.4.7 (36 of 102 done). Based on a pass through the code, assets, tests and docs.
 Each item has a rough size: **S** (an hour or two), **M** (a day), **L** (several days or more).
 Items marked ★ are the ones I'd do first. ✅ = done, ⬜ = not yet. Numbers stay the same as items get done.
 
@@ -89,14 +89,14 @@ Where the game stands: about 6,800 lines of game code, 26 wheels per hero, 98 ra
 
 ## 3. Art and assets to make
 
-All painted art is made by hand on grok.com and credited "Created with Grok" (logged in `docs/art-credits.md`).
+All painted art is made on grok.com and credited "Created with Grok" (logged in `docs/art-credits.md`). Category done 2026-11-16 except where noted.
 
 37. ✅ ★ **Transparent logo (S).** Done 2026-11-13: all four theme logos as transparent PNGs in `brand/`, for store
    pages, mod themes and overlays (rebuild with `scripts/make-transparent-logos.py`).
 38. ✅ ★ **Default portraits (L).** Done 2026-11-14 for the 11 most common races (19 portraits). Heroes show a silhouette unless the player connects their own image generator.
    A set of painted portraits per race group (start with the 12 most common races, two variants each) would
    transform the card. This is the single biggest visual upgrade.
-39. ⬜ **Chapter illustrations (L).** One small painting per chapter type (49), shown as the chapter banner. Start with
+39. ✅ **Chapter illustrations (L).** Done 2026-11-16 for the 12 most common chapters (about 40% of all chapters), shown behind the story banner. One small painting per chapter type (49), shown as the chapter banner. Start with
    the 12 most common.
 40. ✅ **Ending illustrations (M).** Done 2026-11-14: all 10. One per ending (10). Endings are the screens players screenshot.
 41. ✅ **Boss and dragon portraits (M).** Done 2026-11-14: 7 dragons and the strongest foe of all 13 worlds. 7 dragons and the top bosses.
@@ -105,13 +105,13 @@ All painted art is made by hand on grok.com and credited "Created with Grok" (lo
    style. A custom icon set (about 60 icons: the 26 wheel types, stats, chapter types) would make it look like one
    game.
 44. ✅ **Card frames by rank (M).** Done 2026-11-14. Commoner to Cosmic Being: eight frames of rising fanciness.
-45. ⬜ **Achievement badges (M).** 34 small emblems instead of emoji.
-46. ⬜ **Wheel skins (M).** The wheel is drawn in code. Painted hubs and rims per theme, as overlays.
-47. ⬜ **Painted title menu for phones (M).**
-48. ⬜ **Store assets (M).** Capsule images, a banner, 6-8 fresh screenshots of 0.2, an animated GIF of an arc.
+45. ✅ **Achievement badges (M).** Done 2026-11-16: drawn in code (`app/js/badges.js`), bronze, silver or gold by how often players earn them. 34 small emblems instead of emoji.
+46. ✅ **Wheel skins (M).** Done 2026-11-16: a painted rim and hub per theme (`art/skins`), with an Options switch. The wheel is drawn in code. Painted hubs and rims per theme, as overlays.
+47. ✅ **Painted title menu for phones (M).** Done 2026-11-16: the painted wheel now rises behind the menu on phones too.
+48. ✅ **Store assets (M).** Done 2026-11-16: itch.io covers, Steam capsules, a banner, 5 new screenshots and a story GIF (`docs/store`). The Steam library hero still needs a wider painting. Capsule images, a banner, 6-8 fresh screenshots of 0.2, an animated GIF of an arc.
 49. ✅ **Trailer (S for you).** Done 2026-11-14: a 1080p trailer from real gameplay, on YouTube and linked from the README and itch.io. Upload the existing one; then a 0.2 trailer showing arcs and endings.
-50. ⬜ **Fifth theme (L).** Parked: a new painted title screen, wheel, sounds and music.
-51. ⬜ **Image format (S).** The 12 title images are JPG, 3.8 MB. WebP or AVIF would cut that by half or more and speed
+50. ✅ **Fifth theme (L).** Done 2026-11-16: Verdant Wild, a fae forest with its own title screen, wheel rim, sounds, synthesized music and card frame (no HD music tracks yet). Parked: a new painted title screen, wheel, sounds and music.
+51. ✅ **Image format (S).** Done 2026-11-16: the title art is WebP, 3.8 MB down to 1.6 MB. The 12 title images are JPG, 3.8 MB. WebP or AVIF would cut that by half or more and speed
    up the itch.io load.
 
 ---

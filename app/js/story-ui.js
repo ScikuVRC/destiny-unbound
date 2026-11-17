@@ -125,6 +125,15 @@
       icon = curCh.emoji || icon;
       title = curCh.name;
     }
+    // a painted illustration behind the banner for the most common chapters (art/chapters, made with Grok)
+    const art = kind !== 'story' && kind !== 'end' && curCh && (FW.CHAPTER_ART || []).indexOf(curCh.id) >= 0;
+    b.classList.toggle('has-art', !!art);
+    // set here, not through a CSS variable: a url() in a variable would resolve against the stylesheet's folder
+    b.style.backgroundImage = art
+      ? 'linear-gradient(90deg,var(--panel) 0,color-mix(in srgb,var(--panel) 88%,transparent) 38%,color-mix(in srgb,var(--panel) 25%,transparent) 72%,transparent),url("art/chapters/' +
+        curCh.id +
+        '.webp")'
+      : '';
     b.innerHTML =
       '<div class="sb-por">' +
       (src

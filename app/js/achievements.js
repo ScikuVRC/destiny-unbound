@@ -322,7 +322,7 @@
     el.setAttribute('role', 'status');
     el.innerHTML =
       '<span>' +
-      a.icon +
+      FW.badge(a.id, a.icon) +
       '</span><div><small>' +
       H.esc(tr('Achievement unlocked')) +
       '</small><b>' +
@@ -370,7 +370,7 @@
               '" aria-label="' +
               H.esc(tr(a.name) + ', ' + tr(have[a.id] ? 'unlocked' : 'locked')) +
               '"><span aria-hidden="true">' +
-              a.icon +
+              FW.badge(a.id, a.icon) +
               '</span><div><b>' +
               H.esc(tr(a.name)) +
               '</b><small>' +

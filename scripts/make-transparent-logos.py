@@ -1,6 +1,6 @@
 """Make transparent PNG versions of the four theme logos.
 
-The painted logos (app/art/*-logo.jpg) sit on a black background. This keeps every part of the artwork that is
+The painted logos (mockups/menu/art/*-logo.jpg, the originals of the game copies) sit on a black background. This keeps every part of the artwork that is
 not connected to the black edge fully opaque, and turns the black background (plus the glow and sparks that fade
 into it) into transparency, so the result looks the same over black and still works over other colours.
 
@@ -12,7 +12,7 @@ import numpy as np
 from PIL import Image, ImageFilter
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-THEMES = ["ashen", "astral", "iron", "bloodmoon"]
+THEMES = ["ashen", "astral", "iron", "bloodmoon", "wild"]
 # Astral is thin glowing lines with dark gaps between them: treat every dark pixel as background there.
 GLOW_ONLY = {"astral"}
 FLOOR = 0.04   # darker than this (max channel, 0..1) is pure background
@@ -43,7 +43,7 @@ def background_mask(m, dark):
 
 
 def convert(theme):
-    src = os.path.join(ROOT, "app", "art", f"{theme}-logo.jpg")
+    src = os.path.join(ROOT, "mockups", "menu", "art", f"{theme}-logo.jpg")
     rgb = np.asarray(Image.open(src).convert("RGB")).astype(np.float64) / 255.0
     m = rgb.max(axis=2)
     bg = (m < CEIL) if theme in GLOW_ONLY else background_mask(m, m < CEIL)

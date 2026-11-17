@@ -5,7 +5,7 @@ SuperGrok account, and then cropped, blended and composed into the game by hand.
 playable wheels, character cards, icons and interface) is drawn in code.
 
 This file keeps a record of each image and the prompt that made it, as xAI's terms make the user responsible for
-their outputs. The `app/art` copies are the ones the game ships; `mockups/menu/art` holds the same files plus the
+their outputs. The `app/art` copies are the ones the game ships (the title art as WebP since 0.2.0-alpha.4.8); `mockups/menu/art` holds the same files plus the
 retired Adventurer's Sheet look. Images made from these (the store covers and itch.io backgrounds in
 `docs/store`, the store screenshots and the trailer) contain this art too.
 
@@ -29,13 +29,13 @@ This is a summary for the project, not legal advice. The terms change, so check 
 
 ## Images and prompts
 
-### `app/art/ashen-bg.jpg`
+### `app/art/ashen-bg.webp`
 
 Ashen Crown title background. Generated 2026-11-12.
 
 > Create an image, wide 16:9: dark fantasy video game title screen background. A ruined gothic city of black stone in ash and smoke, glowing embers drifting upward, molten orange firelight rising from a chasm below, broken towers in the distance. The left third of the image is darker and empty so a menu can sit there. Cinematic painterly concept art, highly detailed, dramatic lighting. No text, no logo, no characters.
 
-### `app/art/ashen-wheel.jpg`
+### `app/art/ashen-wheel.webp`
 
 Ashen Crown wheel painting. Generated 2026-11-12.
 
@@ -53,31 +53,31 @@ Retired Adventurer's Sheet mockup wheel (not in the game). Generated 2026-11-12.
 
 > Create another image, square 1:1: a hand-inked Wheel of Fate drawn on aged parchment, seen straight from the front, centered. Sepia and black ink linework with fine cross-hatching, a compass rose and small hand-drawn sigils in each segment, a carved red twenty-sided die as the hub, a red ink arrow pointer at the top. Plain parchment background around it. Highly detailed illustration in the style of an old adventurer's journal. No text.
 
-### `app/art/iron-bg.jpg`
+### `app/art/iron-bg.webp`
 
 Iron Litany title background. Generated 2026-11-12.
 
 > Create another image, wide 16:9: grimdark gothic sci-fi game title screen background. The inside of a colossal cathedral-forge at war: towering gothic arches, brass pipes and chains, giant cogs, oxblood banners, a blood-red sky seen through broken stained-glass windows, smoke and sparks, cold candlelight. The center of the image is darker and open so a title and a menu can sit there. Cinematic painterly concept art, highly detailed. No text, no logo, no characters, no skulls.
 
-### `app/art/iron-wheel.jpg`
+### `app/art/iron-wheel.webp`
 
 Iron Litany wheel painting. Generated 2026-11-12.
 
 > Create another image, square 1:1: a massive gothic Wheel of Fate emblem seen straight from the front, centered. A riveted brass and gunmetal cogwheel with gear teeth around the rim, oxblood red enamel segments with engraved gothic sigils, a glowing red gem set in a smaller cog at the hub, and a tall brass spike pointer at the top. Isolated on a plain pure black background. Grimdark gothic sci-fi, painterly, highly detailed metal. No text, no skulls.
 
-### `app/art/bloodmoon-bg.jpg`
+### `app/art/bloodmoon-bg.webp`
 
 Blood Moon title background. Generated 2026-11-12.
 
 > Create another image, wide 16:9: gothic horror game title screen background. A huge dark blood-red moon rising behind the black spires and rooftops of a Victorian gothic cathedral city at night, thin mist in the streets, cold silver moonlight on wet cobblestones, a few distant lit windows. The left third of the image is darker and empty so a menu can sit there. Cinematic painterly concept art, eerie and elegant, highly detailed. No text, no logo, no characters.
 
-### `app/art/bloodmoon-wheel.jpg`
+### `app/art/bloodmoon-wheel.webp`
 
 Blood Moon wheel painting. Generated 2026-11-12.
 
 > Create another image, square 1:1: an eldritch gothic Wheel of Fate emblem seen straight from the front, centered. Black wrought iron with fine silver filigree and curling ornaments around the rim, dark crimson and deep violet segments with faint engraved sigils, a single green reptilian eye with a slit pupil at the center, and a curved silver claw as the pointer at the top. A faint crimson glow behind it. Isolated on a plain pure black background. Gothic horror, elegant, painterly, highly detailed. No text.
 
-### `app/art/ashen-logo.jpg`
+### `app/art/ashen-logo.webp`
 
 Ashen Crown logo. Generated 2026-11-12.
 
@@ -89,31 +89,31 @@ Retired Adventurer's Sheet mockup logo (not in the game). Generated 2026-11-12.
 
 > Generate a new image: a tabletop fantasy game title logo that reads exactly "DESTINY UNBOUND" (spelled D-E-S-T-I-N-Y  U-N-B-O-U-N-D), hand-inked illuminated manuscript lettering in deep crimson red and dark brown ink with gold leaf accents, a small compass rose and a twenty-sided die emblem, quill flourishes, centered, wide horizontal composition, on a plain flat light cream parchment background, no other text.
 
-### `app/art/iron-logo.jpg`
+### `app/art/iron-logo.webp`
 
 Iron Litany logo. Generated 2026-11-12.
 
 > Generate a new image: a grimdark gothic sci-fi cathedral style game title logo that reads exactly "DESTINY UNBOUND" (spelled D-E-S-T-I-N-Y  U-N-B-O-U-N-D), heavy blackletter gothic letters forged from tarnished brass and gold with riveted iron, a skull-and-cog emblem with spread wings above, red wax purity seal with ribbon, centered, wide horizontal composition, on a pure solid black background, no other text.
 
-### `app/art/bloodmoon-logo.jpg`
+### `app/art/bloodmoon-logo.webp`
 
 Blood Moon logo. Generated 2026-11-12.
 
 > Generate a new image: a gothic horror game title logo that reads exactly "DESTINY UNBOUND" (spelled D-E-S-T-I-N-Y  U-N-B-O-U-N-D), elegant Victorian serif capitals in tarnished silver with thin blood-red highlights, wrought-iron filigree and thorned vines, a small crimson blood moon disc behind the text, centered, wide horizontal composition, on a pure solid black background, no other text.
 
-### `app/art/astral-bg.jpg`
+### `app/art/astral-bg.webp`
 
 Astral Oracle title background. Generated 2026-11-12.
 
 > Generate a new image: wide cinematic fantasy game main menu background, an ancient celestial observatory of white marble and silver on a snowy mountain peak at night, giant brass astrolabe rings and a telescope, a vast swirling nebula sky in deep midnight blue, violet and teal with bright stars and a glowing constellation map, soft moonlight, the left third of the image darker and calmer for a menu, painterly highly detailed concept art, no text.
 
-### `app/art/astral-wheel.jpg`
+### `app/art/astral-wheel.webp`
 
 Astral Oracle wheel painting. Generated 2026-11-12.
 
 > Generate a new image: a single ornate celestial fortune wheel seen straight on, an astrolabe of polished silver and sapphire blue enamel, twelve segments each engraved with a glowing constellation glyph, outer ring of tiny stars and moon phases, a radiant white-blue star core in the center, a slender silver pointer at the top, fantasy game asset, centered, on a pure solid black background, no text.
 
-### `app/art/astral-logo.jpg`
+### `app/art/astral-logo.webp`
 
 Astral Oracle logo. Generated 2026-11-12.
 
@@ -286,3 +286,58 @@ with a silver circlet and an elf man in a green hood; a dark elf woman in spider
 hunter; a halfling woman in a green hooded cloak; a skeleton warrior with glowing blue eyes; a lizardfolk warrior; an
 old gnome inventor.
 
+## Chapter illustrations, wheel rims and hubs, and the Verdant Wild theme (2026-11-16)
+
+Generated 2026-11-16 on the developer's SuperGrok account at grok.com (Grok Imagine, Quality 2.0, four images per
+prompt). **How they were made:** at the developer's request, Claude (Anthropic's AI assistant) typed these prompts
+into grok.com in the developer's own signed-in browser and saved the results; the developer accepted the account
+risk this carries under xAI's Acceptable Use Policy (see "Automation" above). Claude then picked one image per
+prompt, cut out and resized the game copies with `scripts/make-wheel-skins.py`, `scripts/make-chapter-art.js` and
+`scripts/make-menu-css.js`. The untouched originals and the list of picks are in `art-source/grok-2026-11-16/`.
+
+### Verdant Wild title screen: `app/art/wild-bg.webp`, `wild-wheel.webp`, `wild-logo.webp`
+
+Background (16:9, variant 4):
+
+> Wide 16:9 dark fantasy video game title screen background. An ancient enchanted fae forest at dusk: colossal twisted trees with living roots, moss-covered standing stones carved with glowing runes, drifting golden-green fireflies and pollen motes, shafts of gold-green light through a misty canopy, a hidden overgrown ruin deep in the distance. The left third of the image is darker and empty so a menu can sit there. Cinematic painterly concept art, highly detailed, dramatic lighting, rich emerald, moss and old-gold palette. No text, no logo, no characters.
+
+Logo (16:9, variant 1):
+
+> Generate an image: a dark fantasy video game title logo that reads exactly "DESTINY UNBOUND" (two words, spelled D-E-S-T-I-N-Y  U-N-B-O-U-N-D), large ornate letters carved from living wood and inlaid with old gold, thin vines and small leaves curling around the letters, glowing golden-green fireflies drifting around, a small rune wheel of woven branches behind the text, centered, wide horizontal composition, on a pure solid black background, no other text.
+
+Wheel painting (1:1, variant 1):
+
+> Square 1:1: an ornate ancient Wheel of Fate emblem seen straight from the front, centered. Carved from living dark wood and twisted vines with old gold inlay, small leaves and runes carved around the outer ring, twelve segments with small leaf, acorn and moon sigils, a glowing emerald-gold seed at the core, a long thorned golden pointer at the top. Isolated on a plain pure black background. Dark fantasy painterly style, highly detailed. No text.
+
+### Chapter illustrations: `app/art/chapters/<chapter>.webp`
+
+All 16:9. Every prompt begins "Wide 16:9 dark fantasy chapter illustration, the main subject centered in a wide
+horizontal band:" and ends "Cinematic painterly concept art, highly detailed, … No text, no logo." The middle part:
+
+- `train` (variant 4): a lone warrior training at dawn in a ruined mountain courtyard, striking a battered wooden practice dummy, a weapon rack of swords and spears, mist and falling autumn leaves, distant peaks. (dramatic warm rim light)
+- `study` (variant 4): a candle-lit arcane library in a tall stone tower, towering bookshelves and ladders, an open grimoire glowing with golden runes on a cluttered desk, star charts, an astrolabe, floating dust in shafts of moonlight. (dramatic lighting)
+- `nemesis` (variant 2): a hooded rival in a dark cloak standing on a crag above a burning village at night, cloak whipping in the wind, a drawn blade at their side, face hidden in shadow, watching and waiting. (ominous red and ember light)
+- `dungeon` (variant 4): a torch-lit stone dungeon corridor descending into darkness, rusted iron gates, chains on the walls, scattered old bones, a flickering torch, faint glowing eyes deep in the dark. (dramatic torchlight)
+- `quest` (variant 2): a lone cloaked traveler with a staff on a winding road toward distant snowy mountains at sunrise, a weathered signpost, a ruined watchtower, vast sweeping valley landscape. (golden morning light)
+- `treasure` (variant 1): a hidden cave treasure hoard, heaps of gold coins, a jeweled chalice, a crown and gemstones spilling from an open iron-bound chest that glows from within, a shaft of light falling through a crack in the cave ceiling. (warm gold light in deep shadow)
+- `timeSkip` (variant 2): the passing of years, one ancient lone oak tree on a hill shown changing from spring blossom on the left through summer and autumn to winter snow on the right, the seasons blending seamlessly across the image, a faint giant hourglass shape in the clouds above. (soft dreamlike light)
+- `kingdom` (variant 1): a grand royal throne hall, an empty stone throne lit by a beam of sunlight, tall hanging banners, stained glass windows, kneeling courtier silhouettes, a castle city visible through great arches behind. (majestic golden light)
+- `duel` (variant 2): two sword fighters circling each other inside a ring of burning torches on a rain-soaked stone plaza at night, one in dark plate armor and one in a long coat, blades raised, sparks and rain, onlookers in shadow. (dramatic firelight)
+- `artifact` (variant 4): an ancient relic vault sealed for centuries, a glowing amulet floating above a carved stone altar, rings of runes lighting up on the floor and walls, dust and cobwebs, the heavy vault door half open. (mystical blue-gold glow)
+- `boss` (variant 2): a colossal horned dark lord in jagged black armor rising from a broken throne in a ruined cathedral, glowing eyes, a huge cleaver, smoke and embers, a tiny lone hero silhouette standing before him for scale. (ominous red light)
+- `siege` (variant 1): a stone castle under siege at dusk, trebuchets hurling fire, volleys of burning arrows arcing over the walls, a dark army with banners and siege ladders in the foreground, smoke rising into a red sky. (epic scale)
+
+### Wheel rims and hubs: `app/art/skins/<theme>-rim.webp` and `<theme>-hub.webp`
+
+All 1:1, cut out of their black backgrounds by `scripts/make-wheel-skins.py`. Rim prompts begin "Square 1:1 game
+asset: a single perfectly circular ornate ring frame seen straight from the front, filling the image edge to edge.
+The ring band is thin, about one tenth of the image width, and the whole inside of the ring is completely empty plain
+pure black." Hub prompts begin "Square 1:1 game asset: a single round ornate hub medallion for the center of a wheel,
+seen straight from the front, perfectly circular, filling about 80 percent of the image, centered." Both end
+"Isolated on a plain pure black background. … No text." The materials:
+
+- Ashen Crown (rim 3, hub 2): forged dark iron with engraved gold filigree, rivets and small runes, thin ember-orange glowing cracks / a glowing molten ember-orange core. Dark fantasy painterly style.
+- Astral Oracle (rim 4, hub 1): polished silver and deep sapphire star-metal, tiny engraved constellations and moon phases, small star gems, a faint cool blue glow / a glowing pale blue star crystal at the core. Mystical painterly style.
+- Iron Litany (rim 3, hub 3): gothic blackened iron and worn brass, gear teeth around the outer edge, heavy rivets, oxblood red enamel panels / shaped like a great cog, a glowing red core. Grimdark painterly style, no skulls.
+- Blood Moon (rim 3, hub 1): blackened silver with thorned gothic filigree, small crimson garnets / a large glowing crimson blood-moon garnet at the core. Gothic painterly style, eerie and elegant.
+- Verdant Wild (rim 3, hub 1): woven from living dark wood and twisted vines with old gold leaf inlay, small carved leaves and runes, tiny golden-green glowing fireflies / a glowing emerald-gold seed at the core. Dark fantasy painterly style.

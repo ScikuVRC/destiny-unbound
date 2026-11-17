@@ -125,9 +125,9 @@ t('exported saves never contain API keys', () => {
 t('the title screens have art, a logo and a tagline for every built-in theme', () => {
   const css = fs.readFileSync(path.join(root, 'app', 'css', 'menu.css'), 'utf8');
   const data = fs.readFileSync(path.join(root, 'app', 'js', 'menu-data.js'), 'utf8');
-  ['ashen', 'astral', 'iron', 'bloodmoon'].forEach(k => {
+  ['ashen', 'astral', 'iron', 'bloodmoon', 'wild'].forEach(k => {
     ['bg', 'wheel', 'logo'].forEach(p =>
-      assert(fs.existsSync(path.join(root, 'app', 'art', k + '-' + p + '.jpg')), k + '-' + p)
+      assert(fs.existsSync(path.join(root, 'app', 'art', k + '-' + p + '.webp')), k + '-' + p)
     );
     assert(css.indexOf('[data-look="' + k + '"]') >= 0, 'css ' + k);
     assert(data.indexOf('"' + k + '"') >= 0, 'tag ' + k);

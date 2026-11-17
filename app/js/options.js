@@ -12,7 +12,7 @@
     D = window.fatewheelDesktop || null;
   const $ = s => document.querySelector(s);
   const t = s => (FW.t ? FW.t(s) : s);
-  const LOOKS = ['ashen', 'astral', 'iron', 'bloodmoon'];
+  const LOOKS = ['ashen', 'astral', 'iron', 'bloodmoon', 'wild'];
   const TABS = [
     ['general', 'General'],
     ['audio', 'Sound'],
@@ -302,6 +302,11 @@
         'Lower is lighter on older PCs.'
       );
       h += row('Glows and particles', tog('glow', P.glow, 'Glows and particles'));
+      h += row(
+        'Painted wheel rims',
+        tog('wheelSkin', P.wheelSkin !== false, 'Painted wheel rims'),
+        'A painted rim and hub for each theme. Switch off for the drawn rim and slightly bigger slices.'
+      );
       h += row(
         'Emoji instead of drawn icons',
         tog('emojiIcons', P.emojiIcons, 'Emoji instead of drawn icons'),
@@ -639,7 +644,7 @@
     root.innerHTML =
       '<div class="optscr"><div class="optbg" style="background-image:url(art/' +
       k +
-      '-bg.jpg)"></div><div class="optbox">' +
+      '-bg.webp)"></div><div class="optbox">' +
       '<h2>' +
       H.esc(t('Options')) +
       '</h2><div class="o-tabs" role="tablist">' +
@@ -794,7 +799,7 @@
       if (window.FWAchieve) window.FWAchieve.sync();
     } else {
       FW.setPref(id, on);
-      if (id === 'cbSafe' || id === 'glow') rebuildWheel();
+      if (id === 'cbSafe' || id === 'glow' || id === 'wheelSkin') rebuildWheel();
       if (id === 'muteBg' && SYS.syncBackgroundMute) SYS.syncBackgroundMute();
       if (id === 'hdMusic') FW.Audio.refreshMusic();
     }
@@ -1039,7 +1044,7 @@
         const d = FW.PREF_DEFAULTS,
           keys =
             {
-              general: ['uiScale', 'fps', 'anim', 'quality', 'glow', 'autoPause'],
+              general: ['uiScale', 'fps', 'anim', 'quality', 'glow', 'wheelSkin', 'autoPause'],
               audio: ['uiVol', 'muteBg'],
               access: ['textSize', 'contrast', 'cbSafe', 'reduceMotion', 'captions', 'emojiIcons'],
               controls: ['keys'],

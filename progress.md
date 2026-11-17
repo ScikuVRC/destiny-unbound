@@ -66,7 +66,15 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
 ## Ready for the next alpha (not released yet)
 
-- Nothing yet
+- ✅ Art category of the improvement list finished (items 39, 45-48, 50, 51), 2026-11-16:
+  - **Verdant Wild**, a fifth theme (id `wild`; the example mod already uses `verdant`): a fae forest with its own painted title screen and logo, wheel colours, IM Fell English lettering, sounds, synthesized music and card frame
+  - **Painted wheel rims and hubs** for all five themes (`app/art/skins`, `scripts/make-wheel-skins.py`); Options > General > Painted wheel rims turns them off
+  - **Chapter illustrations** behind the story banner for the 12 most common chapters (`app/art/chapters`, `scripts/make-chapter-art.js`)
+  - **Achievement badges** drawn in code: bronze, silver or gold by how often they are earned (`app/js/badges.js`)
+  - **Phones**: the painted wheel rises behind the title menu
+  - **WebP title art** (3.8 MB to 1.6 MB); `scripts/make-menu-css.js` now also holds the phone rules that had been added to menu.css by hand
+  - **Store kit**: itch.io covers, Steam capsules, a banner, 5 new screenshots and a story GIF (`docs/store`, `scripts/make-store-art.js`)
+  - 26 new Grok prompts (about 100 images) made on the developer's account through the browser; prompts and picks in `docs/art-credits.md` and `art-source/grok-2026-11-16/PICKS.md`
 
 ## Released
 

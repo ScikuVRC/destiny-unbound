@@ -197,6 +197,7 @@
                   astral: 'Celestial fantasy',
                   iron: 'Grimdark sci-fi',
                   bloodmoon: 'Gothic horror',
+                  wild: 'Fae forest',
                 }[k] ||
                 ''
             )

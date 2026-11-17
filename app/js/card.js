@@ -128,6 +128,19 @@
       caps: true,
       radius: 2,
     },
+    wild: {
+      font: '"IM Fell English", Georgia, serif',
+      head: '"IM Fell English SC", "IM Fell English", serif',
+      panel: 'rgba(10,16,9,.88)',
+      stroke: 'rgba(201,180,90,.6)',
+      key: '#9ccb4a',
+      val: '#f0f2d6',
+      sub: '#a3aa86',
+      accent: '#e0c46a',
+      bgTop: 9,
+      caps: false,
+      radius: 10,
+    },
   });
 
   function rr(c, x, y, w, h, r) {
@@ -495,6 +508,26 @@
         c.lineWidth = 2;
         c.stroke();
       });
+    } else if (name === 'wild') {
+      // a gold double frame with rounded corners, a leaf in each corner and a soft green glow at the foot
+      c.lineWidth = 2.5;
+      c.strokeStyle = '#c9b45a';
+      rr(c, 18, 18, W - 36, H - 36, 18);
+      c.stroke();
+      c.lineWidth = 1;
+      c.strokeStyle = 'rgba(156,203,74,.6)';
+      rr(c, 30, 30, W - 60, H - 60, 12);
+      c.stroke();
+      c.fillStyle = '#9ccb4a';
+      c.font = '40px "IM Fell English", serif';
+      c.textAlign = 'center';
+      c.textBaseline = 'middle';
+      corners(46, p => c.fillText('\u2766', p[0], p[1]));
+      const glow = c.createLinearGradient(0, H - 160, 0, H);
+      glow.addColorStop(0, 'rgba(120,180,60,0)');
+      glow.addColorStop(1, 'rgba(120,180,60,.18)');
+      c.fillStyle = glow;
+      c.fillRect(30, H - 160, W - 60, 130);
     } else if (name === 'bloodmoon') {
       c.lineWidth = 2;
       c.strokeStyle = 'rgba(201,206,222,.6)';

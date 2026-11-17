@@ -74,8 +74,8 @@ Singleplayer, Free to Play, Open Source, Moddable, Casual, Controller.
 - **Code and text:** the game is made by one person without funding for a team. Much of the code was written
   with an AI coding assistant (Claude, by Anthropic), and many wheel entries, story texts and the
   translations were drafted with AI help, then edited and tested by hand.
-- **Pre-generated art:** Created with Grok. The painted title-screen backgrounds, wheel paintings, hero portraits,
-  ending paintings, boss and dragon portraits, arena backdrops, the four logos and the app icon were generated with Grok Imagine (xAI) and then placed and composed in the game by hand.
+- **Pre-generated art:** Created with Grok. The painted title-screen backgrounds, wheel paintings, painted wheel rims and hubs, hero portraits,
+  chapter illustrations, ending paintings, boss and dragon portraits, arena backdrops, the five logos and the app icon were generated with Grok Imagine (xAI) and then placed and composed in the game by hand.
   Everything else (the playable wheels, cards, icons and interface) is drawn in code.
 - **Pre-generated music:** the optional HD music (offered on first launch, off unless the player picks it) is a
   set of placeholder tracks made with ACE-Step (an open-source AI music model), normalized and trimmed by hand; every track is in
@@ -88,12 +88,22 @@ Singleplayer, Free to Play, Open Source, Moddable, Casual, Controller.
   [`docs/art-credits.md`](../art-credits.md). xAI asks for the words "Created with Grok" wherever the art is
   published, so keep that phrase in any store page's description. Check the terms again before a Steam release.
 
-## Pictures a store page needs (not made yet)
+## Pictures for store pages
 
-- itch.io: a cover image 630×500 (the Ashen Crown logo over its painted city works well).
-- Steam: header capsule 920×430, small capsule 462×174, main capsule 1232×706, vertical capsule 748×896, library
-  hero 3840×1240 and library logo (a transparent PNG). These can be cut from the painted backgrounds and logos;
-  transparent logos for all four themes are in `brand/`.
+Made with `npx electron scripts/make-store-art.js` from the painted backgrounds and the transparent logos in `brand/`
+(rebuild after changing either). All in `capsules/`:
+
+- itch.io cover 630×500: `itch-cover-ashen.png`, `itch-cover-wild.png`
+- Steam: header 920×430 (`steam-header.png`), small capsule 462×174 (`steam-small.png`), main capsule 1232×706
+  (`steam-main.png`), vertical capsule 748×896 (`steam-vertical.png`), library capsule 600×900 (`steam-library.png`)
+  and library logo (`steam-library-logo.png`, transparent)
+- A wide banner 1920×480 for itch.io, Discord or a devlog header: `banner-wide.png`
+- An animated GIF of a story arc in Verdant Wild (16 s, 720 px): `story-arc.gif`
+- Screenshots 11-15 in `screenshots/` show the 0.2 art: the Verdant Wild title, a painted wheel, a chapter
+  illustration, achievement badges and a Verdant Wild card
+
+Still to make: the Steam library hero (3840×1240) needs a painting at least that wide; the backgrounds are about
+1800 px.
 
 ## Content notes
 

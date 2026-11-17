@@ -17,7 +17,7 @@
   // Mods made by the Destiny Unbound team that ship with the game (app/official/<id>/), off until switched on.
   // Each is also a mod kit template, and tests/mods.test.js checks the two copies match.
   M.OFFICIAL = ['ember-dominion'];
-  const BASES = ['ashen', 'astral', 'iron', 'bloodmoon'];
+  const BASES = ['ashen', 'astral', 'iron', 'bloodmoon', 'wild'];
   const baseOf = b =>
     BASES.indexOf(b) >= 0 ? b : FW.THEME_ALIAS && BASES.indexOf(FW.THEME_ALIAS[b]) >= 0 ? FW.THEME_ALIAS[b] : null; // old mods may say 'tabletop' (now 'astral')
   const VARS = [

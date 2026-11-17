@@ -24,7 +24,7 @@ const SIZES = (
   arg('only') || ['960x540', '1024x600', '1280x720', '1280x800', '1366x768', '1600x900', '1920x1080', '2560x1440']
 ).map(s => s.split('x').map(Number));
 const LANG = (arg('lang') || [''])[0]; // es, fr, de or ja (default: English)
-const THEME = (arg('theme') || [''])[0]; // ashen, astral, iron or bloodmoon (default: the game's default)
+const THEME = (arg('theme') || [''])[0]; // ashen, astral, iron, bloodmoon or wild (default: the game's default)
 const SCREENS = arg('screens') || [
   'title',
   'home',

@@ -69,7 +69,21 @@ const T = {
 .item{display:flex;align-items:center;justify-content:center;gap:10px;padding:4px 0;font-family:"Cormorant Garamond",serif;font-style:italic;font-size:20px;color:#a39cb4;border-bottom:1px solid rgba(201,206,222,.08)}.item .ic{width:17px;height:17px;color:#7d7590}
 .item.on{color:#fff;text-shadow:0 0 16px rgba(196,30,58,.95);font-size:22px;background:linear-gradient(90deg,transparent,rgba(122,15,34,.4),transparent)}.item.on .ic{color:#e0405e}.item small{display:none}
 .foot{color:#a39cb4;font-family:"Cormorant Garamond",serif}.foot b{color:#ff8fa3}`,
-    opt: 'bloodmoon-bg' }
+    opt: 'bloodmoon-bg' },
+  wild: { bg: 'wild-bg', wheel: 'wild-wheel', tag: 'The old wood remembers every legend.',
+    css: `.bgart{background:url(art/wild-bg.jpg) 72% 50%/cover}.bgart:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(4,7,4,.9) 0,rgba(4,7,4,.55) 34%,rgba(4,7,4,.08) 62%,rgba(4,7,4,.25)),linear-gradient(transparent 72%,rgba(4,7,4,.75))}
+.wheelart{right:-30px;top:-30px;width:560px;height:560px;background:url(art/wild-wheel.jpg) center/contain no-repeat;mix-blend-mode:screen;opacity:.55;filter:drop-shadow(0 0 24px rgba(198,242,106,.3));-webkit-mask:radial-gradient(closest-side,#000 86%,transparent 100%);mask:radial-gradient(closest-side,#000 86%,transparent 100%)}
+.title{left:46px;top:20px;width:430px;text-align:center;color:#e0c46a}
+.title h2{font-family:"IM Fell English SC",serif;font-size:66px;line-height:.95;margin:0 0 6px;color:#e8d68a;text-shadow:0 2px 0 #10180c,0 0 22px rgba(198,242,106,.35)}
+.title p{font-family:"IM Fell English",serif;font-style:italic;font-size:17px;color:#c9cf9a;margin:0}.title p:after{content:"❦";display:block;color:#9ccb4a;font-size:14px;font-style:normal;margin-top:4px}
+.panel{left:30px;top:222px;width:450px;height:466px;padding:22px 24px;background:linear-gradient(rgba(10,15,9,.86),rgba(6,9,5,.93));border:1px solid #4a5a2c;border-radius:18px;box-shadow:inset 0 0 0 4px rgba(5,8,4,.9),inset 0 0 0 5px rgba(201,180,90,.22),0 20px 60px #000}
+.panel:before,.panel:after{content:"❦";position:absolute;color:#9ccb4a;font-size:22px;line-height:1}.panel:before{left:12px;top:8px}.panel:after{right:12px;bottom:8px;transform:rotate(180deg)}
+.item{display:flex;align-items:center;gap:16px;padding:9px 18px;color:#cdd2a8;font-family:"IM Fell English SC",serif;font-size:19px;letter-spacing:.06em;border-bottom:1px solid rgba(156,203,74,.12)}.item .ic{width:24px;height:24px;color:#a7b86a;flex:none}
+.item.on{margin:0 -8px 10px;padding:14px 20px;border:1px solid #c9b45a;border-radius:999px;color:#f6f0c4;font-size:23px;background:radial-gradient(80% 120% at 30% 50%,rgba(156,203,74,.22),transparent 70%),linear-gradient(rgba(24,34,16,.95),rgba(12,18,9,.95));box-shadow:0 0 28px rgba(156,203,74,.3);text-shadow:0 0 14px rgba(198,242,106,.6)}
+.item.on .ic{width:34px;height:34px;color:#d9f07a;filter:drop-shadow(0 0 6px #9ccb4a)}.item small{display:block;font-family:"IM Fell English",serif;font-size:14px;letter-spacing:.02em;color:#e0c46a;margin-top:2px}
+.embers{position:absolute;inset:0;pointer-events:none;background:radial-gradient(2.5px 2.5px at 62% 74%,#e8f78a,transparent),radial-gradient(2px 2px at 71% 58%,#c6f26a,transparent),radial-gradient(2.5px 2.5px at 84% 80%,#f2f0a0,transparent),radial-gradient(2px 2px at 90% 52%,#c6f26a,transparent),radial-gradient(2px 2px at 55% 88%,#e8f78a,transparent),radial-gradient(1.5px 1.5px at 78% 36%,#d6f07a,transparent),radial-gradient(2px 2px at 95% 70%,#e8f78a,transparent)}
+.foot{background:linear-gradient(transparent,rgba(4,6,3,.9));color:#a3aa86;font-family:"IM Fell English",serif}.foot b{color:#e0c46a;font-family:"IM Fell English SC",serif}`,
+    opt: 'wild-bg' },
 };
 
 /* Astral Oracle replaces the Adventurer's Sheet (tabletop) look in this set. */
@@ -115,7 +129,8 @@ const LOGO = {
   tabletop: { h: 150, zoom: 100, css: '.title{top:92px;width:290px;left:332px;mix-blend-mode:multiply}' },
   astral: { h: 190, zoom: 100, css: '.title{width:480px;left:30px}' },
   iron: { h: 214, zoom: 100, css: '.title{top:6px;left:50%;right:auto;width:480px;margin-left:-240px}' },
-  bloodmoon: { h: 230, zoom: 100, css: '.title{top:14px}.wheelart{display:none}' }
+  bloodmoon: { h: 230, zoom: 100, css: '.title{top:14px}.wheelart{display:none}' },
+  wild: { h: 176, zoom: 100, css: '.title{top:2px}' }
 };
 
 // The game's real title screen is built from these same designs (scripts/make-menu-css.js).

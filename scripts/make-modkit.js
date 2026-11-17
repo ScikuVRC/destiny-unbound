@@ -57,7 +57,13 @@ const VAR_HELP = {
   '--font-result': 'Font of the big result above the wheel',
   '--result-weight': 'Boldness of the big result (400 normal to 900 heaviest)',
 };
-const BASE_NAMES = { ashen: 'Ashen Crown', astral: 'Astral Oracle', iron: 'Iron Litany', bloodmoon: 'Blood Moon' };
+const BASE_NAMES = {
+  ashen: 'Ashen Crown',
+  astral: 'Astral Oracle',
+  iron: 'Iron Litany',
+  bloodmoon: 'Blood Moon',
+  wild: 'Verdant Wild',
+};
 
 function themeVariables() {
   const css = fs.readFileSync(path.join(root, 'app', 'css', 'themes.css'), 'utf8');

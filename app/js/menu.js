@@ -8,7 +8,7 @@
     App = window.FWApp,
     D = window.fatewheelDesktop || null;
   const $ = s => document.querySelector(s);
-  const LOOKS = ['ashen', 'astral', 'iron', 'bloodmoon'];
+  const LOOKS = ['ashen', 'astral', 'iron', 'bloodmoon', 'wild'];
   const t = s => (FW.t ? FW.t(s) : s);
 
   /* ---------------- the last legend, for Continue / Story / Arena ---------------- */
@@ -107,7 +107,11 @@
       '<div class="tscr" data-look="' +
       k +
       '"><div class="bgart"></div><div class="fxlayer">' +
-      (k === 'ashen' ? '<div class="embers"></div>' : k === 'astral' ? '<div class="stars"></div>' : '') +
+      (k === 'ashen' || k === 'wild'
+        ? '<div class="embers"></div>'
+        : k === 'astral'
+          ? '<div class="stars"></div>'
+          : '') +
       '</div>' +
       '<div class="stage"><div class="wheelart" aria-hidden="true"></div>' +
       '<div class="title"><h2 class="logoart">Destiny Unbound</h2><p>' +
@@ -657,7 +661,7 @@
         '</h3><p>' +
         H.esc(
           t(
-            'Painted art: Created with Grok. The title-screen backgrounds, wheel paintings, hero portraits, ending paintings, boss portraits, arena backdrops, logos and app icon were generated with Grok Imagine (xAI) for this game. The playable wheels, character cards, icons and interface are drawn in code.'
+            'Painted art: Created with Grok. The title-screen backgrounds, wheel paintings, painted wheel rims and hubs, hero portraits, chapter illustrations, ending paintings, boss portraits, arena backdrops, logos and app icon were generated with Grok Imagine (xAI) for this game. The playable wheels, character cards, icons and interface are drawn in code.'
           )
         ) +
         '</p>' +

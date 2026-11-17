@@ -1097,6 +1097,13 @@
       'Offer to send error reports': 'エラー報告の送信を提案する',
       'When something goes wrong, a small note offers to send a report. You see exactly what it contains first, and nothing is sent unless you press Send.':
         '問題が起きると、報告を送るかどうかを尋ねる小さなお知らせが出ます。内容を先に確認でき、「送信」を押さない限り何も送られません。',
+      /* art: fifth theme, painted rims */
+      'Verdant Wild': '翠緑の森',
+      'Fae forest': '妖精の森',
+      'The old wood remembers every legend.': '古き森はすべての伝説を覚えている。',
+      'Painted wheel rims': '描かれたホイールの縁',
+      'A painted rim and hub for each theme. Switch off for the drawn rim and slightly bigger slices.':
+        'テーマごとに描かれた縁と中心飾り。オフにすると描画の縁になり、枠が少し大きくなります。',
     },
   };
 })(typeof window !== 'undefined' ? window : globalThis);
