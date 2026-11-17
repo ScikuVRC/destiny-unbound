@@ -59,7 +59,7 @@ async function totals() {
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-client.once('ready', async () => {
+client.once('clientReady', async () => {
   try {
     await new REST({ version: '10' }).setToken(TOKEN).put(Routes.applicationCommands(client.user.id), {
       body: commands.map(c => c.toJSON()),
