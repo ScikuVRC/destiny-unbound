@@ -2,7 +2,7 @@
 
 A running record of where the game stands. Update it when something ships, starts or gets decided.
 This file is public: server addresses, account, payment and moderation details go in `private-notes.md` (not on GitHub).
-Last updated: 2026-11-16 · Current version: **0.2.0-alpha.4.7**
+Last updated: 2026-11-16 · Current version: **0.2.0-alpha.4.8**
 
 Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
@@ -39,6 +39,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 | Tester feedback: Fate Tokens named as re-spins, auto-play pause setting, heir inheritance screen, kingdom tip, guide after the music question (small update) | 0.2.0-alpha.4.5 | ✅ released 2026-11-16 |
 | Save versioning: saves update themselves with a backup first, newer saves left alone, a warning when the game cannot save (small update) | 0.2.0-alpha.4.6 | ✅ released 2026-11-16 |
 | Error reports you choose to send (with a crash offer on desktop), phones held sideways fit the spin and story screens (small update) | 0.2.0-alpha.4.7 | ✅ released 2026-11-16 |
+| New art: Verdant Wild theme, painted wheel rims and hubs, chapter illustrations, achievement badges, painted title on phones, WebP title art (small update) | 0.2.0-alpha.4.8 | ✅ released 2026-11-16 |
 | Alpha test with 5-15 players | two weeks after release | ⬜ |
 | Beta (fixes from the alpha, signed build, store page) | 0.2.0-beta.1 | ⬜ |
 | 1.0 on itch.io | 1.0.0 | ⬜ |
@@ -66,15 +67,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
 ## Ready for the next alpha (not released yet)
 
-- ✅ Art category of the improvement list finished (items 39, 45-48, 50, 51), 2026-11-16:
-  - **Verdant Wild**, a fifth theme (id `wild`; the example mod already uses `verdant`): a fae forest with its own painted title screen and logo, wheel colours, IM Fell English lettering, sounds, synthesized music and card frame
-  - **Painted wheel rims and hubs** for all five themes (`app/art/skins`, `scripts/make-wheel-skins.py`); Options > General > Painted wheel rims turns them off
-  - **Chapter illustrations** behind the story banner for the 12 most common chapters (`app/art/chapters`, `scripts/make-chapter-art.js`)
-  - **Achievement badges** drawn in code: bronze, silver or gold by how often they are earned (`app/js/badges.js`)
-  - **Phones**: the painted wheel rises behind the title menu
-  - **WebP title art** (3.8 MB to 1.6 MB); `scripts/make-menu-css.js` now also holds the phone rules that had been added to menu.css by hand
-  - **Store kit**: itch.io covers, Steam capsules, a banner, 5 new screenshots and a story GIF (`docs/store`, `scripts/make-store-art.js`)
-  - 26 new Grok prompts (about 100 images) made on the developer's account through the browser; prompts and picks in `docs/art-credits.md` and `art-source/grok-2026-11-16/PICKS.md`
+- Nothing yet
 
 ## Released
 

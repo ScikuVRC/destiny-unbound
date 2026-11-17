@@ -47,6 +47,7 @@ in [docs/release-plan.md](docs/release-plan.md).
 
 ## Recently done
 
+- 0.2.0-alpha.4.8: Verdant Wild theme, painted wheel rims, chapter illustrations, achievement badges.
 - 0.2.0-alpha.4.7: error reports (only when you press Send), phones held sideways fit the spin screen.
 - 0.2.0-alpha.4.6: saves carry a version and update themselves safely, with a backup first; a warning when the game cannot save.
 - 0.2.0-alpha.4.5: fixes from the first tester report (re-spins named, auto-play pause, heir inheritance screen, kingdom tip, guide fix).

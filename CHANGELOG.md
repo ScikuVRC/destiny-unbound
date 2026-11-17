@@ -4,6 +4,26 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
+## 0.2.0-alpha.4.8 (2026-11-16)
+
+A small update full of new art.
+
+### New
+
+- **Verdant Wild, a fifth theme**: a fae forest of moss, living wood and old gold, with its own painted title
+  screen and logo, wheel colours, lettering, sounds, music and card frame. Pick it from the theme button.
+- **Painted wheel rims and hubs** for every theme. Options > General > Painted wheel rims turns them off for
+  the drawn rim and slightly bigger slices.
+- **Chapter illustrations**: the twelve most common story chapters (training, a duel, a treasure hoard, a siege
+  and more) show a painting behind the chapter banner.
+- **Achievement badges**: every achievement has its own emblem on a bronze, silver or gold medal, by how rare it is.
+
+### Changed
+
+- **Phones**: the title screen keeps its painted wheel behind the menu.
+- **Faster loading**: the title art is smaller (WebP, 3.8 MB down to 1.6 MB).
+- The new art is credited in the game and in docs/art-credits.md (Created with Grok).
+
 ## 0.2.0-alpha.4.7 (2026-11-16)
 
 A small update: send a report when something goes wrong, and phones held sideways fit the spin screen.
