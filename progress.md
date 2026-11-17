@@ -2,7 +2,7 @@
 
 A running record of where the game stands. Update it when something ships, starts or gets decided.
 This file is public: server addresses, account, payment and moderation details go in `private-notes.md` (not on GitHub).
-Last updated: 2026-11-16 · Current version: **0.2.0-alpha.4.8**
+Last updated: 2026-11-16 · Current version: **0.2.0-alpha.4.9**
 
 Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
@@ -40,6 +40,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 | Save versioning: saves update themselves with a backup first, newer saves left alone, a warning when the game cannot save (small update) | 0.2.0-alpha.4.6 | ✅ released 2026-11-16 |
 | Error reports you choose to send (with a crash offer on desktop), phones held sideways fit the spin and story screens (small update) | 0.2.0-alpha.4.7 | ✅ released 2026-11-16 |
 | New art: Verdant Wild theme, painted wheel rims and hubs, chapter illustrations, achievement badges, painted title on phones, WebP title art (small update) | 0.2.0-alpha.4.8 | ✅ released 2026-11-16 |
+| The back of the card: the weak/resist line no longer overlaps the saga line (bug fix) | 0.2.0-alpha.4.9 | ✅ released 2026-11-16 |
 | Alpha test with 5-15 players | two weeks after release | ⬜ |
 | Beta (fixes from the alpha, signed build, store page) | 0.2.0-beta.1 | ⬜ |
 | 1.0 on itch.io | 1.0.0 | ⬜ |
@@ -101,6 +102,7 @@ Newest first. Fixed bugs ship in the next alpha build.
 
 | Status | Bug | Cause and fix |
 | --- | --- | --- |
+| ✅ Shipped in 0.2.0-alpha.4.9 | Back of the card: the "Weak to" line was drawn over the saga line ("7 chapters · Died") | A hero with all eight facts and a weakness ran out of room; the saga line was held above the footer but the weak/resist line was not. The facts now measure what must fit and tighten their rows, dropping the last facts only as a last resort (`app/js/card.js`). |
 | ✅ Shipped in 0.2.0-alpha.4.5 | The first-run guide never appears (tester report) | The guide waited for an answer to the HD music question; closing that question another way (Esc, a click outside) skipped it. The guide now starts whenever the question closes (`app/js/menu.js`). The update banner moves above the guide so it no longer covers it. |
 | ✅ Shipped in 0.2.0-alpha.4.5 | "What are Fate Tokens? I threw them away thinking they were points" (tester report) | Results now read "+1 Fate Token (re-spin)", the counter says "Re-spins", and the guide's first step explains them (`engine.js`, `render.js`, `menu.js`). |
 | ✅ Shipped in 0.2.0-alpha.4.5 | Auto-play moves on before you can read the result (tester report) | New Options > General > Auto-play pause: Short 1.5 s (the old speed), Normal 3 s (default), Long 5 s (`app/js/app.js`, `options.js`, `prefs.js`). |

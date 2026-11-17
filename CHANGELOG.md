@@ -4,6 +4,15 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
+## 0.2.0-alpha.4.9 (2026-11-16)
+
+A small fix.
+
+### Fixed
+
+- **The back of the character card**: for heroes with many details, the "Weak to" line was drawn over the saga
+  line ("7 chapters · Died"). The details now make room so every line has its own row.
+
 ## 0.2.0-alpha.4.8 (2026-11-16)
 
 A small update full of new art.
