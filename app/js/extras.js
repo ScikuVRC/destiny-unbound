@@ -306,28 +306,7 @@
       runVersus(A, B);
     };
   }
-  const asFoe = L => {
-    const c = FW.compute(L);
-    return {
-      name: L.displayName(),
-      w: 1,
-      dsl:
-        'lv=' +
-        Math.round(Math.max(1, Math.min(150, c.baseRating))) +
-        (c.atk.length ? ' a=' + c.atk.join(',') : '') +
-        (c.weak.length ? ' w=' + c.weak.join(',') : '') +
-        (c.res.length ? ' r=' + c.res.join(',') : ''),
-    };
-  };
-  FW.versusOdds = function (A, B, arena) {
-    const ra = FW.matchup(A, asFoe(B), arena),
-      rb = FW.matchup(B, asFoe(A), arena);
-    const edge = (ra.hero - ra.opp - (rb.hero - rb.opp)) / 2,
-      draw = 0.05;
-    let pa = (1 / (1 + Math.exp(-edge / 9))) * (1 - draw);
-    pa = Math.min(0.96, Math.max(0.02, pa));
-    return { ra, rb, edge, pA: pa, pDraw: draw, pB: 1 - pa - draw };
-  };
+  // FW.versusOdds (engine.js): the same odds the Discord bot uses
   async function runVersus(A, B) {
     F.abortRun();
     App.closeModal();

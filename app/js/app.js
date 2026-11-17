@@ -152,6 +152,7 @@
     persist();
     FW.Audio.setTheme(name);
     $('#btnTheme').textContent = FW.THEMES[name].name;
+    if (FW.preloadSkin) FW.preloadSkin(name);
     if (state.wheel) state.wheel.setTheme(name);
     renderHomeOpts();
     if (state.screen === 'card' && state.legend) drawCardNow();
@@ -1413,6 +1414,10 @@
 
   document.body.dataset.theme = state.theme;
   ['pointerdown', 'keydown'].forEach(ev => document.addEventListener(ev, () => FW.Audio.init(), { once: true }));
+  // the painted wheel rim for this theme, loaded while the title screen is idle (wheel.js, FW.preloadSkin)
+  (window.requestIdleCallback || (f => setTimeout(f, 400)))(() => FW.preloadSkin && FW.preloadSkin(state.theme), {
+    timeout: 2000,
+  });
   $('#btnTheme').textContent = FW.THEMES[state.theme].name;
   $('#btnLuck').textContent = 'Luck: ' + luckInfo().name;
   renderHomeOpts();

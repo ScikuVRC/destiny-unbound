@@ -28,7 +28,8 @@ const BUDGET = {
   startKB: 2500, // everything the title screen loads: page, scripts, styles, fonts, art (1712 KB on 2026-11-17)
   scriptKB: 1300, // the JavaScript alone (1021 KB on 2026-11-17)
   frameP95Ms: 25, // 95% of frames while spinning arrive within this (60 fps is 16.7 ms between frames)
-  longFrames: 10, // frames over 50 ms in 15 seconds of Auto-spin, mostly between wheels (4 on 2026-11-17)
+  frameMaxMs: 50, // the longest gap while a wheel turns: a stutter you can see (66.7 before the rim fix, now 16.8)
+  longFrames: 6, // frames over 50 ms in 15 s of Auto-spin: opening hero-making and the odd browser pause (2-3)
 };
 
 app.setPath('userData', fs.mkdtempSync(path.join(os.tmpdir(), 'du-perf-')));
@@ -97,6 +98,9 @@ app.whenReady().then(async () => {
     if (p.endsWith('.js')) scriptBytes += b;
   }
 
+  // a player clicks before the first spin (on the title screen): that first input starts the audio, as in the game
+  await js(`document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Shift' })); 1`);
+  await sleep(600);
   // spin: the time between frames while Auto-spin makes a hero, and the browser's own count of long frames
   await js(`(() => {
     window.__gaps = []; window.__long = [];

@@ -37,7 +37,7 @@ npm run lint          # ESLint: real mistakes such as undefined names and duplic
 npm run format        # Prettier: formats JavaScript and JSON (CSS and HTML keep their compact form)
 ```
 
-134 checks in 10 suites:
+139 checks in 10 suites:
 
 - **engine (27):** data validity, unique names, tier shifts, odds, conditional buffs, Legend Codes, arena maths.
 - **art (18):** every generator and language-model connector against a mock server.
@@ -55,8 +55,8 @@ npm run format        # Prettier: formats JavaScript and JSON (CSS and HTML keep
 - **world (12):** the world counter, leaderboard, card codes, error reports and "where I stop playing", in the game
   and on the server. The server tests run the worker against node's built-in SQLite with the real schema
   (`tests/d1.js`), including the daily cap per address and `/v1/health`.
-- **bot (10):** the Discord bot's commands with stand-in interactions (`/spin` cooldown and channel, `/stats`,
-  `/patchnotes` and its autocomplete, the traffic warning).
+- **bot (15):** the Discord bot's commands with stand-in interactions (`/spin` cooldown and channel, `/stats`,
+  `/patchnotes` and its autocomplete, `/daily`, `/legend`, `/versus`, valid command definitions, the traffic warning).
 
 **On every push** (`.github/workflows/ci.yml`), in four jobs:
 
@@ -209,7 +209,7 @@ Uninstalling keeps all of these.
 | `electron/discord.js`, `app/js/presence.js` | Discord status: the local connection to Discord, and what the game shows. Setup: [discord.md](discord.md) |
 | `electron/main.js`, `preload.js` | Desktop shell, crash recovery and the small set of desktop features the page can reach |
 | `worker/` | The Cloudflare Worker behind the opt-in online features: world counter, leaderboard, card codes, error reports, abuse protection ([worker/README.md](../worker/README.md)) |
-| `bot/` | The Discord bot: `/spin`, `/stats`, `/patchnotes` and the traffic warning ([bot/README.md](../bot/README.md)) |
+| `bot/` | The Discord bot: `/spin`, `/stats`, `/patchnotes`, `/daily`, `/legend`, `/versus` and the traffic warning ([bot/README.md](../bot/README.md)) |
 | `modkit/` | The mod kit: guide, reference, JSON schemas and templates (zipped by `npm run modkit`) |
 | `mockups/` | Design mockups; `menu/` holds the painted main menus the game is built from |
 | `docs/` | This guide, modding, Art Studio, alpha test plan, store kit, art and music credits (every AI image and track) |

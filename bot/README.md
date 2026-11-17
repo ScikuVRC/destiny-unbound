@@ -61,8 +61,22 @@ channel. Without it, nothing is checked or posted.
 
 ## Code
 
-`index.js` connects to Discord; `handler.js` decides what each command does and `embeds.js` builds the cards.
+`index.js` connects to Discord; `commands.js` defines the commands, `handler.js` decides what each one does,
+`embeds.js` builds the cards and `legend.js` makes heroes with the game's own code.
 `tests/bot.test.js` drives the handler with stand-in interactions (run `npm ci --prefix bot` once first).
+
+## /daily, /legend and /versus
+
+- `/daily` shows today's daily-challenge leaderboard (the top ten and how many played), from the world counter.
+- `/legend code:DU-7K3QXM` shows a hero from the game as a card, with its saga and epilogue. It takes the short card
+  codes players make in the game (Share > Get a card code) and, when it fits, a full Legend Code (Discord allows 6,000
+  characters, and most full codes are longer).
+- `/versus` lets two heroes fight with the game's own Versus odds in an arena spun with the game's weights. Give
+  each fighter a card code, or leave one or both empty to spin a hero on the spot (`luck` sets their luck). Like
+  `/spin`, it only works in `#spin-the-wheel` where that channel exists.
+
+`/legend` and `/versus` have the same 5-second cooldown per person as `/spin`. All three need `WORLD_URL` for the
+leaderboard and short codes; full codes and spun heroes work without it.
 
 ## /patchnotes
 

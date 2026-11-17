@@ -66,14 +66,15 @@ function statsCard(w) {
     });
 }
 
-function legendCard(L, who) {
+// L: what legend.js describe() returns. author: the line above the title (default: "<who> spun the wheels of fate")
+function legendCard(L, who, author) {
   const pick = k => (L.lines.find(l => l.k === k) || {}).v || '-';
   const stats = ['STRENGTH', 'SPEED', 'DURABILITY', 'INTELLIGENCE', 'FIGHTING SKILLS']
     .map(k => `**${k[0] + k.slice(1).toLowerCase()}:** ${pick(k)}`)
     .join('\n');
-  return new EmbedBuilder()
+  const e = new EmbedBuilder()
     .setColor(COLOURS[L.luck] || GOLD)
-    .setAuthor({ name: `${who} spun the wheels of fate · ${L.luck} luck` })
+    .setAuthor({ name: author || `${who} spun the wheels of fate · ${L.luck} luck` })
     .setTitle(`${L.title}, ${L.race}`)
     .setDescription(`**${L.rank}** · power rating **${L.rating}**`)
     .addFields(
@@ -86,6 +87,49 @@ function legendCard(L, who) {
       { name: 'Stats', value: stats }
     )
     .setFooter({ text: 'Destiny Unbound · free and open source' });
+  if (L.saga) e.addFields({ name: 'Saga', value: cut(L.saga, 1024) });
+  if (L.epilogue) e.addFields({ name: 'Epilogue', value: '*' + cut(L.epilogue, 1000) + '*' });
+  return e;
+}
+const cut = (s, n) => (s.length > n ? s.slice(0, n - 1) + '…' : s);
+
+// /daily: the opt-in daily-challenge leaderboard from the world counter (GET /v1/daily)
+function dailyCard(d) {
+  const top = (d && d.top) || [];
+  const rows = top.map(
+    (r, i) =>
+      `**${i + 1}.** ${r.name}${r.race ? ' (' + r.race + ')' : ''} · **${r.score}** · ` +
+      `${END_LABEL[r.ending] || r.ending || 'still going'}${r.ch ? ' · ' + r.ch + ' ch.' : ''}`
+  );
+  return new EmbedBuilder()
+    .setColor(GOLD)
+    .setTitle(`Daily challenge · ${d.day}`)
+    .setDescription(
+      rows.length
+        ? rows.join('\n')
+        : 'Nobody has posted a score today yet. Play the daily challenge from the home screen to be first.'
+    )
+    .setFooter({
+      text:
+        `${d.players || 0} player${d.players === 1 ? '' : 's'} today · everyone gets the same hero` +
+        ' · posting is opt-in (Options > Data)',
+    });
 }
 
-module.exports = { END_LABEL, COLOURS, notesCard, mergeTotals, statsCard, legendCard };
+// /versus: two heroes, the arena, the odds and who won
+function versusCard(a, b, r) {
+  const pct = p => Math.round(p * 100) + '%';
+  const win = r.winner === 'a' ? a.title : r.winner === 'b' ? b.title : null;
+  const side = x => `**${x.title}**\n${x.race} · ${x.rank} · ${x.rating}`;
+  return new EmbedBuilder()
+    .setColor(r.winner === 'draw' ? 0x777777 : GOLD)
+    .setTitle(win ? `🏆 ${win} wins` : '⚖️ A draw')
+    .setDescription(`At the ${r.arena}. The odds were ${pct(r.pA)} / ${pct(r.pDraw)} draw / ${pct(r.pB)}.`)
+    .addFields(
+      { name: 'Fighter one' + (a.random ? ' (spun now)' : ''), value: side(a), inline: true },
+      { name: 'Fighter two' + (b.random ? ' (spun now)' : ''), value: side(b), inline: true }
+    )
+    .setFooter({ text: "Destiny Unbound · the game's own Versus odds" });
+}
+
+module.exports = { END_LABEL, COLOURS, notesCard, mergeTotals, statsCard, legendCard, dailyCard, versusCard };

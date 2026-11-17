@@ -12,6 +12,27 @@ try {
 const { createHandler, checkHealth, COOLDOWN } = deps;
 const E = require('../bot/embeds.js');
 const { roll } = require('../bot/legend.js');
+const LG = require('../bot/legend.js');
+const { buildCommands } = require('../bot/commands.js');
+// a hero with a finished saga, as a Legend Code (what a short card code stands for)
+const SAGA_HERO = (() => {
+  const L = LG.spinLegend('heroic', 'bot-saga'),
+    S = LG.FW.Story,
+    rng = LG.FW.makeRng('bot-saga:story'),
+    o = {};
+  S.OPTIONS.forEach(x => (o[x.id] = x.def !== false));
+  S.newSaga(L, o, rng);
+  return { L, o, rng };
+})();
+let SAGA_CODE = '';
+const DAILY = {
+  day: '2026-11-17',
+  players: 3,
+  top: [
+    { name: 'The Ashen One', race: 'Elf', score: 140, ending: 'legend', ch: 14 },
+    { name: 'A nameless hero', race: 'Orc', score: 90, ending: 'dead', ch: 6 },
+  ],
+};
 const notes = require('../bot/patchnotes.js');
 const { MessageFlags } = require(
   require.resolve('discord.js', { paths: [require('path').join(__dirname, '..', 'bot')] })
@@ -85,6 +106,15 @@ const json = e => e.toJSON();
       notes,
       now: () => clock,
       log: e => errors.push(e),
+      daily: async () => DAILY,
+      fetchCode: async id => {
+        if (id !== 'DU-ABC123') throw new Error('no card with that code');
+        return SAGA_CODE;
+      },
+      readLegend: LG.readLegend,
+      describe: LG.describe,
+      spinLegend: (luck, seed) => LG.spinLegend(luck, seed || 'test-vs-' + Math.random()),
+      versus: LG.versus,
       ...over,
     });
 
@@ -192,6 +222,113 @@ const json = e => e.toJSON();
     await h(a.i);
     assert(a.out.choices.length > 0 && a.out.choices.length <= 25);
     assert(a.out.choices.every(c => c.name.includes('alpha.4') && c.value === c.name));
+  });
+
+  // finish the sample hero's saga (story turns are async)
+  {
+    const { L, o, rng } = SAGA_HERO,
+      io = { rng, spin: async c => LG.FW.weightedIndex(c.entries, rng) };
+    while (!L.saga.end) await LG.FW.Story.playTurn(L, io, o);
+    SAGA_CODE = L.toCode();
+  }
+
+  await t('every command is a valid Discord command, and the bot registers all six', () => {
+    const list = buildCommands(LG.LUCKS).map(c => c.toJSON());
+    assert.deepStrictEqual(
+      list.map(c => c.name),
+      ['spin', 'stats', 'patchnotes', 'daily', 'legend', 'versus']
+    );
+    list.forEach(c => assert(c.description.length > 0 && c.description.length <= 100, c.name));
+    assert(list.find(c => c.name === 'legend').options[0].required, '/legend needs a code');
+  });
+
+  await t('/legend shows a hero from a short card code, with its saga and epilogue', async () => {
+    const h = make();
+    const { i, out } = fake('legend', { code: 'du-abc123' }, { user: 'L1' });
+    await h(i);
+    const e = json(out.replies[0].embeds[0]);
+    assert.strictEqual(e.title, SAGA_HERO.L.displayName() + ', ' + SAGA_HERO.L.raceName());
+    assert(/Ana the Bold shared a legend · Heroic luck/.test(e.author.name), e.author.name);
+    assert(
+      e.fields.some(f => f.name === 'Saga' && /chapter/.test(f.value)),
+      'saga line'
+    );
+    assert(
+      e.fields.some(f => f.name === 'Epilogue' && f.value.length > 20),
+      'epilogue'
+    );
+    assert.deepStrictEqual(out.replies[0].allowedMentions, { parse: [] });
+  });
+
+  await t('/legend reads a full code too, and answers quietly for a bad or unknown one', async () => {
+    const h = make();
+    const full = fake('legend', { code: LG.spinLegend('mythic', 'full').toCode() }, { user: 'L2' });
+    await h(full.i);
+    assert(/Mythic luck/.test(json(full.out.replies[0].embeds[0]).author.name));
+    for (const [code, user] of [
+      ['hello there', 'L3'],
+      ['DU-ZZZZZZ', 'L4'],
+      ['FW1.broken', 'L5'],
+    ]) {
+      const x = fake('legend', { code }, { user });
+      await h(x.i);
+      assert.strictEqual(x.out.replies[0].flags, MessageFlags.Ephemeral, code);
+      assert(/not a Legend Code I can read/.test(x.out.replies[0].content), code);
+    }
+    const none = fake('legend', { code: 'DU-ABC123' }, { user: 'L6' });
+    await make({ fetchCode: null })(none.i);
+    assert(/need the world counter/.test(none.out.replies[0].content), 'no world counter configured');
+  });
+
+  await t('/versus: two card codes, or heroes spun on the spot, fight with the game odds', async () => {
+    const h = make();
+    const a = fake('versus', { fighter1: 'DU-ABC123' }, { user: 'V1' });
+    await h(a.i);
+    const e = json(a.out.replies[0].embeds[0]);
+    assert(/wins$|draw$/.test(e.title), e.title);
+    assert(/^At the .+\. The odds were \d+% \/ 5% draw \/ \d+%\.$/.test(e.description), e.description);
+    assert(e.fields[0].value.indexOf(SAGA_HERO.L.displayName()) >= 0, 'fighter one is the card');
+    assert(/spun now/.test(e.fields[1].name), 'fighter two was spun');
+    // the odds are the game's own
+    const A = SAGA_HERO.L,
+      B = LG.spinLegend('heroic', 'vs-b'),
+      r = LG.versus(A, B, 'fixed');
+    const o = LG.FW.versusOdds(
+      A,
+      B,
+      LG.FW.ARENAS.find(x => x.name === r.arena)
+    );
+    assert.strictEqual(r.pA, o.pA);
+    assert(Math.abs(r.pA + r.pDraw + r.pB - 1) < 1e-9);
+    // a bad code, the channel rule and the cooldown
+    const bad = fake('versus', { fighter2: 'not a code' }, { user: 'V2' });
+    await h(bad.i);
+    assert(/Could not read a fighter/.test(bad.out.replies[0].content));
+    const away = fake('versus', {}, { guild: guild('general', 'spin-the-wheel'), channelId: 'ch0', user: 'V3' });
+    await h(away.i);
+    assert(/Versus fights happen in <#ch1>/.test(away.out.replies[0].content));
+    const again = fake('versus', {}, { user: 'V1' });
+    await h(again.i);
+    assert(/still turning/.test(again.out.replies[0].content), 'cooldown');
+  });
+
+  await t("/daily shows today's leaderboard, an empty day, and says so when it is unreachable", async () => {
+    const h = make();
+    const a = fake('daily');
+    await h(a.i);
+    const e = json(a.out.edits[0].embeds[0]);
+    assert.strictEqual(e.title, 'Daily challenge · 2026-11-17');
+    assert(/\*\*1\.\*\* The Ashen One \(Elf\) · \*\*140\*\* · 🌟 Passed into legend · 14 ch\./.test(e.description));
+    assert(/^3 players today/.test(e.footer.text));
+    const empty = fake('daily');
+    await make({ daily: async () => ({ day: '2026-11-18', players: 0, top: [] }) })(empty.i);
+    assert(/Nobody has posted a score today/.test(json(empty.out.edits[0].embeds[0]).description));
+    const down = fake('daily');
+    await make({ daily: async () => null })(down.i);
+    assert(/not reachable/.test(down.out.edits[0].content));
+    const off = fake('daily');
+    await make({ daily: null })(off.i);
+    assert(/not set up/.test(off.out.replies[0].content));
   });
 
   await t('other commands and interactions are ignored', async () => {

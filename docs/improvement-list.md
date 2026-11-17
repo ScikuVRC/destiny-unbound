@@ -212,7 +212,7 @@ Everything is synthesized in 146 lines of code: clever and tiny, but it sounds l
 95. ⬜ **Mac and Linux testing (M).** Never tested by a human (issues #2 and #3).
 96. ✅ **Itch.io page refresh (S).** Done 2026-11-14: page refreshed with the trailer and new screenshots. New screenshots, the trailer embed, the 0.2 feature list, a devlog post.
 97. ⬜ **Devlogs (S each).** Itch.io devlogs and a Discord post per release bring players back.
-98. ⬜ **Bot commands (M).** On the 0.2 list: `/daily`, `/legend <code>` to show a card, `/versus`.
+98. ✅ **Bot commands (M).** Done 2026-11-17: `/daily` (today's leaderboard), `/legend` (a hero from a card code, with its saga and epilogue) and `/versus` (two heroes, the game's own odds). On the 0.2 list: `/daily`, `/legend <code>` to show a card, `/versus`.
 99. ⬜ **Mod gallery (M).** A place to share mods and wheel packs: a Discord forum channel first, a page later.
 100. ⬜ **Steam (L).** Decided to wait. Needs a store page, capsule art, Steam achievements, cloud saves and a signed
    build.

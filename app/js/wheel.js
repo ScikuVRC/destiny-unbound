@@ -186,6 +186,12 @@
     }
     return null;
   }
+  // start loading a theme's painted rim and hub early (when the game is idle), so the first wheel is drawn once,
+  // already painted, instead of plain first and again when the pictures arrive (a 25-30 ms hitch)
+  FW.preloadSkin = function (name) {
+    const th = FW.THEMES[name] || FW.THEMES[FW.THEME_ALIAS && FW.THEME_ALIAS[name]];
+    if (th) skinFor(th);
+  };
   function whenSkin(th, fn) {
     const k = th && th.skin;
     if (k) (SKIN_WAIT[k] = SKIN_WAIT[k] || []).push(fn);
@@ -258,7 +264,8 @@
       this.cum[this.cum.length - 1] = 1;
       this.focus = -1;
       this._lastIdx = -1;
-      this.buildFace();
+      // a new wheel only changes the slices; the rim stays (it is rebuilt on resize, theme change and skin load)
+      this.buildFace(!this._rimBuilt);
       this.draw();
     }
     resize() {
@@ -301,12 +308,15 @@
       return { S, cx: S / 2, cy: S / 2, R, Rs: R, rimW, hubR };
     }
     /* static parts: the rim behind the slices (rim canvas) and the slices with labels (off canvas, rotated while spinning) */
-    buildFace() {
+    buildFace(withRim) {
       if (!this.size) return;
       const d = this.dpr,
         G = this.geometry(),
         th = this.theme;
-      this.buildRim(G);
+      if (withRim !== false) {
+        this.buildRim(G);
+        this._rimBuilt = true;
+      }
       const c = this.off.getContext('2d');
       c.setTransform(d, 0, 0, d, 0, 0);
       c.clearRect(0, 0, G.S, G.S);

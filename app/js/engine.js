@@ -463,6 +463,30 @@
     }
   }
   FW.Legend = Legend;
+  /* versus: two legends fight each other; each is turned into a foe for the other, and the edge between them sets
+     the odds (the game's Versus mode and the Discord bot's /versus) */
+  FW.legendAsFoe = L => {
+    const c = FW.compute(L);
+    return {
+      name: L.displayName(),
+      w: 1,
+      dsl:
+        'lv=' +
+        Math.round(Math.max(1, Math.min(150, c.baseRating))) +
+        (c.atk.length ? ' a=' + c.atk.join(',') : '') +
+        (c.weak.length ? ' w=' + c.weak.join(',') : '') +
+        (c.res.length ? ' r=' + c.res.join(',') : ''),
+    };
+  };
+  FW.versusOdds = function (A, B, arena) {
+    const ra = FW.matchup(A, FW.legendAsFoe(B), arena),
+      rb = FW.matchup(B, FW.legendAsFoe(A), arena);
+    const edge = (ra.hero - ra.opp - (rb.hero - rb.opp)) / 2,
+      draw = 0.05;
+    let pa = (1 / (1 + Math.exp(-edge / 9))) * (1 - draw);
+    pa = Math.min(0.96, Math.max(0.02, pa));
+    return { ra, rb, edge, pA: pa, pDraw: draw, pB: 1 - pa - draw };
+  };
   /* codes made before the ladders grew store tier numbers from the old lists: move each to the same tier name */
   FW.upgradeLadderPicks = function (picks) {
     if (!FW.LADDER_V1) return picks;

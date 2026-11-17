@@ -70,7 +70,12 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
 ## Ready for the next alpha (not released yet)
 
-- Nothing yet
+- ✅ Smoother hero-making: the painted wheel rim loads while the title screen is idle, so the first wheel is drawn
+  once instead of twice, and a new wheel no longer repaints the rim. The longest gap while a wheel turns went from
+  67 ms to 17 ms (a steady 60 fps); the performance check now fails if a stutter comes back
+- ✅ Discord bot: `/daily` (today's leaderboard), `/legend` (a hero from a card code, with saga and epilogue) and
+  `/versus` (two heroes fight with the game's own odds). The Versus odds moved into the shared engine so the game
+  and the bot use the same formula. Live once the bot server pulls and restarts
 
 ## Released
 

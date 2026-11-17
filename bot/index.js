@@ -1,13 +1,15 @@
 // Destiny Unbound Discord bot: /spin rolls a random legend with the game's real wheels and shows its card;
 // /stats shows the world counter (heroes made and how sagas ended; see stats.js); /patchnotes shows what changed in a
-// release, read from CHANGELOG.md (patchnotes.js). What each command does is in handler.js, what it shows in
+// release, read from CHANGELOG.md (patchnotes.js); /daily shows today's daily-challenge leaderboard; /legend shows a
+// hero from a card code; /versus lets two heroes fight with the game's Versus odds. What each command does is in handler.js, what it shows in
 // embeds.js; this file only connects them to Discord.
 // Needs DISCORD_TOKEN (the bot's token) in the environment. Run: node bot/index.js
 // Optional: ALERT_CHANNEL_ID, a channel id for a warning when the world counter's traffic jumps (checked hourly).
 // SPDX-License-Identifier: GPL-3.0-or-later
 'use strict';
-const { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder } = require('discord.js');
-const { roll, LUCKS } = require('./legend.js');
+const { Client, GatewayIntentBits, REST, Routes } = require('discord.js');
+const { buildCommands } = require('./commands.js');
+const { roll, LUCKS, readLegend, describe, spinLegend, versus } = require('./legend.js');
 const { createStore, startServer } = require('./stats.js');
 const notes = require('./patchnotes.js');
 const { mergeTotals } = require('./embeds.js');
@@ -24,24 +26,7 @@ if (!/^[\w-]+\.[\w-]+\.[\w-]+$/.test(TOKEN)) {
   process.exit(1);
 }
 
-const commands = [
-  new SlashCommandBuilder()
-    .setName('spin')
-    .setDescription('Spin the wheels of fate and forge a random legend')
-    .addStringOption(o =>
-      o
-        .setName('luck')
-        .setDescription('How kind fate is (default: Heroic)')
-        .addChoices(...LUCKS.map(l => ({ name: l.name, value: l.id })))
-    ),
-  new SlashCommandBuilder().setName('stats').setDescription('How many heroes fate has made, and how their sagas ended'),
-  new SlashCommandBuilder()
-    .setName('patchnotes')
-    .setDescription("What's new in Destiny Unbound")
-    .addStringOption(o =>
-      o.setName('version').setDescription('A version, like 0.2.0-alpha.3 (default: the newest)').setAutocomplete(true)
-    ),
-];
+const commands = buildCommands(LUCKS);
 
 // the game's totals live on the world counter (worker/, WORLD_URL); /spin counts are kept here on the bot server
 async function totals() {
@@ -57,6 +42,25 @@ async function totals() {
   }
 }
 
+// short card codes and the daily leaderboard live on the world counter too
+async function fetchCode(id) {
+  if (!WORLD_URL) throw new Error('short card codes need the world counter');
+  const r = await fetch(WORLD_URL + '/v1/card/' + encodeURIComponent(id), { signal: AbortSignal.timeout(2500) });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok || !j.code) throw new Error(j.error || 'no card with that code');
+  return j.code;
+}
+async function daily() {
+  try {
+    const r = await fetch(WORLD_URL + '/v1/daily', { signal: AbortSignal.timeout(4000) });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return await r.json();
+  } catch (e) {
+    console.error('Daily leaderboard unreachable: ' + e.message);
+    return null;
+  }
+}
+
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.once('clientReady', async () => {
@@ -64,7 +68,7 @@ client.once('clientReady', async () => {
     await new REST({ version: '10' }).setToken(TOKEN).put(Routes.applicationCommands(client.user.id), {
       body: commands.map(c => c.toJSON()),
     });
-    console.log(`Logged in as ${client.user.tag}; /spin, /stats and /patchnotes are registered.`);
+    console.log(`Logged in as ${client.user.tag}; ${commands.map(c => '/' + c.name).join(', ')} are registered.`);
   } catch (e) {
     console.error('Could not register the commands: ' + e.message);
   }
@@ -84,7 +88,22 @@ client.once('clientReady', async () => {
   }
 });
 
-client.on('interactionCreate', createHandler({ roll, store, totals, notes, spinChannel: SPIN_CHANNEL }));
+client.on(
+  'interactionCreate',
+  createHandler({
+    roll,
+    store,
+    totals,
+    notes,
+    spinChannel: SPIN_CHANNEL,
+    daily: WORLD_URL ? daily : null,
+    fetchCode: WORLD_URL ? fetchCode : null,
+    readLegend,
+    describe,
+    spinLegend,
+    versus,
+  })
+);
 
 if (process.env.STATS_PORT) startServer(store, +process.env.STATS_PORT, process.env.STATS_HOST);
 process.on('SIGTERM', () => {
