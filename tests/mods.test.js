@@ -243,5 +243,27 @@ t('official mods ship with the game, are valid, are cached offline and match the
   });
 });
 
+t("a mod's workshop changes (removed and reweighted entries) apply while the mod is on, under the player's own", () => {
+  const mod = M.validate({
+    format: 'fatewheel-mod',
+    id: 'workshop-test',
+    packs: [{ name: 'Pets', workshop: { pet: { removed: ['Raven'], weights: { 'Loyal Hound': 20 } } } }],
+  });
+  mod.enabled = true;
+  M.loaded.push(mod);
+  try {
+    let ov = FW.mergeOverrides({ pet: { weights: { 'Loyal Hound': 3 } } });
+    assert.deepStrictEqual(ov.pet.removed, ['Raven']);
+    assert.strictEqual(ov.pet.weights['Loyal Hound'], 3, "the player's own edit wins");
+    const st = FW.buildStage('pet', new FW.Legend({ seed: 'ws' }), { overrides: ov });
+    assert(!st.entries.some(e => e.name === 'Raven'), 'removed entry still on the wheel');
+    mod.enabled = false;
+    ov = FW.mergeOverrides({});
+    assert(!(ov.pet && ov.pet.removed.includes('Raven')), 'a switched-off mod still changes the wheel');
+  } finally {
+    M.loaded.splice(M.loaded.indexOf(mod), 1);
+  }
+});
+
 console.log('\n' + pass + ' of ' + (pass + fail) + ' checks passed');
 process.exit(fail ? 1 : 0);

@@ -147,11 +147,16 @@
       }
     });
 
-  /* Workshop edits from enabled packs sit underneath the player's own edits */
+  /* Workshop edits from enabled packs and enabled mods' packs sit underneath the player's own edits */
   FW.mergeOverrides = function (user) {
     const out = {};
+    const fromMods = ((FW.Mods && FW.Mods.loaded) || [])
+      .filter(m => m.enabled)
+      .reduce((a, m) => a.concat(m.packs || []), []);
     packs()
-      .filter(p => p.enabled && p.workshop)
+      .filter(p => p.enabled)
+      .concat(fromMods)
+      .filter(p => p.workshop)
       .forEach(p =>
         Object.keys(p.workshop).forEach(k => {
           const o = (out[k] = out[k] || { weights: {}, removed: [], added: [] });

@@ -26,7 +26,8 @@
     const p = state.person;
     const sel = PRESETS.map(x => {
       // entries removed in the Wheel Workshop aren't offered (they can never land, so picking one did nothing)
-      const removed = ((state.overrides && state.overrides[x[0]]) || {}).removed || [];
+      const ov = FW.mergeOverrides ? FW.mergeOverrides(state.overrides) : state.overrides;
+      const removed = ((ov && ov[x[0]]) || {}).removed || [];
       const names = x[2]()
         .map(r => r.name)
         .filter(n => removed.indexOf(n) < 0 || p.presets[x[0]] === n)
