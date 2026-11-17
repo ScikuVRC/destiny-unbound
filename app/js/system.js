@@ -338,6 +338,7 @@
     const w = App.state.screen;
     stats.quitOn[w] = (stats.quitOn[w] || 0) + 1;
     saveStats();
+    if (FW.World && FW.World.quitsEnabled()) FW.World.sendQuit(App.state.where || w); // opt-in, off by default
   });
 
   /* ---------------- mute while the window is in the background ---------------- */

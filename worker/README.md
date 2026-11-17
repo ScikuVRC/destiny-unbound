@@ -34,6 +34,9 @@ npx wrangler deploy
 - `POST /v1/card` with `{"code":"FW1...."}` stores a Legend Code and returns `{ id: "DU-7K3QXM", days: 90 }` (the same
   code always gets the same id); `GET /v1/card/DU-7K3QXM` returns `{ id, code }`. Checked in `src/cards.js`; rows
   older than 90 days are deleted.
+- `POST /v1/count` with `{"kind":"quit","where":"story:dragon"}`: where a player stopped (a separate opt-in in the
+  game). `where` is a screen (`title`, `home`, `card`, `options`, `spin`) or `make:<wheel id>` / `story:<chapter id>`;
+  at most 400 different places are kept. Not part of `/v1/totals`; read them with `node scripts/quit-report.js`.
 - `POST /v1/error` with `{"version","platform","kind","screen","message","detail","note"}` stores an error report a
   player chose to send (checked and cleaned in `src/errors.js`) and returns `{ ok, id }`. Kept 30 days, at most 2000.
   There is no way to read them over the web: run `node scripts/error-reports.js [count] [--full]` (uses wrangler).

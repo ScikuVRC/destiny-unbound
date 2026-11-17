@@ -1114,6 +1114,10 @@
       'Painted wheel rims': 'Gemalte Radränder',
       'A painted rim and hub for each theme. Switch off for the drawn rim and slightly bigger slices.':
         'Ein gemalter Rand und eine Nabe für jedes Design. Schalte es aus für den gezeichneten Rand und etwas größere Felder.',
+      /* where I stop playing (opt-in) */
+      'Share where I stop playing': 'Teilen, wo ich aufhöre',
+      'Off by default. When on, closing the game sends one anonymous count of where you stopped: the screen, or the hero wheel or story chapter you were on. No names, codes or IDs. It shows which parts make people leave.':
+        'Standardmäßig aus. Wenn an, sendet das Schließen des Spiels eine anonyme Zählung, wo du aufgehört hast: den Bildschirm oder das Heldenrad oder Geschichtskapitel, bei dem du warst. Keine Namen, Codes oder IDs. So sieht man, an welchen Stellen Leute aufhören.',
     },
   };
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -225,6 +225,7 @@
         if (cfg.kind === 'story') {
           const ch = S.CHAPTER_BY_ID[e.id];
           curCh = ch;
+          st.where = st.spinWhere = 'story:' + ch.id;
           banner('picked'); // the chapter is chosen but not counted yet
           return {
             sub: tt('Chapter') + ' ' + (L.saga.ch + 1),
@@ -250,6 +251,7 @@
     if (!L) return;
     F.abortRun();
     App.closeModal();
+    st.where = st.spinWhere = 'spin'; // until a chapter is picked
     const run = F.newRun();
     if (!L.saga) {
       S.newSaga(L, opts(), st.rng);

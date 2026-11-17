@@ -1,6 +1,6 @@
 # Destiny Unbound: what can be improved
 
-Written 2026-11-13, after 0.2.0-alpha.1. Checkmarks updated 2026-11-16, after 0.2.0-alpha.4.7 (36 of 102 done). Based on a pass through the code, assets, tests and docs.
+Written 2026-11-13, after 0.2.0-alpha.1. Checkmarks updated 2026-11-16, after 0.2.0-alpha.4.7 (40 of 102 done). Based on a pass through the code, assets, tests and docs.
 Each item has a rough size: **S** (an hour or two), **M** (a day), **L** (several days or more).
 Items marked ★ are the ones I'd do first. ✅ = done, ⬜ = not yet. Numbers stay the same as items get done.
 
@@ -193,12 +193,12 @@ Everything is synthesized in 146 lines of code: clever and tiny, but it sounds l
 
 87. ✅ **Per-race and per-class win rates (S).** Done 2026-11-14: `scripts/win-rates.js`, and the weakest races and classes tuned. The balance report shows the strongest and weakest races; act on
    them. The spread is about 10 points at each luck level.
-88. ⬜ **Achievement rates (S).** "Dynasty" is at 0% and "Creature of Habit" can't be simulated; tune or redesign.
-89. ⬜ **Ending spread (S).** "Prophecy fulfilled" (about 1%) and "sealed away" (about 2%) are rare enough that most
+88. ✅ **Achievement rates (S).** Done 2026-11-16: the report plays heirs (Dynasty 7%), marks what it cannot simulate, and Born Divine stays rare on purpose. "Dynasty" is at 0% and "Creature of Habit" can't be simulated; tune or redesign.
+89. ✅ **Ending spread (S).** Done 2026-11-16: retiring 54% to 43%, legend 7% to 14%; Ascended, Undying and Damned stay rare on purpose. "Prophecy fulfilled" (about 1%) and "sealed away" (about 2%) are rare enough that most
    players will never see them. Decide which should be rare on purpose.
 90. ⬜ **Run the balance report in CI (S)** and fail when a number leaves its target range.
-91. ⬜ **Use the world counter data (S).** Once players opt in, compare real endings with the simulated ones.
-92. ⬜ **Telemetry for fun, not only fairness (M).** Which chapters make people quit? The local stats already count
+91. ✅ **Use the world counter data (S).** Done 2026-11-16: `scripts/world-vs-sim.js` compares real and simulated endings (waits for 50 real sagas). Once players opt in, compare real endings with the simulated ones.
+92. ✅ **Telemetry for fun, not only fairness (M).** Done 2026-11-16: the opt-in "Share where I stop playing" and `scripts/quit-report.js`. Which chapters make people quit? The local stats already count
    "quit on screen"; an opt-in aggregate would answer it.
 
 ---

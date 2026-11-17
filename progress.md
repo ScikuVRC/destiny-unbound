@@ -68,7 +68,11 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
 ## Ready for the next alpha (not released yet)
 
-- Nothing yet
+- ✅ Balance and data (improvements 88, 89, 91, 92), 2026-11-16:
+  - **Achievement report** plays on as the heir, so Dynasty is measured (7%, was a false 0%); Creature of Habit is marked "not simulated"; Born Divine stays rare (0.4%, the God race)
+  - **Ending spread**: retired 54% to 43%, passed into legend 7% to 14%, all deaths about 36% at Heroic (was 40%), median saga 13 chapters (was 12); the prophecy's "ride into legend" ending is more likely
+  - **`node scripts/world-vs-sim.js`** compares the world counter's real endings with the simulation (needs 50 real sagas; there are none yet)
+  - **"Share where I stop playing"**, a new opt-in (off by default): one anonymous count of the screen, hero wheel or story chapter on close; `node scripts/quit-report.js` shows them. Worker deployed 2026-11-16 (checked with a test count, then removed)
 
 ## Released
 
@@ -194,8 +198,9 @@ Newest first. Fixed bugs ship in the next alpha build.
 | Arena average win chance (Mortal / Heroic / Mythic / Divine) | 43% / 57% / 72% / 85% (was 36 / 51 / 69 / 84) | `node scripts/balance-report.js 10000 10000` |
 | Mortal-luck arena fights at 10% or less | 12% (was 23%) | balance report |
 | Story battles, average win chance (Heroic) | 54% (was 45%) | balance report |
-| Sagas ending in a death (Heroic) | 40% (was 48%) | balance report |
-| Saga length (median / 1 in 10) | 12-13 / 28 chapters (was 7-8 / 18) | balance report |
+| Sagas ending in a death (Heroic) | 36% (was 40%, and 48% before that) | balance report |
+| Sagas ending in retirement / passing into legend (Heroic) | 42% / 15% (was 54% / 7%) | balance report |
+| Saga length (median / 1 in 10) | 13 / 28 chapters (was 12, and 7-8 / 18 before that) | balance report |
 | Deaths in chapter 1 | 2-3% (was 5-9%) | balance report |
 | Installer size | about 120 MB | `npm run dist` |
 
@@ -219,3 +224,5 @@ Newest first. Fixed bugs ship in the next alpha build.
 | 2026-11-16 | Fate Tokens are called re-spins wherever the player sees them; auto-play waits 3 s on a result by default |
 | 2026-11-16 | Social posts (TikTok, Discord) only go out after the developer confirms the exact text |
 | 2026-11-16 | Error reports are never automatic: a note offers to send one, the player sees the exact text, and only their click sends it (kept 30 days, no IPs or IDs) |
+| 2026-11-16 | A third opt-in, "Share where I stop playing" (Options > Data, off by default): one anonymous count of the screen, hero wheel or story chapter when the game closes. Analytics otherwise stay local |
+| 2026-11-16 | Ending spread: retiring was half of all sagas. The retire chapter now becomes "Passed into legend" more often (35% from chapter 10) and its slice grows more slowly, so sagas run a little longer. Ascended, Undying and Damned stay rare on purpose |

@@ -125,6 +125,9 @@
   const luckInfo = () => FW.LUCK.find(l => l.id === state.luck);
   function show(name) {
     state.screen = name;
+    // where the player is, for the opt-in "where I stop playing" count (world.js): refined to the hero wheel or story
+    // chapter while on the spin screen (state.spinWhere), and restored when coming back to it (from Options, say)
+    state.where = name === 'spin' && state.spinWhere ? state.spinWhere : name;
     document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === 'screen-' + name));
     document.body.classList.toggle('on-title', name === 'title');
     window.scrollTo(0, 0);
@@ -571,6 +574,7 @@
       let i = -1;
       while ((i = FW.nextStageIndex(L, i)) < FW.STAGES.length) {
         const def = FW.STAGES[i];
+        state.where = state.spinWhere = 'make:' + def.id;
         const stage = FW.buildStage(def.id, L, {
           overrides: FW.mergeOverrides ? FW.mergeOverrides(state.overrides) : state.overrides,
         });
@@ -757,6 +761,7 @@
     const run = ++state.runId;
     const L = state.legend;
     state.fight = {};
+    state.where = state.spinWhere = 'spin';
     state.auto = false;
     syncAutoBtn();
     show('spin');

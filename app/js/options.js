@@ -586,6 +586,11 @@
             tog('board', FW.World.boardEnabled(), 'Post my daily challenge results'),
             'Off by default. When on, finishing a daily challenge saga posts your hero\'s name, race, score, ending and chapter count to that day\'s leaderboard, with a random id so you appear once a day. Names with rude words are shown as "A nameless hero". Nothing else is sent.'
           ) +
+          row(
+            'Share where I stop playing',
+            tog('quits', FW.World.quitsEnabled(), 'Share where I stop playing'),
+            'Off by default. When on, closing the game sends one anonymous count of where you stopped: the screen, or the hero wheel or story chapter you were on. No names, codes or IDs. It shows which parts make people leave.'
+          ) +
           '</div>';
       }
       h +=
@@ -791,6 +796,7 @@
     } else if (id === 'autoUpd') App.store.set('fw.updates', { auto: on });
     else if (id === 'world') FW.World.setEnabled(on);
     else if (id === 'board') FW.World.setBoard(on);
+    else if (id === 'quits') FW.World.setQuits(on);
     else if (id.indexOf('story:') === 0) {
       const k = id.slice(6),
         cur = App.store.get('fw.options', {});

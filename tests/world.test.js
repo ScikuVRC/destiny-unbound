@@ -311,6 +311,64 @@ async function t(name, fn) {
     }
   );
 
+  await t(
+    '"where I stop playing" is off by default, sends only a screen or an id, and the server caps it',
+    async () => {
+      const sent = [],
+        mem = {};
+      globalThis.window = globalThis;
+      globalThis.fetch = async (url, o) => (
+        sent.push({ url, body: o && o.body }),
+        { ok: true, json: async () => ({}) }
+      );
+      const realNav = Object.getOwnPropertyDescriptor(globalThis, 'navigator');
+      Object.defineProperty(globalThis, 'navigator', {
+        value: { sendBeacon: (url, blob) => (sent.push({ url, blob }), true) },
+        configurable: true,
+        writable: true,
+      });
+      globalThis.FWApp = { store: { get: (k, d) => (k in mem ? mem[k] : d), set: (k, v) => (mem[k] = v) } };
+      globalThis.FW = { WORLD_URL: 'https://counter.example' };
+      delete require.cache[require.resolve('../app/js/world.js')];
+      require('../app/js/world.js');
+      const W = globalThis.FW.World;
+      assert(!W.quitsEnabled() && !W.sendQuit('spin') && sent.length === 0, 'sent something while off');
+      W.setQuits(true);
+      assert(!W.enabled() && !W.boardEnabled(), 'a separate switch from the counter and the board');
+      assert(W.sendQuit('spin') && W.sendQuit('make:race') && W.sendQuit('story:dragon'));
+      ['', 'my name', 'story:Some Free Text', 'make:race; drop', 'arena'].forEach(x => assert(!W.sendQuit(x), x));
+      assert.strictEqual(sent.length, 3);
+      assert(sent.every(x => x.url === 'https://counter.example/v1/count'));
+      assert.deepStrictEqual(JSON.parse(await sent[2].blob.text()), { kind: 'quit', where: 'story:dragon' });
+      if (realNav) Object.defineProperty(globalThis, 'navigator', realNav);
+      else delete globalThis.navigator;
+
+      const Wk = (await import('../worker/src/index.js')).default;
+      const rows = new Map();
+      const DB = {
+        prepare: sql => ({
+          bind: (...a) => ({
+            run: async () => (rows.set(a[0], (rows.get(a[0]) || 0) + 1), {}),
+            first: async () => (rows.has(a[0]) ? { 1: 1 } : null),
+          }),
+          first: async () => ({ n: [...rows.keys()].filter(k => k.startsWith('quit:')).length }),
+        }),
+      };
+      const post = body =>
+        Wk.fetch(new Request('https://x/v1/count', { method: 'POST', body: JSON.stringify(body) }), { DB });
+      assert.strictEqual((await post({ kind: 'quit', where: 'story:dragon' })).status, 204);
+      assert.strictEqual(rows.get('quit:story:dragon'), 1);
+      assert.strictEqual((await post({ kind: 'quit', where: 'free text here' })).status, 400);
+      for (let i = rows.size; i < 400; i++) rows.set('quit:make:w' + i, 1);
+      assert.strictEqual((await post({ kind: 'quit', where: 'story:another' })).status, 400, 'capped at 400 places');
+      assert.strictEqual(
+        (await post({ kind: 'quit', where: 'story:dragon' })).status,
+        204,
+        'a known place still counts'
+      );
+    }
+  );
+
   fs.rmSync(dir, { recursive: true, force: true });
   console.log('\n' + pass + ' of ' + (pass + fail) + ' checks passed');
   process.exit(fail ? 1 : 0);

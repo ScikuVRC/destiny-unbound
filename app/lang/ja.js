@@ -1104,6 +1104,10 @@
       'Painted wheel rims': '描かれたホイールの縁',
       'A painted rim and hub for each theme. Switch off for the drawn rim and slightly bigger slices.':
         'テーマごとに描かれた縁と中心飾り。オフにすると描画の縁になり、枠が少し大きくなります。',
+      /* where I stop playing (opt-in) */
+      'Share where I stop playing': 'どこでやめたかを共有',
+      'Off by default. When on, closing the game sends one anonymous count of where you stopped: the screen, or the hero wheel or story chapter you were on. No names, codes or IDs. It shows which parts make people leave.':
+        '既定ではオフ。オンにすると、ゲームを閉じたときにどこでやめたかを匿名で1件送ります（画面、または主人公作りのルーレットや物語の章）。名前、コード、IDは送りません。どこで離れる人が多いかがわかります。',
     },
   };
 })(typeof window !== 'undefined' ? window : globalThis);

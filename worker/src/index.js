@@ -2,6 +2,8 @@
 // when a player who opted in finishes a hero or a saga ends; the Discord bot's /stats reads the totals.
 // Only numbers are stored for the counter: no IPs, names, legend codes or IDs.
 // POST /v1/count  {"kind":"hero"} or {"kind":"end","end":"dead"}   ·   GET /v1/totals
+// Where players stop (a separate opt-in): POST /v1/count {"kind":"quit","where":"story:dragon"}; not in /v1/totals,
+//   read with scripts/quit-report.js
 // Daily leaderboard (a separate opt-in): POST /v1/daily {day,pid,name,race,score,end,ch} · GET /v1/daily?day=YYYY-MM-DD
 //   It stores the hero's name (filtered), race, score, ending and chapters, and a random per-install id. No IPs.
 // Short card codes: POST /v1/card {code} -> {id}, GET /v1/card/<id> -> {code}. Only the Legend Code is stored, 90 days.
@@ -14,6 +16,8 @@ import * as errors from './errors.js';
 
 const ENDINGS = ['dead', 'retired', 'ascended', 'lost', 'martyr', 'sealed', 'damned', 'fulfilled', 'undying', 'legend'];
 const MORTAL = { dead: 1, martyr: 1, sealed: 1, damned: 1, undying: 1 };
+const WHERE = /^(title|home|card|options|spin)$|^(make|story):[A-Za-z0-9]{1,24}$/;
+const MAX_PLACES = 400;
 const CORS = { 'Access-Control-Allow-Origin': '*' };
 const json = (body, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -60,8 +64,17 @@ export default {
       } catch (e) {
         return json({ error: 'bad json' }, 400);
       }
-      const key =
+      let key =
         j && j.kind === 'hero' ? 'hero' : j && j.kind === 'end' && ENDINGS.includes(j.end) ? 'end:' + j.end : null;
+      // "where I stop playing" (a separate opt-in): a screen, or a wheel or chapter id; at most MAX_PLACES places
+      if (!key && j && j.kind === 'quit' && WHERE.test(String(j.where || ''))) {
+        key = 'quit:' + j.where;
+        const known = await env.DB.prepare('SELECT 1 FROM counts WHERE k = ?').bind(key).first();
+        if (!known) {
+          const c = await env.DB.prepare("SELECT COUNT(*) AS n FROM counts WHERE k LIKE 'quit:%'").first();
+          if (c && c.n >= MAX_PLACES) return json({ error: 'too many places' }, 400);
+        }
+      }
       if (!key) return json({ error: 'unknown count' }, 400);
       await env.DB.prepare('INSERT INTO counts (k, n) VALUES (?, 1) ON CONFLICT(k) DO UPDATE SET n = n + 1')
         .bind(key)

@@ -156,6 +156,9 @@ The game keeps your saves and play stats on your own device. It sends nothing un
   name, race, score, ending and chapter count to that day's top ten, with a random id so you appear once a day.
   Names with rude words show as "A nameless hero". Entries are deleted after 14 days. Opening the leaderboard
   is always your own click.
+- **Where I stop playing** (Options > Data, off by default): when you close the game, sends one anonymous count of
+  where you were: the screen, or the hero wheel or story chapter. No names, codes or IDs. It shows which parts make
+  people leave.
 - **Card codes** (only when you press **Get a card code** on a card): your card's Legend Code (your hero's rolls,
   name and saga) is stored on the server for 90 days so anyone with the short code can open it. Nothing about you.
 - **Error reports** (only when you press **Send report**): when something goes wrong, a small note offers to send a

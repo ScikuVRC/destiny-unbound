@@ -7,7 +7,10 @@
   const FW = (g.FW = g.FW || {});
   const App = g.FWApp;
   const KEY = 'fw.world',
-    BOARD = 'fw.board';
+    BOARD = 'fw.board',
+    QUITS = 'fw.quits';
+  // "where I stop playing": a screen, or a hero-making wheel or story chapter by its id (never free text)
+  const WHERE = /^(title|home|card|options|spin)$|^(make|story):[A-Za-z0-9]{1,24}$/;
   const ENDINGS = [
     'dead',
     'retired',
@@ -97,6 +100,34 @@
         return j && Array.isArray(j.top) ? j : null;
       } catch (e) {
         return null;
+      }
+    },
+    /* ---------- where players stop: a third opt-in (Options > Data, off by default) ----------
+       When on, closing the game sends one count of where you were: the screen, or the hero-making wheel or story
+       chapter by its id. Nothing else: no names, codes or IDs. It shows which wheels or chapters people leave on. */
+    quitsEnabled: () => !!(W.url && App && App.store.get(QUITS, { on: false }).on),
+    setQuits(on) {
+      if (App) App.store.set(QUITS, { on: !!on });
+    },
+    sendQuit(where) {
+      if (!W.quitsEnabled() || !WHERE.test(String(where || ''))) return false;
+      const body = JSON.stringify({ kind: 'quit', where });
+      try {
+        // the page is closing: a beacon still gets out; fall back to a keepalive request
+        if (g.navigator && g.navigator.sendBeacon) {
+          if (g.navigator.sendBeacon(W.url + '/v1/count', new Blob([body], { type: 'text/plain' }))) return true;
+        }
+        fetch(W.url + '/v1/count', {
+          method: 'POST',
+          body,
+          headers: { 'Content-Type': 'text/plain' },
+          keepalive: true,
+          credentials: 'omit',
+          referrerPolicy: 'no-referrer',
+        }).catch(() => {});
+        return true;
+      } catch (e) {
+        return false;
       }
     },
     /* the world totals, or null if the server can't be reached. Only asked for while the counter is on. */

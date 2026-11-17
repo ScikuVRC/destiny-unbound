@@ -1881,7 +1881,7 @@
                     }),
                     good(
                       'Ride into legend',
-                      1.5,
+                      2.5,
                       'rt+3',
                       '{hero} takes the crown, rules for a day and rides away into legend.',
                       { end: 'fulfilled', fx: done }
@@ -1897,7 +1897,7 @@
                     ),
                     good(
                       'Ride into legend',
-                      1.5,
+                      2.5,
                       'rt+3',
                       '{hero} saves the world and walks off into the sunrise, a prophecy fulfilled.',
                       { end: 'fulfilled', fx: done }
@@ -2562,7 +2562,7 @@
       repeat: true,
       retire: true,
       run: async (L, io, c) =>
-        L.saga.ch >= 12 && io.rng() < 0.2
+        L.saga.ch >= 10 && io.rng() < 0.35
           ? S.apply(
               L,
               good(
@@ -2583,7 +2583,7 @@
   /* ---------------- the story wheel ---------------- */
   S.retireWeight = function (L, o) {
     const s = L.saga || { ch: 0 };
-    let w = 0.8 + 0.25 * s.ch;
+    let w = 0.8 + 0.18 * s.ch;
     if (o.aging && S.isOld(L)) {
       const life = S.lifespan(L),
         a = S.age(L);

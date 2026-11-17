@@ -1114,6 +1114,10 @@
       'Painted wheel rims': 'Bordures de roue peintes',
       'A painted rim and hub for each theme. Switch off for the drawn rim and slightly bigger slices.':
         'Une bordure et un moyeu peints pour chaque thème. Désactive-les pour la bordure dessinée et des parts un peu plus grandes.',
+      /* where I stop playing (opt-in) */
+      'Share where I stop playing': 'Partager où j’arrête de jouer',
+      'Off by default. When on, closing the game sends one anonymous count of where you stopped: the screen, or the hero wheel or story chapter you were on. No names, codes or IDs. It shows which parts make people leave.':
+        'Désactivé par défaut. Si tu l’actives, fermer le jeu envoie un décompte anonyme de l’endroit où tu t’es arrêté : l’écran, ou la roue du héros ou le chapitre de l’histoire où tu étais. Ni noms, ni codes, ni identifiants. Ça montre quelles parties font partir les joueurs.',
     },
   };
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -1,5 +1,7 @@
 // Achievement report: plays many legends and sagas with honest odds and counts how often each achievement would
-// unlock, checking after every chapter. An achievement at 0% may be impossible to earn.
+// unlock, checking after every chapter. When a saga ends with an heir, it plays on as the heir (up to three
+// generations), the way a player who keeps a house going would. An achievement at 0% may be impossible to earn.
+// Achievements the simulation cannot reach (daily challenges on different days) are marked "not simulated".
 // Run: node scripts/achievement-report.js [sagasPerLuck]
 // SPDX-License-Identifier: GPL-3.0-or-later
 globalThis.window = globalThis;
@@ -75,11 +77,21 @@ const test = (L, seen) =>
       S.OPTIONS.forEach(o => (opts[o.id] = o.def !== false));
       S.newSaga(L, opts, rng);
       const io = { rng, spin: async cfg => FW.weightedIndex(cfg.entries, rng) };
-      for (let t = 0; !L.saga.end && t < 400; t++) {
-        await S.playTurn(L, io, opts);
-        test(L, seen);
+      let cur = L;
+      for (let gen = 1; gen <= 3; gen++) {
+        for (let t = 0; !cur.saga.end && t < 400; t++) {
+          await S.playTurn(cur, io, opts);
+          test(cur, seen);
+        }
+        test(cur, seen);
+        if (!S.canContinue(cur, opts)) break;
+        // the heir: a new hero spun with the same odds, then started with what the parent passes on
+        const inh = S.inheritance(cur),
+          child = legend('ach-' + lk + i + ':heir' + gen, lk);
+        S.startHeir(child, inh, opts, rng);
+        cur = child;
+        test(cur, seen);
       }
-      test(L, seen);
       seen.forEach(id => {
         hits[id] = (hits[id] || 0) + 1;
       });
@@ -87,14 +99,16 @@ const test = (L, seen) =>
     }
   }
   console.log('Achievements over ' + total.n + ' legends with sagas (all luck levels):');
+  const NOT_SIMULATED = { daily3: 1 };
   FW.ACHIEVEMENTS.forEach(a =>
     console.log(
       '  ' +
-        (hits[a.id] ? '' : '!! ') +
+        (NOT_SIMULATED[a.id] ? '-- ' : hits[a.id] ? '' : '!! ') +
         a.name.padEnd(24) +
         (((100 * (hits[a.id] || 0)) / total.n).toFixed(2) + '%').padStart(8) +
         '   ' +
-        a.desc
+        a.desc +
+        (NOT_SIMULATED[a.id] ? '  (not simulated)' : '')
     )
   );
 })();
