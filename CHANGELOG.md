@@ -4,6 +4,22 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
+## 0.2.0-alpha.5.0 (2026-11-16)
+
+A small update: more varied saga endings, and a new opt-in to help find where the game loses people.
+
+### Changed
+
+- **More varied endings.** Retiring used to end half of all sagas. Now the retire chapter more often becomes
+  "Passed into legend", sagas run a little longer, and a fulfilled prophecy is likelier to end in legend. At
+  Heroic luck: retired 54% to 42%, passed into legend 7% to 15%, deaths 40% to 36%.
+
+### New
+
+- **Share where I stop playing** (Options > Data, off by default): when you close the game, it sends one
+  anonymous count of where you were (the screen, or the hero wheel or story chapter). No names, codes or IDs.
+  It shows which parts of the game make people leave.
+
 ## 0.2.0-alpha.4.9 (2026-11-16)
 
 A small fix.

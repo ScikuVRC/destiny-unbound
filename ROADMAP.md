@@ -47,6 +47,7 @@ in [docs/release-plan.md](docs/release-plan.md).
 
 ## Recently done
 
+- 0.2.0-alpha.5.0: more varied saga endings, opt-in "where I stop playing" counts.
 - 0.2.0-alpha.4.9: fix for overlapping text on the back of the card.
 - 0.2.0-alpha.4.8: Verdant Wild theme, painted wheel rims, chapter illustrations, achievement badges.
 - 0.2.0-alpha.4.7: error reports (only when you press Send), phones held sideways fit the spin screen.

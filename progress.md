@@ -2,7 +2,7 @@
 
 A running record of where the game stands. Update it when something ships, starts or gets decided.
 This file is public: server addresses, account, payment and moderation details go in `private-notes.md` (not on GitHub).
-Last updated: 2026-11-16 · Current version: **0.2.0-alpha.4.9**
+Last updated: 2026-11-16 · Current version: **0.2.0-alpha.5.0**
 
 Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
@@ -41,6 +41,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 | Error reports you choose to send (with a crash offer on desktop), phones held sideways fit the spin and story screens (small update) | 0.2.0-alpha.4.7 | ✅ released 2026-11-16 |
 | New art: Verdant Wild theme, painted wheel rims and hubs, chapter illustrations, achievement badges, painted title on phones, WebP title art (small update) | 0.2.0-alpha.4.8 | ✅ released 2026-11-16 |
 | The back of the card: the weak/resist line no longer overlaps the saga line (bug fix) | 0.2.0-alpha.4.9 | ✅ released 2026-11-16 |
+| More varied saga endings, opt-in "where I stop playing" counts, achievement report plays heirs (small update) | 0.2.0-alpha.5.0 | ✅ released 2026-11-16 |
 | Alpha test with 5-15 players | two weeks after release | ⬜ |
 | Beta (fixes from the alpha, signed build, store page) | 0.2.0-beta.1 | ⬜ |
 | 1.0 on itch.io | 1.0.0 | ⬜ |
@@ -68,11 +69,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
 ## Ready for the next alpha (not released yet)
 
-- ✅ Balance and data (improvements 88, 89, 91, 92), 2026-11-16:
-  - **Achievement report** plays on as the heir, so Dynasty is measured (7%, was a false 0%); Creature of Habit is marked "not simulated"; Born Divine stays rare (0.4%, the God race)
-  - **Ending spread**: retired 54% to 43%, passed into legend 7% to 14%, all deaths about 36% at Heroic (was 40%), median saga 13 chapters (was 12); the prophecy's "ride into legend" ending is more likely
-  - **`node scripts/world-vs-sim.js`** compares the world counter's real endings with the simulation (needs 50 real sagas; there are none yet)
-  - **"Share where I stop playing"**, a new opt-in (off by default): one anonymous count of the screen, hero wheel or story chapter on close; `node scripts/quit-report.js` shows them. Worker deployed 2026-11-16 (checked with a test count, then removed)
+- Nothing yet
 
 ## Released
 
