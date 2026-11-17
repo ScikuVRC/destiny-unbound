@@ -4,6 +4,49 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
+## 0.3.0-alpha.2 (2026-11-17)
+
+### New
+
+- **Old legends return.** Heroes in your Hall of Legends who lived, or cheated death, can turn up in a new saga as a
+  mentor, a rival who wants to test you, or a stranger by the fire. You can switch it off in the story options.
+- **Player level and card backs.** Every hero, chapter, ending and achievement gives experience (each only once).
+  Levels unlock new card backs: Starfield, Rune circle, Gilded lattice, Embers and Void spiral.
+- **A Hall worth visiting.** Pin up to five favourite heroes (the first shows on the title screen) and see your
+  legends in numbers: average and best rating, your most common races, ranks and endings.
+- **Codex and Bestiary.** A book that fills in as you play: the races you have rolled, the worlds you have fought
+  in, the endings you have reached, and every foe and dragon with your record against them.
+- **Print your hero.** Share > Print sheet makes an A4 page with the front and back at real card size (64 × 96 mm),
+  with crop marks.
+- **Your own wheel entries, for real.** In the Wheel Workshop, press ✎ on your own entry to give it a description
+  and effects: stat changes, a Fate Token, a weakness, a resistance, and a lifespan for races. They are capped so
+  they stay fair, and they travel with your hero's codes.
+- **A guided first hero.** New players get a few short notes during their first spins.
+
+### Changed
+
+- **More ways to die, and to escape death.** The common deaths and narrow escapes have several versions, and the
+  saga recap counts your close calls with death. Story lines about your hero use the presentation you picked.
+- **Crowded wheels are easier to read.** On wheels with many slices, like Races, a strip under the wheel names the
+  slices around the pointer while it turns.
+- **Smoother feel.** Screens and pop-ups fade in, the wheel winds up a little before each spin, and spins no
+  longer stutter when the first wheel appears.
+- **Tidier screens.** The Spin button sits right under the New Legend settings, and the card's look choices are
+  one Style menu.
+- **Readable messages.** Pop-up messages are now readable in every theme.
+
+### Fixed
+
+- **Mods can remove and reweight built-in entries**, as the mod kit always said. A mod's `workshop` section was
+  checked but never used.
+
+### Behind the scenes
+
+- Story chapters moved into their own files, and translations can now handle plurals and the hero's pronouns,
+  ready for translating the story.
+- A press kit, a mod gallery with a Share a mod form on GitHub, and a #mods forum on the Discord.
+- The Discord bot has /daily, /legend and /versus.
+
 ## 0.3.0-alpha.1 (2026-11-17)
 
 The saga update: every saga now ends with a look back at how it went and what became of everything.

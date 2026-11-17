@@ -47,6 +47,7 @@ in [docs/release-plan.md](docs/release-plan.md).
 
 ## Recently done
 
+- 0.3.0-alpha.2: Old legends return: a Codex and Bestiary, player level and card backs, and your own wheel entries with real effects.
 - 0.3.0-alpha.1: The saga update: saga recap, epilogues, Verdant Wild HD music, long sagas can be shared again.
 - 0.2.0-alpha.5.0: more varied saga endings, opt-in "where I stop playing" counts.
 - 0.2.0-alpha.4.9: fix for overlapping text on the back of the card.

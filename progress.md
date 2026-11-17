@@ -2,7 +2,7 @@
 
 A running record of where the game stands. Update it when something ships, starts or gets decided.
 This file is public: server addresses, account, payment and moderation details go in `private-notes.md` (not on GitHub).
-Last updated: 2026-11-17 · Current version: **0.3.0-alpha.1**
+Last updated: 2026-11-17 · Current version: **0.3.0-alpha.2**
 
 Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
@@ -43,6 +43,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 | The back of the card: the weak/resist line no longer overlaps the saga line (bug fix) | 0.2.0-alpha.4.9 | ✅ released 2026-11-16 |
 | More varied saga endings, opt-in "where I stop playing" counts, achievement report plays heirs (small update) | 0.2.0-alpha.5.0 | ✅ released 2026-11-16 |
 | The saga update: saga recap, epilogues, Verdant Wild HD music, long sagas can be shared again | 0.3.0-alpha.1 | ✅ released 2026-11-17 |
+| Old legends return: a Codex and Bestiary, player level and card backs, and your own wheel entries with real effects | 0.3.0-alpha.2 | ✅ released 2026-11-17 |
 | Alpha test with 5-15 players | two weeks after release | ⬜ |
 | Beta (fixes from the alpha, signed build, store page) | 0.2.0-beta.1 | ⬜ |
 | 1.0 on itch.io | 1.0.0 | ⬜ |
@@ -70,22 +71,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
 ## Ready for the next alpha (not released yet)
 
-- ✅ Smoother hero-making: the painted wheel rim loads while the title screen is idle, so the first wheel is drawn
-  once instead of twice, and a new wheel no longer repaints the rim. The longest gap while a wheel turns went from
-  67 ms to 17 ms (a steady 60 fps); the performance check now fails if a stutter comes back
-- ✅ Discord bot: `/daily` (today's leaderboard), `/legend` (a hero from a card code, with saga and epilogue) and
-  `/versus` (two heroes fight with the game's own odds). The Versus odds moved into the shared engine so the game
-  and the bot use the same formula. Live once the bot server pulls and restarts
-- ✅ Mods can now remove and reweight built-in entries (a mod's `workshop` section was checked but never used)
-- ✅ Old legends: Hall heroes who lived or cheated death come back in new sagas as a mentor, rival or stranger
-- ✅ More ways to die and to escape death; the recap counts close calls; hero pronouns follow the presentation
-- ✅ Player level with unlockable card backs, favourite heroes, Hall statistics, a print sheet for cards
-- ✅ Codex (races, worlds, endings) and Bestiary (every foe and dragon, with your record)
-- ✅ Own Workshop entries can have a description and checked effects
-- ✅ A guided first hero, a strip under crowded wheels, screen and pop-up transitions, a wind-up before spins,
-  tidier home and card screens, readable toasts in every theme
-- ✅ Plural and gender markers for translations; `story.js` split into `app/js/chapters/`
-- ✅ Press kit (`docs/press-kit.md`) and mod gallery (`docs/mod-gallery.md`, Share a mod form)
+- Nothing yet
 
 ## Released
 
