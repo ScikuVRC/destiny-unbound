@@ -528,11 +528,55 @@ t('boss tricks: wards, immunities, punished elements, rage and a second phase', 
   // every trick belongs to a real foe and has a description
   const foes = new Set();
   FW.UNIVERSES.forEach(u => u.opps.forEach(o => foes.add(o.name)));
-  const story = require('fs').readFileSync(require('path').join(__dirname, '..', 'app', 'js', 'story.js'), 'utf8');
+  const js = require('path').join(__dirname, '..', 'app', 'js');
+  const story = ['story.js']
+    .concat(
+      require('fs')
+        .readdirSync(require('path').join(js, 'chapters'))
+        .map(f => 'chapters/' + f)
+    )
+    .map(f => require('fs').readFileSync(require('path').join(js, f), 'utf8'))
+    .join(' ');
   Object.keys(FW.BOSS_MECH).forEach(n => {
     assert(foes.has(n) || story.indexOf("'" + n + "'") >= 0, 'trick for an unknown foe: ' + n);
     assert(FW.mechText(FW.BOSS_MECH[n]), 'no text for ' + n);
   });
+});
+
+t('own Workshop entries carry checked effects onto the wheel, the card and Legend Codes', () => {
+  const fx = { str: 2, int: -1, fate: 1, weak: 'fire', res: 'ice', life: 'l' };
+  const r = FW.ownDsl('race', fx);
+  assert.strictEqual(r.dsl, 'str+2 int-1 fate+1 w=fire r=ice life=l');
+  assert.strictEqual(r.net, 2);
+  assert(FW.ownDsl('race', { str: 2, spd: 2 }).over, 'more than 3 steps up is refused');
+  assert.strictEqual(FW.ownDsl('wpn', { fgt: 1 }).dsl, 'fgt+1 q=2', 'weapons get a quality');
+  assert.strictEqual(FW.ownDsl('cls', { str: 9, weak: 'cheese' }).dsl, 'str+2', 'out of range is clamped or left out');
+  assert.deepStrictEqual(FW.ownFx('str+2 w=fire life=a junk lv=99'), { str: 2, weak: 'fire', life: 'a' });
+  // on the wheel
+  const ov = { cls: { added: [{ name: 'Moth Knight', w: 50, perk: 'Flies by night', fx: { spd: 2, dur: -1 } }] } };
+  const L = new FW.Legend({ seed: 'own' }),
+    rng = FW.makeRng('own');
+  for (let k = -1; (k = FW.nextStageIndex(L, k)) < FW.STAGES.length;) {
+    const s = FW.buildStage(FW.STAGES[k].id, L);
+    FW.commitPick(L, s, FW.weightedIndex(s.entries, rng), rng);
+  }
+  const st = FW.buildStage('cls', L, { overrides: ov });
+  const i = st.entries.findIndex(e => e.name === 'Moth Knight');
+  assert(i >= 0 && st.entries[i].dsl === 'spd+2 dur-1', 'own entry with effects on the wheel');
+  FW.commitPick(L, st, i, FW.makeRng('x'));
+  assert.strictEqual(L.entry('cls').dsl, 'spd+2 dur-1');
+  assert.strictEqual(L.entry('cls').perk, 'Flies by night');
+  // through a Legend Code, and a code someone edited by hand is checked again
+  const back = FW.Legend.fromCode(L.toCode());
+  assert.strictEqual(back.entry('cls').dsl, 'spd+2 dur-1');
+  back.picks.cls.own.dsl = 'str+9 all+5 lv=99 rt+50';
+  assert.strictEqual(back.entry('cls').dsl, 'str+2', 'a forged code is cut back to what the editor allows');
+  back.picks.cls.own.dsl = 'str+2 spd+2 dur+2';
+  assert.strictEqual(back.entry('cls').dsl, '', 'a forged code over the limit gets no effects');
+  // old own entries without effects stay neutral flavour
+  const ov2 = { pet: { added: [{ name: 'Pet Rock 2', w: 50 }] } };
+  const st2 = FW.buildStage('pet', L, { overrides: ov2 });
+  assert.strictEqual(st2.entries.find(e => e.name === 'Pet Rock 2').dsl, '');
 });
 
 console.log('\n' + passed + ' checks passed' + (process.exitCode ? ' - WITH FAILURES' : ''));

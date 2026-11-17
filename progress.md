@@ -76,6 +76,16 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 - ✅ Discord bot: `/daily` (today's leaderboard), `/legend` (a hero from a card code, with saga and epilogue) and
   `/versus` (two heroes fight with the game's own odds). The Versus odds moved into the shared engine so the game
   and the bot use the same formula. Live once the bot server pulls and restarts
+- ✅ Mods can now remove and reweight built-in entries (a mod's `workshop` section was checked but never used)
+- ✅ Old legends: Hall heroes who lived or cheated death come back in new sagas as a mentor, rival or stranger
+- ✅ More ways to die and to escape death; the recap counts close calls; hero pronouns follow the presentation
+- ✅ Player level with unlockable card backs, favourite heroes, Hall statistics, a print sheet for cards
+- ✅ Codex (races, worlds, endings) and Bestiary (every foe and dragon, with your record)
+- ✅ Own Workshop entries can have a description and checked effects
+- ✅ A guided first hero, a strip under crowded wheels, screen and pop-up transitions, a wind-up before spins,
+  tidier home and card screens, readable toasts in every theme
+- ✅ Plural and gender markers for translations; `story.js` split into `app/js/chapters/`
+- ✅ Press kit (`docs/press-kit.md`) and mod gallery (`docs/mod-gallery.md`, Share a mod form)
 
 ## Released
 

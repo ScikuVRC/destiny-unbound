@@ -979,9 +979,12 @@
       const alpha = (this.cum[idx] + (this.cum[idx + 1] - this.cum[idx]) * frac) * TAU;
       const r0 = this.rot,
         dir = this.dir >= 0 ? 1 : -1;
+      // a short wind-up: the wheel draws back a little before it goes (not on quick spins or with animations off)
+      const wind = opts.windup === false || dur < 900 || (FW.motion && FW.motion() !== 'full') ? 0 : 180;
+      const rw = r0 - dir * (wind ? 0.14 : 0);
       // land with slice idx under the pointer after whole turns, in the chosen direction
-      const delta = dir > 0 ? (((-alpha - r0) % TAU) + TAU) % TAU : (((r0 + alpha) % TAU) + TAU) % TAU;
-      const r1 = r0 + dir * (turns * TAU + delta);
+      const delta = dir > 0 ? (((-alpha - rw) % TAU) + TAU) % TAU : (((rw + alpha) % TAU) + TAU) % TAU;
+      const r1 = rw + dir * (turns * TAU + delta);
       this.focus = -1;
       this.rareWin = false;
       this.spinning = true;
@@ -992,9 +995,17 @@
       const ease = x => 1 - Math.pow(1 - x, pw);
       return new Promise(resolve => {
         const step = now => {
-          let x = Math.min(1, (now - t0) / dur);
+          const el = now - t0;
+          if (el < wind && !this._skip) {
+            const w = el / wind;
+            this.rot = r0 + (rw - r0) * (1 - Math.pow(1 - w, 2));
+            this.draw();
+            this._raf = requestAnimationFrame(step);
+            return;
+          }
+          let x = Math.min(1, (el - wind) / dur);
           if (this._skip) x = 1;
-          this.rot = r0 + (r1 - r0) * ease(x);
+          this.rot = rw + (r1 - rw) * ease(x);
           const i = this.indexAt(this.rot);
           if (i !== this._lastIdx) {
             this._lastIdx = i;

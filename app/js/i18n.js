@@ -26,6 +26,49 @@
     if (m && dict[m[2]] != null) return m[1] + dict[m[2]] + m[3];
     return s;
   };
+
+  /* Grammar for text that depends on a number or on the hero (English and translations alike):
+       {p:chapter|chapters}  picks a form by the count `n`, with the language's own plural rules. List the forms in
+                             the order zero|one|two|few|many|other, keeping only the ones the language has
+                             (English and German: one|other; French: one|many|other; Japanese: just one form).
+       {g:he|she|they}       picks by the hero's presentation: masculine|feminine|neutral (neutral when not set).
+       {n}                   the number itself.
+     FW.fmt(text, { n, g }) fills these in; FW.tf(text, vars) translates first. See docs/modding.md. */
+  const ORDER = ['zero', 'one', 'two', 'few', 'many', 'other'];
+  const rulesFor = {};
+  FW.pluralIndex = function (n, language) {
+    const l = language || lang;
+    let r = rulesFor[l];
+    if (!r) {
+      try {
+        const pr = new Intl.PluralRules(l),
+          cats = ORDER.filter(c => pr.resolvedOptions().pluralCategories.indexOf(c) >= 0);
+        r = rulesFor[l] = { pr, cats };
+      } catch (e) {
+        r = rulesFor[l] = { pr: null, cats: ['one', 'other'] };
+      }
+    }
+    const cat = r.pr ? r.pr.select(+n || 0) : +n === 1 ? 'one' : 'other';
+    return r.cats.indexOf(cat);
+  };
+  FW.genderIndex = pres => (pres === 'masc' ? 0 : pres === 'fem' ? 1 : 2);
+  FW.fmt = function (text, vars) {
+    const v = vars || {};
+    return String(text == null ? '' : text)
+      .replace(/\{p:([^{}]*)\}/g, (m, forms) => {
+        const f = forms.split('|'),
+          i = FW.pluralIndex(v.n);
+        return f[Math.min(i < 0 ? f.length - 1 : i, f.length - 1)];
+      })
+      .replace(/\{g:([^{}]*)\}/g, (m, forms) => {
+        const f = forms.split('|'),
+          i = typeof v.g === 'number' ? v.g : FW.genderIndex(v.g);
+        return f[Math.min(i, f.length - 1)];
+      })
+      .replace(/\{n\}/g, v.n == null ? '{n}' : String(v.n));
+  };
+  FW.tf = (text, vars) => FW.fmt(FW.t(text), vars);
+
   FW.fillLangSelect = function (sel) {
     if (!sel) return;
     sel.innerHTML = Object.keys(FW.LANG_PACKS)

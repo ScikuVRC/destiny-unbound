@@ -17,7 +17,8 @@
   const state = () => App.state;
   let tab = 'happen',
     wheel = 'race',
-    query = '';
+    query = '',
+    editing = -1; // the own entry open in the editor (index in this wheel's added list)
 
   /* ---------- the wheels the Workshop can edit (same list and order as before) ---------- */
   const MAIN = [
@@ -381,7 +382,13 @@
           (r.off ? esc(t('Off')) : esc(t(LEVEL(share))) + ' · ' + (share * 100).toFixed(share < 0.1 ? 1 : 0) + '%') +
           '</span>' +
           (r.custom != null
-            ? '<button class="btn small ghost" data-unadd="' +
+            ? '<button class="btn small ghost" data-edit="' +
+              r.custom +
+              '" aria-label="' +
+              esc(t('Edit')) +
+              ': ' +
+              esc(r.name) +
+              '">✎</button><button class="btn small ghost" data-unadd="' +
               r.custom +
               '" aria-label="' +
               esc(t('Delete')) +
@@ -409,6 +416,7 @@
       '</p><div class="ws-list">' +
       (list || '<p>' + esc(t('Nothing matches.')) + '</p>') +
       '</div>' +
+      editor(wheel, o) +
       (lad
         ? ''
         : '<div class="field ws-add"><input id="hubAddName" placeholder="' +
@@ -418,13 +426,144 @@
           '"><button class="btn small" id="hubAdd">' +
           esc(t('Add')) +
           '</button></div><p class="legend-key">' +
-          esc(t('Your own entries have no stat effects.')) +
+          esc(t('Press ✎ on your own entry to give it a description and effects.')) +
           '</p>') +
       '<div class="cta" style="justify-content:flex-start;margin:6px 0 0"><button class="btn small ghost" id="hubAllOn">' +
       esc(t('All on')) +
       '</button><button class="btn small ghost" id="hubReset">' +
       esc(t('Reset this wheel')) +
       '</button></div></div></div>'
+    );
+  }
+
+  /* ---------- the editor for an own entry: name, good and bad side, and checked effects (engine.js, FW.OWN) ---------- */
+  const STAT_NAMES = {
+    str: 'Strength',
+    spd: 'Speed',
+    dur: 'Durability',
+    int: 'Intelligence',
+    fgt: 'Fighting',
+    wpn: 'Weapon mastery',
+    pwr: 'Power mastery',
+  };
+  const LIFE = [
+    ['s', 'Short-lived'],
+    ['m', 'Medium'],
+    ['l', 'Long-lived'],
+    ['a', 'Ageless'],
+  ];
+  const canFx = k => !!FW.LISTS[k] && k !== 'story' && !isLadder(k);
+  function editor(k, o) {
+    const a = editing >= 0 ? o.added[editing] : null;
+    if (!a) return '';
+    const fx = a.fx || {},
+      res = FW.ownDsl(k, fx);
+    const num = (id, lo, hi) =>
+      '<select class="o-sel" data-fx="' +
+      id +
+      '" aria-label="' +
+      esc(t(STAT_NAMES[id] || 'Fate Tokens')) +
+      '">' +
+      Array.from({ length: hi - lo + 1 }, (x, i) => lo + i)
+        .map(
+          v =>
+            '<option value="' +
+            v +
+            '"' +
+            ((+fx[id] || 0) === v ? ' selected' : '') +
+            '>' +
+            (v > 0 ? '+' : '') +
+            v +
+            '</option>'
+        )
+        .join('') +
+      '</select>';
+    const elem = (id, label) =>
+      '<label><span>' +
+      esc(t(label)) +
+      '</span><select class="o-sel" data-fx="' +
+      id +
+      '"><option value="">' +
+      esc(t('None')) +
+      '</option>' +
+      FW.OWN.elems
+        .map(
+          e =>
+            '<option value="' +
+            e +
+            '"' +
+            (fx[id] === e ? ' selected' : '') +
+            '>' +
+            esc(t(e[0].toUpperCase() + e.slice(1))) +
+            '</option>'
+        )
+        .join('') +
+      '</select></label>';
+    let chips = '';
+    try {
+      chips = FW.chips(FW.parse(res.dsl))
+        .map(c => '<span class="mod ' + c.k + '">' + esc(t(c.t)) + '</span>')
+        .join('');
+    } catch (e) {
+      chips = '';
+    }
+    return (
+      '<div class="ws-edit"><h4>' +
+      esc(t('Edit your entry')) +
+      '</h4><div class="ws-edit-grid"><label><span>' +
+      esc(t('Name')) +
+      '</span><input id="weName" maxlength="40" value="' +
+      esc(a.name) +
+      '"></label><label><span>' +
+      esc(t('Good side')) +
+      '</span><input id="wePerk" maxlength="120" value="' +
+      esc(a.perk || '') +
+      '" placeholder="' +
+      esc(t('What makes it special')) +
+      '"></label><label><span>' +
+      esc(t('Bad side')) +
+      '</span><input id="weFlaw" maxlength="120" value="' +
+      esc(a.flaw || '') +
+      '" placeholder="' +
+      esc(t('Its drawback (optional)')) +
+      '"></label></div>' +
+      (canFx(k)
+        ? '<div class="ws-fx">' +
+          FW.OWN.stats
+            .map(s => '<label><span>' + esc(t(STAT_NAMES[s])) + '</span>' + num(s, -2, 2) + '</label>')
+            .join('') +
+          '<label><span>' +
+          esc(t('Fate Tokens')) +
+          '</span>' +
+          num('fate', -1, 1) +
+          '</label>' +
+          elem('weak', 'Weak to') +
+          elem('res', 'Resists') +
+          (k === 'race'
+            ? '<label><span>' +
+              esc(t('Lifespan')) +
+              '</span><select class="o-sel" data-fx="life">' +
+              LIFE.map(
+                l =>
+                  '<option value="' +
+                  l[0] +
+                  '"' +
+                  ((fx.life || 'm') === l[0] ? ' selected' : '') +
+                  '>' +
+                  esc(t(l[1])) +
+                  '</option>'
+              ).join('') +
+              '</select></label>'
+            : '') +
+          '</div><p class="legend-key" id="weNet">' +
+          esc(FW.fmt(t('Strength of this entry: {n} steps up (at most 3).'), { n: res.net })) +
+          '</p><div class="mods">' +
+          (chips || '<span class="legend-key">' + esc(t('No effects yet')) + '</span>') +
+          '</div>'
+        : '') +
+      '<div class="cta" style="justify-content:flex-start;margin:8px 0 0"><button class="btn small primary" id="weDone">' +
+      esc(t('Done')) +
+      '</button></div></div>'
     );
   }
 
@@ -513,6 +652,7 @@
     });
     on('[data-wheel]', el => {
       wheel = el.dataset.wheel;
+      editing = -1;
       draw('[data-wheel="' + wheel + '"]');
     });
     const more = body.querySelector('#hubMore');
@@ -520,6 +660,7 @@
       more.addEventListener('change', () => {
         if (!more.value) return;
         wheel = more.value;
+        editing = -1;
         draw('#hubMore');
       });
     const search = body.querySelector('#hubSearch');
@@ -556,7 +697,55 @@
       step(el.dataset.common, 2);
       draw('[data-common="' + el.dataset.common.replace(/"/g, '\\"') + '"]');
     });
+    on('[data-edit]', el => {
+      editing = editing === +el.dataset.edit ? -1 : +el.dataset.edit;
+      draw(editing >= 0 ? '#weName' : null);
+    });
+    body.querySelectorAll('[data-fx]').forEach(sel =>
+      sel.addEventListener('change', () => {
+        const o = ovOf(wheel),
+          a = o.added[editing];
+        if (!a) return;
+        const fx = Object.assign({}, a.fx || {});
+        const k = sel.dataset.fx;
+        fx[k] = k === 'weak' || k === 'res' || k === 'life' ? sel.value : +sel.value;
+        if (FW.ownDsl(wheel, fx).over) {
+          App.toast(
+            FW.fmt(t('Too strong: an entry can add at most {n} steps up. Add a drawback first.'), { n: FW.OWN.max })
+          );
+          return draw('[data-fx="' + k + '"]');
+        }
+        a.fx = fx;
+        saveOv(wheel, o);
+        draw('[data-fx="' + k + '"]');
+      })
+    );
+    [
+      ['#weName', 'name', 40],
+      ['#wePerk', 'perk', 120],
+      ['#weFlaw', 'flaw', 120],
+    ].forEach(([id, key, max]) => {
+      const el = body.querySelector(id);
+      if (el)
+        el.addEventListener('change', () => {
+          const o = ovOf(wheel),
+            a = o.added[editing];
+          if (!a) return;
+          const v = el.value.trim().slice(0, max);
+          if (key === 'name' && !v) return App.toast(t('Give the entry a name'));
+          a[key] = v;
+          saveOv(wheel, o);
+          draw(id);
+        });
+    });
+    const done = body.querySelector('#weDone');
+    if (done)
+      done.addEventListener('click', () => {
+        editing = -1;
+        draw();
+      });
     on('[data-unadd]', el => {
+      editing = -1;
       const o = ovOf(wheel);
       o.added.splice(+el.dataset.unadd, 1);
       saveOv(wheel, o);
@@ -570,7 +759,8 @@
         const o = ovOf(wheel);
         o.added.push({ name: n.slice(0, 40), w: 5 });
         saveOv(wheel, o);
-        draw('#hubAddName');
+        editing = o.added.length - 1; // open the editor for the new entry
+        draw('#wePerk');
       });
     const allOn = body.querySelector('#hubAllOn');
     if (allOn)

@@ -318,8 +318,19 @@
         const L = LISTS[id];
         e = L ? FW.findByName(L(), p.name) : null;
       }
-      // custom Workshop entries have no data row: treat them as neutral flavour
-      return e || { name: p.name, w: 1, dsl: '', perk: 'Custom entry', flaw: '', custom: true };
+      if (e) return e;
+      // own Workshop entries have no data row: their checked effects travel with the pick (and are checked again,
+      // since a Legend Code can come from anyone); without any, they are neutral flavour
+      if (p.own && typeof p.own === 'object')
+        return {
+          name: p.name,
+          w: 1,
+          dsl: FW.ownDsl(id, FW.ownFx(p.own.dsl)).dsl,
+          perk: String(p.own.perk || 'Custom entry').slice(0, 120),
+          flaw: String(p.own.flaw || '').slice(0, 120),
+          custom: true,
+        };
+      return { name: p.name, w: 1, dsl: '', perk: 'Custom entry', flaw: '', custom: true };
     }
     raceName() {
       return this.picks.race ? this.picks.race.name : null;
@@ -546,14 +557,94 @@
     // "No X" slices keep their weight and only shrink gently with luck; everything else flattens toward richer odds
     return entries.map(x => Object.assign({}, x, { w: FW.P(x).none ? x.w / (1 + 0.5 * k) : Math.pow(x.w, e) }));
   }
-  function applyOverrides(rows, ov) {
+  /* own entries made in the Wheel Workshop editor (content.js) can carry a small, checked set of effects:
+     up to two steps on each stat, one Fate Token, one weakness and one resistance, and a lifespan for races.
+     The total is capped so an own entry stays about as strong as a built-in one. Codes from other players are
+     checked the same way when they load. */
+  FW.OWN = {
+    stats: ['str', 'spd', 'dur', 'int', 'fgt', 'wpn', 'pwr'],
+    elems: [
+      'fire',
+      'water',
+      'ice',
+      'lightning',
+      'poison',
+      'shadow',
+      'holy',
+      'mind',
+      'metal',
+      'void',
+      'nature',
+      'time',
+      'sound',
+      'blood',
+    ],
+    max: 3, // net steps up
+    defaults: { pow: 'rar=2', wpn: 'q=2', title: 'tt=1 rt+1', race: 'life=m' },
+  };
+  FW.ownFx = function (dsl) {
+    const fx = {};
+    String(dsl || '')
+      .split(/\s+/)
+      .forEach(tok => {
+        let m = tok.match(/^(str|spd|dur|int|fgt|wpn|pwr|fate)([+-]\d)$/);
+        if (m) fx[m[1]] = +m[2];
+        else if ((m = tok.match(/^([wr])=([a-z]+)$/))) fx[m[1] === 'w' ? 'weak' : 'res'] = m[2];
+        else if ((m = tok.match(/^life=([smla])$/))) fx.life = m[1];
+      });
+    return fx;
+  };
+  // effects -> { dsl, net }; anything outside the allowed set is left out
+  FW.ownDsl = function (k, fx) {
+    const O = FW.OWN,
+      out = [],
+      f = fx || {};
+    let net = 0;
+    const clampN = (v, a) => Math.max(-a, Math.min(a, Math.round(+v || 0)));
+    O.stats.forEach(s => {
+      const v = clampN(f[s], 2);
+      if (v) {
+        out.push(s + (v > 0 ? '+' : '') + v);
+        net += v;
+      }
+    });
+    const fate = clampN(f.fate, 1);
+    if (fate) {
+      out.push('fate' + (fate > 0 ? '+' : '') + fate);
+      net += fate;
+    }
+    if (O.elems.indexOf(f.weak) >= 0) {
+      out.push('w=' + f.weak);
+      net -= 1;
+    }
+    if (O.elems.indexOf(f.res) >= 0 && f.res !== f.weak) {
+      out.push('r=' + f.res);
+      net += 1;
+    }
+    if (net > O.max) return { dsl: O.defaults[k] || '', net, over: true };
+    if (k === 'race' && /^[smla]$/.test(f.life)) out.push('life=' + f.life);
+    else if (O.defaults[k]) out.push(O.defaults[k]);
+    return { dsl: out.join(' '), net };
+  };
+  function applyOverrides(rows, ov, k) {
     if (!ov) return rows;
     let out = rows
       .filter(r => !(ov.removed || []).includes(r.name))
       .map(r => (ov.weights && ov.weights[r.name] > 0 ? Object.assign({}, r, { w: ov.weights[r.name] }) : r));
     (ov.added || []).forEach(a => {
-      if (a && a.name && a.w > 0)
-        out.push({ name: a.name, w: a.w, dsl: '', perk: 'Custom entry', flaw: '', custom: true });
+      if (!a || !a.name || !(a.w > 0)) return;
+      const own = a.fx ? FW.ownDsl(k, a.fx).dsl : '',
+        perk = String(a.perk || '').slice(0, 120) || 'Custom entry',
+        flaw = String(a.flaw || '').slice(0, 120);
+      out.push({
+        name: a.name,
+        w: a.w,
+        dsl: own,
+        perk,
+        flaw,
+        custom: true,
+        own: a.fx ? { dsl: own, perk, flaw } : null,
+      });
     });
     return out.length ? out : rows;
   }
@@ -587,7 +678,7 @@
       const s = FW.SUBS[legend.raceName()];
       out.title = s.title;
       out.emoji = s.emoji;
-      out.entries = tiltList(applyOverrides(s.rows, ov['sub:' + legend.raceName()]), k);
+      out.entries = tiltList(applyOverrides(s.rows, ov['sub:' + legend.raceName()], 'sub'), k);
       out.mode = 'gradient';
       out.hue = 335;
       return out;
@@ -628,7 +719,7 @@
       out.hue = 100;
       return out;
     }
-    const rows = applyOverrides(LISTS[id](), ov[id]);
+    const rows = applyOverrides(LISTS[id](), ov[id], id);
     out.entries = tiltList(rows, k);
     const modes = {
       race: ['cat', 0],
@@ -674,7 +765,7 @@
       const ai = FW.AGES.findIndex(a => a.name === e.name);
       const rg = FW.AGE_RANGES[ai];
       legend.picks[id] = { name: e.name, years: rg ? rg[0] + Math.floor(rng() * (rg[1] - rg[0] + 1)) : null };
-    } else legend.picks[id] = { name: e.name };
+    } else legend.picks[id] = e.own ? { name: e.name, own: e.own } : { name: e.name };
     // changing race invalidates dependents
     if (id === 'race') {
       delete legend.picks.sub;

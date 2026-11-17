@@ -990,6 +990,7 @@
       relaunch: () => D.relaunch(),
       guide: () => {
         FW.Nav.resetGuide();
+        if (FW.resetFirstHero) FW.resetFirstHero(); // and the guided first hero (guide.js)
         O.close();
         if (App.state.screen !== 'title') App.showTitle();
       },

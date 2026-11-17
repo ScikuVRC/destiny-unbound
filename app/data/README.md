@@ -14,7 +14,8 @@ game logic. The files load in this order (`FW.DATA_FILES` in `app/js/data.js`, a
 | `looks.js` | Hair, eyes, clothing, portrait styles and frames |
 | `arena.js` | Arenas, the thirteen opponent worlds, what happens after a fight is won or lost |
 
-Story chapters still keep their text in `app/js/story.js`.
+Story chapters keep their text in `app/js/chapters/` (one file per group of chapters; the rules are in
+`app/js/story.js`).
 
 ## Rows
 

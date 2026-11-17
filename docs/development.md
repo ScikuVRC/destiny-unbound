@@ -37,14 +37,16 @@ npm run lint          # ESLint: real mistakes such as undefined names and duplic
 npm run format        # Prettier: formats JavaScript and JSON (CSS and HTML keep their compact form)
 ```
 
-139 checks in 10 suites:
+147 checks in 10 suites:
 
-- **engine (27):** data validity, unique names, tier shifts, odds, conditional buffs, Legend Codes, arena maths.
+- **engine (28):** data validity, unique names, tier shifts, odds, conditional buffs, Legend Codes, arena maths, own
+  Workshop entries and their effect limits.
 - **art (18):** every generator and language-model connector against a mock server.
-- **story (15):** 500 full sagas with random options, requirements, every option switched off, dynasty, arcs and
+- **story (17):** 500 full sagas with random options, requirements, every option switched off, dynasty, arcs and
   endings, the saga recap, epilogues, and Legend Codes that stay under the card-code limit.
-- **extras (6):** packs, achievements, translations.
-- **mods (11):** validation, CSS that tries to escape its theme or load outside pictures, every mod kit template
+- **extras (10):** packs, achievements, translations and the plural and gender markers, player level, the Codex and
+  Bestiary, Hall statistics.
+- **mods (12):** validation, CSS that tries to escape its theme or load outside pictures, every mod kit template
   loads, the kit's generated reference is up to date.
 - **system (12):** version and cache numbers agree, a release bump on a copy, preferences, save import checks, no API
   keys in exported saves, title-screen art, offline caching, arena matchmaking.
@@ -192,7 +194,9 @@ Uninstalling keeps all of these.
 | `app/data/` | Wheel content, as plain data grouped by topic (format: [app/data/README.md](../app/data/README.md)); `music.js` lists the HD music |
 | `app/js/data.js` | The row parser the content uses; in node it also loads all of `app/data/` |
 | `app/js/engine.js` | Rules: stages, buffs and debuffs, rating, arena, Legend Codes |
-| `app/js/story.js`, `story-ui.js` | Story mode rules (chapters, fights, endings, dynasty, the saga recap) and screens |
+| `app/js/story.js`, `story-ui.js` | Story mode rules (fights, endings, dynasty, old legends, the saga recap) and screens |
+| `app/js/chapters/` | The story chapters, one file per group; the load order is the order of the story wheel |
+| `app/js/hall.js`, `codex.js`, `guide.js` | Player level, favourites, Hall statistics, card backs and the print sheet; the Codex and Bestiary; the guided first hero |
 | `app/js/wheel.js`, `card.js`, `render.js`, `app.js` | Wheel canvas, card renderer, HTML helpers, main flow |
 | `app/js/skins-data.js`, `chapter-art.js`, `badges.js`, `icons.js` | Painted wheel rims and hubs, chapter illustrations, achievement badges, the icon set |
 | `app/js/menu.js`, `menu-data.js`, `css/menu.css` | Themed title screen, keyboard and controller input, guide, credits, thank-you screen |

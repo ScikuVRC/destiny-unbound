@@ -822,18 +822,137 @@
     c.fillText('★'.repeat(stars) + '☆'.repeat(5 - stars), W / 2, H - 78);
   }
 
-  function back(c, legend, th, name, hue, pic) {
-    const comp = FW.compute(legend);
-    const bg = c.createRadialGradient(W / 2, 0, 40, W / 2, 300, H);
-    bg.addColorStop(0, th.panel.replace(/[\d.]+\)$/, '1)'));
-    bg.addColorStop(1, '#060406');
-    c.fillStyle = bg;
-    c.fillRect(0, 0, W, H);
+  /* card backs: the background behind the stats. Players unlock more as their player level rises (hall.js);
+     every pattern stays dark and faint so the numbers on top stay readable. */
+  FW.CARD_BACKS = [
+    { id: 'classic', name: 'Classic', level: 1 },
+    { id: 'starfield', name: 'Starfield', level: 2 },
+    { id: 'runes', name: 'Rune circle', level: 4 },
+    { id: 'gilded', name: 'Gilded lattice', level: 6 },
+    { id: 'ember', name: 'Embers', level: 8 },
+    { id: 'void', name: 'Void spiral', level: 12 },
+  ];
+  function seeded(n) {
+    let s = (Math.abs(Math.floor(n * 9973)) % 2147483646) + 1;
+    return () => (s = (s * 16807) % 2147483647) / 2147483647;
+  }
+  function backPattern(c, th, hue, id) {
+    const r = seeded(hue + 7);
     c.save();
-    c.globalAlpha = 0.16;
-    c.filter = 'blur(26px)';
-    c.drawImage(pic, 0, 0, W, H);
+    if (id === 'starfield') {
+      const g = c.createLinearGradient(0, 0, 0, H);
+      g.addColorStop(0, '#060a1c');
+      g.addColorStop(1, '#020208');
+      c.fillStyle = g;
+      c.fillRect(0, 0, W, H);
+      const neb = c.createRadialGradient(W * 0.7, H * 0.3, 20, W * 0.7, H * 0.3, 620);
+      neb.addColorStop(0, 'hsla(' + hue + ',70%,45%,.22)');
+      neb.addColorStop(1, 'transparent');
+      c.fillStyle = neb;
+      c.fillRect(0, 0, W, H);
+      for (let i = 0; i < 260; i++) {
+        c.globalAlpha = 0.25 + r() * 0.6;
+        c.fillStyle = r() < 0.15 ? th.accent : '#fff';
+        c.beginPath();
+        c.arc(r() * W, r() * H, r() < 0.92 ? 1.4 : 3, 0, Math.PI * 2);
+        c.fill();
+      }
+    } else if (id === 'runes') {
+      c.fillStyle = '#07060a';
+      c.fillRect(0, 0, W, H);
+      c.translate(W / 2, H / 2);
+      c.strokeStyle = th.accent;
+      c.lineWidth = 3;
+      [520, 470, 330].forEach((rad, k) => {
+        c.globalAlpha = 0.16 - k * 0.03;
+        c.beginPath();
+        c.arc(0, 0, rad, 0, Math.PI * 2);
+        c.stroke();
+      });
+      c.globalAlpha = 0.14;
+      for (let i = 0; i < 24; i++) {
+        c.save();
+        c.rotate((i / 24) * Math.PI * 2);
+        c.translate(0, -495);
+        c.beginPath();
+        for (let j = 0; j < 3; j++) {
+          c.moveTo((r() - 0.5) * 22, (r() - 0.5) * 30);
+          c.lineTo((r() - 0.5) * 22, (r() - 0.5) * 30);
+        }
+        c.stroke();
+        c.restore();
+      }
+    } else if (id === 'gilded') {
+      c.fillStyle = '#0b0805';
+      c.fillRect(0, 0, W, H);
+      c.strokeStyle = '#d4a64a';
+      c.lineWidth = 2;
+      c.globalAlpha = 0.11;
+      for (let x = -H; x < W + H; x += 90) {
+        c.beginPath();
+        c.moveTo(x, 0);
+        c.lineTo(x + H, H);
+        c.moveTo(x, H);
+        c.lineTo(x + H, 0);
+        c.stroke();
+      }
+      const v = c.createRadialGradient(W / 2, H / 2, 200, W / 2, H / 2, H * 0.8);
+      v.addColorStop(0, 'transparent');
+      v.addColorStop(1, 'rgba(0,0,0,.75)');
+      c.globalAlpha = 1;
+      c.fillStyle = v;
+      c.fillRect(0, 0, W, H);
+    } else if (id === 'ember') {
+      const g = c.createLinearGradient(0, H, 0, 0);
+      g.addColorStop(0, '#2a0703');
+      g.addColorStop(0.5, '#120402');
+      g.addColorStop(1, '#050101');
+      c.fillStyle = g;
+      c.fillRect(0, 0, W, H);
+      for (let i = 0; i < 140; i++) {
+        const y = H - Math.pow(r(), 1.6) * H;
+        c.globalAlpha = 0.15 + (y / H) * 0.5;
+        c.fillStyle = r() < 0.5 ? '#ff8a2a' : '#ffcf6a';
+        c.beginPath();
+        c.arc(r() * W, y, 1.5 + r() * 2.5, 0, Math.PI * 2);
+        c.fill();
+      }
+    } else if (id === 'void') {
+      c.fillStyle = '#030206';
+      c.fillRect(0, 0, W, H);
+      c.translate(W / 2, H / 2);
+      c.strokeStyle = 'hsl(' + ((hue + 260) % 360) + ',60%,60%)';
+      c.lineWidth = 2;
+      for (let arm = 0; arm < 3; arm++) {
+        c.beginPath();
+        for (let t = 0; t < 7; t += 0.05) {
+          const rad = 18 * Math.exp(0.42 * t),
+            a = t + (arm * Math.PI * 2) / 3;
+          c.globalAlpha = 0.14;
+          if (t === 0) c.moveTo(Math.cos(a) * rad, Math.sin(a) * rad);
+          else c.lineTo(Math.cos(a) * rad, Math.sin(a) * rad);
+        }
+        c.stroke();
+      }
+    }
     c.restore();
+  }
+
+  function back(c, legend, th, name, hue, pic, backId) {
+    const comp = FW.compute(legend);
+    if (backId && backId !== 'classic' && FW.CARD_BACKS.some(b => b.id === backId)) backPattern(c, th, hue, backId);
+    else {
+      const bg = c.createRadialGradient(W / 2, 0, 40, W / 2, 300, H);
+      bg.addColorStop(0, th.panel.replace(/[\d.]+\)$/, '1)'));
+      bg.addColorStop(1, '#060406');
+      c.fillStyle = bg;
+      c.fillRect(0, 0, W, H);
+      c.save();
+      c.globalAlpha = 0.16;
+      c.filter = 'blur(26px)';
+      c.drawImage(pic, 0, 0, W, H);
+      c.restore();
+    }
     const L = 96,
       R = W - 96;
     c.textAlign = 'center';
@@ -1108,12 +1227,68 @@
     const hue = hueOf(legend);
     const pic = scene(legend, th, hue, opts.image);
     c.save();
-    if (opts.side === 'back') back(c, legend, th, name, hue, pic);
+    if (opts.side === 'back') back(c, legend, th, name, hue, pic, opts.back);
     else if (opts.style === 'full') frontFull(c, legend, th, name, hue, pic);
     else frontArch(c, legend, th, name, hue, pic);
     c.restore();
     frame(c, th.frame || name, hue);
     rankFrame(c, th, rankIndex(FW.compute(legend).rating));
+  };
+
+  /* a print sheet: front and back side by side on A4 at 400 dpi, each card 64 × 96 mm with crop marks. Print at
+     actual size (100%), cut along the marks and glue the halves back to back. */
+  FW.PRINT = { dpi: 400, pageMm: [210, 297], cardMm: [64, 96], gapMm: 8, topMm: 34 };
+  FW.printSheet = function (front, back, title) {
+    const P = FW.PRINT,
+      mm = v => Math.round((v * P.dpi) / 25.4);
+    const cv = document.createElement('canvas');
+    cv.width = mm(P.pageMm[0]);
+    cv.height = mm(P.pageMm[1]);
+    const c = cv.getContext('2d');
+    c.fillStyle = '#fff';
+    c.fillRect(0, 0, cv.width, cv.height);
+    const cw = mm(P.cardMm[0]),
+      ch = mm(P.cardMm[1]),
+      gap = mm(P.gapMm),
+      x0 = Math.round((cv.width - cw * 2 - gap) / 2),
+      y0 = mm(P.topMm);
+    c.imageSmoothingQuality = 'high';
+    [front, back].forEach((img, i) => {
+      const x = x0 + i * (cw + gap);
+      c.drawImage(img, x, y0, cw, ch);
+      // crop marks just outside each corner
+      c.strokeStyle = '#000';
+      c.lineWidth = Math.max(1, mm(0.15));
+      const off = mm(1.5),
+        len = mm(5);
+      [
+        [x, y0],
+        [x + cw, y0],
+        [x, y0 + ch],
+        [x + cw, y0 + ch],
+      ].forEach(([cx, cy]) => {
+        const sx = cx === x ? -1 : 1,
+          sy = cy === y0 ? -1 : 1;
+        c.beginPath();
+        c.moveTo(cx + sx * off, cy);
+        c.lineTo(cx + sx * (off + len), cy);
+        c.moveTo(cx, cy + sy * off);
+        c.lineTo(cx, cy + sy * (off + len));
+        c.stroke();
+      });
+    });
+    c.fillStyle = '#222';
+    c.textAlign = 'center';
+    c.font = '600 ' + mm(5) + 'px sans-serif';
+    c.fillText(String(title || 'Destiny Unbound'), cv.width / 2, mm(20));
+    c.font = mm(3.2) + 'px sans-serif';
+    c.fillStyle = '#555';
+    const notes = [
+      'Print on A4 at actual size (100%, not "fit to page"). Each card is 64 × 96 mm.',
+      'Cut along the marks, then glue the front and back together.',
+    ];
+    notes.forEach((t, i) => c.fillText(t, cv.width / 2, y0 + ch + mm(14) + i * mm(6)));
+    return cv;
   };
 
   FW.canvasToBlob = function (canvas) {

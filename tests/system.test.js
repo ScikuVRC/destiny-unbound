@@ -208,7 +208,10 @@ t('every painted arena backdrop and foe portrait exists and belongs to a real ar
   Object.values(FW.ARENA_ART).forEach(f =>
     assert(fs.existsSync(path.join(root, 'app', 'art', 'arena', f + '.webp')), 'missing arena art ' + f)
   );
-  const story = fs.readFileSync(path.join(root, 'app', 'js', 'story.js'), 'utf8');
+  const story = ['story.js']
+    .concat(FW.Story.CHAPTER_FILES.map(f => 'chapters/' + f + '.js'))
+    .map(f => fs.readFileSync(path.join(root, 'app', 'js', f), 'utf8'))
+    .join(' ');
   const foes = new Set();
   FW.UNIVERSES.forEach(u => u.opps.forEach(o => foes.add(o.name)));
   Object.keys(FW.FOE_ART).forEach(n => {

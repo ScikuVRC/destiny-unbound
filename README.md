@@ -118,12 +118,12 @@ Workshop for single entries. Any result can also be switched off right where it 
 
 ## Make it your own
 
-- **Wheel Workshop:** make any result likelier or rarer, remove it, or add your own.
+- **Wheel Workshop:** make any result likelier or rarer, remove it, or add your own with a description and effects.
 - **Wheel packs and mods:** add entries, themes, fonts, sounds and music. Mods can't run code, and everything they
   contain is checked when it loads. The **mod kit** (`DestinyUnbound-ModKit-<version>.zip` on the
   [Releases](https://github.com/ScikuVRC/destiny-unbound/releases) and itch.io pages, or [`modkit/`](modkit)) has a
   step-by-step guide, seven ready-to-copy templates and the full reference. The
-  [modding page](docs/modding.md) is the short version.
+  [modding page](docs/modding.md) is the short version, and the [mod gallery](docs/mod-gallery.md) lists finished ones.
 - **Art Studio (optional):** paint a portrait of your hero with an image generator you already use, on your
   own PC or with your own API key. See [docs/art-studio.md](docs/art-studio.md).
 
@@ -176,7 +176,7 @@ Destiny Unbound is free and always will be. If you enjoy it and want to support 
 can buy me a coffee on **[Ko-fi](https://ko-fi.com/bzrkherja)**. Bug reports, ideas and kind words help just as
 much: join the **[Discord](https://discord.gg/McDS5HVxzJ)** (bug reports, suggestions, and a place to share your
 legends and mods), open an [issue](https://github.com/ScikuVRC/destiny-unbound/issues), or use Options > Data > Send
-feedback in the game.
+feedback in the game. Writing about the game? The [press kit](docs/press-kit.md) has the facts and images.
 
 ## Building from source
 

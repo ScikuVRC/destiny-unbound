@@ -54,6 +54,7 @@
     person: Object.assign({ name: '', pres: '', spinLooks: true, presets: {} }, store.get('fw.person', {})),
   };
   if (!state.person.presets || typeof state.person.presets !== 'object') state.person.presets = {};
+  if (FW.Story) FW.Story.hallSource = () => state.hall; // old legends can return in new sagas
   const hooks = {}; // filled in by studio.js
   const hook = (name, a) => {
     try {
@@ -76,6 +77,23 @@
 
   /* ---------- small helpers ---------- */
   const tr = s => (FW.t ? FW.t(s) : s); // translate text built in code (the page text is translated separately)
+  /* a crowded wheel (the race wheel has about a hundred slices) is hard to read near the pointer: a strip under it
+     names the slice at the pointer and two on each side while it turns */
+  FW.STRIP_MIN = 24;
+  function wheelStrip(list, i, final) {
+    const n = list.length,
+      at = k => list[(((i + k) % n) + n) % n];
+    $('#wheelStrip').innerHTML = [-2, -1, 0, 1, 2]
+      .map(
+        k =>
+          '<span class="' +
+          (k ? (Math.abs(k) === 2 ? 'far' : 'near') : 'now' + (final ? ' won' : '')) +
+          '">' +
+          H.esc(tr(at(k).name)) +
+          '</span>'
+      )
+      .join('');
+  }
   function toast(msg, kind) {
     const t = document.createElement('div');
     t.className = 'toast' + (kind ? ' ' + kind : '');
@@ -354,6 +372,7 @@
     for (;;) {
       setControls('ready');
       updateTokens();
+      hook('spinReady', cfg); // the guided first hero (guide.js)
       let a = 'spin';
       if (!immediate) {
         const p = waitFor();
@@ -372,8 +391,11 @@
       // a rare result (under 2.5% of the wheel) gets a longer, slower stop, a stronger glow and the rare fanfare
       const rare = cfg.entries[idx].w / total < 0.025 && cfg.entries.length > 4;
       const dur = FW.spinDuration ? FW.spinDuration(state.speed) : state.speed === 'fast' ? 2300 : 4600;
+      const crowded = !cfg.mystery && cfg.entries.length >= FW.STRIP_MIN;
+      $('#wheelStrip').hidden = !crowded;
       wheel.onLabel = (e, i, final) => {
         if (!final && !cfg.mystery) setResult(e.name);
+        if (crowded) wheelStrip(cfg.entries, i, final);
       };
       wheel.onTick = (i, sp) => FW.Audio.tick(sp);
       await wheel.spinTo(idx, {
@@ -388,6 +410,7 @@
       const info = (cfg.onResult && cfg.onResult(idx)) || {};
       $('#resultSub').innerHTML = info.sub || '';
       $('#effects').innerHTML = info.fx || '';
+      hook('spinResult', cfg);
       // "Not your thing? Never roll this again": the quickest way to remove content, right where it lands
       if (cfg.wsKey && window.FWApp.canNeverRoll && window.FWApp.canNeverRoll(cfg.wsKey, e.name)) {
         const p = document.createElement('p');
@@ -624,7 +647,8 @@
   function drawCardNow() {
     const o = { theme: state.theme, image: state.image || FW.defaultPortrait(state.legend, () => drawCardNow()) };
     FW.drawCard($('#cardCanvas'), state.legend, Object.assign({ side: 'front', style: cardStyle() }, o));
-    FW.drawCard($('#cardBack'), state.legend, Object.assign({ side: 'back' }, o));
+    const back = window.FWApp && window.FWApp.cardBack ? window.FWApp.cardBack() : 'classic'; // hall.js
+    FW.drawCard($('#cardBack'), state.legend, Object.assign({ side: 'back', back }, o));
     $('#btnCardStyle').textContent = tr(cardStyle() === 'full' ? 'Card: Full art' : 'Card: Arch');
   }
   let revealed = null;
@@ -744,6 +768,8 @@
       item.saga = {
         summary: FW.Story.summary(L),
         end: L.saga.end,
+        who: L.displayName(),
+        cheated: (L.saga.flags && L.saga.flags.cheated) || 0,
         house: L.saga.dyn && L.saga.dyn.house,
         gen: L.saga.dyn && L.saga.dyn.gen,
       };
@@ -890,6 +916,7 @@
         FW.Audio.sting('defeat');
       }
       renderSteps(steps, 4);
+      hook('arenaResult', { opp: opp.name, world: uni.name, result });
       if (result === 'draw') {
         const c = FW.applyConsequence(L, 'draw', 'draw', opp, state.rng, fctx);
         setChip('🤝', 'Stalemate', 0);
@@ -1085,8 +1112,10 @@
     };
   }
   function hallModal() {
+    // favourites first (hall.js pins them), then newest first as saved
+    const sorted = state.hall.filter(h => h.fav).concat(state.hall.filter(h => !h.fav));
     const rows = state.hall.length
-      ? state.hall
+      ? sorted
           .map(
             h =>
               '<div class="hall-item"><div><b>' +
@@ -1104,7 +1133,17 @@
                   H.esc(h.saga.summary) +
                   (h.saga.house ? ' · ' + H.esc(h.saga.house) + ', generation ' + h.saga.gen : '')
                 : '') +
-              '</span></div><div><button class="btn small" data-view="' +
+              '</span></div><div><button class="btn small ghost fav' +
+              (h.fav ? ' on' : '') +
+              '" data-fav="' +
+              h.id +
+              '" aria-pressed="' +
+              !!h.fav +
+              '" title="' +
+              H.esc(tr(h.fav ? 'Unpin from favourites' : 'Pin as a favourite')) +
+              '">' +
+              (h.fav ? '★' : '☆') +
+              '</button> <button class="btn small" data-view="' +
               h.id +
               '">View</button> <button class="btn small ghost" data-code="' +
               h.id +
@@ -1116,6 +1155,7 @@
       : '<p>No legends saved yet. Finish a spin and press <b>Save to Hall</b>.</p>';
     openModal(
       '<button class="btn small ghost close">Close ✕</button><h2>Hall of Legends</h2>' +
+        (window.FWApp.hallHead ? window.FWApp.hallHead() : '') +
         '<h3 class="opt-h">' +
         H.esc(tr('Your legends')) +
         '</h3>' +
@@ -1124,6 +1164,12 @@
     );
     const root = $('#modalRoot');
     if (FW.Collect) FW.Collect.bindHall(root, hallModal);
+    root.querySelectorAll('[data-fav]').forEach(b =>
+      b.addEventListener('click', () => {
+        if (window.FWApp.toggleFav) window.FWApp.toggleFav(b.dataset.fav);
+        hallModal();
+      })
+    );
     root.querySelectorAll('[data-view]').forEach(b =>
       b.addEventListener('click', () => {
         const h = state.hall.find(x => x.id === b.dataset.view);
@@ -1448,6 +1494,7 @@
     openModal,
     closeModal,
     drawCardNow,
+    flipCard,
     loadCode,
     saveToHall,
     resetData,

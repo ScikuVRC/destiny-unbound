@@ -16,7 +16,9 @@ globalThis.localStorage = {
 ['data.js'].forEach(f => require('../app/js/' + f));
 ['es', 'fr', 'de', 'ja'].forEach(id => require('../app/lang/' + id + '.js'));
 require('../app/js/i18n.js');
-['engine.js', 'story.js', 'packs.js', 'achievements.js'].forEach(f => require('../app/js/' + f));
+['engine.js', 'story.js', 'card.js', 'packs.js', 'achievements.js', 'hall.js', 'codex.js'].forEach(f =>
+  require('../app/js/' + f)
+);
 const FW = globalThis.FW;
 let pass = 0,
   fail = 0;
@@ -173,6 +175,118 @@ t('translations: French, German and Japanese cover the wheels and story, and the
   assert.strictEqual(ids[0], 'en');
   ['es', 'fr', 'de', 'ja'].forEach(id => assert(ids.includes(id), 'not in the picker: ' + id));
   assert(/value="es" selected/.test(sel.innerHTML), 'current language not selected');
+});
+
+t('grammar: plural forms follow each language, gender follows the hero, and translations keep the markers', () => {
+  const f = FW.fmt;
+  assert.strictEqual(f('{n} {p:year|years}', { n: 1 }), '1 year');
+  assert.strictEqual(f('{n} {p:year|years}', { n: 0 }), '0 years');
+  assert.strictEqual(f('{g:his|her|their} sword', { g: 'masc' }), 'his sword');
+  assert.strictEqual(f('{g:his|her|their} sword', { g: 'fem' }), 'her sword');
+  assert.strictEqual(f('{g:his|her|their} sword', { g: '' }), 'their sword');
+  assert.strictEqual(f('{g:his|her|their} sword', { g: 'andro' }), 'their sword');
+  // the language's own rules: French counts 0 as singular, Japanese has one form
+  assert.strictEqual(FW.pluralIndex(0, 'fr'), 0);
+  assert.strictEqual(FW.pluralIndex(2, 'fr'), 2);
+  assert.strictEqual(FW.pluralIndex(1000000, 'fr'), 1);
+  assert.strictEqual(FW.pluralIndex(7, 'ja'), 0);
+  assert.strictEqual(FW.pluralIndex(1, 'de'), 0);
+  // in Spanish (the language these tests run in) a translated label picks its form too
+  assert.strictEqual(FW.tf('{p:year|years}', { n: 1 }), 'año');
+  assert.strictEqual(FW.tf('{p:year|years}', { n: 4 }), 'años');
+  // a translation of a line with markers keeps the same kinds of markers
+  ['es', 'fr', 'de', 'ja'].forEach(id =>
+    Object.entries(FW.LANG_PACKS[id].strings).forEach(([en, tr]) => {
+      const kinds = s => ['{p:', '{g:', '{n}'].filter(k => s.indexOf(k) >= 0).join();
+      if (id !== 'ja') assert.strictEqual(kinds(tr), kinds(en), id + ' lost a marker: ' + en);
+      assert(!/\{[pg]:[^}]*$/.test(tr), id + ' unclosed marker: ' + tr);
+    })
+  );
+  // story text: a hero's pronouns follow their presentation
+  const S = FW.Story,
+    L = new FW.Legend({ seed: 'pron', pres: 'fem' });
+  L.name = 'Ayla';
+  S.newSaga(L, {}, FW.makeRng('p'));
+  S.apply(L, { name: 'x', text: '{hero} lays down {g:his|her|their} weapons.' }, { o: S.opts({}), chName: 'Test' });
+  assert.strictEqual(L.saga.log[L.saga.log.length - 1].text, 'Ayla lays down her weapons.');
+});
+
+t('player level: experience from heroes, chapters, endings and achievements, each counted once', () => {
+  const Lv = FW.Level;
+  assert.deepStrictEqual(Lv.of(0), { level: 1, into: 0, need: 100, xp: 0 });
+  assert.strictEqual(Lv.of(100).level, 2);
+  assert.strictEqual(Lv.of(99).level, 1);
+  const rec = Lv.fresh(0, 0);
+  const L = new FW.Legend({ seed: 'lvl' });
+  assert.strictEqual(Lv.gain(L, rec), Lv.XP.hero, 'a new hero');
+  assert.strictEqual(Lv.gain(L, rec), 0, 'the same hero again pays nothing');
+  FW.Story.newSaga(L, {}, FW.makeRng('lvl'));
+  L.saga.ch = 3;
+  assert.strictEqual(Lv.gain(L, rec), 3 * Lv.XP.chapter, 'three chapters');
+  L.saga.ch = 5;
+  L.saga.end = 'legend';
+  assert.strictEqual(Lv.gain(L, rec), 2 * Lv.XP.chapter + Lv.XP.end.legend, 'two more chapters and the ending');
+  assert.strictEqual(Lv.gain(L, rec), 0);
+  assert.strictEqual(Lv.achievements(3, rec), 3 * Lv.XP.achievement);
+  assert.strictEqual(Lv.achievements(3, rec), 0);
+  // only the newest heroes are remembered
+  for (let i = 0; i < Lv.KEEP + 20; i++) Lv.gain(new FW.Legend({ seed: 'k' + i }), rec);
+  assert.strictEqual(Object.keys(rec.seen).length, Lv.KEEP);
+  assert.strictEqual(rec.order.length, Lv.KEEP);
+  // card backs unlock with levels, and the first one is always there
+  assert.deepStrictEqual(
+    Lv.backs(1).map(b => b.id),
+    ['classic']
+  );
+  assert.strictEqual(Lv.backs(99).length, FW.CARD_BACKS.length);
+  assert(
+    FW.CARD_BACKS.every((b, i, a) => !i || b.level > a[i - 1].level),
+    'backs in level order'
+  );
+});
+
+t('Codex and Bestiary: entries fill in once met, fights keep a record, and old Hall heroes count', () => {
+  const C = FW.Codex,
+    book = C.empty();
+  let s = C.sections(book);
+  assert.strictEqual(s.races.total, FW.RACES.length);
+  assert.strictEqual(s.worlds.total, FW.UNIVERSES.length);
+  assert.strictEqual(s.foes.total, FW.UNIVERSES.reduce((a, u) => a + u.opps.length, 0) + FW.Story.DRAGONS.length);
+  assert.strictEqual(s.races.known + s.foes.known + s.worlds.known + s.endings.known, 0);
+  const L = new FW.Legend({ seed: 'codex' });
+  L.picks.race = { name: 'Dwarf' };
+  assert.strictEqual(C.noteHero(book, L), 1);
+  assert.strictEqual(C.noteHero(book, L), 0, 'the same race twice is not new');
+  const foe = FW.UNIVERSES[0].opps[0];
+  C.noteFight(book, foe.name, 'win', FW.UNIVERSES[0].name);
+  C.noteFight(book, foe.name, 'lose', FW.UNIVERSES[0].name);
+  C.noteFight(book, 'Rimefang', 'draw', C.worldOf('Rimefang'));
+  s = C.sections(book);
+  assert.strictEqual(s.races.known, 1);
+  assert.strictEqual(s.worlds.known, 1);
+  assert.strictEqual(s.foes.known, 2);
+  assert.deepStrictEqual(book.foe[foe.name], { met: 2, win: 1, draw: 0, lose: 1 });
+  assert.strictEqual(C.worldOf(foe.name), FW.UNIVERSES[0].name);
+  const old = C.fromHall(C.empty(), [{ race: 'Frost Dwarf', saga: { end: 'legend' } }, { race: 'Elf' }]);
+  assert(old.race.Dwarf && old.race.Elf && old.end.legend, 'Hall heroes fill the Codex');
+  assert.deepStrictEqual(C.clean(null), C.empty());
+});
+
+t('Hall statistics: counts, averages and the most common races, ranks and endings', () => {
+  const s = FW.hallStats([
+    { title: 'A', race: 'Elf', rating: 40, rank: 'Hero', saga: { end: 'legend' }, fav: true },
+    { title: 'B', race: 'Elf', rating: 60, rank: 'Champion', saga: { end: 'dead' } },
+    { title: 'C', race: 'Human', rating: 20, rank: 'Hero' },
+  ]);
+  assert.strictEqual(s.count, 3);
+  assert.strictEqual(s.sagas, 2);
+  assert.strictEqual(s.avg, 40);
+  assert.strictEqual(s.best.title, 'B');
+  assert.deepStrictEqual(s.races[0], ['Elf', 2]);
+  assert.deepStrictEqual(s.ranks[0], ['Hero', 2]);
+  assert.strictEqual(s.endings.length, 2);
+  assert.strictEqual(s.favourites, 1);
+  assert.strictEqual(FW.hallStats(null).count, 0);
 });
 
 console.log('\n' + pass + ' of ' + (pass + fail) + ' checks passed');

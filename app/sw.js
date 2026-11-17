@@ -1,5 +1,5 @@
 /* Destiny Unbound service worker: cache-first for the app shell so it works offline */
-const CACHE = 'fatewheel-v79';
+const CACHE = 'fatewheel-v80';
 const FILES = [
   './',
   'index.html',
@@ -18,6 +18,7 @@ const FILES = [
   'js/report.js',
   'js/menu-data.js',
   'js/menu.js',
+  'js/guide.js',
   'js/options.js',
   'js/presence.js',
   'js/world.js',
@@ -40,6 +41,12 @@ const FILES = [
   'js/engine.js',
   'js/names.js',
   'js/story.js',
+  'js/chapters/quests.js',
+  'js/chapters/power.js',
+  'js/chapters/people.js',
+  'js/chapters/fortune.js',
+  'js/chapters/arcs.js',
+  'js/chapters/world.js',
   'js/skins-data.js',
   'js/wheel.js',
   'js/audio.js',
@@ -54,6 +61,8 @@ const FILES = [
   'js/collect.js',
   'js/packs.js',
   'js/achievements.js',
+  'js/hall.js',
+  'js/codex.js',
   'js/mods.js',
   'js/mods-ui.js',
   'js/content.js',

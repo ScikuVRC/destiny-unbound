@@ -393,3 +393,6 @@ Zip your mod's folder and share it anywhere: itch.io, Discord, GitHub, a forum. 
 
 Destiny Unbound is free and open source (GPL-3.0-or-later). Your mods are your own work, and you choose their
 licence.
+
+To get it listed in the [mod gallery](https://github.com/ScikuVRC/destiny-unbound/blob/main/docs/mod-gallery.md), fill in
+the Share a mod form on GitHub or post it in #mods on the Discord.

@@ -18,6 +18,8 @@ music-src/
 
 # private draft: uploading the trailer (never committed)
 docs/store/trailer-upload.md
+# devlog text waiting for approval before it is posted
+docs/store/devlog-draft.md
 
 # tool and system clutter
 worker/.wrangler/

@@ -84,7 +84,7 @@
         App.startDaily();
       },
     },
-    { k: 'Hall of Legends', run: () => App.hallModal() },
+    { k: 'Hall of Legends', run: () => App.hallModal(), sub: () => (App.hallSub ? App.hallSub() : '') },
     { k: 'Content & mods', run: () => App.contentModal() },
     { k: 'Options', run: () => FW.Options.open() },
     { k: 'Quit', run: () => D && D.quit(), hide: () => !(D && D.quit) },
@@ -142,6 +142,8 @@
       '</span><span class="hint" id="navHint"></span>' +
       '<span class="links"><button data-l="ach">' +
       H.esc(t('Achievements')) +
+      '</button>·<button data-l="codex">' +
+      H.esc(t('Codex')) +
       '</button>·<button data-l="credits">' +
       H.esc(t('Credits')) +
       '</button>·<button data-l="feedback">' +
@@ -158,9 +160,12 @@
     });
     el.querySelectorAll('[data-l]').forEach(b =>
       b.addEventListener('click', () =>
-        ({ ach: () => App.achievementsModal(), credits: credits, feedback: () => FW.System.feedbackModal() })[
-          b.dataset.l
-        ]()
+        ({
+          ach: () => App.achievementsModal(),
+          codex: () => App.codexModal(),
+          credits: credits,
+          feedback: () => FW.System.feedbackModal(),
+        })[b.dataset.l]()
       )
     );
     const vis = visible();

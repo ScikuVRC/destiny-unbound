@@ -441,6 +441,66 @@ async function playSaga(seed, opts, ov) {
     }
   );
 
+  await t(
+    'old legends: only Hall heroes who lived or cheated death return, and they can appear in a saga',
+    async () => {
+      const hall = [
+        { title: 'Ayla, The Pale One', rating: 40, saga: { end: 'retired', who: 'Ayla', cheated: 2 } },
+        { title: 'Borin, The Iron One', rating: 55, saga: { end: 'dead', who: 'Borin' } },
+        { title: 'Cael, The Void One', rating: 70, saga: { end: 'undying', who: 'Cael' } },
+        { title: 'Dara, The Bold One', rating: 30, saga: { end: 'martyr', who: 'Dara' } },
+        { title: 'Eryn, The Quiet One', rating: 35 }, // a card without a saga: still alive
+      ];
+      S.hallSource = () => hall;
+      try {
+        const L = makeLegend('legends');
+        S.newSaga(L, {}, FW.makeRng('x'));
+        assert.deepStrictEqual(S.oldLegends(L).map(S.heroName), ['Ayla', 'Cael', 'Eryn']);
+        assert.strictEqual(S.returnPhrase(hall[0]), 'who has cheated death 2 times');
+        assert.strictEqual(S.returnPhrase(hall[2]), 'who cheated death itself');
+        const ch = S.wheelEntries(L, {}).find(e => e.id === 'oldLegend');
+        assert(ch && ch.w > 0, 'the chapter is on the story wheel');
+        assert(!S.wheelEntries(L, { returning: false }).some(e => e.id === 'oldLegend'), 'the option turns it off');
+        let met = 0;
+        for (let i = 0; i < 300 && met < 5; i++) {
+          const { L: M } = await playSaga('legend' + i, {});
+          if (M.saga.flags.oldLegend) {
+            met++;
+            assert(['Ayla', 'Cael', 'Eryn'].includes(M.saga.flags.oldLegend), 'a dead hero came back');
+            assert(M.saga.log.some(x => x.chapter === 'An old legend returns'));
+          }
+        }
+        assert(met >= 5, 'old legends almost never appear (' + met + ' in 300 sagas)');
+      } finally {
+        S.hallSource = null;
+      }
+      const L = makeLegend('nohall');
+      S.newSaga(L, {}, FW.makeRng('x'));
+      assert(!S.wheelEntries(L, {}).some(e => e.id === 'oldLegend'), 'no Hall, no chapter');
+    }
+  );
+
+  await t('death lines and close calls come in variants, fixed by the seed, and close calls are counted', async () => {
+    const deaths = new Set(),
+      saves = new Set();
+    let cheated = 0;
+    for (let i = 0; i < 400; i++) {
+      const { L } = await playSaga('die' + i, {});
+      L.saga.log.forEach(x => {
+        assert(typeof x.text === 'string' && x.text.indexOf(',{') < 0 && x.text.indexOf('{') < 0, 'bad line ' + x.text);
+        if (x.end === 'dead') deaths.add(x.text.replace(/\d+/g, 'N'));
+        if (S.CLOSE_CALLS.includes(x.text)) saves.add(x.text);
+      });
+      cheated += L.saga.flags.cheated || 0;
+    }
+    assert(saves.size >= 4, 'close calls barely vary: ' + saves.size);
+    assert(cheated > 50, 'close calls are not counted');
+    assert(deaths.size >= 25, 'only ' + deaths.size + ' different death lines');
+    const a = await playSaga('die7', {}),
+      b = await playSaga('die7', {});
+    assert.deepStrictEqual(a.L.saga.log, b.L.saga.log, 'the same seed tells the same story');
+  });
+
   console.log('\n' + pass + ' of ' + (pass + fail) + ' checks passed');
   process.exit(fail ? 1 : 0);
 })();

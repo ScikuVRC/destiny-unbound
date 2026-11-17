@@ -1,0 +1,51 @@
+name: Share a mod
+description: List your mod or wheel pack in the mod gallery (docs/mod-gallery.md).
+labels: [mod-gallery]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for making something! Fill this in and your mod gets a line in the [mod gallery](https://github.com/ScikuVRC/destiny-unbound/blob/main/docs/mod-gallery.md).
+  - type: input
+    id: name
+    attributes:
+      label: Name
+    validations:
+      required: true
+  - type: input
+    id: link
+    attributes:
+      label: Download link
+      description: Where people can get it (itch.io, GitHub, a cloud drive...).
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What is it?
+      options:
+        - A mod (theme, sounds or entries)
+        - A wheel pack (one .json file)
+    validations:
+      required: true
+  - type: textarea
+    id: adds
+    attributes:
+      label: What does it add?
+      description: A sentence or two, and which base theme it uses if it has a theme.
+    validations:
+      required: true
+  - type: textarea
+    id: pictures
+    attributes:
+      label: A screenshot (optional)
+      description: Drag an image here.
+  - type: checkboxes
+    id: rules
+    attributes:
+      label: Before you share
+      options:
+        - label: It is my own work, or I only used things whose licence allows sharing them (and I say which).
+          required: true
+        - label: It doesn't use names, factions or symbols from other games, books or films.
+          required: true

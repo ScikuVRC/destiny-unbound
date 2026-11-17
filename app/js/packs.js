@@ -302,7 +302,15 @@
       Object.keys(ws).forEach(k => {
         pack.workshop[k] = { weights: ws[k].weights || {}, removed: ws[k].removed || [] };
         const add = (ws[k].added || []).filter(a => KEYS[k]);
-        if (add.length) pack.entries[k] = add.map(a => ({ name: a.name, w: a.w, dsl: '' }));
+        // own entries keep their description and effects (made in the Workshop editor, checked by FW.ownDsl)
+        if (add.length)
+          pack.entries[k] = add.map(a =>
+            Object.assign(
+              { name: a.name, w: a.w, dsl: a.fx ? FW.ownDsl(k, a.fx).dsl : '' },
+              a.perk ? { perk: a.perk } : {},
+              a.flaw ? { flaw: a.flaw } : {}
+            )
+          );
       });
       download(JSON.stringify(pack, null, 2), 'my_workshop.destiny-unbound.json');
     };

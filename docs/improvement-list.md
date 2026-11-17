@@ -1,7 +1,7 @@
 # Destiny Unbound: what can be improved
 
-First written 2026-11-13, after 0.2.0-alpha.1. Rewritten 2026-11-17, after 0.3.0-alpha.1: 52 of the first 102 items
-are done and listed at the end; 100 new ideas (103-202) are added.
+First written 2026-11-13, after 0.2.0-alpha.1. Rewritten 2026-11-17, after 0.3.0-alpha.1, with 100 new ideas
+(103-202); updated the same day: 60 of the first 102 and 10 of the new ideas are done and listed at the end.
 
 Each item has a rough size: **S** (an hour or two), **M** (a day), **L** (several days or more).
 Items marked ★ are the ones I'd do first. ✅ = done, ⬜ = not yet. Numbers stay the same as items get done.
@@ -55,14 +55,6 @@ Where the game stands: 26 wheels per hero, 98 races, 49 story chapters, 10 endin
 
 ### Interface and feel
 
-27. ⬜ **Apply the spin-screen polish everywhere (M).** Partly done 2026-11-14: Options remodelled into five tabs and
-    Content & mods built new; card, home and hall still to do.
-29. ⬜ **Wheel readability with many slices (M).** The race wheel has 98 slices; labels at the small end are unreadable.
-    Options: zoom the wheel near the pointer while it slows, or show the five slices around the pointer in a strip.
-31. ⬜ **Onboarding (M).** Partly done 2026-11-16: the guide appears after the music question, explains Fate Tokens,
-    and one-time tips explain kingdoms and heirs. Still to do: a short guided first hero ("spin three wheels, see
-    what they do") that teaches buffs, tokens and luck.
-32. ⬜ **Transitions (S).** Screens cut. Short fades and a wheel "wind up" make it feel finished.
 33. ⬜ **Phone layout (M).** Partly done 2026-11-15 and 2026-11-16: Options and Content & mods fit at 320-412 px, and
     phones held sideways put the wheel beside the question, all in emulation (`scripts/layout-check.js`). Still not
     tried on a real phone.
@@ -88,8 +80,6 @@ Where the game stands: 26 wheels per hero, 98 races, 49 story chapters, 10 endin
     first (issue #4), then French, German, Japanese.
 61. ⬜ ★ **Native-speaker review of French, German and Japanese (M, needs volunteers).** They are AI drafts.
 62. ⬜ **Text variety (M).** Most outcomes have one line. Three variants each would stop sagas reading the same.
-64. ⬜ **Gendered and plural text (M).** Story text avoids pronouns; languages like Spanish and French need agreement
-    rules once the story is translated.
 65. ⬜ **A style guide for writers and translators (S).**
 66. ⬜ **Move story text out of code (M).** Chapter text lives inside `story.js` as string literals, which is why
     translating it is hard. A data file per language fixes that.
@@ -99,7 +89,6 @@ Where the game stands: 26 wheels per hero, 98 races, 49 story chapters, 10 endin
 
 ### Code
 
-72. ⬜ **Break up `story.js` (M).** Every chapter is inline. One file per arc or chapter group, plus a small registry.
 73. ⬜ **Modules instead of script tags (M).** Files attach to a global `FW` and load in a fixed order. ES modules with
     a bundler (esbuild) would give real imports, dead-code checks and a smaller download.
 75. ⬜ **Type checking (M).** JSDoc types checked by TypeScript (`checkJs`) would catch wrong field names and missing
@@ -114,11 +103,10 @@ Where the game stands: 26 wheels per hero, 98 races, 49 story chapters, 10 endin
 
 94. ⬜ **Windows code signing (S, costs money).** Removes the SmartScreen warning that scares new players.
 95. ⬜ **Mac and Linux testing (M).** Never tested by a human (issues #2 and #3).
-97. ⬜ **Devlogs (S each).** Ongoing: one per release on itch.io and Discord (0.2 and 0.3 are posted).
-99. ⬜ **Mod gallery (M).** A place to share mods and wheel packs: a Discord forum channel first, a page later.
+97. ⬜ **Devlogs (S each).** Ongoing: one per release on itch.io and Discord (0.2 and 0.3 are posted; the next one is
+    drafted in `docs/store/devlog-draft.md`, not committed).
 100. ⬜ **Steam (L).** Decided to wait. Needs a store page, Steam achievements, cloud saves and a signed build (the
      capsule art and library hero are ready).
-101. ⬜ **Press kit (S).** One page with logo, screenshots, description and contact.
 
 ---
 
@@ -128,8 +116,6 @@ Where the game stands: 26 wheels per hero, 98 races, 49 story chapters, 10 endin
 
 103. ⬜ **Age that matters (S).** Old heroes lose a little strength and gain wisdom; a few chapters only appear
      after 60.
-104. ⬜ ★ **Heroes from your Hall return (M).** A past hero turns up in a new saga as a stranger, rival or mentor, with
-     their real name, race and ending.
 105. ⬜ **Ancestor spirits (S).** An heir can call on a dead ancestor once per saga for a second chance.
 106. ⬜ **After the ending (M).** Damned, Ascended and Undying heroes get one extra chapter set in what comes after.
 107. ⬜ **Fame and infamy (M).** Two reputation tracks instead of one; towns, guilds and rulers react to them.
@@ -166,22 +152,16 @@ Where the game stands: 26 wheels per hero, 98 races, 49 story chapters, 10 endin
 
 131. ⬜ **Hero presets (S).** Save a set of locked wheels and start from it next time.
 132. ⬜ **Wheel history (S).** The last ten results of each wheel, to see streaks and near misses.
-133. ⬜ ★ **Wheel editor in the game (M).** Edit or add wheels inside the game instead of only through the mod kit.
 134. ⬜ **Origin story (S).** A short paragraph about where the hero came from, shown when the card is made.
 135. ⬜ **Twins (S).** A rare result that makes two heroes sharing race and bloodline.
 136. ⬜ **Cursed slices (S).** Rare bad results with a hidden upside that shows later in the saga.
 137. ⬜ **Charge the spin (S).** Hold to wind up a stronger spin; looks better, the result stays random.
 138. ⬜ **Photo mode for the card (M).** Pick a pose, backdrop and filter before sharing.
-139. ⬜ **Card backs (S).** Choose the back of the card; some unlocked by achievements.
-140. ⬜ **Print-ready card (S).** A high-resolution image or PDF of the card for printing.
 
 ### Progression and keeping players
 
-141. ⬜ **Player level (M).** Experience across all sagas, with a small reward every few levels.
 142. ⬜ **Daily streaks (S).** Count days in a row of the daily challenge, with a small badge.
 143. ⬜ **Hall filters and search (S).** Sort and filter the Hall by race, ending, rank or date.
-144. ⬜ **Hall statistics (S).** Charts of your own heroes: races, endings, average age, favourite class.
-145. ⬜ **Favourite heroes (S).** Pin up to five heroes; one of them stands on the title screen.
 146. ⬜ **Tiered achievements (S).** Progress bars and bronze, silver and gold steps for long achievements.
 147. ⬜ **Hidden achievements (S).** Secret ones with a riddle as the only hint.
 148. ⬜ **Monthly challenge (S).** One fixed rule for a month ("all heroes are undead"), with its own badge.
@@ -228,9 +208,6 @@ Where the game stands: 26 wheels per hero, 98 races, 49 story chapters, 10 endin
 
 177. ⬜ **Tone per theme (M).** Darker wording in grim themes, lighter in the forest theme.
 178. ⬜ **A quote on the card (S).** One line in the hero's voice, chosen by personality.
-179. ⬜ ★ **Codex (M).** An in-game book of races, worlds, gods and arena foes that fills as you meet them.
-180. ⬜ **Bestiary (S).** Lore and records for every arena opponent.
-181. ⬜ **More ways to die (S).** Varied death lines so early deaths feel less samey.
 182. ⬜ **Credits with your saga (S).** A Legend ending rolls credits that name the hero's companions and foes.
 183. ⬜ **Community chapters (S).** A guide for players who want to write chapters as mods.
 
@@ -267,7 +244,28 @@ Where the game stands: 26 wheels per hero, 98 races, 49 story chapters, 10 endin
 
 ## Done
 
-52 of the first 102.
+60 of the first 102, and 10 of the new ideas.
+
+### Done 2026-11-17 (second batch)
+
+99. ✅ **Mod gallery.** 2026-11-17: [mod-gallery.md](mod-gallery.md), a Share a mod form on GitHub and a #mods forum on the Discord (tags: Theme, Wheel pack, Sounds, Work in progress).
+27. ✅ **Apply the spin-screen polish everywhere.** 2026-11-17: the Spin button sits right under the home settings, the card's look choices are one Style menu, and the Hall has a level bar, statistics and favourites.
+29. ✅ **Wheel readability with many slices.** 2026-11-17: a strip under crowded wheels (24 slices or more) names the slice at the pointer and two on each side while it turns.
+31. ✅ **Onboarding.** 2026-11-17: a guided first hero: four short notes during the first spins (what a wheel does, buffs and debuffs, Fate Tokens, luck and Auto). Players with saved heroes skip it.
+32. ✅ **Transitions.** 2026-11-17: screens fade in, pop-ups rise in, and the wheel winds up a little before each spin (none with animations off, a plain fade when reduced).
+64. ✅ **Gendered and plural text.** 2026-11-17: `{p:one|other}` plural forms with each language's own rules and `{g:his|her|their}` that follows the hero's presentation (`FW.fmt` in `i18n.js`). Story lines about the hero use it.
+72. ✅ **Break up `story.js`.** 2026-11-17: the 49 chapters live in six files in `app/js/chapters/` (3,206 lines down to about 1,250); the same seeds tell exactly the same stories.
+101. ✅ **Press kit.** 2026-11-17: [press-kit.md](press-kit.md): fact sheet, description, images, how it was made, contact.
+104. ✅ **Heroes from your Hall return.** 2026-11-17: only heroes who lived, or cheated death (the Undying), come back as a mentor, a rival who tests you, or a stranger. An option in the story settings.
+133. ✅ **Wheel editor in the game.** 2026-11-17: your own Workshop entries get a description and checked effects (stats, a Fate Token, a weakness and a resistance, lifespan for races), capped at three steps up; they travel in Legend Codes and are checked again when one loads.
+139. ✅ **Card backs.** 2026-11-17: Classic plus five patterns (Starfield, Rune circle, Gilded lattice, Embers, Void spiral), unlocked by player level.
+140. ✅ **Print-ready card.** 2026-11-17: Share > Print sheet: front and back on A4 at 400 dpi, 64 × 96 mm with crop marks.
+141. ✅ **Player level.** 2026-11-17: experience for heroes, chapters, endings and achievements (each counted once); levels unlock card backs.
+144. ✅ **Hall statistics.** 2026-11-17: count, sagas, average and best rating, the most common races, endings and ranks.
+145. ✅ **Favourite heroes.** 2026-11-17: pin up to five; favourites list first and the first one shows on the title screen.
+179. ✅ **Codex.** 2026-11-17: races, worlds and endings fill in as you meet them, with the gaps showing (from the Hall and the title screen).
+180. ✅ **Bestiary.** 2026-11-17: every arena foe and dragon with level, elements, trick and your record against them.
+181. ✅ **More ways to die.** 2026-11-17: the common deaths have two to six versions each, and narrow escapes six; the recap counts close calls with death.
 
 ### Gameplay
 
@@ -348,9 +346,9 @@ Where the game stands: 26 wheels per hero, 98 races, 49 story chapters, 10 endin
 
 ## Suggested order
 
-1. **Feel:** real sound effects (52), ending stingers (55), transitions (32), pause menu (36).
-2. **Play:** quick create (18), saga goals (24), secret chapters (114), heroes from your Hall return (104).
-3. **Depth:** companion and nemesis arcs (4, 5), Hall tournament (121), arena gauntlet (11), collection book or
-   codex (23, 179).
-4. **Reach:** a real phone test (33), story text translated (60), native-speaker reviews (61), press kit (101).
-5. **Foundations:** move story text out of code (66), break up `story.js` (72), browser tests in CI (76).
+1. **Feel:** real sound effects (52), ending stingers (55), pause menu (36).
+2. **Play:** quick create (18), saga goals (24), secret chapters (114), a map of the saga (168).
+3. **Depth:** companion and nemesis arcs (4, 5), Hall tournament (121), arena gauntlet (11), collection book (23).
+4. **Reach:** a real phone test (33), story text translated (60, now ready for plural and gender markers),
+   native-speaker reviews (61).
+5. **Foundations:** move story text out of code (66), browser tests in CI (76), type checking (75).

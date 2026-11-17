@@ -458,7 +458,9 @@
     if (!r) return;
     const t = tt,
       pct = p => Math.round(p * 100) + '%';
-    const stat = (n, label) => '<div><b>' + H.esc(String(n)) + '</b><span>' + H.esc(t(label)) + '</span></div>';
+    // a label can pick its form by the number: {p:year|years} (i18n.js, FW.fmt)
+    const stat = (n, label) =>
+      '<div><b>' + H.esc(String(n)) + '</b><span>' + H.esc(FW.fmt(t(label), { n })) + '</span></div>';
     // the upset is always a win and the cruel loss always a loss; only the closest fight stores its result
     const fight = (icon, label, f, res) =>
       f
@@ -540,13 +542,14 @@
         '</h2><p class="legend-key">' +
         H.esc(r.name + (r.endLabel ? ' · ' + t(r.endLabel) : '')) +
         '</p><div class="recap-stats">' +
-        stat(r.chapters, r.chapters === 1 ? 'chapter' : 'chapters') +
-        stat(r.years, r.years === 1 ? 'year' : 'years') +
+        stat(r.chapters, '{p:chapter|chapters}') +
+        stat(r.years, '{p:year|years}') +
         (r.ageEnd != null ? stat(r.ageStart + ' → ' + r.ageEnd, 'age') : '') +
         stat(
           r.fights.won + ' / ' + r.fights.lost + (r.fights.draw ? ' / ' + r.fights.draw : ''),
           r.fights.draw ? 'won / lost / drawn' : 'won / lost'
         ) +
+        (r.cheated ? stat(r.cheated, '{p:close call with death|close calls with death}') : '') +
         '</div>' +
         (fights ? '<ul class="recap-fights">' + fights + '</ul>' : '') +
         '<h3>' +

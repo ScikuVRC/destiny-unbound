@@ -92,3 +92,13 @@ language:
 3. Add a `<script>` line for it in `app/index.html`, next to `es.js`.
 
 Text without an entry stays in English, so a translation can grow a bit at a time.
+
+Some lines change with a number or with the hero, and carry markers to keep in the translation:
+
+- `{n}` is the number itself.
+- `{p:chapter|chapters}` picks a form by the number, with your language's own plural rules. Give the forms in the
+  order zero, one, two, few, many, other, keeping only the ones your language has: English and German use
+  `{p:one|other}`, French `{p:one|many|other}`, Japanese a single form.
+- `{g:his|her|their}` picks by the hero's presentation: masculine, feminine, neutral.
+
+So `'{p:year|years}': '{p:año|años}'` in Spanish. The tests check that a translation keeps the same kinds of markers.
