@@ -2,7 +2,7 @@
 
 A running record of where the game stands. Update it when something ships, starts or gets decided.
 This file is public: server addresses, account, payment and moderation details go in `private-notes.md` (not on GitHub).
-Last updated: 2026-11-17 · Current version: **0.3.0-alpha.2**
+Last updated: 2026-11-18 · Current version: **0.3.0-alpha.3**
 
 Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
@@ -44,6 +44,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 | More varied saga endings, opt-in "where I stop playing" counts, achievement report plays heirs (small update) | 0.2.0-alpha.5.0 | ✅ released 2026-11-16 |
 | The saga update: saga recap, epilogues, Verdant Wild HD music, long sagas can be shared again | 0.3.0-alpha.1 | ✅ released 2026-11-17 |
 | Old legends return: a Codex and Bestiary, player level and card backs, and your own wheel entries with real effects | 0.3.0-alpha.2 | ✅ released 2026-11-17 |
+| World Boss, mounts, scars, fame and infamy, after-the-ending chapters | 0.3.0-alpha.3 | ✅ released 2026-11-18 |
 | Alpha test with 5-15 players | two weeks after release | ⬜ |
 | Beta (fixes from the alpha, signed build, store page) | 0.2.0-beta.1 | ⬜ |
 | 1.0 on itch.io | 1.0.0 | ⬜ |
@@ -71,19 +72,6 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
 ## Ready for the next alpha (not released yet)
 
-- ✅ After the ending: Ascended, Damned and Undying heroes get one more chapter about what came after
-- ✅ Fame and infamy: heroic deeds and crimes build a reputation that tilts quests, heists and mentors
-- ✅ Scars from lost fights and narrow escapes: a small penalty, sometimes a grim bonus, on the card and in the recap
-- ✅ Mounts: a new wheel (19 mounts); a mount helps on quests, a flying or swimming one at sea; a companion can
-  save the hero from death once
-- ✅ World boss: one of five bosses a week, each with a looping animation (Genesis, the Valkyr of Time, by the
-  game's creator); every hero fights once; shared health bar for players who share counts
-  (the server needs the schema run and a deploy)
-- ✅ A line in the hero's own voice on the card (two per personality)
-- ✅ "How was this saga?" after an ending, sent only when the player presses Send
-- ✅ Export the Hall and statistics as a spreadsheet; easy-read text option; mod.json mistakes say the line and
-  a likely fix
-- ✅ Checked at 2560×1080, 3440×1440 and 4K: the layout check now emulates sizes bigger than the screen
 - Nothing yet
 
 ## Released

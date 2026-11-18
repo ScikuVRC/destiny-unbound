@@ -4,6 +4,40 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
+## 0.3.0-alpha.3 (2026-11-18)
+
+### New
+
+- **World Boss.** A new main-menu mode: one boss a week, five in turn: Vaelthrax the Hunger Below, the Clockwork
+  Colossus, the Mother of Storms, the Pale Court, and Genesis, the Valkyr of Time. Each has a looping animation.
+  Every hero you own can fight once a week, and the real arena odds decide how hard they hit. Players who share
+  counts with the world counter (Options > Data) fight one shared health bar together; everyone else keeps their own
+  tally.
+- **After the ending.** Heroes who ascend, are damned or become undying get one more chapter about what came after.
+- **Fame and infamy.** Heroic deeds bring fame; crimes, pacts and conquests bring infamy. A well-known name changes
+  the odds on quests, heists and with mentors, and both show in the saga recap.
+- **Scars.** Narrow escapes and some lost fights leave a scar, with a small penalty and sometimes a grim bonus. A hero
+  carries at most three, on the card and in the recap.
+- **Mounts.** A new wheel with 19 mounts, from a steady horse to a griffin or a young drake. A mount helps on quests,
+  and a flying or swimming one at sea. A companion can now save the hero from death once.
+- **The hero speaks.** The card shows a line in the hero's own voice, chosen by their personality.
+- **How was this saga?** After an ending you can say how it went, with an optional note. Nothing is sent unless you
+  press Send, and you see exactly what goes.
+- **Export your Hall.** The Hall of Legends can save your heroes and statistics as a spreadsheet file.
+- **Easy-read text.** Options > Accessibility: a plain, evenly spaced font with more room between letters, words and
+  lines. Helps with dyslexia.
+
+### Changed
+
+- **Clearer mod errors.** A broken `mod.json` says the line, the column and a likely fix, and the game tells you when
+  a mod could not load.
+- **Big screens.** Checked at ultrawide (3440×1440) and 4K: everything fits and scales up.
+
+### Behind the scenes
+
+- The layout check now tests sizes bigger than the screen it runs on.
+- A tool turns any GIF or short video into a looping boss animation.
+
 ## 0.3.0-alpha.2 (2026-11-17)
 
 ### New
