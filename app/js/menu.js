@@ -84,6 +84,11 @@
         App.startDaily();
       },
     },
+    {
+      k: 'World Boss',
+      run: () => App.bossModal && App.bossModal(),
+      sub: () => (FW.Boss ? t(FW.Boss.current().name) : ''),
+    },
     { k: 'Hall of Legends', run: () => App.hallModal(), sub: () => (App.hallSub ? App.hallSub() : '') },
     { k: 'Content & mods', run: () => App.contentModal() },
     { k: 'Options', run: () => FW.Options.open() },
@@ -180,7 +185,7 @@
   }
   let coachItem = -1;
   function icon(k) {
-    const d = (FW.MENU_ICONS || {})[k === 'Content & mods' ? 'Mods' : k]; // the hub keeps the Mods icon
+    const d = (FW.MENU_ICONS || {})[k === 'Content & mods' ? 'Mods' : k === 'World Boss' ? 'Arena' : k]; // the hub keeps the Mods icon
     return d
       ? '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' +
           d +

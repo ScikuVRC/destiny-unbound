@@ -104,6 +104,40 @@
     };
   };
 
+  /* the Hall and statistics as a spreadsheet file (CSV) */
+  FW.hallCsv = function (hall, extra) {
+    const cell = v => {
+      const s = String(v == null ? '' : v);
+      // quote everything that needs it, and stop a cell from being read as a formula
+      const safe = /^[=+\-@]/.test(s) ? "'" + s : s;
+      return /[",\n\r]/.test(safe) ? '"' + safe.replace(/"/g, '""') + '"' : safe;
+    };
+    const row = a => a.map(cell).join(',');
+    const lines = [
+      row(['Name', 'Race', 'Rating', 'Rank', 'Saved', 'Saga', 'Ending', 'House', 'Generation', 'Favourite']),
+    ];
+    (hall || []).forEach(h =>
+      lines.push(
+        row([
+          h.title,
+          h.race,
+          h.rating,
+          h.rank,
+          h.date,
+          h.saga ? h.saga.summary : '',
+          h.saga ? h.saga.end || '' : '',
+          h.saga ? h.saga.house || '' : '',
+          h.saga ? h.saga.gen || '' : '',
+          h.fav ? 'yes' : '',
+        ])
+      )
+    );
+    if (extra && extra.length) {
+      lines.push('', row(['Statistic', 'Value']));
+      extra.forEach(([k, v]) => lines.push(row([k, v])));
+    }
+    return lines.join('\r\n') + '\r\n';
+  };
   if (typeof document === 'undefined' || !g.FWApp) return;
   const App = g.FWApp,
     H = FW.html,
@@ -184,6 +218,10 @@
       H.esc(t('Codex')) +
       '</button><button class="btn small" data-codex="bestiary">🐾 ' +
       H.esc(t('Bestiary')) +
+      '</button><button class="btn small ghost" data-export-hall title="' +
+      H.esc(t('Your Hall and statistics as a file for any spreadsheet program')) +
+      '">⬇ ' +
+      H.esc(t('Export as spreadsheet')) +
       '</button></div>' +
       '<div class="level-box"><div class="level-top"><b>' +
       H.esc(FW.fmt(t('Level {n}'), { n: lv.level })) +
@@ -243,6 +281,37 @@
         : '')
     );
   };
+
+  /* ---------------- export: the Hall and your statistics as a spreadsheet (CSV) ---------------- */
+  App.exportHall = function () {
+    const lv = Lv.of(rec.xp),
+      s = FW.hallStats(st.hall),
+      play = (FW.System && FW.System.stats) || {};
+    const extra = [
+      ['Player level', lv.level],
+      ['Experience', lv.xp],
+      ['Legends in the Hall', s.count],
+      ['Average rating', s.avg],
+      ['Best rating', s.best ? s.best.rating : ''],
+    ].concat(
+      Object.keys(play)
+        .filter(k => typeof play[k] === 'number')
+        .map(k => [k, play[k]])
+    );
+    // a byte order mark so spreadsheet programs read the accents right
+    const blob = new Blob(['\ufeff' + FW.hallCsv(st.hall, extra)], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'destiny-unbound-hall.csv';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 8000);
+    App.toast(t('Saved destiny-unbound-hall.csv'));
+  };
+  document.addEventListener('click', e => {
+    if (e.target.closest && e.target.closest('[data-export-hall]')) App.exportHall();
+  });
 
   /* ---------------- card backs and the print sheet ---------------- */
   const backId = () => {

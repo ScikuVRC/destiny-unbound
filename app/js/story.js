@@ -30,6 +30,11 @@
     { id: 'loyalty', name: 'Companion loyalty', blurb: 'Allies can grow loyal, leave you or betray you.' },
     { id: 'dynasty', name: 'Dynasty', blurb: 'If you have an heir, continue the story as your child.' },
     {
+      id: 'beyond',
+      name: 'After the ending',
+      blurb: 'Heroes who ascend, are damned or become undying get one more chapter about what came after.',
+    },
+    {
       id: 'returning',
       name: 'Old legends return',
       blurb:
@@ -337,34 +342,82 @@
   // a line can come in variants (a list); the saga's seed and chapter pick one, so it never shifts the story's dice
   S.vary = (t, L, key) =>
     Array.isArray(t) ? t[Math.floor(FW.makeRng(String(L.seed) + ':line:' + key)() * t.length) % t.length] : t;
+  /* scars: a narrow escape, or a lost fight that leaves its mark. Each has a small penalty, some a grim bonus. They
+     go into the chronicle (so they count on the card) and the log says what happened. At most three. */
+  S.SCARS = [
+    ['A missing eye', 'wpn-1 behind:all+1', 'an empty eye socket'],
+    ['A limp', 'spd-1', 'a limp that never goes away'],
+    ['A face of scars', 'rt+1 int-1', 'a face no one forgets'],
+    ['Two missing fingers', 'wpn-1 fgt+1', 'two fingers fewer'],
+    ['A cracked skull', 'int-1 dur+1', 'a skull that healed thicker'],
+    ['Burn scars', 'dur-1 r=fire', 'burns that taught the skin to bear fire'],
+    ['A wound that never closed', 'dur-1 behind:all+1', 'a wound that still bleeds when the hero fights hardest'],
+    ['A frostbitten hand', 'wpn-1 r=ice', 'a hand the cold can no longer hurt'],
+  ].map(x => ({ name: x[0], dsl: x[1], text: x[2] }));
+  S.MAX_SCARS = 3;
+  S.addScar = function (L, ctx) {
+    const s = L.saga;
+    s.flags.scars = s.flags.scars || [];
+    if (s.flags.scars.length >= S.MAX_SCARS) return null;
+    const left = S.SCARS.filter(x => s.flags.scars.indexOf(x.name) < 0),
+      r = FW.makeRng(String(L.seed) + ':scar:' + s.ch)();
+    const sc = left[Math.floor(r * left.length) % left.length];
+    s.flags.scars.push(sc.name);
+    L.chron.push({ label: 'Scar: ' + sc.name, dsl: sc.dsl, text: 'Scar: ' + sc.name, kind: 'story', key: ctx.ch });
+    return sc;
+  };
+  // a companion can save the hero from death once, after fate's own second chance has passed
+  S.PET_SAVE = 0.3;
+  const petName = L => (L.has('pet') && !L.isNone('pet') ? L.pickName('pet') : '');
+  /* fame and infamy: good outcomes in heroic chapters bring fame; crimes, conquests and dark bargains bring infamy.
+     Both stay in the saga (flags) and tilt chapters where people know your name (S.fit, `rep`). */
+  S.REP = {
+    fame: ['quest', 'dungeon', 'boss', 'dragon', 'rescue', 'tournament', 'siege', 'showdown', 'lastStand', 'duel'],
+    infamy: ['heist', 'pact', 'conquerRace', 'conquerWorld', 'betrayal', 'exile', 'rebellion'],
+  };
+  S.rep = (s, k) => (s && s.flags && +s.flags[k]) || 0;
   S.apply = function (L, ent, ctx) {
     const s = L.saga,
       o = ctx.o;
     let e = ent;
     const mortal = S.MORTAL[e.end];
+    const close = text => ({ end: null, dsl: '', text: text || e.alive || S.CLOSE_CALLS, tone: 'bad', scar: true });
     if (S.MORTAL[e.end] && o.death && ctx.rng && ctx.rng() < (s.ch <= S.YOUNG_SAGA ? S.YOUNG_SAVE : S.LATE_SAVE))
-      e = Object.assign({}, e, {
-        end: null,
-        dsl: 'dur-1',
-        text: e.alive || S.CLOSE_CALLS,
-        tone: 'bad',
-      });
-    if (S.MORTAL[e.end] && !o.death)
-      e = Object.assign({}, e, {
-        end: null,
-        dsl: 'dur-1',
-        text: e.alive || S.CLOSE_CALLS,
-        tone: 'bad',
-      });
+      e = Object.assign({}, e, close());
+    if (S.MORTAL[e.end] && !o.death) e = Object.assign({}, e, close());
+    // the companion steps in (once); its own seeded roll, so it never shifts the story's dice
+    if (S.MORTAL[e.end] && petName(L) && !(s.flags && s.flags.petSaved)) {
+      if (FW.makeRng(String(L.seed) + ':pet:' + s.ch)() < S.PET_SAVE) {
+        s.flags.petSaved = petName(L);
+        e = Object.assign(
+          {},
+          e,
+          close('At the last moment your ' + petName(L).toLowerCase() + ' drags {hero} out of harm’s way.')
+        );
+      }
+    }
     // cheated death: counted for the recap and for heroes who come back in later sagas
     if (mortal && !e.end) {
       s.flags = s.flags || {};
       s.flags.cheated = (s.flags.cheated || 0) + 1;
     }
+    // fame and infamy
+    if (!e.end && ctx.ch) {
+      s.flags = s.flags || {};
+      if (e.tone === 'good' && S.REP.fame.indexOf(ctx.ch) >= 0) s.flags.fame = S.rep(s, 'fame') + 1;
+      if (S.REP.infamy.indexOf(ctx.ch) >= 0 && (e.tone === 'good' || ctx.ch === 'exile'))
+        s.flags.infamy = S.rep(s, 'infamy') + 1;
+    }
+    let scarText = '';
+    if (e.scar) {
+      const sc = S.addScar(L, ctx);
+      if (sc) scarText = ' It leaves {g:him|her|them} with ' + sc.text + '.';
+      else if (!e.dsl) e = Object.assign({}, e, { dsl: 'dur-1' });
+    }
     if (e.dsl) L.chron.push({ label: ctx.chName + ': ' + e.name, dsl: e.dsl, text: '', kind: 'story', key: ctx.ch });
     if (e.fx) e.fx(s, L, ctx);
     if (e.years) s.years += e.years;
-    const text = fill(S.vary(e.text || e.name, L, s.ch + ':' + e.name), ctx, L);
+    const text = fill(S.vary(e.text || e.name, L, s.ch + ':' + e.name) + scarText, ctx, L);
     if (!e.quiet)
       s.log.push(
         Object.assign(
@@ -408,6 +461,7 @@
       per: ['Opportunist', 'Trickster', 'Mastermind', 'Calculating', 'Greedy', 'Manipulator', 'Chaotic Neutral'],
       bg: /thief|con artist|street|criminal|pickpocket|smuggl/i,
       against: { cls: ['Paladin', 'Templar', 'Knight'], per: ['Lawful Good', 'Honourable', 'Pacifist'] },
+      rep: { infamy: 1, fame: -1 }, // the underworld trusts a known name; everyone else knows your face
     },
     haunted: {
       what: 'the dead',
@@ -422,6 +476,7 @@
       elem: ['Water', 'Storm', 'Wind', 'Ice'],
       bg: /pirate|sail|ship|fisher|harbou?r/i,
       against: { weak: ['Water'] },
+      mount: ['Griffin', 'Pegasus', 'Wyvern', 'Giant Owl', 'Drake', 'Sea Serpent'], // flying or swimming
     },
     train: {
       what: 'training',
@@ -440,11 +495,14 @@
       cls: ['Ranger', 'Hero of Legend', 'Chosen One', 'Monster Hunter', 'Paladin', 'Knight'],
       per: ['Hero', 'Justice Seeker', 'Kind-hearted', 'Protector', 'Guardian', 'Neutral Good', 'Lawful Good'],
       against: { per: ['Coward', 'Greedy', 'Sadist'] },
+      rep: { fame: 1 },
+      mount: true,
     },
     mentor: {
       what: 'learning from a mentor',
       per: ['Scholar', 'Loyal', 'Honourable', 'Serene', 'Kind-hearted', 'Shy'],
       against: { per: ['Arrogant', 'Paranoid', 'Loner'] },
+      rep: { fame: 1, infamy: -1 },
     },
     cunning: {
       what: 'outwitting a demon',
@@ -481,6 +539,15 @@
       const b = r.against && has(k, r.against[k]);
       if (b) minus.push(name(k).replace('{n}', b));
     });
+    // people who know your name (fame and infamy, from 3 up), and a mount for the journey (113)
+    const s = L.saga;
+    Object.keys(r.rep || {}).forEach(k => {
+      if (S.rep(s, k) >= 3) (r.rep[k] > 0 ? plus : minus).push('your ' + k);
+    });
+    if (r.mount && L.has('mount') && !L.isNone('mount')) {
+      const mt = L.pickName('mount');
+      if (r.mount === true || r.mount.indexOf(mt) >= 0) plus.push('your ' + mt.toLowerCase());
+    }
     const m = Math.pow(1.6, Math.min(2, plus.length)) / Math.pow(1.6, Math.min(2, minus.length));
     const up = x => x.charAt(0).toUpperCase() + x.slice(1);
     const why =
@@ -573,7 +640,7 @@
     good('A strange relic', 2, 'pwr+1', 'You found {art}.', { fx: (s, L, c) => s.artifacts.push(c.newArt) }),
   ];
   const LOSS = [
-    bad('Scarred', 8, 'dur-1', 'You survive {foe}, scarred.'),
+    bad('Scarred', 8, '', 'You survive {foe}, scarred.', { scar: true }),
     bad('Captured', 4, '', 'Held prisoner for a year.', { years: 1 }),
     bad('Humbled', 6, 'int+1', 'You learn more from losing than winning.'),
     bad(
@@ -771,9 +838,87 @@
     if (!s.end && o.kingdomEvents && s.kingdom && ch.id !== 'kingdom' && io.rng() < 0.3)
       await kingdomEvent(L, io, Object.assign({}, c));
     if (!s.end && o.aging && S.isOld(L) && io.rng() < 0.5) await oldAge(L, io, Object.assign({}, c));
+    if (s.end && S.AFTER[s.end] && o.beyond && !s.flags.after) await afterEnd(L, io, Object.assign({}, c));
     if (s.end && !o.dynasty) s.heir = s.heir || null;
     return ch;
   };
+
+  /* ---------------- after the ending: heroes who rise, fall to the pit or refuse to die get one more chapter ----------------
+     It does not change the ending; it says what came of them on the other side. */
+  S.AFTER = {
+    ascended: {
+      name: 'Among the gods',
+      emoji: '🌟',
+      title: 'Among the gods. What does {hero} become?',
+      entries: [
+        good(
+          'A god of small things',
+          3,
+          '',
+          '{hero} becomes the god of lost keys and late travellers. The prayers are small, but they never stop.'
+        ),
+        good('A new star', 2, '', '{hero} becomes a new star. Sailors steer by it.'),
+        good(
+          'A patron of heroes',
+          2,
+          '',
+          '{hero} watches over the next ones who spin the wheel, and tips it now and then.'
+        ),
+        E('A distant watcher', 2, '', '{hero} sees everything and touches nothing, as the old gods taught.'),
+        bad('A forgotten god', 1.5, '', 'Within a century the prayers stop. {hero} fades, one temple at a time.'),
+      ],
+    },
+    damned: {
+      name: 'In the pit',
+      emoji: '🔥',
+      title: 'In the pit. What becomes of {hero}?',
+      entries: [
+        bad('Chained', 3, '', '{hero} is chained in the deepest pit, where even the demons do not go.'),
+        E('A demon’s servant', 2, '', '{hero} serves the thing that holds the contract, and learns its secrets.'),
+        good(
+          'Escapes, centuries later',
+          1.5,
+          '',
+          'Centuries later, {hero} claws back out. The world above has forgotten the name.'
+        ),
+        good('Rules a corner of the pit', 1.5, '', '{hero} fights until a corner of the pit answers to no one else.'),
+        bad('Becomes a demon', 1.5, '', '{hero} becomes one of them, and is summoned by fools for a thousand years.'),
+      ],
+    },
+    undying: {
+      name: 'The long night',
+      emoji: '🌘',
+      title: 'The long night. What does {hero} do with forever?',
+      entries: [
+        good(
+          'Guards the old roads',
+          3,
+          '',
+          '{hero} walks the old roads at night, and travellers who meet {g:him|her|them} get home safe.'
+        ),
+        E('Sleeps', 2, '', '{hero} sleeps under a hill, waiting for the world to need {g:him|her|them} again.'),
+        good('Keeps the stories', 2, '', '{hero} collects the stories of the dead, so someone remembers them.'),
+        bad('Hunted', 2, '', 'The living hunt {hero} from village to village. They never quite succeed.'),
+        bad('Forgets', 1.5, '', 'One century at a time, {hero} forgets who {g:he was|she was|they were}.'),
+      ],
+    },
+  };
+  async function afterEnd(L, io, c) {
+    const a = S.AFTER[L.saga.end];
+    c.chName = a.name;
+    c.emoji = a.emoji;
+    const end = L.saga.end,
+      endText = L.saga.endText;
+    const e = await outcome(L, io, c, {
+      title: a.title.replace('{hero}', L.displayName()),
+      emoji: a.emoji,
+      hue: 270,
+      entries: a.entries,
+    });
+    L.saga.flags.after = (e && e.name) || a.name;
+    L.saga.end = end; // the ending stays what it was
+    L.saga.endText = endText;
+  }
 
   /* ---------------- dynasty: family traits and the house's history ----------------
      A house gets one trait when it is founded; every heir born into it carries the trait, and the house's history
@@ -1107,6 +1252,10 @@
       heartbreak: F.heartbreak || null,
       cheated: (s.flags && s.flags.cheated) || 0,
       oldLegend: (s.flags && s.flags.oldLegend) || '',
+      fame: S.rep(s, 'fame'),
+      infamy: S.rep(s, 'infamy'),
+      scars: ((s.flags && s.flags.scars) || []).slice(),
+      after: (s.flags && s.flags.after) || '',
       timeline: keep,
       family: S.familyTree(L),
       heir: s.heir ? s.heir.name + ' (' + s.heir.kind + ')' : '',

@@ -424,6 +424,11 @@
         'Stronger text and borders on solid backgrounds.'
       );
       h += row(
+        'Easy-read text',
+        tog('easyRead', P.easyRead, 'Easy-read text'),
+        'A plain, evenly spaced font with more room between letters, words and lines, and no capitals-only headings. Helps with dyslexia. The wheel and the card keep their look.'
+      );
+      h += row(
         'Colour-blind-safe wheels',
         tog('cbSafe', P.cbSafe, 'Colour-blind-safe wheels'),
         'Slices use a palette that stays distinct with every common kind of colour blindness.'
@@ -578,7 +583,7 @@
           row(
             'Add my results to the world counter',
             tog('world', FW.World.enabled(), 'Add my results to the world counter'),
-            'Off by default. When on, the game sends one anonymous count each time you finish a hero or a saga ends (only "a hero" or the name of the ending: no names, codes or IDs), and shows everyone\'s totals here. The same totals are behind /stats on our Discord.'
+            'Off by default. When on, the game sends one anonymous count each time you finish a hero or a saga ends (only "a hero" or the name of the ending: no names, codes or IDs), and the damage of your world boss fights, and shows everyone\'s totals here. The same totals are behind /stats on our Discord.'
           ) +
           (FW.World.enabled() ? '<div id="oWorld"><p class="o-note">…</p></div>' : '') +
           row(
@@ -1053,7 +1058,7 @@
             {
               general: ['uiScale', 'fps', 'anim', 'quality', 'glow', 'wheelSkin', 'autoPause'],
               audio: ['uiVol', 'muteBg'],
-              access: ['textSize', 'contrast', 'cbSafe', 'reduceMotion', 'captions', 'emojiIcons'],
+              access: ['textSize', 'contrast', 'easyRead', 'cbSafe', 'reduceMotion', 'captions', 'emojiIcons'],
               controls: ['keys'],
             }[tab] || [];
         keys.forEach(k => {

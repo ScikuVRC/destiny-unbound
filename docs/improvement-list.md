@@ -1,7 +1,7 @@
 # Destiny Unbound: what can be improved
 
 First written 2026-11-13, after 0.2.0-alpha.1. Rewritten 2026-11-17, after 0.3.0-alpha.1, with 100 new ideas
-(103-202); updated the same day: 60 of the first 102 and 10 of the new ideas are done and listed at the end.
+(103-202); updated the same day: 60 of the first 102 and 21 of the new ideas are done and listed at the end.
 
 Each item has a rough size: **S** (an hour or two), **M** (a day), **L** (several days or more).
 Items marked ★ are the ones I'd do first. ✅ = done, ⬜ = not yet. Numbers stay the same as items get done.
@@ -117,15 +117,10 @@ Where the game stands: 26 wheels per hero, 98 races, 49 story chapters, 10 endin
 103. ⬜ **Age that matters (S).** Old heroes lose a little strength and gain wisdom; a few chapters only appear
      after 60.
 105. ⬜ **Ancestor spirits (S).** An heir can call on a dead ancestor once per saga for a second chance.
-106. ⬜ **After the ending (M).** Damned, Ascended and Undying heroes get one extra chapter set in what comes after.
-107. ⬜ **Fame and infamy (M).** Two reputation tracks instead of one; towns, guilds and rulers react to them.
 108. ⬜ **Alignment drift (M).** Choices nudge the hero towards good or evil and shift later wheels a little.
-109. ⬜ **Scars (S).** A lost fight can leave a lasting scar: shown on the card, mentioned in the log, a small penalty
-     or a grim bonus.
 110. ⬜ **Gold and a travelling merchant (M).** Chapters pay out gold; a merchant between chapters sells one item.
 111. ⬜ **World events (S).** A famine year, a comet, a plague season: a banner that colours a few chapters.
 112. ⬜ **Romance in more than one chapter (M).** Courtship, a rival suitor, a wedding, children that can become heirs.
-113. ⬜ **Mounts and pets (S).** A new wheel; a mount helps travel chapters, a pet can save the hero once.
 114. ⬜ ★ **Secret chapters (S each).** Very rare chapters (about 1 in 500) that only appear for certain combinations,
      like a Necromancer meeting the Lich King.
 115. ⬜ **Prophecy foreshadowing (S).** The prophecy is read out vaguely at the start and its meaning shows at the end.
@@ -141,7 +136,6 @@ Where the game stands: 26 wheels per hero, 98 races, 49 story chapters, 10 endin
 122. ⬜ **Arena hazards (S).** Each world adds a twist: lava, fog, a sacred ground that favours holy heroes.
 123. ⬜ **Fight replay (S).** A turn-by-turn view of how a fight was won or lost.
 124. ⬜ **Wager tokens on a fight (S).** Bet Fate Tokens on your hero before an arena fight.
-125. ⬜ **World boss (M).** A weekly boss that every player chips away at through the world counter (opt-in).
 126. ⬜ **Sparring (S).** Fight any opponent without risk to see the odds and learn matchups.
 127. ⬜ **Fight today's champion (S).** Versus against the top hero on the daily leaderboard.
 128. ⬜ **Matchup chart (S).** A screen that shows which elements and classes beat which.
@@ -165,12 +159,10 @@ Where the game stands: 26 wheels per hero, 98 races, 49 story chapters, 10 endin
 146. ⬜ **Tiered achievements (S).** Progress bars and bronze, silver and gold steps for long achievements.
 147. ⬜ **Hidden achievements (S).** Secret ones with a riddle as the only hint.
 148. ⬜ **Monthly challenge (S).** One fixed rule for a month ("all heroes are undead"), with its own badge.
-149. ⬜ **Export your statistics (S).** Your stats and Hall as a spreadsheet file.
 150. ⬜ **On this day (S).** The title screen recalls a hero you made a month or a year ago.
 
 ### Interface and feel
 
-151. ⬜ **Dyslexia-friendly font option (S).**
 152. ⬜ **Screen reader pass (S).** Play a full saga with NVDA and fix what gets in the way.
 153. ⬜ **One-handed phone mode (S).** Every button within thumb reach when the phone is held upright.
 154. ⬜ **Confirm before leaving a saga (S).** A small check when leaving a saga that is still going.
@@ -180,7 +172,6 @@ Where the game stands: 26 wheels per hero, 98 races, 49 story chapters, 10 endin
 158. ⬜ **A pointer that flaps (S).** The pointer bends on each slice and settles when the wheel stops.
 159. ⬜ **Particles for legendary results (S).** Embers, sparks or petals, matched to the theme.
 160. ⬜ **A title screen that remembers (S).** The last hero's name or ending shows on the title screen.
-161. ⬜ **Ultrawide and 4K check (S).** Make sure layout and art hold up at 3440 px and 4K.
 162. ⬜ **Save slots (M).** Several sagas side by side instead of one at a time.
 
 ### Art
@@ -207,14 +198,12 @@ Where the game stands: 26 wheels per hero, 98 races, 49 story chapters, 10 endin
 ### Writing and lore
 
 177. ⬜ **Tone per theme (M).** Darker wording in grim themes, lighter in the forest theme.
-178. ⬜ **A quote on the card (S).** One line in the hero's voice, chosen by personality.
 182. ⬜ **Credits with your saga (S).** A Legend ending rolls credits that name the hero's companions and foes.
 183. ⬜ **Community chapters (S).** A guide for players who want to write chapters as mods.
 
 ### Mods
 
 184. ⬜ **Hot reload (S).** Mods reload in the desktop app without restarting.
-185. ⬜ **Clear mod errors (S).** A broken mod says what and where, in the game, in plain words.
 186. ⬜ **Share mods by code (M).** Small wheel packs shared as a code, like Legend Codes.
 187. ⬜ **Steam Workshop (L).** Once the game is on Steam.
 188. ⬜ **Story chapters as mods (M).** A documented way to add chapters, choices and endings.
@@ -235,7 +224,6 @@ Where the game stands: 26 wheels per hero, 98 races, 49 story chapters, 10 endin
 196. ⬜ **Daily hero of the day (S).** The bot posts the top daily hero to Discord each evening.
 197. ⬜ **Bot: /challenge (S).** Posts the daily seed so the server plays the same saga.
 198. ⬜ **QR code on shared cards (S).** Scan the card image to open the hero.
-199. ⬜ **Feedback in the game (S).** A short "how was this saga?" note after an ending, opt-in.
 200. ⬜ **Streamer mode (L).** Twitch chat votes on choices and spins.
 201. ⬜ **Store pages in other languages (S).** itch.io and Steam text in the five game languages.
 202. ⬜ **Playtest sessions (S).** Scheduled sessions on Discord with a short survey afterwards.
@@ -244,7 +232,21 @@ Where the game stands: 26 wheels per hero, 98 races, 49 story chapters, 10 endin
 
 ## Done
 
-60 of the first 102, and 10 of the new ideas.
+60 of the first 102, and 21 of the new ideas.
+
+### Done 2026-11-17 (third batch)
+
+106. ✅ **After the ending.** 2026-11-17: Ascended, Damned and Undying heroes get one more chapter (Among the gods, In the pit, The long night); an option in the story settings.
+107. ✅ **Fame and infamy.** 2026-11-17: heroic chapters bring fame, crimes and conquests infamy; from 3 up they tilt quests, heists and mentors, and show in the recap.
+109. ✅ **Scars.** 2026-11-17: eight scars from lost fights and narrow escapes, each a small penalty and some a grim bonus; at most three, on the card and in the recap.
+113. ✅ **Mounts and pets.** 2026-11-17: a mount wheel with 19 mounts (a mount helps on quests, a flying or swimming one at sea), and a companion can save the hero from death once.
+125. ✅ **World boss.** 2026-11-17: five bosses take turns weekly (each with a looping animation made with Grok; Genesis, the Valkyr of Time, designed by the game's creator); each hero fights once a week with the real arena odds; players who share counts fight one shared health bar (`/v1/boss`).
+149. ✅ **Export your statistics.** 2026-11-17: the Hall and statistics as a spreadsheet file (CSV), from the Hall of Legends.
+151. ✅ **Easy-read text.** 2026-11-17: Options > Accessibility: a plain, evenly spaced system font with more spacing and no capitals-only headings (no font download needed).
+161. ✅ **Ultrawide and 4K check.** 2026-11-17: the layout check now emulates sizes bigger than the screen; everything fits at 2560×1080, 3440×1440 and 3840×2160.
+178. ✅ **A quote on the card.** 2026-11-17: two lines in the hero's own voice for each of the 52 personalities.
+185. ✅ **Clear mod errors.** 2026-11-17: a broken mod.json says the line, the column and a likely fix, and a pop-up says when a mod could not load.
+199. ✅ **Feedback in the game.** 2026-11-17: "How was this saga?" after an ending; sent with the error reports only when the player presses Send.
 
 ### Done 2026-11-17 (second batch)
 

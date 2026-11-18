@@ -71,6 +71,19 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
 ## Ready for the next alpha (not released yet)
 
+- ✅ After the ending: Ascended, Damned and Undying heroes get one more chapter about what came after
+- ✅ Fame and infamy: heroic deeds and crimes build a reputation that tilts quests, heists and mentors
+- ✅ Scars from lost fights and narrow escapes: a small penalty, sometimes a grim bonus, on the card and in the recap
+- ✅ Mounts: a new wheel (19 mounts); a mount helps on quests, a flying or swimming one at sea; a companion can
+  save the hero from death once
+- ✅ World boss: one of five bosses a week, each with a looping animation (Genesis, the Valkyr of Time, by the
+  game's creator); every hero fights once; shared health bar for players who share counts
+  (the server needs the schema run and a deploy)
+- ✅ A line in the hero's own voice on the card (two per personality)
+- ✅ "How was this saga?" after an ending, sent only when the player presses Send
+- ✅ Export the Hall and statistics as a spreadsheet; easy-read text option; mod.json mistakes say the line and
+  a likely fix
+- ✅ Checked at 2560×1080, 3440×1440 and 4K: the layout check now emulates sizes bigger than the screen
 - Nothing yet
 
 ## Released

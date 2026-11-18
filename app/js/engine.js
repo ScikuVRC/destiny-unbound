@@ -254,6 +254,7 @@
     { id: 'powm', emoji: '🔮', title: "What's your Power mastery?", ladder: 'pwr', optional: true },
     { id: 'weak', emoji: '💔', title: "What's your Weakness?" },
     { id: 'pet', emoji: '🐾', title: 'Any Companion?' },
+    { id: 'mount', emoji: '🐎', title: 'Any Mount?' },
     { id: 'title', emoji: '👑', title: "What's your Title?" },
     { id: 'mark', emoji: '🌠', title: 'Does Fate mark you?' },
   ];
@@ -273,12 +274,13 @@
     cls: () => FW.CLASSES || [],
     elem: () => FW.ELEMENTS || [],
     pet: () => FW.PETS || [],
+    mount: () => FW.MOUNTS || [],
     hair: () => FW.HAIR || [],
     eyes: () => FW.EYES || [],
     garb: () => FW.GARB || [],
   };
   /* stages added after the first release: optional in old Legend Codes */
-  FW.NEW_STAGES = ['hair', 'eyes', 'garb', 'cls', 'elem', 'pet'];
+  FW.NEW_STAGES = ['hair', 'eyes', 'garb', 'cls', 'elem', 'pet', 'mount'];
   FW.LISTS = LISTS;
   FW.findByName = (list, name) => list.find(e => e.name === name);
 
@@ -398,6 +400,7 @@
       }
       if ((x = e('weak')) && !FW.P(x).none) add('Weakness: ' + x.name, 'weak', FW.P(x));
       if ((x = e('pet')) && !FW.P(x).none) add('Companion: ' + x.name, 'pet', FW.P(x));
+      if ((x = e('mount')) && !FW.P(x).none) add('Mount: ' + x.name, 'mount', FW.P(x));
       if ((x = e('title'))) add(x.name, 'title', FW.P(x));
       if ((x = e('mark')) && !FW.P(x).none) add('Mark: ' + x.name, 'mark', FW.P(x));
       this.chron.forEach(c => add(c.label, 'chron', FW.parse(c.dsl)));
@@ -960,6 +963,7 @@
     L.push({ k: 'ENHANCEMENT', v: FW.P(e('enh')).none ? 'None' : legend.pickName('enh') });
     L.push({ k: 'WEAKNESS', v: FW.P(e('weak')).none ? 'None' : legend.pickName('weak') });
     if (legend.has('pet') && !legend.isNone('pet')) L.push({ k: 'COMPANION', v: legend.pickName('pet') });
+    if (legend.has('mount') && !legend.isNone('mount')) L.push({ k: 'MOUNT', v: legend.pickName('mount') });
     if (legend.saga && legend.saga.ch && FW.Story) L.push({ k: 'SAGA', v: FW.Story.summary(legend) });
     return L;
   };

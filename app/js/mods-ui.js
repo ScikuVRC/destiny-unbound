@@ -15,7 +15,15 @@
     .then(() => {
       const want = App.state.wantTheme;
       App.setTheme(want && FW.THEMES[want] ? want : App.state.theme); // also lists mod themes under Look
-      if (M.errors.length) console.warn('Destiny Unbound mods:', M.errors);
+      if (M.errors.length) {
+        console.warn('Destiny Unbound mods:', M.errors);
+        // say so where the player can see it; the Mods screen says which mod and why
+        App.toast(
+          FW.fmt(FW.t('{n} {p:mod|mods} could not load. Content & mods > Packs and mods says why.'), {
+            n: M.errors.length,
+          })
+        );
+      }
     })
     .catch(e => console.warn('Destiny Unbound mods failed to load', e));
 

@@ -514,3 +514,30 @@ body.anim-reduced .screen,body.anim-reduced .overlay .modal{animation:overlayIn 
 /* toasts: page colours with an accent edge, so the text is readable in every theme (light text on the accent
    colour was below the contrast minimum in some themes) */
 .toast{background:var(--bg);color:var(--fg);border:1px solid var(--accent)}
+
+/* ---------- the world boss (boss.js) ---------- */
+.boss-card{display:flex;gap:14px;align-items:center;text-align:left;margin:6px 0 10px}
+.boss-card>div:last-child{display:grid;gap:3px}
+.boss-card b{font-family:var(--font-display,inherit);font-size:18px;color:var(--accent)}
+.boss-card span{font-size:12.5px;opacity:.75}
+.boss-card i{font-size:13px;opacity:.85}
+.boss-emoji{font-size:46px;line-height:1}
+.boss-hp i{background:linear-gradient(90deg,#8b1d1d,#e0452d)}
+.boss-result{margin:10px 0;display:grid;gap:4px;justify-items:center}
+.boss-result span{font-size:14px;opacity:.85}
+
+/* ---------- "How was this saga?" after an ending (story-ui.js) ---------- */
+.saga-fb{margin:10px 0;padding:10px 12px;border:1px dashed var(--line);border-radius:12px}
+.saga-fb p{margin:0 0 6px}
+.saga-fb textarea{width:100%;margin:4px 0}
+
+/* ---------- easy-read text (Options > Accessibility): a plain, evenly spaced system font for every text on the
+   page, more space between letters, words and lines, and no capitals-only headings. Canvas text (the wheel and the
+   card) keeps its look. ---------- */
+body.easy-read{--font-display:Verdana,Tahoma,"Segoe UI",Arial,sans-serif;--font-body:Verdana,Tahoma,"Segoe UI",Arial,sans-serif}
+body.easy-read,body.easy-read :is(h1,h2,h3,h4,p,li,span,b,i,small,label,button,input,select,textarea,a,dd,dt,div){font-family:Verdana,Tahoma,"Segoe UI",Arial,sans-serif!important;font-style:normal!important;text-transform:none!important;font-variant:normal!important;letter-spacing:.035em!important;word-spacing:.12em}
+body.easy-read :is(p,li,dd,.legend-key,.o-note){line-height:1.65}
+.boss-art{width:160px;height:160px;border-radius:14px;object-fit:cover;border:1px solid var(--line);flex:none}
+@media (max-width:520px){.boss-card{flex-direction:column;text-align:center}.boss-art{width:140px;height:140px}}
+.boss-abilities{list-style:none;margin:4px 0 0;padding:0;display:grid;gap:2px;font-size:12.5px}
+.boss-abilities b{font-size:12.5px;color:var(--fg)}

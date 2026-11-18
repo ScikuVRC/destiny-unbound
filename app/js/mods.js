@@ -66,6 +66,46 @@
     typeof v === 'string' && /^(#[0-9a-f]{3,8}|rgba?\([\d\s.,%]+\)|hsla?\([\d\s.,%deg]+\))$/i.test(v.trim());
 
   /* check a mod.json and return a cleaned copy (throws with a readable message) */
+  /* read mod.json; a mistake comes back in plain words with the line, the column and a likely fix */
+  M.parse = function (text) {
+    const src = String(text == null ? '' : text).replace(/^\ufeff/, '');
+    try {
+      return JSON.parse(src);
+    } catch (e) {
+      const msg = String(e.message || e);
+      let pos = -1;
+      let m = msg.match(/position (\d+)/);
+      if (m) pos = +m[1];
+      else if ((m = msg.match(/line (\d+) column (\d+)/))) {
+        const lines = src.split('\n');
+        pos = lines.slice(0, +m[1] - 1).reduce((a, l) => a + l.length + 1, 0) + (+m[2] - 1);
+      } else if (/end of (JSON )?input/i.test(msg)) pos = src.length;
+      if (pos < 0) throw new Error('mod.json is not valid JSON: ' + msg);
+      const before = src.slice(0, pos),
+        line = before.split('\n').length,
+        col = pos - before.lastIndexOf('\n'),
+        here = (src.split('\n')[line - 1] || '').trim().slice(0, 80),
+        prev = before.replace(/\s+$/, '').slice(-1),
+        ch = src[pos] || '';
+      let hint = '';
+      if (pos >= src.length) hint = 'The file ends too early: a } or ] is probably missing at the end.';
+      else if ((ch === '}' || ch === ']') && prev === ',') hint = 'Remove the comma just before this ' + ch + '.';
+      else if (ch === "'") hint = 'JSON needs double quotes (") around names and text, not single quotes.';
+      else if (ch === '"' && /(["\]}\d]|true|false|null)$/.test(before.replace(/\s+$/, '')))
+        hint = 'A comma is probably missing at the end of the line before.';
+      else if (/[A-Za-z_]/.test(ch)) hint = 'Names and text need double quotes around them.';
+      throw new Error(
+        'mod.json has a mistake on line ' +
+          line +
+          ', column ' +
+          col +
+          ' ("' +
+          here +
+          '"). ' +
+          (hint || 'Check the punctuation around that spot.')
+      );
+    }
+  };
   M.validate = function (m) {
     if (!m || m.format !== 'fatewheel-mod')
       throw new Error('Not a Destiny Unbound mod: mod.json needs "format": "fatewheel-mod".');
@@ -369,7 +409,7 @@
     for (const src of await sources()) {
       let mod;
       try {
-        mod = M.validate(JSON.parse(src.text));
+        mod = M.validate(M.parse(src.text));
       } catch (e) {
         M.errors.push((src.folder || src.key) + ': ' + e.message);
         continue;
@@ -432,7 +472,7 @@
     if (!man) throw new Error('Pick the mod folder, or mod.json together with its files.');
     const root = (man.webkitRelativePath || '').replace(/mod\.json$/i, '');
     const text = await man.text(),
-      mod = M.validate(JSON.parse(text));
+      mod = M.validate(M.parse(text));
     let size = 0;
     const store = {};
     for (const f of mod.files) {

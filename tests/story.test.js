@@ -489,7 +489,8 @@ async function playSaga(seed, opts, ov) {
       L.saga.log.forEach(x => {
         assert(typeof x.text === 'string' && x.text.indexOf(',{') < 0 && x.text.indexOf('{') < 0, 'bad line ' + x.text);
         if (x.end === 'dead') deaths.add(x.text.replace(/\d+/g, 'N'));
-        if (S.CLOSE_CALLS.includes(x.text)) saves.add(x.text);
+        const cc = S.CLOSE_CALLS.find(c => x.text.indexOf(c) === 0);
+        if (cc) saves.add(cc);
       });
       cheated += L.saga.flags.cheated || 0;
     }

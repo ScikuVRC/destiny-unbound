@@ -18,6 +18,7 @@
     ['eyes', 'Eyes', () => FW.EYES],
     ['garb', 'Outfit', () => FW.GARB],
     ['pet', 'Companion', () => FW.PETS],
+    ['mount', 'Mount', () => FW.MOUNTS],
   ];
   function savePerson() {
     store.set('fw.person', state.person);

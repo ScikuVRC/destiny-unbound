@@ -11,10 +11,13 @@
 //   -> {id}. Kept 30 days; there is no public way to read them (scripts/error-reports.js).
 // Every write route has a per-minute limit and a daily cap per address (guard.js; addresses are not stored).
 // GET /v1/health: writes per day for the last week, and whether today jumped (no personal data).
+// World boss (players who share counts): POST /v1/boss {week, damage} · GET /v1/boss?week= -> {week, dealt, fighters}
+//   Only the week's total damage and number of fights (boss.js).
 // SPDX-License-Identifier: GPL-3.0-or-later
 import { checkEntry, KEEP_DAYS, TOP } from './board.js';
 import * as cards from './cards.js';
 import * as errors from './errors.js';
+import * as boss from './boss.js';
 import { guard, health } from './guard.js';
 
 const ENDINGS = ['dead', 'retired', 'ascended', 'lost', 'martyr', 'sealed', 'damned', 'fulfilled', 'undying', 'legend'];
@@ -175,6 +178,32 @@ export default {
         .bind(errors.MAX_ROWS)
         .run();
       return json({ ok: true, id: (r.meta && r.meta.last_row_id) || 0 });
+    }
+    if (req.method === 'GET' && path === '/v1/boss') {
+      const week = new URL(req.url).searchParams.get('week') || boss.weekOf();
+      if (!/^\d{4}-W\d{2}$/.test(week)) return json({ error: 'bad week' }, 400);
+      const row = await env.DB.prepare('SELECT dealt, fighters FROM boss WHERE week = ?').bind(week).first();
+      return json({ week, dealt: (row && row.dealt) || 0, fighters: (row && row.fighters) || 0 });
+    }
+    if (req.method === 'POST' && path === '/v1/boss') {
+      const stop = await guard(env, req.headers.get('cf-connecting-ip'), 'boss');
+      if (stop) return json({ error: stop[1] }, stop[0]);
+      let j = null;
+      try {
+        j = JSON.parse((await req.text()).slice(0, 200));
+      } catch (e) {
+        return json({ error: 'bad json' }, 400);
+      }
+      const hit = boss.checkHit(j);
+      if (hit.error) return json({ error: hit.error }, 400);
+      const row = await env.DB.prepare(
+        'INSERT INTO boss (week, dealt, fighters) VALUES (?, ?, 1) ON CONFLICT(week) DO UPDATE SET ' +
+          'dealt = dealt + excluded.dealt, fighters = fighters + 1 RETURNING dealt, fighters'
+      )
+        .bind(hit.week, hit.damage)
+        .first();
+      await env.DB.prepare('DELETE FROM boss WHERE week < ?').bind(boss.oldWeek()).run();
+      return json({ week: hit.week, dealt: row.dealt, fighters: row.fighters });
     }
     if (req.method === 'GET' && path.startsWith('/v1/card/')) {
       const id = cards.normaliseId(decodeURIComponent(path.slice(9)));

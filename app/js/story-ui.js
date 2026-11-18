@@ -315,6 +315,89 @@
       }
     }
   }
+  /* ---------------- "How was this saga?" (199): a short note after an ending. Nothing is sent unless the player
+     picks an answer and presses Send, after seeing what goes: the answer, the ending, the chapter count, the luck,
+     the game version and their own words. It goes with the error reports (kind "saga"), read with
+     scripts/error-reports.js. Asked once per saga; "Don't ask again" turns it off. ---------------- */
+  const FB_OFF = 'fw.sagaFbOff';
+  const FB_ANSWERS = [
+    ['good', '👍', 'Loved it'],
+    ['ok', '😐', 'It was fine'],
+    ['bad', '👎', 'Not for me'],
+  ];
+  const fbAsked = L => (window.FWApp.store.get('fw.sagaFb', []) || []).indexOf(String(L.seed)) >= 0;
+  function sagaFeedbackHtml(L) {
+    if (!FW.Report || !FW.Report.available() || window.FWApp.store.get(FB_OFF, false) || fbAsked(L)) return '';
+    return (
+      '<div class="saga-fb" id="sagaFb"><p><b>' +
+      H.esc(tt('How was this saga?')) +
+      '</b></p><div class="cta">' +
+      FB_ANSWERS.map(
+        a => '<button class="btn small" data-fb="' + a[0] + '">' + a[1] + ' ' + H.esc(tt(a[2])) + '</button>'
+      ).join('') +
+      '</div><button class="pop-link" id="fbOff">' +
+      H.esc(tt("Don't ask again")) +
+      '</button></div>'
+    );
+  }
+  function bindSagaFeedback(L) {
+    const box = $('#sagaFb');
+    if (!box) return;
+    const A = window.FWApp,
+      s = L.saga;
+    const remember = () => {
+      const seen = (A.store.get('fw.sagaFb', []) || []).slice(-200);
+      seen.push(String(L.seed));
+      A.store.set('fw.sagaFb', seen);
+    };
+    $('#fbOff').onclick = () => {
+      A.store.set(FB_OFF, true);
+      box.remove();
+    };
+    box.querySelectorAll('[data-fb]').forEach(b =>
+      b.addEventListener('click', () => {
+        const ans = FB_ANSWERS.find(a => a[0] === b.dataset.fb);
+        const msg = 'Saga: ' + ans[0] + ' · ' + s.end + ' · ' + s.ch + ' chapters · ' + L.luck + ' luck';
+        box.innerHTML =
+          '<p><b>' +
+          H.esc(ans[1] + ' ' + tt(ans[2])) +
+          '</b></p><label class="legend-key" for="fbNote">' +
+          H.esc(tt('Anything to add? (optional)')) +
+          '</label><textarea id="fbNote" maxlength="1000" rows="3"></textarea><p class="legend-key">' +
+          H.esc(tt('What is sent') + ': ' + msg + ', ' + tt('the game version and your words. No names or saves.')) +
+          '</p><div class="cta"><button class="btn small primary" id="fbSend">' +
+          H.esc(tt('Send')) +
+          '</button><button class="btn small ghost" id="fbSkip">' +
+          H.esc(tt('Skip')) +
+          '</button></div>';
+        $('#fbSkip').onclick = () => {
+          remember();
+          box.remove();
+        };
+        $('#fbSend').onclick = async () => {
+          const R = FW.Report;
+          $('#fbSend').disabled = true;
+          try {
+            await R.send({
+              version: FW.VERSION,
+              platform: R.platform(!!window.fatewheelDesktop, navigator.userAgent),
+              kind: 'saga',
+              screen: 'ending',
+              message: msg,
+              detail: '',
+              note: R.scrub($('#fbNote').value).trim().slice(0, 1000),
+            });
+            remember();
+            box.innerHTML = '<p>' + H.esc(tt('Thank you! It helps more than you would think.')) + '</p>';
+          } catch (e) {
+            $('#fbSend').disabled = false;
+            A.toast(tt('Could not send it right now. Try again later.'));
+          }
+        };
+      })
+    );
+  }
+
   async function ending(L, run) {
     const s = L.saga,
       icon = S.endIcon[s.end] || '📖';
@@ -337,11 +420,13 @@
       ' ' +
       H.esc(tt('Saga recap')) +
       '</button></div>' +
+      sagaFeedbackHtml(L) +
       art +
       logHtml(s.log) +
       cutNote(s) +
       '</div>';
     $('#btnRecap').onclick = () => recapModal(L);
+    bindSagaFeedback(L);
     if (S.MORTAL[s.end]) FW.Audio.bad();
     else FW.Audio.reveal(true);
     FW.Audio.sting(S.MORTAL[s.end] ? 'defeat' : S.RARE_END[s.end] ? 'legend' : 'victory');
@@ -494,6 +579,8 @@
       r.artifacts.length && [t('Artifacts'), r.artifacts.join(', ')],
       r.love && [t('Loved'), r.love],
       r.heir && [t('Heir'), r.heir],
+      r.scars.length && [t('Scars'), r.scars.map(t).join(', ')],
+      r.after && [t('After the ending'), t(r.after)],
     ].filter(Boolean);
     const line = r.timeline
       .map(
@@ -550,6 +637,8 @@
           r.fights.draw ? 'won / lost / drawn' : 'won / lost'
         ) +
         (r.cheated ? stat(r.cheated, '{p:close call with death|close calls with death}') : '') +
+        (r.fame ? stat(r.fame, 'fame') : '') +
+        (r.infamy ? stat(r.infamy, 'infamy') : '') +
         '</div>' +
         (fights ? '<ul class="recap-fights">' + fights + '</ul>' : '') +
         '<h3>' +

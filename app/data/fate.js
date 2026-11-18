@@ -244,4 +244,83 @@ Wyvern|1|str+1 spd+1 rt+1|A small dragon with a big attitude|
 Kraken Hatchling|1|str+1 water:all+2|Still fits in a bucket|
 Unicorn|0.8|dur+1 fate+1 holy:all+1 a=holy|Pure-hearted and stubborn|
 `);
+
+  // mounts: what the hero rides. In the story a mount helps on quests, and a flying or swimming one at sea.
+  FW.MOUNTS = FW.table(`
+No mount|60|none|You go on foot|
+Horse|10|spd+1|Steady and sure-footed|
+Destrier|6|spd+1 fgt+1|A warhorse trained for battle|Eats a fortune in oats
+Mule|7|dur+1|Stubborn and tireless|Slow
+Pony|6|fate+1|Small, brave and lucky|
+Camel|4|dur+1 sun:all+1|Made for the desert|
+Riding Elk|4|spd+1 wild:all+1|At home in the deep forest|
+Giant Wolf|3|spd+1 fgt+1 dark:spd+1|Hunts beside you|Frightens townsfolk
+War Boar|3|str+1 dur+1|Charges anything|Smells terrible
+Riding Lizard|3|spd+1 r=fire|Loves the heat|
+Giant Owl|2|spd+1 dark:all+1|Flies silent at night|
+Mammoth|1.5|str+1 dur+2 spd-1|A walking fortress|Slow to turn
+Griffin|1.2|spd+2 storm:all+1|Half eagle, half lion|Proud and hard to tame
+Giant Tortoise|1|dur+2 spd-2 fate+1|Ancient and patient|Very, very slow
+Pegasus|1|spd+2 holy:all+1|A winged horse of the high clouds|
+Riding Wyvern|0.8|spd+2 a=poison|A venomous tail|Bites the hand that feeds it
+Nightmare|0.7|spd+2 dark:all+1 w=holy|A horse of shadow and smoke|Holy ground burns its hooves
+Sea Serpent|0.6|spd+1 water:all+2|Rides the waves|Useless on land
+Drake|0.5|spd+2 a=fire|A young dragon that lets you ride|
+`);
+  /* a line in the hero's own voice, by personality, for the front of the card (card.js). Two each; the hero's seed
+     picks one. A personality without lines (from a mod) shows its perk instead. */
+  FW.QUOTES = {
+    Hero: ['Stand with me. We end this today.', 'Someone has to go first. It may as well be me.'],
+    'Anti-Hero': ['I never said I was good. I said I would win.', 'You want clean hands, hire someone else.'],
+    Vigilante: ['The law was too slow. I am not.', 'They answer to me now.'],
+    Guardian: ['Nothing gets past this gate while I breathe.', 'Rest. I will keep watch.'],
+    Protector: ['Get behind me.', 'If you want them, you go through me.'],
+    Pacifist: ['There is always another way. Let me find it.', 'Put the blade down. Nobody needs to bleed today.'],
+    Merciful: ['Yield, and you walk away.', 'Everyone deserves one more chance. Even you.'],
+    Ruthless: ['I do not leave loose ends.', 'Mercy is a luxury. I cannot afford it.'],
+    Sadist: ['Scream if it helps. It never does.', 'Oh, this is going to be fun.'],
+    Opportunist: ['Every mistake you make is a door I walk through.', 'Wait. There. That is my opening.'],
+    Mastermind: ['You are exactly where I planned.', 'This fight ended three days ago. You just arrived late.'],
+    Manipulator: ['You did that because I wanted you to.', 'Of course I am on your side. For now.'],
+    Conqueror: ['Kneel, and keep your crown a little longer.', 'Every border is a suggestion.'],
+    Tyrant: ['Obey, or be made an example.', 'Fear is cheaper than loyalty, and it lasts longer.'],
+    Revolutionary: ['They are many. We are angry.', 'Burn the old order. We build tomorrow.'],
+    'Justice Seeker': ['Every crime is paid for. Every one.', 'I do not forget names.'],
+    'Lawful Good': ['My word is my bond, and my oath is my blade.', 'Do it right, or do not do it.'],
+    'Neutral Good': ['I help where I can. Today, that is here.', 'Rules matter less than people.'],
+    'Chaotic Good': ['I broke the rules. I also saved the town.', 'Kindness first. Permission later.'],
+    'Lawful Neutral': ['The law is the law. Even when I dislike it.', 'Order keeps the dark outside the walls.'],
+    'True Neutral': ['Balance in all things. Even this.', 'I take no side but the scales.'],
+    'Chaotic Neutral': ['I had a plan. Then I got bored.', 'Who knows what I will do next? Not me.'],
+    'Lawful Evil': ['Read the contract. You agreed to all of it.', 'Order serves me best.'],
+    'Neutral Evil': ['What is in it for me?', 'I am on my side. Always.'],
+    'Chaotic Evil': ['Let it all burn.', 'Why? Because I can.'],
+    Stoic: ['Pain is weather. It passes.', 'I have stood in worse.'],
+    'Hot-headed': ['Say that again. I dare you.', 'Plans are for people who hesitate.'],
+    Trickster: ['Look over there!', 'You should have seen your face.'],
+    Loner: ['I work alone. It is quicker.', 'Do not wait up for me.'],
+    'Glory Hound': ['Make sure the bards get my good side.', 'Watch this. Everyone, watch this.'],
+    Coward: ['Is it too late to run?', 'Strategic retreat! Strategic!'],
+    Zealot: ['My faith is my armour.', 'The gods are watching. I will not disappoint them.'],
+    Scholar: ['I read about this. Chapter nine.', 'Fascinating. Now hold still.'],
+    Cheerful: ['Chin up! It could be raining. Oh, it is.', 'Worst day ever. Best adventure ever.'],
+    Vengeful: ['You took everything. I came back for it.', 'I remember your face.'],
+    Honourable: ['Draw your blade. I will not strike an unarmed foe.', 'A fair fight, or none at all.'],
+    Greedy: ['And what does it pay?', 'Shiny. Mine.'],
+    'Kind-hearted': ['You look tired. Sit, eat something.', 'Nobody gets left behind.'],
+    Loyal: ['Where you go, I go.', 'I will not leave you. Not now, not ever.'],
+    'Free Spirit': ['The road is calling. I always answer.', 'No chains. No crowns. Just sky.'],
+    Brooding: ['The rain understands me.', 'Leave me to my thoughts. They are dark, but they are mine.'],
+    Playful: ['Tag. You are it.', 'Race you to the dragon!'],
+    Ambitious: ['Today a hero. Tomorrow a legend.', 'The top is the only place worth standing.'],
+    Arrogant: ['I would say good luck, but you will need more than that.', 'Try to keep up.'],
+    Shy: ['Oh. Um. Hello.', 'I noticed. I just did not say anything.'],
+    Calculating: ['Seven paces, two guards, one chance.', 'The odds are bad. I have fixed worse.'],
+    'Thrill Seeker': ['Higher! Faster! Again!', 'If it is not dangerous, why bother?'],
+    Serene: ['Breathe. The storm passes.', 'Still water sees the sky.'],
+    Paranoid: ['Who sent you?', 'I checked the door three times. Check it again.'],
+    'Gentle Giant': ['Please do not make me hit you.', 'I am strong, so I can be soft.'],
+    'Mad Genius': ['It will work. Probably. Stand back.', 'They called me mad. They are not laughing now.'],
+    Bloodthirsty: ['More.', 'The blade is thirsty, and so am I.'],
+  };
 })(typeof window !== 'undefined' ? window : globalThis);

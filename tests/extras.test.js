@@ -16,7 +16,7 @@ globalThis.localStorage = {
 ['data.js'].forEach(f => require('../app/js/' + f));
 ['es', 'fr', 'de', 'ja'].forEach(id => require('../app/lang/' + id + '.js'));
 require('../app/js/i18n.js');
-['engine.js', 'story.js', 'card.js', 'packs.js', 'achievements.js', 'hall.js', 'codex.js'].forEach(f =>
+['engine.js', 'story.js', 'card.js', 'packs.js', 'achievements.js', 'hall.js', 'codex.js', 'boss.js'].forEach(f =>
   require('../app/js/' + f)
 );
 const FW = globalThis.FW;
@@ -270,6 +270,50 @@ t('Codex and Bestiary: entries fill in once met, fights keep a record, and old H
   const old = C.fromHall(C.empty(), [{ race: 'Frost Dwarf', saga: { end: 'legend' } }, { race: 'Elf' }]);
   assert(old.race.Dwarf && old.race.Elf && old.end.legend, 'Hall heroes fill the Codex');
   assert.deepStrictEqual(C.clean(null), C.empty());
+});
+
+t('world boss: one boss a week in turn, real odds decide the hit, damage stays in bounds', () => {
+  const B = FW.Boss;
+  const mon = Date.UTC(2026, 10, 16, 12);
+  assert.strictEqual(B.current(mon), B.current(mon + 6 * 864e5), 'the same boss all week');
+  assert.notStrictEqual(B.current(mon), B.current(mon + 7 * 864e5), 'the next week brings the next boss');
+  assert.strictEqual(B.endsAt(mon), Date.UTC(2026, 10, 23));
+  B.LIST.forEach(b => {
+    FW.parse(b.dsl);
+    assert(FW.P(B.foe(b)).lv >= 60 && b.hp > 0 && b.lair.tags.length, b.id);
+  });
+  const L = new FW.Legend({ seed: 'boss' }),
+    rng = FW.makeRng('boss');
+  for (let k = -1; (k = FW.nextStageIndex(L, k)) < FW.STAGES.length;) {
+    const s = FW.buildStage(FW.STAGES[k].id, L);
+    FW.commitPick(L, s, FW.weightedIndex(s.entries, rng), rng);
+  }
+  const seen = new Set();
+  for (let i = 0; i < 200; i++) {
+    const r = B.fight(L, B.LIST[i % B.LIST.length], rng);
+    assert(r.damage >= 1 && r.damage <= B.MAX_HIT && Number.isInteger(r.damage));
+    seen.add(r.outcome.name);
+  }
+  assert(seen.size >= 3, 'fights vary');
+  // better odds mean more mighty blows
+  const strong = B.outcomes(0.9),
+    weak = B.outcomes(0.1);
+  assert(strong[0].w > weak[0].w && strong[3].w < weak[3].w);
+});
+
+t('Hall export: a spreadsheet file with every hero and the statistics, safe to open', () => {
+  const csv = FW.hallCsv(
+    [
+      { title: 'Ayla, The "Pale" One', race: 'Elf', rating: 44.2, rank: 'Hero', date: '2026-11-10', fav: true },
+      { title: '=HYPERLINK("x")', race: 'Orc', rating: 30, rank: 'Hero', saga: { summary: 'Died', end: 'dead' } },
+    ],
+    [['Player level', 4]]
+  );
+  const lines = csv.trim().split('\r\n');
+  assert.strictEqual(lines[0].split(',')[0], 'Name');
+  assert(lines[1].startsWith('"Ayla, The ""Pale"" One",Elf,44.2'), lines[1]);
+  assert(lines[2].startsWith('"\'=HYPERLINK(""x"")"'), 'a formula is not run: ' + lines[2]);
+  assert(lines.includes('Player level,4'));
 });
 
 t('Hall statistics: counts, averages and the most common races, ranks and endings', () => {

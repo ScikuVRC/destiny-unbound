@@ -7,7 +7,7 @@
 // It runs in its own hidden window with a fresh, throwaway profile, so it never touches your saves.
 // SPDX-License-Identifier: GPL-3.0-or-later
 'use strict';
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, nativeImage } = require('electron');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
@@ -91,7 +91,7 @@ const CHECK = `(() => {
   const Z = (window.FW && FW.pageZoom && FW.pageZoom()) || 1; // text sizes are measured as shown, after page zoom
   root.querySelectorAll('*').forEach(e => {
     if (!vis(e)) return; const s = getComputedStyle(e), r = e.getBoundingClientRect();
-    if (r.width <= 2 || r.height <= 2 || parseFloat(s.fontSize) === 0 || e.closest('[aria-hidden=true], .optbg, .sr-only, .visually-hidden')) return;   // screen-reader-only text and decoration
+    if (r.width <= 2 || r.height <= 2 || parseFloat(s.fontSize) === 0 || e.closest('[aria-hidden=true], .optbg, .sr, .sr-only, .visually-hidden')) return;   // screen-reader-only text and decoration
     if (r.right > W + 2 && s.position !== 'fixed') { right++; if (ex.right.length < 4) ex.right.push(name(e) + ' right=' + Math.round(r.right)); }
     const clip = /(hidden|clip)/.test(s.overflowX) || /(hidden|clip)/.test(s.overflow);
     if (!/(auto|scroll)/.test(s.overflowX) && e.children.length === 0 && e.textContent.trim() && e.scrollWidth > e.clientWidth + 2 && e.clientWidth > 0 && s.textOverflow !== 'ellipsis' && !(e.closest('svg,canvas'))) { over++; if (ex.over.length < 6) ex.over.push(name(e) + (clip ? ' (clipped)' : '') + ' ' + e.scrollWidth + '>' + e.clientWidth); }
@@ -132,8 +132,23 @@ app.whenReady().then(async () => {
       throw new Error('page would not load');
     };
     await load();
+    // a size bigger than this screen (4K, ultrawide): the window can't grow that far, so Chrome's device emulation
+    // gives the page that viewport, and screenshots come from the emulated page
+    const [cw, chh] = win.getContentSize(),
+      emulate = cw < w || chh < h;
+    if (emulate) {
+      win.webContents.debugger.attach('1.3');
+      await win.webContents.debugger.sendCommand('Emulation.setDeviceMetricsOverride', {
+        width: w,
+        height: h,
+        deviceScaleFactor: 1,
+        mobile: false,
+        screenWidth: w,
+        screenHeight: h,
+      });
+    }
     await js(
-      `localStorage.setItem('fw.guide','true'); localStorage.setItem('fw.thanks','true'); ${LANG ? "localStorage.setItem('fw.lang', '\"" + LANG + '"\');' : ''} localStorage.setItem('fw.prefs', JSON.stringify({ muteBg: false, sound: false })); 1`
+      `localStorage.setItem('fw.guide','true'); localStorage.setItem('fw.thanks','true'); ${LANG ? "localStorage.setItem('fw.lang', '\"" + LANG + '"\');' : ''} localStorage.setItem('fw.prefs', JSON.stringify({ muteBg: false, sound: false, hdMusic: false })); 1`
     );
     for (const sc of SCREENS) {
       await load();
@@ -154,7 +169,14 @@ app.whenReady().then(async () => {
       let img = null;
       for (let i = 0; i < 10 && !img; i++) {
         try {
-          img = await win.webContents.capturePage();
+          img = emulate
+            ? nativeImage.createFromBuffer(
+                Buffer.from(
+                  (await win.webContents.debugger.sendCommand('Page.captureScreenshot', { format: 'png' })).data,
+                  'base64'
+                )
+              )
+            : await win.webContents.capturePage();
         } catch (e) {
           await sleep(200);
         }

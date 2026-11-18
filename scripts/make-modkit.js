@@ -114,6 +114,7 @@ const WHEELS = [
   ['pow', 'Powers', 'Supernatural power. Needs `rar=1` to `rar=6` (rarity).'],
   ['weak', 'Weaknesses', 'Weakness, usually `w=` codes.'],
   ['pet', 'Companions', 'Animal or spirit companion.'],
+  ['mount', 'Mounts', 'What the hero rides. A mount helps on quests; flying or swimming ones help at sea.'],
   ['title', 'Titles', "The hero's title. Needs `tt=1` to `tt=3` (tier)."],
   ['mark', 'Marks of Fate', "Fate's mark. Often `fate+1`."],
   ['hair', 'Hair', 'Looks only; `dsl` is usually empty.'],

@@ -93,6 +93,7 @@
       enhancement: none('enh') ? '' : L.pickName('enh'),
       element: none('elem') ? '' : L.pickName('elem'),
       companion: none('pet') ? '' : L.pickName('pet'),
+      mount: none('mount') ? '' : L.pickName('mount'),
       weakness: none('weak') ? '' : L.pickName('weak'),
       mark: none('mark') ? '' : L.pickName('mark'),
       stats: {},

@@ -48,3 +48,6 @@ CREATE TABLE IF NOT EXISTS traffic (
   capped INTEGER NOT NULL DEFAULT 0,
   PRIMARY KEY (day, route)
 );
+-- the world boss: one row per week, the total damage players who share counts dealt and how many fights;
+-- weeks older than 12 are removed as new fights arrive
+CREATE TABLE IF NOT EXISTS boss (week TEXT PRIMARY KEY, dealt INTEGER NOT NULL DEFAULT 0, fighters INTEGER NOT NULL DEFAULT 0);

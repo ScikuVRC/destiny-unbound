@@ -20,6 +20,7 @@
     pow: 'Powers',
     weak: 'Weaknesses',
     pet: 'Companions',
+    mount: 'Mounts',
     title: 'Titles',
     mark: 'Marks of Fate',
     hair: 'Hair',

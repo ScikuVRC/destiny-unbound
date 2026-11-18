@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // writes one address may make per day, per route; well above what one player does
-export const CAPS = { count: 300, daily: 40, card: 60, error: 20 };
+export const CAPS = { count: 300, daily: 40, card: 60, error: 20, boss: 60 };
 export const KEEP_DAYS = 30; // how long the daily tallies are kept
 export const JUMP = { factor: 5, floor: 200 }; // a jump: today is 5x the week's average and at least 200 writes
 

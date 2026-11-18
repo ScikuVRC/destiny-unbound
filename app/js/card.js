@@ -610,8 +610,15 @@
   function flavour(legend) {
     const per = legend.entry('per'),
       ttl = legend.entry('title');
-    const line = (per && per.perk) || (ttl && ttl.perk) || '';
-    return line ? '“' + line.replace(/\.$/, '') + '.”' : '';
+    // the hero's own voice when the personality has lines (FW.QUOTES); its perk otherwise
+    const lines = per && FW.QUOTES && FW.QUOTES[per.name];
+    const said =
+      lines && lines.length
+        ? lines[Math.floor(FW.makeRng(String(legend.seed) + ':quote')() * lines.length) % lines.length]
+        : '';
+    const line = said || (per && per.perk) || (ttl && ttl.perk) || '';
+    if (!line) return '';
+    return '“' + (said ? tr(said) : line.replace(/\.$/, '') + '.') + '”';
   }
   function typeLine(legend) {
     const race = legend.raceName();

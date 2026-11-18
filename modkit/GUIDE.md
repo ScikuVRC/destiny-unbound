@@ -274,7 +274,7 @@ Entries go in `packs`. Each pack has a name and lists of entries per wheel:
 | `perk`, `flaw` | Short good and bad lines shown under the result. Up to 120 characters. |
 | `art` | Races only: how the race looks, used for AI portraits. Up to 200 characters. |
 
-**Wheels you can add to:** `race`, `birth`, `bg`, `per`, `cls`, `wpn`, `enh`, `elem`, `pow`, `weak`, `pet`,
+**Wheels you can add to:** `race`, `birth`, `bg`, `per`, `cls`, `wpn`, `enh`, `elem`, `pow`, `weak`, `pet`, `mount`,
 `title`, `mark`, `hair`, `eyes`, `garb`. [reference/wheels.md](reference/wheels.md) says what each one is and
 lists every built-in entry.
 

@@ -40,14 +40,19 @@ npx wrangler deploy
 - `POST /v1/error` with `{"version","platform","kind","screen","message","detail","note"}` stores an error report a
   player chose to send (checked and cleaned in `src/errors.js`) and returns `{ ok, id }`. Kept 30 days, at most 2000.
   There is no way to read them over the web: run `node scripts/error-reports.js [count] [--full]` (uses wrangler).
+  Kind `saga` is the "How was this saga?" note a player can send after an ending (their answer, the ending, the
+  chapter count, the luck and their own words).
+- `POST /v1/boss` with `{"week":"2026-W47","damage":1200}` adds one world boss fight (players who share counts);
+  only this week, and at most 5000 damage (`src/boss.js`). Returns `{ week, dealt, fighters }`.
+  `GET /v1/boss?week=YYYY-Www` returns the same. Only the week's total and number of fights are stored; 12 weeks kept.
 
 - `GET /v1/health` returns writes per day for the last week (`days`), `today`, `weekAverage` and `jump` (today is
   over 5x the week's average and at least 200 writes). No personal data. The bot can warn about a jump (bot/README.md).
 
 ## Abuse protection
 
-Every write route (`/v1/count`, `/v1/daily`, `/v1/card`, `/v1/error`) has the per-minute rate limit in `wrangler.toml`
-and a daily cap per address (`src/guard.js`: 300 counts, 40 leaderboard posts, 60 card codes, 20 error reports).
+Every write route (`/v1/count`, `/v1/daily`, `/v1/card`, `/v1/error`, `/v1/boss`) has the per-minute rate limit in `wrangler.toml`
+and a daily cap per address (`src/guard.js`: 300 counts, 40 leaderboard posts, 60 card codes, 20 error reports, 60 world boss fights).
 Addresses are not stored: the cap keeps a hash of a random salt made fresh each day, the address and the route,
 and the salt and hashes are deleted the next day, so a hash can't be traced back or linked across days.
 

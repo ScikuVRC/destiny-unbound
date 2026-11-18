@@ -17,6 +17,7 @@ odds or remove them.
 - [`pow`: Powers (177)](#pow)
 - [`weak`: Weaknesses (64)](#weak)
 - [`pet`: Companions (38)](#pet)
+- [`mount`: Mounts (19)](#mount)
 - [`title`: Titles (94)](#title)
 - [`mark`: Marks of Fate (33)](#mark)
 - [`hair`: Hair (38)](#hair)
@@ -882,6 +883,34 @@ Animal or spirit companion.
 | Wyvern | 1 | `str+1 spd+1 rt+1` |
 | Kraken Hatchling | 1 | `str+1 water:all+2` |
 | Unicorn | 0.8 | `dur+1 fate+1 holy:all+1 a=holy` |
+
+<a id="mount"></a>
+
+## `mount`: Mounts
+
+What the hero rides. A mount helps on quests; flying or swimming ones help at sea.
+
+| Name | w | dsl |
+| --- | --- | --- |
+| No mount | 60 | `none` |
+| Horse | 10 | `spd+1` |
+| Destrier | 6 | `spd+1 fgt+1` |
+| Mule | 7 | `dur+1` |
+| Pony | 6 | `fate+1` |
+| Camel | 4 | `dur+1 sun:all+1` |
+| Riding Elk | 4 | `spd+1 wild:all+1` |
+| Giant Wolf | 3 | `spd+1 fgt+1 dark:spd+1` |
+| War Boar | 3 | `str+1 dur+1` |
+| Riding Lizard | 3 | `spd+1 r=fire` |
+| Giant Owl | 2 | `spd+1 dark:all+1` |
+| Mammoth | 1.5 | `str+1 dur+2 spd-1` |
+| Griffin | 1.2 | `spd+2 storm:all+1` |
+| Giant Tortoise | 1 | `dur+2 spd-2 fate+1` |
+| Pegasus | 1 | `spd+2 holy:all+1` |
+| Riding Wyvern | 0.8 | `spd+2 a=poison` |
+| Nightmare | 0.7 | `spd+2 dark:all+1 w=holy` |
+| Sea Serpent | 0.6 | `spd+1 water:all+2` |
+| Drake | 0.5 | `spd+2 a=fire` |
 
 <a id="title"></a>
 

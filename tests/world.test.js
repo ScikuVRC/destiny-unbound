@@ -406,6 +406,37 @@ async function t(name, fn) {
     assert(!/ip|addr/i.test(JSON.stringify(h)), 'nothing about addresses');
   });
 
+  await t("world boss: the server adds this week's damage, refuses other weeks and impossible hits", async () => {
+    const Bs = await import('../worker/src/boss.js');
+    const mon = Date.UTC(2026, 10, 16, 0, 0, 30); // a Monday just after midnight
+    assert.strictEqual(Bs.weekOf(mon), '2026-W47');
+    assert.strictEqual(Bs.weekOf(Date.UTC(2026, 10, 22, 23, 59)), '2026-W47', 'Sunday night is the same week');
+    assert.strictEqual(Bs.weekOf(Date.UTC(2027, 0, 1)), '2026-W53');
+    assert(Bs.checkHit({ week: '2026-W46', damage: 10 }, mon).week, 'a minute after midnight, last week still counts');
+    assert(Bs.checkHit({ week: '2026-W40', damage: 10 }, mon).error);
+    assert(Bs.checkHit({ week: '2026-W47', damage: Bs.MAX_HIT + 1 }, mon).error);
+    assert(Bs.checkHit({ week: '2026-W47', damage: 2.5 }, mon).error);
+    const W = (await import('../worker/src/index.js')).default;
+    const DB = makeD1();
+    const week = Bs.weekOf();
+    const hit = d =>
+      W.fetch(new Request('https://x/v1/boss', { method: 'POST', body: JSON.stringify({ week, damage: d }) }), { DB });
+    assert.strictEqual((await hit(1200)).status, 200);
+    const r2 = await (await hit(800)).json();
+    assert.deepStrictEqual(r2, { week, dealt: 2000, fighters: 2 });
+    assert.strictEqual((await hit(999999)).status, 400);
+    const g = await (await W.fetch(new Request('https://x/v1/boss?week=' + week), { DB })).json();
+    assert.deepStrictEqual(g, { week, dealt: 2000, fighters: 2 });
+    const none = await (await W.fetch(new Request('https://x/v1/boss?week=2020-W01'), { DB })).json();
+    assert.strictEqual(none.dealt, 0);
+    // the game and the server agree on the week
+    globalThis.window = globalThis;
+    require('../app/js/boss.js');
+    [mon, Date.UTC(2027, 0, 1), Date.UTC(2026, 11, 28, 12)].forEach(x =>
+      assert.strictEqual(globalThis.FW.Boss.week(x), Bs.weekOf(x))
+    );
+  });
+
   fs.rmSync(dir, { recursive: true, force: true });
   console.log('\n' + pass + ' of ' + (pass + fail) + ' checks passed');
   process.exit(fail ? 1 : 0);

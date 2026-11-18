@@ -243,6 +243,26 @@ t('official mods ship with the game, are valid, are cached offline and match the
   });
 });
 
+t('a broken mod.json says the line, the column and a likely fix in plain words', () => {
+  const err = text => {
+    try {
+      M.parse(text);
+    } catch (e) {
+      return e.message;
+    }
+    return '';
+  };
+  const trailing = err('{\n  "format": "fatewheel-mod",\n  "id": "x",\n}');
+  assert(/line 4/.test(trailing) && /Remove the comma/.test(trailing), trailing);
+  const missing = err('{\n  "format": "fatewheel-mod"\n  "id": "x"\n}');
+  assert(/line 3/.test(missing) && /comma is probably missing/.test(missing), missing);
+  const single = err("{ 'format': 'fatewheel-mod' }");
+  assert(/double quotes/.test(single), single);
+  const short = err('{ "format": "fatewheel-mod", "packs": [');
+  assert(/ends too early/.test(short), short);
+  assert.deepStrictEqual(M.parse('\ufeff{"a":1}'), { a: 1 }, 'a byte order mark is fine');
+});
+
 t("a mod's workshop changes (removed and reweighted entries) apply while the mod is on, under the player's own", () => {
   const mod = M.validate({
     format: 'fatewheel-mod',

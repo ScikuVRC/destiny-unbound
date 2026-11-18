@@ -7,7 +7,7 @@ export const KEEP_DAYS = 30;
 export const MAX_ROWS = 2000;
 export const LIMITS = { message: 300, detail: 6000, note: 1000 };
 export const PLATFORMS = ['windows', 'mac', 'linux', 'browser'];
-export const KINDS = ['error', 'crash', 'manual'];
+export const KINDS = ['error', 'crash', 'manual', 'saga']; // saga: "How was this saga?" after an ending
 
 /* take out anything that could name the player's machine: home folders and e-mail addresses */
 export function scrub(s) {

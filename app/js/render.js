@@ -118,6 +118,7 @@
             'pow',
             'weak',
             'pet',
+            'mount',
             'title',
             'mark',
             'hair',

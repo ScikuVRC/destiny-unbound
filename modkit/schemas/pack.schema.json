@@ -63,6 +63,7 @@
         "pow": { "$ref": "#/definitions/list", "description": "Powers (dsl should include rar=1..6; default rar=2)" },
         "weak": { "$ref": "#/definitions/list", "description": "Weaknesses" },
         "pet": { "$ref": "#/definitions/list", "description": "Companions" },
+        "mount": { "$ref": "#/definitions/list", "description": "Mounts" },
         "title": {
           "$ref": "#/definitions/list",
           "description": "Titles (dsl should include tt=1..5; default tt=1 rt+1)"

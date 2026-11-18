@@ -22,6 +22,7 @@
     hdMusic: null, // recorded music tracks (data/music.js) instead of synthesized music; null = not asked yet
     textSize: 100, // % text size
     contrast: false, // high-contrast colours
+    easyRead: false, // a plain, evenly spaced font for all text, with more space between letters, words and lines
     reduceMotion: false, // no flashing, shaking or sliding
     cbSafe: false, // colour-blind-safe wheel slices
     discord: true, // desktop app: show what you're playing in your Discord status (Rich Presence)
@@ -86,6 +87,7 @@
     b.classList.toggle('anim-off', m === 'off');
     b.classList.toggle('no-glow', !FW.glowOn());
     b.classList.toggle('hc', !!P.contrast);
+    b.classList.toggle('easy-read', !!P.easyRead);
     b.classList.toggle('calm', !!P.reduceMotion);
     g.document.documentElement.style.setProperty('--text-scale', (P.textSize || 100) / 100);
     // UI scale: the desktop app zooms the whole window; the browser uses CSS zoom

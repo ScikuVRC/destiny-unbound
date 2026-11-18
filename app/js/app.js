@@ -557,6 +557,7 @@
     else if (id === 'cls') title = 'Class: ' + e.name;
     else if (id === 'elem' && !FW.P(e).none) title = 'Element: ' + e.name;
     else if (id === 'pet' && !FW.P(e).none) title = 'Companion: ' + e.name;
+    else if (id === 'mount' && !FW.P(e).none) title = 'Mount: ' + e.name;
     else if (id === 'hair' || id === 'eyes' || id === 'garb') title = 'Your look';
     let chips = FW.chips(p);
     if (id === 'wpn' || id === 'pow') chips = chips.concat(synergyChips(L));

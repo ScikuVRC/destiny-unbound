@@ -341,3 +341,32 @@ seen straight from the front, perfectly circular, filling about 80 percent of th
 - Iron Litany (rim 3, hub 3): gothic blackened iron and worn brass, gear teeth around the outer edge, heavy rivets, oxblood red enamel panels / shaped like a great cog, a glowing red core. Grimdark painterly style, no skulls.
 - Blood Moon (rim 3, hub 1): blackened silver with thorned gothic filigree, small crimson garnets / a large glowing crimson blood-moon garnet at the core. Gothic painterly style, eerie and elegant.
 - Verdant Wild (rim 3, hub 1): woven from living dark wood and twisted vines with old gold leaf inlay, small carved leaves and runes, tiny golden-green glowing fireflies / a glowing emerald-gold seed at the core. Dark fantasy painterly style.
+
+## World bosses
+
+### `app/art/bosses/` (`hunger`, `colossus`, `storms`, `court`, `genesis`)
+
+Made with Grok Imagine on 2026-11-17. Each boss first got a 6-second video (video mode, 1:1, 480p, the prompts
+below); a frame of it then went into Grok Imagine's **Loop** mode (10 seconds, the video starts and ends on that
+picture) with the same motion described, so the animation loops. `scripts/make-boss-art.js` cuts each loop into a
+320×320 animated WebP (the last 0.3 s fades into the first to hide the seam) and a still frame for reduced motion.
+The videos and loop pictures are kept in `art-source/grok-bosses/`. Created with Grok.
+
+**Genesis, the Valkyr of Time** was designed by the game's creator, who made her video with Grok; the loop was
+made from its first frame the same way (cropped toward the top to keep her face).
+
+- **Vaelthrax, the Hunger Below** (`hunger`):
+
+  > A colossal ancient wyrm coiled in a burning cavern deep under a mountain, cracked obsidian scales glowing with molten veins, void-black smoke pouring from its jaws, eyes like dying suns, rivers of lava below. Dark fantasy boss portrait, cinematic painterly concept art, dramatic lighting, highly detailed. The wyrm slowly breathes, smoke and embers rise, lava glows and flickers, its eyes pulse. Camera stays still. Seamless loop. No text, no logo.
+
+- **The Clockwork Colossus** (`colossus`):
+
+  > A gigantic walking war machine the size of a city, brass and iron plates, towers and chimneys on its back, crackling lightning between its gears, striding across a stormy brass wasteland. Dark fantasy steampunk boss portrait, cinematic painterly concept art, dramatic lighting, highly detailed. Gears turn, steam vents from the chimneys, lightning arcs across its armour, storm clouds move. Camera stays still. Seamless loop. No text, no logo.
+
+- **The Mother of Storms** (`storms`):
+
+  > A towering woman made of storm and sea, hair of whirling clouds, a body of rising ocean waves, lightning in her eyes, standing in the eye of a hurricane over a black sea. Dark fantasy boss portrait, cinematic painterly concept art, dramatic lighting, highly detailed. Her hair swirls like clouds, waves rise and crash, lightning flickers. Camera stays still. Seamless loop. No text, no logo.
+
+- **The Pale Court** (`court`):
+
+  > An undead lich-queen on a bone throne in a vast cold hall, crowned in pale silver, ghostly nobles standing in the shadows behind her, violet soul-fire in her eyes, candles burning with cold blue flame. Gothic dark fantasy boss portrait, cinematic painterly concept art, dramatic lighting, highly detailed. Blue candle flames flicker, the ghostly nobles slowly shift, soul-fire pulses in her eyes, mist drifts. Camera stays still. Seamless loop. No text, no logo.

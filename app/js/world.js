@@ -130,6 +130,34 @@
         return false;
       }
     },
+    /* the world boss (boss.js): the week's shared damage, and one fight's damage. Only while the counter is on. */
+    async boss(week) {
+      if (!W.enabled()) return null;
+      try {
+        const r = await fetch(W.url + '/v1/boss?week=' + encodeURIComponent(week), {
+          credentials: 'omit',
+          referrerPolicy: 'no-referrer',
+          cache: 'no-store',
+        });
+        if (!r.ok) return null;
+        const j = await r.json();
+        return j && typeof j.dealt === 'number' ? j : null;
+      } catch (e) {
+        return null;
+      }
+    },
+    postBoss(week, damage) {
+      if (!W.enabled()) return Promise.resolve(null);
+      return fetch(W.url + '/v1/boss', {
+        method: 'POST',
+        body: JSON.stringify({ week, damage: Math.round(damage) }),
+        headers: { 'Content-Type': 'text/plain' },
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer',
+      })
+        .then(r => (r.ok ? r.json() : null))
+        .catch(() => null);
+    },
     /* the world totals, or null if the server can't be reached. Only asked for while the counter is on. */
     async totals() {
       if (!W.enabled()) return null;
