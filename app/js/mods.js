@@ -46,7 +46,23 @@
     '--font-result',
     '--result-weight',
   ];
-  const SOUNDS = ['tick', 'reveal', 'rare', 'bad', 'click', 'music'];
+  // the six effects, the music (one track, or one per scene), and the stingers after a fight or a saga
+  const SOUNDS = [
+    'tick',
+    'reveal',
+    'rare',
+    'bad',
+    'click',
+    'music',
+    'music-title',
+    'music-spin',
+    'music-story',
+    'music-battle',
+    'victory',
+    'defeat',
+    'legend',
+  ];
+  M.SOUNDS = SOUNDS;
   const SOUND_EXT = /\.(mp3|ogg|oga|wav|m4a|aac|flac|webm)$/i,
     FONT_EXT = /\.(woff2|woff|ttf|otf)$/i,
     CSS_EXT = /\.css$/i;

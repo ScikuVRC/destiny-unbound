@@ -1,7 +1,7 @@
 # Destiny Unbound: what can be improved
 
 First written 2026-11-13, after 0.2.0-alpha.1. Rewritten 2026-11-17, after 0.3.0-alpha.1, with 100 new ideas
-(103-202); updated the same day: 60 of the first 102 and 21 of the new ideas are done and listed at the end.
+(103-202); updated the same day: 60 of the first 102 and 22 of the new ideas are done and listed at the end.
 
 Each item has a rough size: **S** (an hour or two), **M** (a day), **L** (several days or more).
 Items marked ★ are the ones I'd do first. ✅ = done, ⬜ = not yet. Numbers stay the same as items get done.
@@ -193,7 +193,6 @@ Where the game stands: 26 wheels per hero, 98 races, 49 story chapters, 10 endin
 173. ⬜ **A sound for the rare creep (S).** A rising note while a rare slice creeps towards the pointer.
 174. ⬜ **Music ducking (S).** Lower the music under stingers and big results.
 175. ⬜ **Jukebox (S).** Play any unlocked track from the extras menu.
-176. ⬜ **Sound examples in the mod kit (S).** A sample sound pack that shows modders how to replace sounds.
 
 ### Writing and lore
 
@@ -232,7 +231,11 @@ Where the game stands: 26 wheels per hero, 98 races, 49 story chapters, 10 endin
 
 ## Done
 
-60 of the first 102, and 21 of the new ideas.
+60 of the first 102, and 22 of the new ideas.
+
+### Done 2026-11-18
+
+176. ✅ **Sound examples in the mod kit.** 2026-11-18: mods can now also replace the music of one scene (title, hero-making, saga, battle) and the victory, defeat and legend tunes; the Music Box template (`modkit/templates/03-sounds`) has an example of each kind, made in code.
 
 ### Done 2026-11-17 (third batch)
 

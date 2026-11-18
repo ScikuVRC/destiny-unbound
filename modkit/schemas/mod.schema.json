@@ -64,7 +64,23 @@
         "rare": { "$ref": "#/definitions/soundFile", "description": "A rare result, a won fight or a good ending." },
         "bad": { "$ref": "#/definitions/soundFile", "description": "A lost fight or a hero's death." },
         "click": { "$ref": "#/definitions/soundFile", "description": "Buttons." },
-        "music": { "$ref": "#/definitions/soundFile", "description": "Background music (loops)." }
+        "music": {
+          "$ref": "#/definitions/soundFile",
+          "description": "Background music (loops), everywhere a scene has no track of its own."
+        },
+        "music-title": {
+          "$ref": "#/definitions/soundFile",
+          "description": "Music for the title screen and New Legend (loops)."
+        },
+        "music-spin": { "$ref": "#/definitions/soundFile", "description": "Music while the hero is made (loops)." },
+        "music-story": { "$ref": "#/definitions/soundFile", "description": "Music during a saga (loops)." },
+        "music-battle": { "$ref": "#/definitions/soundFile", "description": "Music in the arena and versus (loops)." },
+        "victory": {
+          "$ref": "#/definitions/soundFile",
+          "description": "A short tune after a won fight or a happy ending."
+        },
+        "defeat": { "$ref": "#/definitions/soundFile", "description": "A short tune after a lost fight or a death." },
+        "legend": { "$ref": "#/definitions/soundFile", "description": "A short tune for a legendary ending." }
       },
       "additionalProperties": false
     },

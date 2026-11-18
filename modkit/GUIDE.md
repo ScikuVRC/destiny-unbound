@@ -227,7 +227,11 @@ For safety, the game removes anything that could load files from outside your mo
   "rare": "sounds/rare.wav",
   "bad": "sounds/bad.wav",
   "click": "sounds/click.wav",
-  "music": "sounds/music.ogg"
+  "music": "sounds/music.ogg",
+  "music-battle": "sounds/battle.ogg",
+  "victory": "sounds/victory.ogg",
+  "defeat": "sounds/defeat.ogg",
+  "legend": "sounds/legend.ogg"
 }
 ```
 
@@ -239,12 +243,14 @@ For safety, the game removes anything that could load files from outside your mo
 | `bad` | When a fight is lost or the hero dies. |
 | `click` | Buttons. |
 | `music` | Background music. It loops, so make the end flow into the start. |
+| `music-title`, `music-spin`, `music-story`, `music-battle` | Music for one scene: the title screen and New Legend, making a hero, a saga, the arena and versus. Optional: a scene without its own track plays `music`. |
+| `victory`, `defeat`, `legend` | A short tune after a won fight or happy ending, a lost fight or death, and a legendary ending. The music goes quiet underneath while it plays. |
 
 Put `sounds` at the top of mod.json for every theme, or inside a theme for that theme only. A theme's own sound
 wins over the mod-wide one. Sounds you don't replace keep the game's synthesized ones.
 
 Formats: mp3, ogg, wav, m4a, aac, flac or webm, up to 30 MB each. `.ogg` or `.mp3` keep music small.
-`templates/03-sounds` has one of each.
+`templates/03-sounds` has one of each (and battle music).
 
 ## 6. New wheel entries
 

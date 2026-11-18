@@ -37,7 +37,7 @@ npm run lint          # ESLint: real mistakes such as undefined names and duplic
 npm run format        # Prettier: formats JavaScript and JSON (CSS and HTML keep their compact form)
 ```
 
-151 checks in 10 suites:
+152 checks in 10 suites:
 
 - **engine (28):** data validity, unique names, tier shifts, odds, conditional buffs, Legend Codes, arena maths, own
   Workshop entries and their effect limits.
@@ -46,7 +46,7 @@ npm run format        # Prettier: formats JavaScript and JSON (CSS and HTML keep
   endings, the saga recap, epilogues, and Legend Codes that stay under the card-code limit.
 - **extras (12):** packs, achievements, translations and the plural and gender markers, player level, the Codex and
   Bestiary, Hall statistics and the spreadsheet export, the world boss.
-- **mods (13):** validation, CSS that tries to escape its theme or load outside pictures, every mod kit template
+- **mods (14):** validation, CSS that tries to escape its theme or load outside pictures, every mod kit template
   loads, the kit's generated reference is up to date.
 - **system (12):** version and cache numbers agree, a release bump on a copy, preferences, save import checks, no API
   keys in exported saves, title-screen art, offline caching, arena matchmaking.

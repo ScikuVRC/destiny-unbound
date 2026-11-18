@@ -72,7 +72,8 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
 ## Ready for the next alpha (not released yet)
 
-- Nothing yet
+- ✅ Mods can replace the music of one scene (title, hero-making, saga, battle) and the victory, defeat and legend
+  tunes; the mod kit's Music Box template has an example of each
 
 ## Released
 

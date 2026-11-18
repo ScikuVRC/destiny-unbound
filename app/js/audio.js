@@ -473,8 +473,16 @@
     const f = ((FW.MUSIC_THEMES || {})[A.theme] || {})[k] || (FW.MUSIC_FILES || {})[k] || '';
     return broken[f] ? '' : f;
   };
-  const modMusic = () => (A.custom[A.theme] || {}).music || (A.custom['*'] || {}).music;
-  const musicKey = () => (modMusic() ? 'mod' : trackFile(A.scene) ? 'file:' + A.scene : 'synth');
+  // a mod's music: the scene's own track first (music-title, music-spin, music-story, music-battle), then `music`;
+  // the theme's sounds before the mod-wide ones
+  const modSound = k => (A.custom[A.theme] || {})[k] || (A.custom['*'] || {})[k];
+  const modMusic = () => modSound('music-' + A.scene) || modSound('music');
+  const musicKey = () =>
+    modMusic()
+      ? 'mod:' + (modSound('music-' + A.scene) ? A.scene : '')
+      : trackFile(A.scene)
+        ? 'file:' + A.scene
+        : 'synth';
   function mediaNode(file, loop, out, onFail) {
     const el = new Audio(file);
     el.loop = loop;
@@ -496,14 +504,24 @@
     A.refreshMusic();
   };
   A.sting = function (name) {
-    const file = trackFile(name);
-    if (!file || !ready() || A.vol.music <= 0) return false;
+    // a mod's own stinger (victory, defeat, legend) plays even without the HD music
+    const own = modSound(name);
+    const file = own ? '' : trackFile(name);
+    if ((!own && !file) || !ready() || A.vol.music <= 0) return false;
     const m = A._music,
       t = T();
     if (m) m.out.gain.setTargetAtTime(0.2, t, 0.15); // duck the music under the stinger
     const restore = () => {
       if (A._music === m && m) m.out.gain.setTargetAtTime(1, T(), 0.8);
     };
+    if (own) {
+      const src = A.ctx.createBufferSource();
+      src.buffer = own;
+      src.connect(mus);
+      src.onended = restore;
+      src.start();
+      return true;
+    }
     const el = mediaNode(file, false, mus, () => {
       broken[file] = true;
       restore();
@@ -592,7 +610,7 @@
         console.warn('Destiny Unbound: could not decode sound', k, e);
       }
     }
-    if (set.music && (themeId === A.theme || themeId === '*')) {
+    if (Object.keys(files).some(k => /^music/.test(k)) && (themeId === A.theme || themeId === '*')) {
       A.stopMusic();
       A.startMusic();
     }

@@ -231,6 +231,32 @@ function makeSounds(dir) {
     bell(music, t0, NOTE(ch[2] + 12), beat * 1.5, 0.16);
     bell(music, t0 + beat * 1.5, NOTE(ch[1] + 12), beat * 1.5, 0.12);
   }
+  // stingers: short tunes after a fight or a saga (they play over the music, which ducks under them)
+  const victory = buf(2.6);
+  [67, 72, 76].forEach((n, i) => bell(victory, i * 0.14, NOTE(n), 0.5, 0.26));
+  [79, 84].forEach(n => bell(victory, 0.5, NOTE(n), 2, 0.22));
+  const defeat = buf(2.8);
+  [69, 65, 62].forEach((n, i) => bell(defeat, i * 0.32, NOTE(n), 1.2, 0.26));
+  [50, 57].forEach(n => bell(defeat, 1.0, NOTE(n), 1.8, 0.2));
+  const legend = buf(3.6);
+  [60, 64, 67, 72, 76, 79].forEach((n, i) => bell(legend, i * 0.11, NOTE(n), 0.8, 0.2));
+  [72, 76, 79, 84, 88].forEach(n => bell(legend, 0.75, NOTE(n), 2.8, 0.16));
+  // a scene's own music: a quicker minor loop for fights (Am - F - G - E, twice), 2 beats a bar
+  const step = 0.3,
+    fight = [
+      [57, 60, 64],
+      [53, 57, 60],
+      [55, 59, 62],
+      [52, 56, 59],
+    ];
+  const battle = buf(step * 4 * 8);
+  for (let b = 0; b < 8; b++) {
+    const ch = fight[b % 4],
+      t0 = b * step * 4;
+    bell(battle, t0, NOTE(ch[0] - 12), step * 2, 0.2);
+    bell(battle, t0 + step * 2, NOTE(ch[0] - 12), step * 2, 0.16);
+    [0, 1, 2, 3].forEach(k => bell(battle, t0 + k * step, NOTE(ch[k % 3] + 12), step, 0.12));
+  }
   const files = {
     'tick.wav': tick,
     'click.wav': click,
@@ -238,6 +264,10 @@ function makeSounds(dir) {
     'rare.wav': rare,
     'bad.wav': bad,
     'music.wav': music,
+    'music-battle.wav': battle,
+    'victory.wav': victory,
+    'defeat.wav': defeat,
+    'legend.wav': legend,
   };
   Object.keys(files).forEach(f => fs.writeFileSync(path.join(dir, f), wav(files[f])));
 }
@@ -340,7 +370,7 @@ function main() {
     fs.writeFileSync(path.join(kit, f), gen[f]);
   });
   const snd = path.join(kit, 'templates', '03-sounds', 'sounds');
-  if (!fs.existsSync(path.join(snd, 'music.wav')) || process.argv.includes('--sounds')) makeSounds(snd);
+  if (!fs.existsSync(path.join(snd, 'victory.wav')) || process.argv.includes('--sounds')) makeSounds(snd);
   const top = 'DestinyUnbound-ModKit/';
   const files = walk(kit).map(f => ({ name: top + f, data: fs.readFileSync(path.join(kit, f)) }));
   fs.mkdirSync(path.join(root, 'dist'), { recursive: true });

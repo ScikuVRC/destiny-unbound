@@ -55,7 +55,7 @@ working.)
 | `css` | A normal stylesheet that only applies while the theme is selected (use `&` for the page itself). `url()` may only point to files in the mod; `@import`, outside addresses and other ways of loading pictures are removed, and the CSS cannot reach outside its theme. Style colours, borders, fonts and backgrounds; leave sizes and positions to the game, which fits every screen to the window. |
 | `wheel` | `pal` (pairs of inner/outer slice colours), `lad` (stat ladder colours, lowest to highest), `gray`, `line`, `ink`, `inkDark`, `inkLight`, `hit`, `glow`, `font`, `upper`, `italic`. |
 | `card` | `panel stroke key val sub accent font head caps frame`. |
-| `sounds` | For one theme, or for every theme at the top level: `tick reveal rare bad click music`. Audio files: mp3, ogg, wav, m4a, aac, flac or webm, up to 30 MB each. Music loops. |
+| `sounds` | For one theme, or for every theme at the top level: `tick reveal rare bad click music`, music for one scene (`music-title music-spin music-story music-battle`), and the short tunes after a fight or a saga (`victory defeat legend`). Audio files: mp3, ogg, wav, m4a, aac, flac or webm, up to 30 MB each. Music loops. |
 | `packs` | The same format as wheel packs (below). |
 
 ## Wheel packs

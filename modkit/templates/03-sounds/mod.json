@@ -5,13 +5,17 @@
   "id": "kit-music-box",
   "name": "Music Box sounds (template)",
   "author": "Destiny Unbound mod kit",
-  "description": "Replaces every sound with a music-box set and adds a looping background tune, in every theme.",
+  "description": "Replaces every sound with a music-box set: the effects, a looping tune, its own battle music, and the tunes after a fight or a saga, in every theme.",
   "sounds": {
     "tick": "sounds/tick.wav",
     "reveal": "sounds/reveal.wav",
     "rare": "sounds/rare.wav",
     "bad": "sounds/bad.wav",
     "click": "sounds/click.wav",
-    "music": "sounds/music.wav"
+    "music": "sounds/music.wav",
+    "music-battle": "sounds/music-battle.wav",
+    "victory": "sounds/victory.wav",
+    "defeat": "sounds/defeat.wav",
+    "legend": "sounds/legend.wav"
   }
 }

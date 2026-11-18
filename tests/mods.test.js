@@ -243,6 +243,36 @@ t('official mods ship with the game, are valid, are cached offline and match the
   });
 });
 
+t('mods can replace scene music and the stingers, and an unknown sound name is refused', () => {
+  const mod = M.validate({
+    format: 'fatewheel-mod',
+    id: 'all-sounds',
+    sounds: {
+      'music-battle': 'a.ogg',
+      'music-title': 'b.ogg',
+      victory: 'c.ogg',
+      defeat: 'd.ogg',
+      legend: 'e.ogg',
+    },
+  });
+  assert.deepStrictEqual(Object.keys(mod.sounds).sort(), [
+    'defeat',
+    'legend',
+    'music-battle',
+    'music-title',
+    'victory',
+  ]);
+  assert.throws(
+    () => M.validate({ format: 'fatewheel-mod', id: 'x', sounds: { 'music-dance': 'a.ogg' } }),
+    /unknown sound "music-dance"/
+  );
+  // the schema in the mod kit lists the same names
+  const schema = JSON.parse(
+    fs.readFileSync(path.join(__dirname, '..', 'modkit', 'schemas', 'mod.schema.json'), 'utf8')
+  );
+  assert.deepStrictEqual(Object.keys(schema.definitions.sounds.properties).sort(), M.SOUNDS.slice().sort());
+});
+
 t('a broken mod.json says the line, the column and a likely fix in plain words', () => {
   const err = text => {
     try {
