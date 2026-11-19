@@ -4,6 +4,29 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
+## 0.3.0-alpha.4 (2026-11-19)
+
+### New
+
+- **Secret chapters.** Five very rare chapters that only appear for heroes who fit them: a Necromancer meets the Lich
+  King, a Dragon Rider finds the last dragon egg, a time traveller meets their older self, an undead hero is offered
+  a cure for death, and a pirate finds the drowned crown. Found ones go into a new Secret chapters page in the Codex,
+  which hints at who can find the rest.
+- **Alignment.** Mercy, cruelty and what your hero does nudge them towards good or evil, starting from their nature.
+  A clearly good or dark hero sees more chapters that suit them, and it shows on the saga sheet and in the recap.
+- **World events.** Now and then a famine, a comet, a plague season, a war, the dragon migration or a festival year
+  colours the next three chapters. They can be switched off in the story settings.
+- **Guild ranks.** Guild members rise from Initiate to Officer through guild work and good deeds in the guild's line
+  of business, then fight for the top: Guildmaster, Archmage, Master of Shadows, Grandmaster or Merchant Prince.
+- **Ancestor spirits.** Once per saga, an heir who would die is saved by the spirit of the nearest ancestor.
+- **A playable retirement.** A retired hero chooses a tavern, students or a memoir, and the wheel says how it goes. A
+  student can carry on the family line.
+
+### Changed
+
+- **Mod sounds.** Mods can now replace the music of one scene (title, hero-making, saga, battle) and the victory,
+  defeat and legend tunes. The Music Box template in the mod kit has an example of each.
+
 ## 0.3.0-alpha.3 (2026-11-18)
 
 ### New

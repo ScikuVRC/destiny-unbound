@@ -47,6 +47,7 @@ in [docs/release-plan.md](docs/release-plan.md).
 
 ## Recently done
 
+- 0.3.0-alpha.4: Secret chapters, alignment, world events, guild ranks.
 - 0.3.0-alpha.3: World Boss, mounts, scars, fame and infamy, after-the-ending chapters.
 - 0.3.0-alpha.2: Old legends return: a Codex and Bestiary, player level and card backs, and your own wheel entries with real effects.
 - 0.3.0-alpha.1: The saga update: saga recap, epilogues, Verdant Wild HD music, long sagas can be shared again.
