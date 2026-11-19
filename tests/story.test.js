@@ -502,6 +502,186 @@ async function playSaga(seed, opts, ov) {
     assert.deepStrictEqual(a.L.saga.log, b.L.saga.log, 'the same seed tells the same story');
   });
 
+  const ctxFor = (L, io, id) => {
+    const ch = S.CHAPTER_BY_ID[id];
+    return { o: S.opts(), ch: id, chName: ch ? ch.name : id, emoji: '', rng: io.rng };
+  };
+
+  await t('ancestor spirits: an heir is saved from death once by the nearest ancestor', async () => {
+    const L = makeLegend('anc');
+    S.newSaga(L, {}, FW.makeRng('a'), {
+      dyn: { house: 'House Test', gen: 1, history: [] },
+      parent: 'Old Brann',
+      record: { gen: 1, name: 'Old Brann, The Iron One', end: 'dead' },
+    });
+    L.saga.flags.petSaved = 'x'; // the companion has used its save already
+    const ctx = { o: S.opts(), ch: 'boss', chName: 'Boss', rng: () => 0.99 };
+    const e = S.apply(L, { name: 'Killed', w: 1, text: 'dies', tone: 'bad', end: 'dead' }, ctx);
+    assert(!e.end, 'the ancestor saved the heir');
+    assert.strictEqual(L.saga.flags.ancestor, 'Old Brann');
+    assert(/Old Brann/.test(L.saga.log[L.saga.log.length - 1].text), 'the log names the ancestor');
+    const e2 = S.apply(L, { name: 'Killed', w: 1, text: 'dies', tone: 'bad', end: 'dead' }, ctx);
+    assert.strictEqual(e2.end, 'dead', 'only once per saga');
+    const M = makeLegend('anc2');
+    S.newSaga(M, {}, FW.makeRng('a'));
+    M.saga.flags.petSaved = 'x';
+    assert.strictEqual(S.apply(M, { name: 'Killed', w: 1, text: 'x', end: 'dead' }, ctx).end, 'dead', 'no ancestors');
+  });
+
+  await t('alignment: nature sets the start, choices and deeds move it, and it tilts the story wheel', async () => {
+    const L = makeLegend('align');
+    S.newSaga(L, {}, FW.makeRng('a'));
+    L.saga.flags.align = 0;
+    S.drift(L.saga, 9);
+    assert.strictEqual(S.align(L.saga), S.ALIGN_MAX, 'clamped');
+    assert.strictEqual(S.alignName(5), 'Saintly');
+    assert.strictEqual(S.alignName(-2), 'Dark');
+    const w = id => S.wheelEntries(L, {}).find(e => e.id === id).w;
+    const good5 = w('quest'),
+      evil5 = w('heist');
+    L.saga.flags.align = 0;
+    assert(good5 > w('quest') && evil5 < w('heist'), 'a good hero sees more good chapters, fewer dark ones');
+    const io = bot('align');
+    await S.choose(L, io, ctxFor(L, io, 'boss'), {
+      title: 'x',
+      options: [
+        { label: 'a', align: -1 },
+        { label: 'b', align: -1 },
+      ],
+    });
+    assert.strictEqual(S.align(L.saga), -1, 'a cruel choice pulls towards evil');
+    let moved = 0;
+    for (let i = 0; i < 60; i++) if (S.align((await playSaga('al' + i, {})).L.saga)) moved++;
+    assert(moved > 30, 'alignment rarely moves (' + moved + ' of 60)');
+  });
+
+  await t(
+    'world events: one at a time, a few chapters long, boosting their chapters; the option turns them off',
+    async () => {
+      const seen = {};
+      let n = 0;
+      for (let i = 0; i < 150; i++) {
+        const { L } = await playSaga('ev' + i, {});
+        (L.saga.flags.events || []).forEach(id => (seen[id] = (seen[id] || 0) + 1));
+        n += (L.saga.flags.events || []).length;
+        L.saga.log.forEach(x => assert(x.text.indexOf('{') < 0));
+      }
+      assert(n > 20, 'world events are too rare: ' + n);
+      assert(Object.keys(seen).length >= 5, 'only some events happen: ' + Object.keys(seen));
+      const L = makeLegend('ev');
+      S.newSaga(L, {}, FW.makeRng('a'));
+      const before = S.wheelEntries(L, {}).find(e => e.id === 'dragon').w;
+      L.saga.flags.event = { id: 'dragons', left: 3 };
+      assert(S.wheelEntries(L, {}).find(e => e.id === 'dragon').w > before * 2, 'the dragon migration brings dragons');
+      assert.strictEqual(S.wheelEntries(L, { worldEvents: false }).find(e => e.id === 'dragon').w, before);
+      S.tickEvent(L.saga);
+      S.tickEvent(L.saga);
+      S.tickEvent(L.saga);
+      assert(!L.saga.flags.event, 'it runs out');
+      for (let i = 0; i < 40; i++) {
+        const { L: M } = await playSaga('ev' + i, { worldEvents: false });
+        assert(!(M.saga.flags.events || []).length, 'events with the option off');
+      }
+    }
+  );
+
+  await t(
+    'secret chapters: hidden unless the hero fits, every one plays through, and finding one is reported',
+    async () => {
+      assert(S.SECRETS.length >= 5);
+      for (const ch of S.SECRETS) {
+        assert(ch.secret && ch.hideLocked && ch.hard && ch.w <= 0.5, ch.id + ' is not a secret');
+        for (let i = 0; i < 25; i++) {
+          const L = makeLegend('sec' + ch.id + i),
+            io = bot('sec' + ch.id + i);
+          S.newSaga(L, {}, io.rng);
+          const on = S.wheelEntries(L, {}).some(e => e.id === ch.id);
+          assert.strictEqual(on, !!ch.req(L.saga, L, S.opts()), ch.id + ' shows for a hero who does not fit');
+          await ch.run(L, io, ctxFor(L, io, ch.id));
+          L.saga.log.forEach(x => assert(x.text.indexOf('{') < 0, 'unfilled: ' + x.text));
+        }
+      }
+      const found = [];
+      S.onSecret = id => found.push(id);
+      try {
+        const L = makeLegend('secfind'),
+          io = bot('secfind');
+        S.newSaga(L, {}, io.rng);
+        const ch = S.SECRETS[0];
+        const req = ch.req;
+        ch.req = () => true;
+        try {
+          io.spin = async cfg => (cfg.kind === 'story' ? cfg.entries.findIndex(e => e.id === ch.id) : 0);
+          await S.playTurn(L, io, {});
+        } finally {
+          ch.req = req;
+        }
+        assert.deepStrictEqual(found, [ch.id]);
+        assert.deepStrictEqual(L.saga.flags.secrets, [ch.id]);
+        assert.deepStrictEqual(S.recap(L).secrets, [ch.name]);
+      } finally {
+        S.onSecret = null;
+      }
+    }
+  );
+
+  await t('retirement is playable: a retired hero picks how to spend the quiet years', async () => {
+    const names = S.AFTER.retired.entries.map(e => e.name);
+    let n = 0;
+    for (let i = 0; i < 200; i++) {
+      const { L } = await playSaga('ret' + i, {});
+      if (L.saga.end !== 'retired') continue;
+      n++;
+      assert(names.indexOf(L.saga.flags.after) >= 0, 'no retirement chapter: ' + L.saga.flags.after);
+    }
+    assert(n > 30, 'too few retirements to check: ' + n);
+    for (let i = 0; i < 40; i++) {
+      const { L } = await playSaga('ret' + i, { beyond: false });
+      if (L.saga.end === 'retired') assert(!L.saga.flags.after, 'the option turns it off');
+    }
+    S.AFTER.retired.choice.options.forEach(o =>
+      o.keep.forEach(k => assert(names.indexOf(k) >= 0, 'option keeps a missing result: ' + k))
+    );
+  });
+
+  await t('guild ranks: work your way up, then fight for the top', async () => {
+    const L = makeLegend('guild'),
+      io = bot('guild');
+    S.newSaga(L, {}, io.rng);
+    const ids = () => S.wheelEntries(L, {}).map(e => e.id);
+    assert(ids().indexOf('guildWork') < 0, 'guild work without a guild');
+    L.saga.guild = "Mages' Circle";
+    L.saga.flags.guildRank = 1;
+    assert.strictEqual(S.rankName(L.saga), 'Initiate');
+    assert(ids().indexOf('guildWork') >= 0 && ids().indexOf('guildMaster') < 0);
+    L.saga.flags.guildRank = 4;
+    assert(ids().indexOf('guildMaster') >= 0 && ids().indexOf('guildWork') < 0, 'officers fight for the top');
+    L.saga.flags.guildRank = 5;
+    assert.strictEqual(S.rankName(L.saga), 'Archmage');
+    assert(ids().indexOf('guildMaster') < 0);
+    let top = 0,
+      ranked = 0;
+    for (let i = 0; i < 300; i++) {
+      const { L: M } = await playSaga('gr' + i, {});
+      if (S.guildRank(M.saga) >= 2) ranked++;
+      if (S.guildRank(M.saga) >= 4) top++;
+    }
+    assert(ranked > 20, 'nobody rises in a guild: ' + ranked);
+    assert(top > 0, 'nobody ever gets near the top of a guild');
+    // the fight for the top: a win makes the hero head of the guild
+    let won = false;
+    for (let i = 0; i < 40 && !won; i++) {
+      const M = makeLegend('gm' + i),
+        io2 = bot('gm' + i);
+      S.newSaga(M, {}, io2.rng);
+      M.saga.guild = "Thieves' Guild";
+      M.saga.flags.guildRank = 4;
+      await S.CHAPTER_BY_ID.guildMaster.run(M, io2, ctxFor(M, io2, 'guildMaster'));
+      if (S.guildRank(M.saga) === 5) won = S.rankName(M.saga) === 'Master of Shadows';
+    }
+    assert(won, 'nobody wins the fight for the top');
+  });
+
   console.log('\n' + pass + ' of ' + (pass + fail) + ' checks passed');
   process.exit(fail ? 1 : 0);
 })();

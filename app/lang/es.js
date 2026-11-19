@@ -203,6 +203,22 @@
       'Forge a kingdom': 'Fundar un reino',
       'Conquer a race': 'Conquistar una raza',
       'Conquer the world': 'Conquistar el mundo',
+      'Guild work': 'Trabajo del gremio',
+      'Head of the guild': 'Al frente del gremio',
+      'Secret: The Lich King': 'Secreto: el Rey Liche',
+      'Secret: The last dragon egg': 'Secreto: el último huevo de dragón',
+      'Secret: Meet yourself': 'Secreto: encuéntrate a ti mismo',
+      'Secret: The dawn that does not burn': 'Secreto: el alba que no quema',
+      'Secret: The drowned crown': 'Secreto: la corona ahogada',
+      'A Necromancer or a Lich': 'Un nigromante o un liche',
+      'A Dragon Rider, a Dragonborn, or a hero on a drake or wyvern':
+        'Un jinete de dragones, un dracónido, o un héroe a lomos de un draco o un guiverno',
+      'A Chronomancer, a Chronoborn, or a hero of the Time element':
+        'Un cronomante, un crononacido, o un héroe del elemento Tiempo',
+      'An undead hero of light, the stars, the moon or the spirit world':
+        'Un héroe no muerto de la luz, las estrellas, la luna o el mundo de los espíritus',
+      'A Pirate, a hero of the sea, or a rider of a sea serpent':
+        'Un pirata, un héroe del mar, o el jinete de una serpiente marina',
       'Join a guild': 'Unirse a un gremio',
       'Win a tournament': 'Ganar un torneo',
       'Rescue someone': 'Rescatar a alguien',
@@ -1234,9 +1250,21 @@
       MOUNT: 'MONTURA',
       Mounts: 'Monturas',
       Mount: 'Montura',
+      'World events': 'Sucesos del mundo',
+      'Now and then a famine, a comet or a war colours the next few chapters.':
+        'De vez en cuando una hambruna, un cometa o una guerra tiñen los siguientes capítulos.',
+      Alignment: 'Alineamiento',
+      'Saved by an ancestor': 'Salvado por un antepasado',
+      'Secret chapters': 'Capítulos secretos',
+      'A secret chapter! It is in your Codex now.': '¡Un capítulo secreto! Ya está en tu Códice.',
+      Saintly: 'Santo',
+      Good: 'Bueno',
+      Neutral: 'Neutral',
+      Dark: 'Oscuro',
+      Wicked: 'Malvado',
       'After the ending': 'Después del final',
-      'Heroes who ascend, are damned or become undying get one more chapter about what came after.':
-        'Los héroes que ascienden, son condenados o se vuelven inmortales tienen un capítulo más sobre lo que vino después.',
+      'Heroes who retire, ascend, are damned or become undying get one more chapter about what came after.':
+        'Los héroes que se retiran, ascienden, son condenados o se vuelven inmortales tienen un capítulo más sobre lo que vino después.',
       'Among the gods': 'Entre los dioses',
       'In the pit': 'En el abismo',
       'The long night': 'La larga noche',

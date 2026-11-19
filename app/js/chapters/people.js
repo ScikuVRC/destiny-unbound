@@ -178,18 +178,21 @@
               options: [
                 {
                   label: 'Finish them',
+                  align: -1,
                   hint: 'End it, if they let you.',
                   keep: ['Nemesis slain', 'Badly wounded', 'Flees, swearing revenge'],
                   boost: { 'Nemesis slain': 2 },
                 },
                 {
                   label: 'Show mercy',
+                  align: 1,
                   hint: 'Mercy can make an enemy think.',
                   keep: ['You spare them', 'Flees, swearing revenge', 'Joins your side'],
                   boost: { 'You spare them': 1.5 },
                 },
                 {
                   label: 'Offer them a place at your side',
+                  align: 1,
                   hint: 'Old enemies make fierce friends, or worse traitors.',
                   keep: ['Joins your side', 'You spare them', 'Flees, swearing revenge'],
                   boost: { 'Joins your side': 3 },

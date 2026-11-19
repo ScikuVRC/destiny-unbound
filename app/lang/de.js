@@ -199,6 +199,22 @@
       'Forge a kingdom': 'Ein Königreich gründen',
       'Conquer a race': 'Ein Volk erobern',
       'Conquer the world': 'Die Welt erobern',
+      'Guild work': 'Gildenarbeit',
+      'Head of the guild': 'An der Spitze der Gilde',
+      'Secret: The Lich King': 'Geheimnis: Der Lichkönig',
+      'Secret: The last dragon egg': 'Geheimnis: Das letzte Drachenei',
+      'Secret: Meet yourself': 'Geheimnis: Begegnung mit dir selbst',
+      'Secret: The dawn that does not burn': 'Geheimnis: Die Morgenröte, die nicht brennt',
+      'Secret: The drowned crown': 'Geheimnis: Die versunkene Krone',
+      'A Necromancer or a Lich': 'Ein Nekromant oder ein Lich',
+      'A Dragon Rider, a Dragonborn, or a hero on a drake or wyvern':
+        'Ein Drachenreiter, ein Drachengeborener oder ein Held auf einem Drak oder Wyvern',
+      'A Chronomancer, a Chronoborn, or a hero of the Time element':
+        'Ein Chronomant, ein Zeitgeborener oder ein Held des Elements Zeit',
+      'An undead hero of light, the stars, the moon or the spirit world':
+        'Ein untoter Held des Lichts, der Sterne, des Mondes oder der Geisterwelt',
+      'A Pirate, a hero of the sea, or a rider of a sea serpent':
+        'Ein Pirat, ein Held des Meeres oder der Reiter einer Seeschlange',
       'Join a guild': 'Einer Gilde beitreten',
       'Win a tournament': 'Ein Turnier gewinnen',
       'Rescue someone': 'Jemanden retten',
@@ -1225,9 +1241,21 @@
       MOUNT: 'REITTIER',
       Mounts: 'Reittiere',
       Mount: 'Reittier',
+      'World events': 'Weltereignisse',
+      'Now and then a famine, a comet or a war colours the next few chapters.':
+        'Ab und zu färben eine Hungersnot, ein Komet oder ein Krieg die nächsten Kapitel.',
+      Alignment: 'Gesinnung',
+      'Saved by an ancestor': 'Von einem Ahnen gerettet',
+      'Secret chapters': 'Geheime Kapitel',
+      'A secret chapter! It is in your Codex now.': 'Ein geheimes Kapitel! Es steht jetzt in deinem Kodex.',
+      Saintly: 'Heilig',
+      Good: 'Gut',
+      Neutral: 'Neutral',
+      Dark: 'Finster',
+      Wicked: 'Böse',
       'After the ending': 'Nach dem Ende',
-      'Heroes who ascend, are damned or become undying get one more chapter about what came after.':
-        'Helden, die aufsteigen, verdammt werden oder untot bleiben, bekommen ein weiteres Kapitel über das Danach.',
+      'Heroes who retire, ascend, are damned or become undying get one more chapter about what came after.':
+        'Helden, die sich zur Ruhe setzen, aufsteigen, verdammt werden oder untot bleiben, bekommen ein weiteres Kapitel über das Danach.',
       'Among the gods': 'Unter den Göttern',
       'In the pit': 'Im Abgrund',
       'The long night': 'Die lange Nacht',

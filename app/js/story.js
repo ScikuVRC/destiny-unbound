@@ -32,7 +32,12 @@
     {
       id: 'beyond',
       name: 'After the ending',
-      blurb: 'Heroes who ascend, are damned or become undying get one more chapter about what came after.',
+      blurb: 'Heroes who retire, ascend, are damned or become undying get one more chapter about what came after.',
+    },
+    {
+      id: 'worldEvents',
+      name: 'World events',
+      blurb: 'Now and then a famine, a comet or a war colours the next few chapters.',
     },
     {
       id: 'returning',
@@ -192,8 +197,141 @@
       if (inherit.nem) s.nem = Object.assign({}, inherit.nem, { lv: inherit.nem.lv + 3, met: 0 });
     }
     if (o.nemesis && !s.nem) s.nem = S.makeNemesis(L, rng);
+    const a0 = S.startAlign(L);
+    if (a0) s.flags.align = a0;
     L.saga = s;
     return s;
+  };
+
+  /* ---------------- alignment (108): choices and deeds nudge the hero towards good or evil ----------------
+     A number from -5 to 5 in the saga's flags. It starts from the hero's nature, moves with mercy or cruelty and with
+     what the hero does, and from 2 either way it tilts the story wheel and some chapters a little. */
+  S.ALIGN_MAX = 5;
+  S.ALIGN_LEAN = 0.1; // per point from 2 up: matching chapters get 10% bigger slices, the others 10% smaller
+  S.ALIGN_CH = {
+    good: ['quest', 'rescue', 'mentor', 'religion', 'siege', 'lastStand', 'apprentice'],
+    evil: ['heist', 'pact', 'conquerRace', 'conquerWorld', 'betrayal', 'rebellion'],
+  };
+  const GOOD_NATURE = /Good$|^(Hero|Guardian|Protector|Pacifist|Merciful|Kind-hearted|Justice Seeker)$/;
+  const EVIL_NATURE = /Evil$|^(Sadist|Tyrant|Ruthless|Bloodthirsty|Conqueror)$/;
+  S.startAlign = L => {
+    const n = L.has && L.has('per') ? L.pickName('per') : '';
+    return GOOD_NATURE.test(n) ? 1 : EVIL_NATURE.test(n) ? -1 : 0;
+  };
+  S.align = s => (s && s.flags && +s.flags.align) || 0;
+  S.drift = (s, d) => {
+    if (!s || !d) return;
+    s.flags = s.flags || {};
+    s.flags.align = clamp(S.align(s) + d, -S.ALIGN_MAX, S.ALIGN_MAX);
+  };
+  S.alignName = a => (a >= 4 ? 'Saintly' : a >= 2 ? 'Good' : a <= -4 ? 'Wicked' : a <= -2 ? 'Dark' : 'Neutral');
+  // how much the hero's alignment changes a chapter's slice on the story wheel
+  S.alignLean = (s, id) => {
+    const a = S.align(s);
+    if (Math.abs(a) < 2) return 1;
+    const side = S.ALIGN_CH.good.indexOf(id) >= 0 ? 1 : S.ALIGN_CH.evil.indexOf(id) >= 0 ? -1 : 0;
+    if (!side) return 1;
+    const f = 1 + S.ALIGN_LEAN * (Math.abs(a) - 1);
+    return Math.sign(a) === side ? f : 1 / f;
+  };
+
+  /* ---------------- world events (111): a famine, a comet, a war that colours a few chapters ----------------
+     Rolled with the saga's own seed (so they never shift the story's dice), at most one at a time. */
+  S.EVENT_CHANCE = 0.12;
+  S.EVENT_LEN = 3;
+  S.WORLD_EVENTS = [
+    {
+      id: 'famine',
+      name: 'A famine year',
+      emoji: '🌾',
+      text: 'The harvests fail across the land. Hungry people do desperate things.',
+      boost: { plague: 2, rebellion: 2, heist: 1.6, treasure: 0.6, tournament: 0.6 },
+    },
+    {
+      id: 'comet',
+      name: 'The comet',
+      emoji: '☄️',
+      text: 'A comet hangs in the sky for months. Everyone says it means something.',
+      boost: { oracle: 2.5, otherworld: 2, ascend: 2, religion: 1.6, awaken: 1.5 },
+    },
+    {
+      id: 'plague',
+      name: 'A plague season',
+      emoji: '🦠',
+      text: 'Sickness spreads from town to town. The dead do not all stay quiet.',
+      boost: { plague: 3, haunted: 2, religion: 1.5, love: 0.6 },
+    },
+    {
+      id: 'war',
+      name: 'A year of war',
+      emoji: '⚔️',
+      text: 'The great powers go to war, and every sword is wanted.',
+      boost: { siege: 2.5, conquerRace: 1.6, rebellion: 1.5, duel: 1.5, tournament: 0.5 },
+    },
+    {
+      id: 'dragons',
+      name: 'The dragon migration',
+      emoji: '🐉',
+      text: 'The dragons are flying south, and they are hungry.',
+      boost: { dragon: 3, treasure: 1.5, voyage: 0.7 },
+    },
+    {
+      id: 'festival',
+      name: 'A festival year',
+      emoji: '🎉',
+      text: 'A hundred years of peace, and the whole land celebrates.',
+      boost: { tournament: 2.5, love: 2, heist: 1.5, rival: 1.5, siege: 0.4 },
+    },
+  ];
+  S.EVENT_BY_ID = {};
+  S.WORLD_EVENTS.forEach(e => (S.EVENT_BY_ID[e.id] = e));
+  S.event = s => (s && s.flags && s.flags.event && S.EVENT_BY_ID[s.flags.event.id]) || null;
+  // before a chapter: maybe a new event starts (logged); returns the event in force
+  S.rollEvent = function (L, o) {
+    const s = L.saga;
+    if (!o.worldEvents) return null;
+    if (S.event(s)) return S.event(s);
+    if (s.ch < 2 || FW.makeRng(String(L.seed) + ':event:' + s.ch)() >= S.EVENT_CHANCE) return null;
+    const seen = (s.flags.events = s.flags.events || []);
+    const left = S.WORLD_EVENTS.filter(e => seen.indexOf(e.id) < 0);
+    if (!left.length) return null;
+    const ev = left[Math.floor(FW.makeRng(String(L.seed) + ':eventKind:' + s.ch)() * left.length) % left.length];
+    s.flags.event = { id: ev.id, left: S.EVENT_LEN };
+    seen.push(ev.id);
+    s.log.push({ ch: s.ch + 1, chapter: ev.name, emoji: ev.emoji, text: ev.text });
+    return ev;
+  };
+  // after a chapter: the event runs down
+  S.tickEvent = s => {
+    const e = s.flags && s.flags.event;
+    if (e && --e.left <= 0) delete s.flags.event;
+  };
+
+  /* ---------------- guild ranks (119) ---------------- */
+  S.GUILD_RANKS = ['', 'Initiate', 'Member', 'Veteran', 'Officer', 'Guild master'];
+  S.GUILDS = {
+    "Adventurers' Guild": {
+      master: 'Guildmaster',
+      work: 'a monster contract',
+      fit: 'quest',
+      ch: ['quest', 'dungeon', 'boss'],
+    },
+    "Mages' Circle": { master: 'Archmage', work: 'a dangerous experiment', fit: 'study', ch: ['study', 'artifact'] },
+    "Thieves' Guild": {
+      master: 'Master of Shadows',
+      work: 'a job for the guild',
+      fit: 'heist',
+      ch: ['heist', 'treasure'],
+    },
+    "Assassins' Order": { master: 'Grandmaster', work: 'a contract', fit: 'heist', ch: ['heist', 'duel'] },
+    "Merchants' League": { master: 'Merchant Prince', work: 'a risky trade deal', fit: '', ch: ['treasure', 'voyage'] },
+  };
+  S.guildRank = s => (s && s.guild ? (s.flags && +s.flags.guildRank) || 1 : 0);
+  S.rankName = s => {
+    const r = S.guildRank(s);
+    if (!r) return '';
+    if (r >= 5) return (S.GUILDS[s.guild] && S.GUILDS[s.guild].master) || S.GUILD_RANKS[5];
+    return S.GUILD_RANKS[r];
   };
   S.makeNemesis = function (L, rng) {
     const base = FW.compute(L).baseRating;
@@ -396,6 +534,24 @@
         );
       }
     }
+    // an heir can call on a dead ancestor once per saga (105)
+    if (S.MORTAL[e.end] && o.dynasty && !s.flags.ancestor) {
+      const anc = S.ancestor(L);
+      if (anc) {
+        s.flags.ancestor = anc.name;
+        e = Object.assign(
+          {},
+          e,
+          close(
+            'The spirit of ' +
+              anc.name +
+              ', ' +
+              anc.kin +
+              ', stands between {hero} and death. {g:He calls|She calls|They call} on {g:his|her|their} blood, and the blow does not land.'
+          )
+        );
+      }
+    }
     // cheated death: counted for the recap and for heroes who come back in later sagas
     if (mortal && !e.end) {
       s.flags = s.flags || {};
@@ -407,8 +563,18 @@
       if (e.tone === 'good' && S.REP.fame.indexOf(ctx.ch) >= 0) s.flags.fame = S.rep(s, 'fame') + 1;
       if (S.REP.infamy.indexOf(ctx.ch) >= 0 && (e.tone === 'good' || ctx.ch === 'exile'))
         s.flags.infamy = S.rep(s, 'infamy') + 1;
+      // alignment: an outcome can say which way it pulls; otherwise good deeds and dark ones that succeed
+      if (e.align) S.drift(s, e.align);
+      else if (e.tone === 'good' && S.ALIGN_CH.good.indexOf(ctx.ch) >= 0) S.drift(s, 1);
+      else if (e.tone === 'good' && S.ALIGN_CH.evil.indexOf(ctx.ch) >= 0) S.drift(s, -1);
     }
     let scarText = '';
+    // the guild notices good work in its own line of business (119): one rank up, as far as Officer
+    const gd = s.guild && S.GUILDS[s.guild];
+    if (gd && !e.end && e.tone === 'good' && gd.ch.indexOf(ctx.ch) >= 0 && S.guildRank(s) < 4) {
+      s.flags.guildRank = S.guildRank(s) + 1;
+      scarText += ' The ' + s.guild + ' takes note: {hero} is now ' + S.GUILD_RANKS[s.flags.guildRank] + '.';
+    }
     if (e.scar) {
       const sc = S.addScar(L, ctx);
       if (sc) scarText = ' It leaves {g:him|her|them} with ' + sc.text + '.';
@@ -445,10 +611,26 @@
         title: cfg.title,
         options: cfg.options.map(o => ({ label: o.label, hint: o.hint || '' })),
       });
-      return clamp(i | 0, 0, n - 1);
+      return picked(L, cfg, clamp(i | 0, 0, n - 1));
     }
-    return Math.floor(io.rng() * n) % n;
+    return picked(L, cfg, Math.floor(io.rng() * n) % n);
   }
+  // mercy and cruelty move the hero's alignment (an option with `align`)
+  const picked = (L, cfg, i) => {
+    const op = cfg.options[i];
+    if (op && op.align && L.saga) S.drift(L.saga, op.align);
+    return i;
+  };
+  // the ancestor who answers: the nearest one in the family line, and what they were to the hero
+  S.ancestor = L => {
+    const s = L.saga,
+      h = (s && s.dyn && s.dyn.history) || [];
+    if (!h.length) return null;
+    const a = h[h.length - 1],
+      d = Math.max(1, ((s.dyn && s.dyn.gen) || 2) - (a.gen || 1));
+    const kin = d === 1 ? 'parent' : d === 2 ? 'grandparent' : d === 3 ? 'great-grandparent' : 'ancestor';
+    return { name: String(a.name || 'an ancestor').split(', ')[0], kin: '{hero}’s ' + kin };
+  };
   S.choose = choose;
 
   /* ---------------- chapters that react to the hero ----------------
@@ -462,6 +644,7 @@
       bg: /thief|con artist|street|criminal|pickpocket|smuggl/i,
       against: { cls: ['Paladin', 'Templar', 'Knight'], per: ['Lawful Good', 'Honourable', 'Pacifist'] },
       rep: { infamy: 1, fame: -1 }, // the underworld trusts a known name; everyone else knows your face
+      align: -1,
     },
     haunted: {
       what: 'the dead',
@@ -497,12 +680,14 @@
       against: { per: ['Coward', 'Greedy', 'Sadist'] },
       rep: { fame: 1 },
       mount: true,
+      align: 1,
     },
     mentor: {
       what: 'learning from a mentor',
       per: ['Scholar', 'Loyal', 'Honourable', 'Serene', 'Kind-hearted', 'Shy'],
       against: { per: ['Arrogant', 'Paranoid', 'Loner'] },
       rep: { fame: 1, infamy: -1 },
+      align: 1,
     },
     cunning: {
       what: 'outwitting a demon',
@@ -548,6 +733,10 @@
       const mt = L.pickName('mount');
       if (r.mount === true || r.mount.indexOf(mt) >= 0) plus.push('your ' + mt.toLowerCase());
     }
+    // a good heart or a dark one (alignment, from 2 either way)
+    const al = S.align(s);
+    if (r.align && Math.abs(al) >= 2)
+      (Math.sign(al) === Math.sign(r.align) ? plus : minus).push(al > 0 ? 'your good heart' : 'your dark heart');
     const m = Math.pow(1.6, Math.min(2, plus.length)) / Math.pow(1.6, Math.min(2, minus.length));
     const up = x => x.charAt(0).toUpperCase() + x.slice(1);
     const why =
@@ -661,7 +850,7 @@
 
   const has = (s, k) => !!s[k];
   /* ---------------- chapters: listed in app/js/chapters/*.js, which add themselves in this order ---------------- */
-  S.CHAPTER_FILES = ['quests', 'power', 'people', 'fortune', 'arcs', 'world'];
+  S.CHAPTER_FILES = ['quests', 'power', 'people', 'fortune', 'arcs', 'world', 'secrets'];
   S.CHAPTERS = [];
   S.CHAPTER_BY_ID = {};
   S.addChapters = list =>
@@ -698,6 +887,11 @@
       const reps = (s.flags && s.flags.reps && s.flags.reps[ch.id]) || 0;
       if (ch.repeat && !ch.retire && !ch.hideLocked && reps) w *= Math.pow(S.REPEAT_FADE, reps);
       if (ch.retire) w = S.retireWeight(L, o);
+      else {
+        w *= S.alignLean(s, ch.id);
+        const ev = o.worldEvents && S.event(s);
+        if (ev && ev.boost[ch.id]) w *= ev.boost[ch.id];
+      }
       const used = !ch.repeat && s.used.indexOf(ch.id) >= 0;
       const locked = !used && ch.req && !ch.req(s, L, o) && (o.requirements || ch.hard);
       if (locked && ch.hideLocked) return;
@@ -815,6 +1009,7 @@
     const o = S.opts(opts),
       s = L.saga;
     if (s.end) return null;
+    const ev = S.rollEvent(L, o);
     const ents = S.wheelEntries(L, o, ov);
     const i = await io.spin({
       kind: 'story',
@@ -824,9 +1019,15 @@
       mode: 'cat',
       hue: 30,
       hint: 'Grey slices are done or locked',
+      event: ev ? ev.emoji + ' ' + ev.name + ': ' + ev.text : '',
     });
     const ch = S.CHAPTER_BY_ID[ents[i].id];
     s.ch++;
+    if (ch.secret) {
+      s.flags.secrets = (s.flags.secrets || []).concat([ch.id]);
+      if (S.onSecret) S.onSecret(ch.id, L); // the Codex (codex.js)
+    }
+    if (ev) S.tickEvent(s);
     if (!ch.repeat) s.used.push(ch.id);
     else if (!ch.retire) {
       s.flags.reps = s.flags.reps || {};
@@ -846,6 +1047,73 @@
   /* ---------------- after the ending: heroes who rise, fall to the pit or refuse to die get one more chapter ----------------
      It does not change the ending; it says what came of them on the other side. */
   S.AFTER = {
+    // a playable retirement (117): the hero picks how to spend the quiet years, the wheel says how it goes
+    retired: {
+      name: 'Retirement',
+      emoji: '🍺',
+      title: 'The quiet years. How do they go?',
+      choice: {
+        title: 'How does {hero} spend the quiet years?',
+        options: [
+          {
+            label: 'Open a tavern',
+            hint: 'Old heroes always end up behind a bar.',
+            keep: ['The best tavern in the land', 'A tavern full of stories', 'Trouble walks in'],
+          },
+          {
+            label: 'Take on students',
+            hint: 'Someone should learn what you know.',
+            keep: ['A student surpasses you', 'A school of your own', 'A student turns bad'],
+          },
+          {
+            label: 'Write a memoir',
+            hint: 'Tell it the way it really happened. Mostly.',
+            keep: ['A memoir that is still read', 'A memoir no one believes', 'A memoir that names names'],
+          },
+        ],
+      },
+      entries: [
+        good(
+          'The best tavern in the land',
+          3,
+          '',
+          '{hero} opens a tavern, and adventurers come from three kingdoms to drink where a legend pours.'
+        ),
+        good(
+          'A tavern full of stories',
+          2,
+          '',
+          'Every night {hero} tells one more story by the fire. Some of them are even true.'
+        ),
+        bad('Trouble walks in', 1.5, '', 'One night an old enemy walks into the tavern. {hero} still has the sword.'),
+        good(
+          'A student surpasses you',
+          2,
+          '',
+          'One of {hero}’s students becomes greater than {g:him|her|them}, which was the whole point.',
+          {
+            fx: (s, L, c) => {
+              if (!s.heir) s.heir = { name: Nm().person(c.rng || Math.random, 'human'), kind: 'student' };
+            },
+          }
+        ),
+        good('A school of your own', 2, '', 'The school {hero} founded is still training heroes a century later.'),
+        bad('A student turns bad', 1.5, '', 'One student takes everything {hero} taught and uses it for evil.'),
+        good('A memoir that is still read', 3, '', '{hero}’s memoir is still read, and still argued about.'),
+        E(
+          'A memoir no one believes',
+          2,
+          '',
+          'Nobody believes half of {hero}’s memoir. The true half is the strangest.'
+        ),
+        bad(
+          'A memoir that names names',
+          1.5,
+          '',
+          'The memoir names names. Several powerful people never forgive {hero}.'
+        ),
+      ],
+    },
     ascended: {
       name: 'Among the gods',
       emoji: '🌟',
@@ -914,6 +1182,7 @@
       emoji: a.emoji,
       hue: 270,
       entries: a.entries,
+      choice: a.choice && Object.assign({}, a.choice, { title: a.choice.title.replace('{hero}', L.displayName()) }),
     });
     L.saga.flags.after = (e && e.name) || a.name;
     L.saga.end = end; // the ending stays what it was
@@ -1139,6 +1408,7 @@
     succession: 1,
     mentor: 1,
     duel: 1,
+    guildMaster: 2,
   };
   S.RECAP_MAX = 8;
   /* ---------------- the saga inside a Legend Code ----------------
@@ -1256,6 +1526,12 @@
       infamy: S.rep(s, 'infamy'),
       scars: ((s.flags && s.flags.scars) || []).slice(),
       after: (s.flags && s.flags.after) || '',
+      align: S.align(s),
+      alignName: S.alignName(S.align(s)),
+      guild: s.guild ? S.rankName(s) + ', ' + s.guild : '',
+      ancestor: (s.flags && s.flags.ancestor) || '',
+      secrets: ((s.flags && s.flags.secrets) || []).map(id => (S.CHAPTER_BY_ID[id] || { name: id }).name),
+      events: ((s.flags && s.flags.events) || []).map(id => (S.EVENT_BY_ID[id] || { name: id }).name),
       timeline: keep,
       family: S.familyTree(L),
       heir: s.heir ? s.heir.name + ' (' + s.heir.kind + ')' : '',

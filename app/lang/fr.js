@@ -199,6 +199,22 @@
       'Forge a kingdom': 'Fonder un royaume',
       'Conquer a race': 'Conquérir une race',
       'Conquer the world': 'Conquérir le monde',
+      'Guild work': 'Le travail de la guilde',
+      'Head of the guild': 'À la tête de la guilde',
+      'Secret: The Lich King': 'Secret : le Roi-Liche',
+      'Secret: The last dragon egg': 'Secret : le dernier œuf de dragon',
+      'Secret: Meet yourself': 'Secret : la rencontre avec soi-même',
+      'Secret: The dawn that does not burn': "Secret : l'aube qui ne brûle pas",
+      'Secret: The drowned crown': 'Secret : la couronne engloutie',
+      'A Necromancer or a Lich': 'Un nécromancien ou une liche',
+      'A Dragon Rider, a Dragonborn, or a hero on a drake or wyvern':
+        'Un chevaucheur de dragon, un drakéide, ou un héros monté sur un drake ou une vouivre',
+      'A Chronomancer, a Chronoborn, or a hero of the Time element':
+        "Un chronomancien, un chrononé, ou un héros de l'élément Temps",
+      'An undead hero of light, the stars, the moon or the spirit world':
+        'Un héros mort-vivant de la lumière, des étoiles, de la lune ou du monde des esprits',
+      'A Pirate, a hero of the sea, or a rider of a sea serpent':
+        "Un pirate, un héros de la mer, ou le cavalier d'un serpent de mer",
       'Join a guild': 'Rejoindre une guilde',
       'Win a tournament': 'Remporter un tournoi',
       'Rescue someone': "Sauver quelqu'un",
@@ -1224,9 +1240,21 @@
       MOUNT: 'MONTURE',
       Mounts: 'Montures',
       Mount: 'Monture',
+      'World events': 'Événements du monde',
+      'Now and then a famine, a comet or a war colours the next few chapters.':
+        'De temps en temps, une famine, une comète ou une guerre colore les chapitres suivants.',
+      Alignment: 'Alignement',
+      'Saved by an ancestor': 'Sauvé par un ancêtre',
+      'Secret chapters': 'Chapitres secrets',
+      'A secret chapter! It is in your Codex now.': 'Un chapitre secret ! Il est maintenant dans votre Codex.',
+      Saintly: 'Saint',
+      Good: 'Bon',
+      Neutral: 'Neutre',
+      Dark: 'Sombre',
+      Wicked: 'Maléfique',
       'After the ending': 'Après la fin',
-      'Heroes who ascend, are damned or become undying get one more chapter about what came after.':
-        "Les héros qui s'élèvent, sont damnés ou deviennent immortels ont un chapitre de plus sur ce qui vient après.",
+      'Heroes who retire, ascend, are damned or become undying get one more chapter about what came after.':
+        "Les héros qui prennent leur retraite, s'élèvent, sont damnés ou deviennent immortels ont un chapitre de plus sur ce qui vient après.",
       'Among the gods': 'Parmi les dieux',
       'In the pit': "Dans l'abîme",
       'The long night': 'La longue nuit',

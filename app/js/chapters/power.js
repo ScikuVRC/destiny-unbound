@@ -5,6 +5,14 @@
   const FW = g.FW,
     S = FW.Story;
   const { E, Nm, addAlly, bad, fight, foe, good, loyal, nearYou, outcome, pick } = S.lib;
+  // joining a guild starts at the bottom (119): Initiate, then Member, Veteran, Officer and guild master
+  const join = (s, name) => {
+    s.guild = name;
+    s.flags.guildRank = 1;
+  };
+  const rankUp = s => {
+    s.flags.guildRank = Math.min(4, S.guildRank(s) + 1);
+  };
   S.addChapters([
     {
       hard: true,
@@ -187,21 +195,98 @@
           hue: 200,
           entries: [
             good("Adventurers' Guild", 4, 'fgt+1', "You join the Adventurers' Guild.", {
-              fx: s => (s.guild = "Adventurers' Guild"),
+              fx: s => join(s, "Adventurers' Guild"),
             }),
-            good("Mages' Circle", 3, 'pwr+1', "You join the Mages' Circle.", { fx: s => (s.guild = "Mages' Circle") }),
+            good("Mages' Circle", 3, 'pwr+1', "You join the Mages' Circle.", { fx: s => join(s, "Mages' Circle") }),
             good("Thieves' Guild", 3, 'spd+1', "You join the Thieves' Guild.", {
-              fx: s => (s.guild = "Thieves' Guild"),
+              fx: s => join(s, "Thieves' Guild"),
             }),
             good("Assassins' Order", 2, 'fgt+1 dark:all+1', "You join the Assassins' Order.", {
-              fx: s => (s.guild = "Assassins' Order"),
+              fx: s => join(s, "Assassins' Order"),
             }),
             good("Merchants' League", 3, 'fate+1', "You join the Merchants' League.", {
-              fx: s => (s.guild = "Merchants' League"),
+              fx: s => join(s, "Merchants' League"),
             }),
             bad('Kicked out', 2, 'rt-1', 'No guild will have you.'),
           ],
         }),
+    },
+    {
+      id: 'guildWork',
+      name: 'Guild work',
+      emoji: '📜',
+      w: 5,
+      repeat: true,
+      hard: true,
+      hideLocked: true,
+      req: s => !!s.guild && S.guildRank(s) < 4,
+      reqText: 'join a guild first',
+      run: async (L, io, c) => {
+        const s = L.saga,
+          gd = S.GUILDS[s.guild] || { work: 'a job for the guild', fit: '' },
+          next = S.GUILD_RANKS[S.guildRank(s) + 1];
+        return outcome(L, io, c, {
+          title: 'The ' + s.guild + ' sends you on ' + gd.work + '. How does it go?',
+          hue: 200,
+          fit: gd.fit || undefined,
+          entries: [
+            good('Promoted', 4, 'rt+1', 'The job goes well. {hero} rises to ' + next + ' of the ' + s.guild + '.', {
+              fx: rankUp,
+            }),
+            good('Well paid', 3, 'fate+1', 'The job pays well, and the ' + s.guild + ' takes note.'),
+            E('A quiet season', 2, '', 'Nothing much happens in the ' + s.guild + ' this year.'),
+            bad('A botched job', 2, 'fate-1', 'The job goes wrong, and the ' + s.guild + ' remembers.'),
+            bad('Expelled', 1, 'rt-1', 'The ' + s.guild + ' throws {hero} out.', {
+              fx: s2 => {
+                s2.guild = '';
+                s2.flags.guildRank = 0;
+              },
+            }),
+          ],
+        });
+      },
+    },
+    {
+      id: 'guildMaster',
+      name: 'Head of the guild',
+      emoji: '🏛️',
+      w: 3,
+      repeat: true, // a split vote can be tried again
+      hard: true,
+      hideLocked: true,
+      req: s => !!s.guild && S.guildRank(s) === 4,
+      reqText: 'become an officer of your guild',
+      run: async (L, io, c) => {
+        const s = L.saga,
+          title = (S.GUILDS[s.guild] || {}).master || 'Guild master';
+        c.foe = 'the old ' + title.toLowerCase();
+        const r = await fight(L, io, c, foe(c.foe, nearYou(L, io.rng, -2, 10)), {
+          emoji: '🏛️',
+          title: 'The ' + title + ' of the ' + s.guild + ' will not step down. Do you win?',
+        });
+        return S.apply(
+          L,
+          r === 'win'
+            ? good('Head of the guild', 1, 'rt+2 fate+1', '{hero} becomes ' + title + ' of the ' + s.guild + '.', {
+                fx: s2 => (s2.flags.guildRank = 5),
+              })
+            : r === 'lose'
+              ? bad(
+                  'Cast out',
+                  1,
+                  'rt-1',
+                  'The old ' + title.toLowerCase() + ' wins and throws {hero} out of the guild.',
+                  {
+                    fx: s2 => {
+                      s2.guild = '';
+                      s2.flags.guildRank = 0;
+                    },
+                  }
+                )
+              : E('Not yet', 1, '', 'The guild is split. {hero} stays an officer, for now.'),
+          c
+        );
+      },
     },
     {
       id: 'tournament',

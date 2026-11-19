@@ -6,11 +6,11 @@
   const FW = (g.FW = g.FW || {});
 
   const C = (FW.Codex = {
-    empty: () => ({ race: {}, world: {}, end: {}, foe: {} }),
+    empty: () => ({ race: {}, world: {}, end: {}, foe: {}, secret: {} }),
     clean(c) {
       const o = c && typeof c === 'object' ? c : {},
         obj = x => (x && typeof x === 'object' ? x : {});
-      return { race: obj(o.race), world: obj(o.world), end: obj(o.end), foe: obj(o.foe) };
+      return { race: obj(o.race), world: obj(o.world), end: obj(o.end), foe: obj(o.foe), secret: obj(o.secret) };
     },
     // a hero was made (or a saga ended): their race, and their ending once there is one
     noteHero(c, L) {
@@ -28,6 +28,11 @@
       f.met++;
       if (f[res] != null) f[res]++;
       if (world) c.world[world] = 1;
+    },
+    // a secret chapter was found (story.js S.onSecret)
+    noteSecret(c, id) {
+      if (!id || c.secret[id]) return 0;
+      return (c.secret[id] = 1);
     },
     // what an existing player already met, from the Hall (heroes saved before the Codex existed)
     fromHall(c, hall) {
@@ -64,12 +69,15 @@
               ]
             : []
         );
+      // secret chapters: found ones show their name, the rest only who they are for
+      const secrets = (S.SECRETS || []).map(ch => ({ name: ch.name, id: ch.id, known: !!c.secret[ch.id], e: ch }));
       const count = list => ({ known: list.filter(x => x.known).length, total: list.length });
       const allFoes = foes.reduce((a, gp) => a.concat(gp.items), []);
       return {
         races: Object.assign({ items: races }, count(races)),
         worlds: Object.assign({ items: worlds }, count(worlds)),
         endings: Object.assign({ items: ends }, count(ends)),
+        secrets: Object.assign({ items: secrets }, count(secrets)),
         foes: Object.assign({ groups: foes }, count(allFoes)),
       };
     },
@@ -99,11 +107,17 @@
     C.noteFight(book, r.opp, r.result, r.world);
     save();
   };
-  if (FW.Story)
+  if (FW.Story) {
     FW.Story.onFight = (name, res) => {
       C.noteFight(book, name, res, C.worldOf(name));
       save();
     };
+    FW.Story.onSecret = id => {
+      if (!C.noteSecret(book, id)) return;
+      save();
+      if (App.toast) App.toast('✨ ' + t('A secret chapter! It is in your Codex now.'));
+    };
+  }
 
   /* ---------------- the book ---------------- */
   const chips = dsl => {
@@ -179,6 +193,17 @@
       '</span></div>'
     );
   }
+  // an unfound secret only hints at who can find it
+  function secretCard(x) {
+    if (!x.known) return '<div class="codex-item unknown"><b>???</b><i>' + H.esc(t(x.e.fits || '')) + '</i></div>';
+    return (
+      '<div class="codex-item"><b>' +
+      H.esc(x.e.emoji + ' ' + t(x.name)) +
+      '</b><i>' +
+      H.esc(t(x.e.fits || '')) +
+      '</i></div>'
+    );
+  }
   function endCard(x) {
     if (!x.known) return '<div class="codex-item unknown"><b>???</b></div>';
     const art = FW.ENDING_ART && FW.ENDING_ART.indexOf(x.id) >= 0;
@@ -236,6 +261,10 @@
           head('Endings', s.endings) +
           '<div class="codex-grid">' +
           s.endings.items.map(endCard).join('') +
+          '</div>' +
+          head('Secret chapters', s.secrets) +
+          '<div class="codex-grid">' +
+          s.secrets.items.map(secretCard).join('') +
           '</div>'
         : head('Bestiary', s.foes) +
           s.foes.groups

@@ -219,8 +219,8 @@
             emoji: '🏆',
             title: boss.name + ' is beaten. Mercy?',
             options: [
-              { label: 'Show mercy', hint: 'Spare, heal, recruit or teach.' },
-              { label: 'No mercy', hint: 'Kill, enslave, curse or take what is theirs.' },
+              { label: 'Show mercy', hint: 'Spare, heal, recruit or teach.', align: 1 },
+              { label: 'No mercy', hint: 'Kill, enslave, curse or take what is theirs.', align: -1 },
             ],
           });
           const keep = way === 0 ? MERCY : HARSH;
@@ -279,7 +279,7 @@
           options: [
             { label: 'Fight it', hint: 'Win, and the realm never forgets you.' },
             { label: 'Talk to it', hint: 'Dragons are proud and clever. So must you be.' },
-            { label: 'Sneak into its hoard', hint: 'Quiet feet and quick hands.' },
+            { label: 'Sneak into its hoard', hint: 'Quiet feet and quick hands.', align: -1 },
           ],
         });
         if (way === 1) {

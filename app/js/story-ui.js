@@ -38,7 +38,12 @@
     h +=
       row('Artifacts', s.artifacts.map(a => a.name).join(', ')) +
       row('Conquered', s.conquered.join(', ')) +
-      row('Guild', s.guild) +
+      row('Guild', s.guild ? S.rankName(s) + ', ' + s.guild : '') +
+      row(
+        'Alignment',
+        S.align(s) ? S.alignName(S.align(s)) + ' (' + (S.align(s) > 0 ? '+' : '') + S.align(s) + ')' : ''
+      ) +
+      row('World event', S.event(s) ? S.event(s).emoji + ' ' + S.event(s).name : '') +
       row('Beloved', s.love) +
       row('Heir', s.heir ? s.heir.name + ' (' + s.heir.kind + ')' : '');
     if (s.nem)
@@ -223,7 +228,8 @@
       entries: cfg.entries,
       mode: cfg.mode,
       hue: cfg.hue,
-      hint: cfg.hint,
+      // a world event in force shows before the story wheel's own hint
+      hint: cfg.event ? cfg.event + ' · ' + tt(cfg.hint || '') : cfg.hint,
       preFx: isBattle ? H.battle(L.displayName(), cfg.foe, cfg.arena, cfg.report) : '',
       wsKey: cfg.kind === 'story' ? 'story' : '', // offers "Never roll this again" under a chapter
       onResult: idx => {
@@ -581,6 +587,11 @@
       r.heir && [t('Heir'), r.heir],
       r.scars.length && [t('Scars'), r.scars.map(t).join(', ')],
       r.after && [t('After the ending'), t(r.after)],
+      r.guild && [t('Guild'), r.guild],
+      r.align && [t('Alignment'), t(r.alignName)],
+      r.ancestor && [t('Saved by an ancestor'), r.ancestor],
+      r.events.length && [t('World events'), r.events.map(t).join(', ')],
+      r.secrets.length && [t('Secret chapters'), r.secrets.map(t).join(', ')],
     ].filter(Boolean);
     const line = r.timeline
       .map(

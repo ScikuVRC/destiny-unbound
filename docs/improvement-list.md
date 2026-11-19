@@ -1,14 +1,14 @@
 # Destiny Unbound: what can be improved
 
 First written 2026-11-13, after 0.2.0-alpha.1. Rewritten 2026-11-17, after 0.3.0-alpha.1, with 100 new ideas
-(103-202); updated the same day: 60 of the first 102 and 22 of the new ideas are done and listed at the end.
+(103-202); updated since: 60 of the first 102 and 29 of the new ideas are done and listed at the end.
 
 Each item has a rough size: **S** (an hour or two), **M** (a day), **L** (several days or more).
 Items marked ★ are the ones I'd do first. ✅ = done, ⬜ = not yet. Numbers stay the same as items get done.
 
-Where the game stands: 26 wheels per hero, 98 races, 49 story chapters, 10 endings with epilogues and a saga recap,
+Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of them secret), 10 endings with epilogues and a saga recap,
 13 arena worlds with 77 opponents, 34 achievements, 5 themes, 5 languages, a Discord bot with 6 commands,
-139 automated checks plus balance, accessibility, performance and licence checks in CI.
+158 automated checks plus balance, accessibility, performance and licence checks in CI.
 
 **Contents:** [Still to do (1-102)](#still-to-do-from-the-first-list) · [New ideas (103-202)](#new-ideas-103-202) ·
 [Done](#done) · [Suggested order](#suggested-order)
@@ -116,18 +116,11 @@ Where the game stands: 26 wheels per hero, 98 races, 49 story chapters, 10 endin
 
 103. ⬜ **Age that matters (S).** Old heroes lose a little strength and gain wisdom; a few chapters only appear
      after 60.
-105. ⬜ **Ancestor spirits (S).** An heir can call on a dead ancestor once per saga for a second chance.
-108. ⬜ **Alignment drift (M).** Choices nudge the hero towards good or evil and shift later wheels a little.
 110. ⬜ **Gold and a travelling merchant (M).** Chapters pay out gold; a merchant between chapters sells one item.
-111. ⬜ **World events (S).** A famine year, a comet, a plague season: a banner that colours a few chapters.
 112. ⬜ **Romance in more than one chapter (M).** Courtship, a rival suitor, a wedding, children that can become heirs.
-114. ⬜ ★ **Secret chapters (S each).** Very rare chapters (about 1 in 500) that only appear for certain combinations,
-     like a Necromancer meeting the Lich King.
 115. ⬜ **Prophecy foreshadowing (S).** The prophecy is read out vaguely at the start and its meaning shows at the end.
 116. ⬜ **Two-hero sagas (L).** Two heroes take turns, their paths cross, and one can save or betray the other.
-117. ⬜ **A playable retirement (S).** Retired heroes get a last chapter: a tavern, students, a memoir.
 118. ⬜ **Turn back fate (S).** Spend Fate Tokens to undo one death per saga, at a real cost.
-119. ⬜ **Guild ranks (M).** Joining a guild gives ranks to climb, with a guild master chapter at the top.
 120. ⬜ **Shared saga seeds (S).** Share a seed so friends start the same saga and compare how it went.
 
 ### Arena and versus
@@ -231,7 +224,16 @@ Where the game stands: 26 wheels per hero, 98 races, 49 story chapters, 10 endin
 
 ## Done
 
-60 of the first 102, and 22 of the new ideas.
+60 of the first 102, and 29 of the new ideas.
+
+### Done 2026-11-19
+
+105. ✅ **Ancestor spirits.** 2026-11-19: an heir who would die is saved once per saga by the nearest ancestor, named in the saga log and the recap (with the Dynasty option on).
+108. ✅ **Alignment drift.** 2026-11-19: from -5 to 5, starting from the hero's nature; mercy, cruelty and what the hero does move it. From 2 either way it makes good or dark chapters a little more likely and helps or hurts quests, heists and mentors. On the saga sheet and in the recap.
+111. ✅ **World events.** 2026-11-19: a famine year, a comet, a plague season, a year of war, the dragon migration or a festival year colours the next three chapters (more likely chapters, a line over the story wheel). An option in the story settings.
+114. ✅ **Secret chapters.** 2026-11-19: five very rare chapters for heroes who fit them (the Lich King, the last dragon egg, meeting yourself, a cure for an undead hero, the drowned crown). Found ones go into a new Secret chapters page of the Codex, which hints at who can find the rest.
+117. ✅ **A playable retirement.** 2026-11-19: a retired hero picks a tavern, students or a memoir, and the wheel says how it goes; a student can carry on the line as the heir.
+119. ✅ **Guild ranks.** 2026-11-19: Initiate, Member, Veteran, Officer, earned through Guild work and good deeds in the guild's line of business; an officer can fight for the top (Guildmaster, Archmage, Master of Shadows, Grandmaster, Merchant Prince).
 
 ### Done 2026-11-18
 
@@ -352,7 +354,7 @@ Where the game stands: 26 wheels per hero, 98 races, 49 story chapters, 10 endin
 ## Suggested order
 
 1. **Feel:** real sound effects (52), ending stingers (55), pause menu (36).
-2. **Play:** quick create (18), saga goals (24), secret chapters (114), a map of the saga (168).
+2. **Play:** quick create (18), saga goals (24), a map of the saga (168).
 3. **Depth:** companion and nemesis arcs (4, 5), Hall tournament (121), arena gauntlet (11), collection book (23).
 4. **Reach:** a real phone test (33), story text translated (60, now ready for plural and gender markers),
    native-speaker reviews (61).

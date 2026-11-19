@@ -270,6 +270,12 @@ t('Codex and Bestiary: entries fill in once met, fights keep a record, and old H
   const old = C.fromHall(C.empty(), [{ race: 'Frost Dwarf', saga: { end: 'legend' } }, { race: 'Elf' }]);
   assert(old.race.Dwarf && old.race.Elf && old.end.legend, 'Hall heroes fill the Codex');
   assert.deepStrictEqual(C.clean(null), C.empty());
+  // secret chapters: listed as gaps, filled once found
+  assert.strictEqual(s.secrets.total, FW.Story.SECRETS.length);
+  assert.strictEqual(s.secrets.known, 0);
+  assert.strictEqual(C.noteSecret(book, 'lichKing'), 1);
+  assert.strictEqual(C.noteSecret(book, 'lichKing'), 0, 'found twice is not new');
+  assert.strictEqual(C.sections(book).secrets.known, 1);
 });
 
 t('world boss: one boss a week in turn, real odds decide the hit, damage stays in bounds', () => {
