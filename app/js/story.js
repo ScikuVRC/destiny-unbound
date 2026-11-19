@@ -1541,6 +1541,38 @@
       conquered: (s.conquered || []).slice(),
     };
   };
+  /* what "How was this saga?" sends besides the answer: what the story features did, so testers' feedback can be
+     matched to them. Counts, ids and option names only: no hero names, no saga text. Shown to the player first. */
+  S.feedbackFacts = function (L, opts) {
+    const s = L.saga;
+    if (!s) return '';
+    const f = s.flags || {},
+      F = s.fights || { w: 0, l: 0, d: 0 },
+      o = S.opts(opts),
+      out = [];
+    const add = (k, v) => v !== '' && v != null && v !== 0 && out.push(k + ' ' + v);
+    add('gen', s.dyn && s.dyn.gen > 1 ? s.dyn.gen : 0);
+    add('fights', F.w + F.l + F.d ? F.w + '/' + F.l + '/' + F.d : '');
+    add('align', S.align(s) ? S.alignName(S.align(s)) + ' ' + S.align(s) : '');
+    add('fame', S.rep(s, 'fame'));
+    add('infamy', S.rep(s, 'infamy'));
+    add('guild', s.guild ? S.rankName(s) : '');
+    add('scars', (f.scars || []).length);
+    add('close calls', +f.cheated || 0);
+    add('ancestor save', f.ancestor ? 'yes' : '');
+    add('old legend', f.oldLegend ? 'yes' : '');
+    add('events', (f.events || []).join('+'));
+    add('secret', (f.secrets || []).join('+'));
+    add('after', f.after || '');
+    add('heir', s.heir ? s.heir.kind : '');
+    add(
+      'off',
+      S.OPTIONS.filter(x => !o[x.id])
+        .map(x => x.id)
+        .join('+')
+    );
+    return out.join(' · ');
+  };
   /* ---------------- the epilogue: what became of everything, after the end ----------------
      A few sentences built from what the saga left behind: the kingdom, the heir, the nemesis, a love or an unfinished
      thread, and a closing line for the ending. The wording is picked with the hero's own seed, so the same hero always

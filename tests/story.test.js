@@ -682,6 +682,19 @@ async function playSaga(seed, opts, ov) {
     assert(won, 'nobody wins the fight for the top');
   });
 
+  await t('saga feedback facts: what the features did, with no names', async () => {
+    let any = 0;
+    for (let i = 0; i < 60; i++) {
+      const { L } = await playSaga('fb' + i, { worldEvents: false });
+      const x = S.feedbackFacts(L, { worldEvents: false });
+      assert(x.length < 6000, 'too long for the report');
+      assert(x.indexOf(L.displayName()) < 0 && (!L.name || x.indexOf(L.name) < 0), 'the hero name is sent: ' + x);
+      assert(/off worldEvents/.test(x), 'switched-off options are listed: ' + x);
+      if (/align|guild|scars|after/.test(x)) any++;
+    }
+    assert(any > 20, 'the facts are almost always empty');
+  });
+
   console.log('\n' + pass + ' of ' + (pass + fail) + ' checks passed');
   process.exit(fail ? 1 : 0);
 })();

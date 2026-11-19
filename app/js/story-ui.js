@@ -363,14 +363,22 @@
     box.querySelectorAll('[data-fb]').forEach(b =>
       b.addEventListener('click', () => {
         const ans = FB_ANSWERS.find(a => a[0] === b.dataset.fb);
-        const msg = 'Saga: ' + ans[0] + ' · ' + s.end + ' · ' + s.ch + ' chapters · ' + L.luck + ' luck';
+        const msg = 'Saga: ' + ans[0] + ' · ' + s.end + ' · ' + s.ch + ' chapters · ' + L.luck + ' luck',
+          facts = S.feedbackFacts(L, opts());
         box.innerHTML =
           '<p><b>' +
           H.esc(ans[1] + ' ' + tt(ans[2])) +
           '</b></p><label class="legend-key" for="fbNote">' +
           H.esc(tt('Anything to add? (optional)')) +
           '</label><textarea id="fbNote" maxlength="1000" rows="3"></textarea><p class="legend-key">' +
-          H.esc(tt('What is sent') + ': ' + msg + ', ' + tt('the game version and your words. No names or saves.')) +
+          H.esc(
+            tt('What is sent') +
+              ': ' +
+              msg +
+              (facts ? ' · ' + facts : '') +
+              ', ' +
+              tt('the game version and your words. No names or saves.')
+          ) +
           '</p><div class="cta"><button class="btn small primary" id="fbSend">' +
           H.esc(tt('Send')) +
           '</button><button class="btn small ghost" id="fbSkip">' +
@@ -390,7 +398,7 @@
               kind: 'saga',
               screen: 'ending',
               message: msg,
-              detail: '',
+              detail: facts, // what the newer story features did in this saga (S.feedbackFacts)
               note: R.scrub($('#fbNote').value).trim().slice(0, 1000),
             });
             remember();
