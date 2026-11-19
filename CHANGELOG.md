@@ -4,6 +4,14 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
+## 0.3.0-alpha.5 (2026-11-19)
+
+### Changed
+
+- **Better saga feedback.** "How was this saga?" now also sends what happened in that saga: alignment, fame and
+  infamy, guild rank, scars, world events, secret chapters, what came after the ending, and which story options were
+  off. Never names or saga text, and you see exactly what is sent before you press Send.
+
 ## 0.3.0-alpha.4 (2026-11-19)
 
 ### New

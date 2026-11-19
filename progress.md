@@ -2,7 +2,7 @@
 
 A running record of where the game stands. Update it when something ships, starts or gets decided.
 This file is public: server addresses, account, payment and moderation details go in `private-notes.md` (not on GitHub).
-Last updated: 2026-11-19 · Current version: **0.3.0-alpha.4**
+Last updated: 2026-11-19 · Current version: **0.3.0-alpha.5**
 
 Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
@@ -46,6 +46,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 | Old legends return: a Codex and Bestiary, player level and card backs, and your own wheel entries with real effects | 0.3.0-alpha.2 | ✅ released 2026-11-17 |
 | World Boss, mounts, scars, fame and infamy, after-the-ending chapters | 0.3.0-alpha.3 | ✅ released 2026-11-18 |
 | Secret chapters, alignment, world events, guild ranks | 0.3.0-alpha.4 | ✅ released 2026-11-19 |
+| Better saga feedback for testers | 0.3.0-alpha.5 | ✅ released 2026-11-19 |
 | Alpha test with 5-15 players | two weeks after release | ⬜ |
 | Beta (fixes from the alpha, signed build, store page) | 0.2.0-beta.1 | ⬜ |
 | 1.0 on itch.io | 1.0.0 | ⬜ |
