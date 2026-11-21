@@ -735,14 +735,17 @@
     fit(c, ty, W - 160, 36, '600', th.font);
     c.fillStyle = th.sub;
     c.fillText(ty, W / 2, sy + 202);
+    // the honour title under the type line (the rank seal sits above the name); the quote moves down for it
+    const hy = honour ? 46 : 0;
+    honourLine(c, th, sy + 250);
     const fl = flavour(legend);
     if (fl) {
       c.font = 'italic 500 34px ' + th.font;
       c.fillStyle = th.val;
       c.globalAlpha = 0.85;
       wrap(c, fl, W - 220)
-        .slice(0, 2)
-        .forEach((l, i) => c.fillText(l, W / 2, sy + 262 + i * 42));
+        .slice(0, hy ? 1 : 2)
+        .forEach((l, i) => c.fillText(l, W / 2, sy + 262 + hy + i * 42));
       c.globalAlpha = 1;
     }
     // the rating at the foot
@@ -802,6 +805,7 @@
     c.fillStyle = '#fff';
     c.fillText(nm, W / 2, H - 330);
     c.shadowBlur = 0;
+    honourLine(c, th, H - 404);
     const ty = typeLine(legend);
     fit(c, ty, W - 160, 38, '600', th.font);
     c.fillStyle = th.accent;
@@ -838,6 +842,11 @@
     { id: 'gilded', name: 'Gilded lattice', level: 6 },
     { id: 'ember', name: 'Embers', level: 8 },
     { id: 'void', name: 'Void spiral', level: 12 },
+    // earned with achievements or a world championship (unlocks.js, 22)
+    { id: 'bone', name: 'Bone and ash', level: 1, unlock: 'ach:brief' },
+    { id: 'royal', name: 'Royal crest', level: 1, unlock: 'ach:dynasty' },
+    { id: 'laurel', name: 'Champion’s laurels', level: 1, unlock: 'champ:any' },
+    { id: 'hidden', name: 'Hidden map', level: 1, unlock: 'ach:secret' },
   ];
   function seeded(n) {
     let s = (Math.abs(Math.floor(n * 9973)) % 2147483646) + 1;
@@ -941,6 +950,102 @@
         }
         c.stroke();
       }
+    } else if (id === 'bone') {
+      c.fillStyle = '#0c0b0a';
+      c.fillRect(0, 0, W, H);
+      c.strokeStyle = '#d8d0c0';
+      c.lineWidth = 2;
+      for (let i = 0; i < 26; i++) {
+        let x = r() * W,
+          y = r() * H;
+        c.globalAlpha = 0.06 + r() * 0.08;
+        c.beginPath();
+        c.moveTo(x, y);
+        for (let j = 0; j < 6; j++) {
+          x += (r() - 0.5) * 120;
+          y += (r() - 0.5) * 120;
+          c.lineTo(x, y);
+        }
+        c.stroke();
+      }
+      for (let i = 0; i < 90; i++) {
+        c.globalAlpha = 0.1 + r() * 0.2;
+        c.fillStyle = '#8a8378';
+        c.fillRect(r() * W, r() * H, 2, 2);
+      }
+    } else if (id === 'royal') {
+      c.fillStyle = '#0d0614';
+      c.fillRect(0, 0, W, H);
+      c.strokeStyle = '#c9a24a';
+      c.lineWidth = 2;
+      c.globalAlpha = 0.12;
+      for (let y = 0; y < H + 120; y += 120)
+        for (let x = (y / 120) % 2 ? 60 : 0; x < W + 120; x += 120) {
+          c.beginPath();
+          c.moveTo(x, y - 34);
+          c.lineTo(x + 26, y);
+          c.lineTo(x, y + 34);
+          c.lineTo(x - 26, y);
+          c.closePath();
+          c.stroke();
+        }
+      const v = c.createRadialGradient(W / 2, H / 2, 150, W / 2, H / 2, H * 0.8);
+      v.addColorStop(0, 'transparent');
+      v.addColorStop(1, 'rgba(0,0,0,.7)');
+      c.globalAlpha = 1;
+      c.fillStyle = v;
+      c.fillRect(0, 0, W, H);
+    } else if (id === 'laurel') {
+      c.fillStyle = '#06100a';
+      c.fillRect(0, 0, W, H);
+      c.translate(W / 2, H / 2);
+      c.strokeStyle = '#d4b45a';
+      c.fillStyle = '#d4b45a';
+      c.lineWidth = 3;
+      [-1, 1].forEach(side => {
+        for (let i = 0; i < 16; i++) {
+          const a = Math.PI / 2 + side * (0.25 + i * 0.16),
+            rad = 470;
+          c.save();
+          c.globalAlpha = 0.14;
+          c.translate(Math.cos(a) * rad, Math.sin(a) * rad);
+          c.rotate(a + side * 0.9);
+          c.beginPath();
+          c.ellipse(0, 0, 34, 13, 0, 0, Math.PI * 2);
+          c.fill();
+          c.restore();
+        }
+      });
+      c.globalAlpha = 0.12;
+      c.beginPath();
+      c.arc(0, 0, 470, Math.PI * 0.55, Math.PI * 2.45);
+      c.stroke();
+    } else if (id === 'hidden') {
+      c.fillStyle = '#0e0a06';
+      c.fillRect(0, 0, W, H);
+      c.strokeStyle = '#c8a46a';
+      c.lineWidth = 3;
+      c.globalAlpha = 0.12;
+      c.setLineDash([14, 12]);
+      c.beginPath();
+      let x = W * 0.15,
+        y = H * 0.9;
+      c.moveTo(x, y);
+      for (let i = 0; i < 7; i++) {
+        x = W * (0.15 + r() * 0.7);
+        y -= H * 0.11;
+        c.lineTo(x, y);
+      }
+      c.stroke();
+      c.setLineDash([]);
+      c.lineWidth = 6;
+      c.globalAlpha = 0.2;
+      c.beginPath();
+      c.moveTo(x - 24, y - 24);
+      c.lineTo(x + 24, y + 24);
+      c.moveTo(x + 24, y - 24);
+      c.lineTo(x - 24, y + 24);
+      c.stroke();
     }
     c.restore();
   }
@@ -1224,8 +1329,21 @@
     return null;
   };
 
+  // an honour title the player earned (unlocks.js), small and in the accent colour, above the hero's name
+  let honour = '';
+  function honourLine(c, th, y) {
+    if (!honour) return;
+    const s = '✦ ' + (th.caps ? honour.toUpperCase() : honour) + ' ✦';
+    fit(c, s, W - 220, 30, '700', th.font);
+    c.shadowColor = 'rgba(0,0,0,.9)';
+    c.shadowBlur = 10;
+    c.fillStyle = th.accent;
+    c.fillText(s, W / 2, y);
+    c.shadowBlur = 0;
+  }
   FW.drawCard = function (canvas, legend, opts) {
     opts = opts || {};
+    honour = String(opts.honour || '');
     const name = themeOf(opts.theme),
       th = CT[name];
     canvas.width = W;

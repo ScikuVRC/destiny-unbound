@@ -74,7 +74,8 @@
       rec.xp += n * Lv.XP.achievement;
       return n * Lv.XP.achievement;
     },
-    backs: level => (FW.CARD_BACKS || []).filter(b => b.level <= level),
+    // has(key): whether an achievement or championship back is earned (unlocks.js); without it, only level backs
+    backs: (level, has) => (FW.CARD_BACKS || []).filter(b => b.level <= level && (!b.unlock || (has && has(b.unlock)))),
   });
 
   /* ---------------- Hall statistics ---------------- */
@@ -314,9 +315,10 @@
   });
 
   /* ---------------- card backs and the print sheet ---------------- */
+  const earnedBack = key => !!(FW.Unlocks && FW.Unlocks.ctx && FW.Unlocks.has(FW.Unlocks.ctx(), key));
   const backId = () => {
     const want = store.get('fw.cardBack', 'classic'),
-      ok = Lv.backs(Lv.of(rec.xp).level);
+      ok = Lv.backs(Lv.of(rec.xp).level, earnedBack);
     return ok.some(b => b.id === want) ? want : 'classic';
   };
   App.cardBack = backId;
@@ -334,7 +336,7 @@
   const btnBack = $('#btnCardBack');
   if (btnBack)
     btnBack.addEventListener('click', () => {
-      const ok = Lv.backs(Lv.of(rec.xp).level),
+      const ok = Lv.backs(Lv.of(rec.xp).level, earnedBack),
         i = ok.findIndex(b => b.id === backId());
       store.set('fw.cardBack', ok[(i + 1) % ok.length].id);
       App.drawCardNow();

@@ -16,9 +16,18 @@ globalThis.localStorage = {
 ['data.js'].forEach(f => require('../app/js/' + f));
 ['es', 'fr', 'de', 'ja'].forEach(id => require('../app/lang/' + id + '.js'));
 require('../app/js/i18n.js');
-['engine.js', 'story.js', 'card.js', 'packs.js', 'achievements.js', 'hall.js', 'codex.js', 'boss.js'].forEach(f =>
-  require('../app/js/' + f)
-);
+[
+  'engine.js',
+  'story.js',
+  'card.js',
+  'packs.js',
+  'achievements.js',
+  'hall.js',
+  'codex.js',
+  'boss.js',
+  'unlocks.js',
+  'prefs.js',
+].forEach(f => require('../app/js/' + f));
 const FW = globalThis.FW;
 let pass = 0,
   fail = 0;
@@ -238,9 +247,11 @@ t('player level: experience from heroes, chapters, endings and achievements, eac
     Lv.backs(1).map(b => b.id),
     ['classic']
   );
-  assert.strictEqual(Lv.backs(99).length, FW.CARD_BACKS.length);
+  // (backs earned with achievements need their unlock as well: see the unlocks test)
+  const byLevel = FW.CARD_BACKS.filter(b => !b.unlock);
+  assert.strictEqual(Lv.backs(99).length, byLevel.length);
   assert(
-    FW.CARD_BACKS.every((b, i, a) => !i || b.level > a[i - 1].level),
+    byLevel.every((b, i, a) => !i || b.level > a[i - 1].level),
     'backs in level order'
   );
 });
@@ -337,6 +348,107 @@ t('Hall statistics: counts, averages and the most common races, ranks and ending
   assert.strictEqual(s.endings.length, 2);
   assert.strictEqual(s.favourites, 1);
   assert.strictEqual(FW.hallStats(null).count, 0);
+});
+
+t('versus formats: best of three, team fights (winner stays on) and challenge codes', () => {
+  let s = { a: 0, b: 0, fights: 0 };
+  s = FW.vsBestOf(s, 'a');
+  assert(!s.done);
+  s = FW.vsBestOf(s, 'draw');
+  assert(!s.done && s.fights === 2, 'a draw does not count');
+  s = FW.vsBestOf(s, 'a');
+  assert(s.done && s.winner === 'a');
+  let d = { a: 0, b: 0, fights: 0 };
+  for (let i = 0; i < 5; i++) d = FW.vsBestOf(d, 'draw');
+  assert(d.done && d.winner === 'draw', 'five draws end it');
+  let tm = { a: 0, b: 0, n: 3, bouts: 0 };
+  tm = FW.vsTeamStep(tm, 'a'); // B's first fighter is out
+  assert.deepStrictEqual([tm.a, tm.b, tm.done], [0, 1, false]);
+  tm = FW.vsTeamStep(tm, 'draw'); // both out
+  assert.deepStrictEqual([tm.a, tm.b], [1, 2]);
+  tm = FW.vsTeamStep(tm, 'a');
+  assert(tm.done && tm.winner === 'a', 'side one has fighters left');
+  let tied = { a: 2, b: 2, n: 3, bouts: 4 };
+  tied = FW.vsTeamStep(tied, 'draw');
+  assert(tied.done && tied.winner === 'draw');
+  const L = legend('challenge');
+  const msg = FW.vsChallenge(L.displayName(), FW.compute(L).rating, L.toCode());
+  assert(msg.indexOf(L.displayName()) >= 0);
+  assert.strictEqual(FW.Legend.fromCode(FW.codeIn(msg)).displayName(), L.displayName(), 'the code reads back');
+  assert.strictEqual(FW.codeIn('  FW1.abc  '), 'FW1.abc');
+});
+
+t('hidden achievements: a riddle each, and their tests run', () => {
+  const hidden = FW.ACHIEVEMENTS.filter(a => a.hidden);
+  assert(hidden.length >= 5);
+  hidden.forEach(a => {
+    assert(a.riddle && a.riddle !== a.desc, a.id + ' has no riddle');
+    assert(FW.LANG_PACKS.es.strings[a.riddle] != null, 'riddle not translated: ' + a.riddle);
+  });
+  const L = legend('hid');
+  FW.Story.newSaga(L, {}, FW.makeRng('h'));
+  L.saga.flags.align = 5;
+  L.saga.flags.secrets = ['lichKing'];
+  const ok = id => FW.ACHIEVEMENTS.find(a => a.id === id).test(L);
+  assert(ok('saint') && ok('secret') && ok('lichPupil') && !ok('wicked'));
+});
+
+t('unlocks: titles from achievements and world championships, and card backs earned with them', () => {
+  const U = FW.Unlocks,
+    all = U.titles();
+  assert.strictEqual(all.filter(x => x.kind === 'champion').length, FW.UNIVERSES.length, 'one per world');
+  const ids = new Set(all.map(x => x.id));
+  assert.strictEqual(ids.size, all.length);
+  assert.strictEqual(U.earned({ ach: {}, codex: {} }).length, 0);
+  const u = FW.UNIVERSES[0],
+    book = FW.Codex.empty();
+  u.opps.slice(1).forEach(o => FW.Codex.noteFight(book, o.name, 'win', u.name));
+  FW.Codex.noteFight(book, u.opps[0].name, 'lose', u.name);
+  assert(!U.worldProgress(book, u).done, 'one foe never beaten');
+  assert.strictEqual(U.worldProgress(book, u).beaten, u.opps.length - 1);
+  FW.Codex.noteFight(book, u.opps[0].name, 'win', u.name);
+  const got = U.earned({ ach: { dragon: '2026-11-21' }, codex: book }).map(x => x.name);
+  assert(got.indexOf('Champion of ' + u.name) >= 0 && got.indexOf('Dragonslayer') >= 0);
+  assert(U.has({ codex: book }, 'champ:any'));
+  // backs: level backs always, earned backs only with their unlock
+  const lvOnly = FW.Level.backs(99).map(b => b.id),
+    withAll = FW.Level.backs(99, () => true).map(b => b.id);
+  assert(lvOnly.indexOf('laurel') < 0 && withAll.indexOf('laurel') >= 0);
+  FW.CARD_BACKS.filter(b => b.unlock).forEach(b =>
+    assert(
+      b.unlock === 'champ:any' || FW.ACHIEVEMENTS.some(a => 'ach:' + a.id === b.unlock),
+      'unknown unlock ' + b.unlock
+    )
+  );
+  all.forEach(x =>
+    assert(FW.LANG_PACKS.es.strings[x.name] != null || x.kind === 'champion', 'title not translated: ' + x.name)
+  );
+});
+
+t('collection book: classes, mounts and chapters fill in the Codex', () => {
+  const C = FW.Codex,
+    book = C.empty();
+  const L = legend('collect');
+  FW.Story.newSaga(L, {}, FW.makeRng('c'));
+  L.saga.used = ['quest', 'dragon'];
+  L.saga.flags.reps = { train: 2 };
+  assert(C.noteHero(book, L) >= 3);
+  const s = C.sections(book);
+  assert(s.classes.total > 30 && s.mounts.total > 10 && s.chapters.total > 40);
+  assert.strictEqual(s.chapters.known, 3);
+  assert(s.classes.known === (L.has('cls') ? 1 : 0));
+  assert(!s.chapters.items.some(x => x.e.secret), 'secret chapters have their own page');
+  assert.strictEqual(C.noteHero(book, L), 0, 'nothing new the second time');
+});
+
+t('spin speed: slow is slower than normal, fast is faster', () => {
+  const m = FW.motion;
+  FW.motion = () => 'full';
+  try {
+    assert(FW.spinDuration('slow') > FW.spinDuration('normal') && FW.spinDuration('normal') > FW.spinDuration('fast'));
+  } finally {
+    FW.motion = m;
+  }
 });
 
 console.log('\n' + pass + ' of ' + (pass + fail) + ' checks passed');

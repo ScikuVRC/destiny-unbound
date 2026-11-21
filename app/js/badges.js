@@ -62,6 +62,13 @@
     sleeper: ['moon', 3],
     legend: ['star', 2],
     martyr: ['candle', 3],
+    secret: ['key', 3],
+    lichPupil: ['skull', 3],
+    saint: ['sparkle', 3],
+    wicked: ['evil', 3],
+    guildhead: ['columns', 3],
+    ancestor: ['ghost', 3],
+    barkeep: ['temple', 2],
   };
   FW.BADGES = B;
   FW.BADGE_TIERS = ['', 'bronze', 'silver', 'gold'];

@@ -1,14 +1,14 @@
 # Destiny Unbound: what can be improved
 
 First written 2026-11-13, after 0.2.0-alpha.1. Rewritten 2026-11-17, after 0.3.0-alpha.1, with 100 new ideas
-(103-202); updated since: 60 of the first 102 and 29 of the new ideas are done and listed at the end.
+(103-202); updated since: 67 of the first 102 and 32 of the new ideas are done and listed at the end.
 
 Each item has a rough size: **S** (an hour or two), **M** (a day), **L** (several days or more).
 Items marked ★ are the ones I'd do first. ✅ = done, ⬜ = not yet. Numbers stay the same as items get done.
 
 Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of them secret), 10 endings with epilogues and a saga recap,
 13 arena worlds with 77 opponents, 34 achievements, 5 themes, 5 languages, a Discord bot with 6 commands,
-158 automated checks plus balance, accessibility, performance and licence checks in CI.
+164 automated checks plus balance, accessibility, performance and licence checks in CI.
 
 **Contents:** [Still to do (1-102)](#still-to-do-from-the-first-list) · [New ideas (103-202)](#new-ideas-103-202) ·
 [Done](#done) · [Suggested order](#suggested-order)
@@ -34,8 +34,6 @@ Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of 
 
 11. ⬜ **Arena progression (M).** Fights are one-offs. Add a ladder or gauntlet: five fights in a row, rising rewards,
     one life.
-13. ⬜ **Versus improvements (S-M).** Best of three, shareable challenge codes ("beat my hero"), a result card to post.
-14. ⬜ **Team fights (L).** Use your companions: three against three.
 
 ### Character creation
 
@@ -47,9 +45,6 @@ Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of 
 ### Keeping players
 
 21. ⬜ **Weekly themed events (S each).** "Dragon week": dragon chapters more likely, a special achievement.
-22. ⬜ **Unlockables (M).** Achievements unlock wheel entries today. Add cosmetic unlocks: card frames, wheel skins,
-    titles, result fonts.
-23. ⬜ **A collection book (M).** Track every race, ending, boss and artifact you've seen; show the gaps.
 24. ⬜ **Saga goals (S).** Optional objectives picked at the start ("found a dynasty", "slay three dragons") with a
     score bonus.
 
@@ -59,8 +54,6 @@ Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of 
     phones held sideways put the wheel beside the question, all in emulation (`scripts/layout-check.js`). Still not
     tried on a real phone.
 34. ⬜ **Controller polish (S).** Check the Spin settings pop-up and Show upcoming with a controller.
-35. ⬜ **Settings search (S).** Partly done 2026-11-14: Options has a Reset this tab button; no search yet.
-36. ⬜ **A proper pause menu during story and spins (S).**
 
 ### Audio
 
@@ -132,7 +125,6 @@ Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of 
 126. ⬜ **Sparring (S).** Fight any opponent without risk to see the odds and learn matchups.
 127. ⬜ **Fight today's champion (S).** Versus against the top hero on the daily leaderboard.
 128. ⬜ **Matchup chart (S).** A screen that shows which elements and classes beat which.
-129. ⬜ **World champion titles (S).** Beat every foe of a world to earn its title on the card.
 130. ⬜ **Hero pool fights (L).** Submit a hero to a shared pool; other players fight it and you see how it did.
 
 ### Character creation
@@ -142,7 +134,6 @@ Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of 
 134. ⬜ **Origin story (S).** A short paragraph about where the hero came from, shown when the card is made.
 135. ⬜ **Twins (S).** A rare result that makes two heroes sharing race and bloodline.
 136. ⬜ **Cursed slices (S).** Rare bad results with a hidden upside that shows later in the saga.
-137. ⬜ **Charge the spin (S).** Hold to wind up a stronger spin; looks better, the result stays random.
 138. ⬜ **Photo mode for the card (M).** Pick a pose, backdrop and filter before sharing.
 
 ### Progression and keeping players
@@ -150,7 +141,6 @@ Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of 
 142. ⬜ **Daily streaks (S).** Count days in a row of the daily challenge, with a small badge.
 143. ⬜ **Hall filters and search (S).** Sort and filter the Hall by race, ending, rank or date.
 146. ⬜ **Tiered achievements (S).** Progress bars and bronze, silver and gold steps for long achievements.
-147. ⬜ **Hidden achievements (S).** Secret ones with a riddle as the only hint.
 148. ⬜ **Monthly challenge (S).** One fixed rule for a month ("all heroes are undead"), with its own badge.
 150. ⬜ **On this day (S).** The title screen recalls a hero you made a month or a year ago.
 
@@ -160,7 +150,6 @@ Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of 
 153. ⬜ **One-handed phone mode (S).** Every button within thumb reach when the phone is held upright.
 154. ⬜ **Confirm before leaving a saga (S).** A small check when leaving a saga that is still going.
 155. ⬜ **Keyboard help (S).** Press ? to see every shortcut.
-156. ⬜ **Story speed and auto-advance (S).** Slow, normal, fast, or let the saga play itself.
 157. ⬜ **Search the saga log (S).** Find a name or event in a long saga, and bookmark lines.
 158. ⬜ **A pointer that flaps (S).** The pointer bends on each slice and settles when the wheel stops.
 159. ⬜ **Particles for legendary results (S).** Embers, sparks or petals, matched to the theme.
@@ -224,7 +213,20 @@ Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of 
 
 ## Done
 
-60 of the first 102, and 29 of the new ideas.
+67 of the first 102, and 32 of the new ideas.
+
+### Done 2026-11-21
+
+13. ✅ **Versus improvements.** 2026-11-21: Versus has three formats (one fight, best of three, team fight), a Copy a challenge button (a message with your hero's Legend Code; Versus reads the code out of a pasted message) and a result card to save as a picture.
+14. ✅ **Team fights.** 2026-11-21: three against three in Versus, winner stays on: the loser of each bout is out and the next one steps in, a draw knocks both out. Fought with your heroes from the Hall, collected cards or pasted codes (not saga companions).
+22. ✅ **Unlockables.** 2026-11-21: honour titles (16 from achievements, one per arena world) shown on the card under the hero's type line, and four card backs earned with achievements or a championship. Both are picked in the card's Style menu; All unlocks lists everything and how to earn it.
+23. ✅ **Collection book.** 2026-11-21: a Collection page in the Codex for classes, mounts and the chapters you have lived through, with the gaps (races, worlds, endings, foes and secret chapters were already there).
+35. ✅ **Settings search.** 2026-11-21: a search box in Options finds a setting on any tab and points at it.
+36. ✅ **Pause menu.** 2026-11-21: Esc, the Back key, B/Circle or the pause button in the top bar while the wheels are up: resume, spin speed, Auto, Options, pause the story, main menu. Auto waits while it is open.
+129. ✅ **World champion titles.** 2026-11-21: beat every foe of an arena world (in the arena or a saga) to earn "Champion of" that world as a title; All unlocks shows how many are left.
+137. ✅ **Charge the spin.** 2026-11-21: hold Spin (or the wheel) and the wheel draws back; let go and it spins harder and longer. The result is decided the same way.
+147. ✅ **Hidden achievements.** 2026-11-21: seven secret achievements (secret chapters, the Lich King, the kindest and darkest alignment, head of a guild, an ancestor's save, the best tavern) that show only a riddle until unlocked.
+156. ✅ **Story speed.** 2026-11-21: a Slow spin speed and a Very long auto-play pause, next to the existing Auto (which lets the saga play itself) and Fast.
 
 ### Done 2026-11-19
 
@@ -353,9 +355,9 @@ Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of 
 
 ## Suggested order
 
-1. **Feel:** real sound effects (52), ending stingers (55), pause menu (36).
+1. **Feel:** real sound effects (52), ending stingers (55).
 2. **Play:** quick create (18), saga goals (24), a map of the saga (168).
-3. **Depth:** companion and nemesis arcs (4, 5), Hall tournament (121), arena gauntlet (11), collection book (23).
+3. **Depth:** companion and nemesis arcs (4, 5), Hall tournament (121), arena gauntlet (11).
 4. **Reach:** a real phone test (33), story text translated (60, now ready for plural and gender markers),
    native-speaker reviews (61).
 5. **Foundations:** move story text out of code (66), browser tests in CI (76), type checking (75).

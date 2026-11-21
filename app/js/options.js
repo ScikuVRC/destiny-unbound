@@ -359,6 +359,7 @@
         seg(
           'speed',
           [
+            ['slow', 'Slow'],
             ['normal', 'Normal'],
             ['fast', 'Fast'],
           ],
@@ -384,6 +385,7 @@
             [1.5, 'Short'],
             [3, 'Normal'],
             [5, 'Long'],
+            [8, 'Very long'],
           ],
           P.autoPause
         ),
@@ -671,6 +673,12 @@
           '</button>'
       ).join('') +
       '</div>' +
+      // settings search (35): finds a setting on any tab
+      '<div class="o-searchbox"><input type="search" id="oSearch" placeholder="' +
+      H.esc(t('Search settings')) +
+      '" aria-label="' +
+      H.esc(t('Search settings')) +
+      '" autocomplete="off"><div class="o-found" id="oFound" role="list" hidden></div></div>' +
       '<div class="o-body" role="tabpanel">' +
       BODY[tab]() +
       '</div>' +
@@ -694,7 +702,86 @@
         }
       });
   }
+  /* ---------------- settings search (35) ----------------
+     Every tab's rows, as the player sees them: the label and its note. A match lists "Tab › Setting"; picking one
+     opens that tab and points at the row. */
+  O.searchIndex = function () {
+    const out = [],
+      box = document.createElement('div');
+    TABS.forEach(([id, name]) => {
+      box.innerHTML = BODY[id]();
+      box.querySelectorAll('.o-row').forEach(r => {
+        const lab = r.querySelector('.o-lab');
+        if (!lab) return;
+        const label = (lab.firstChild && lab.firstChild.textContent) || lab.textContent;
+        out.push({ tab: id, tabName: t(name), label: label.trim(), text: r.textContent.toLowerCase() });
+      });
+    });
+    return out;
+  };
+  O.search = (q, index) => {
+    const words = String(q || '')
+      .toLowerCase()
+      .split(/s+/)
+      .filter(Boolean);
+    if (!words.length) return [];
+    return (index || O.searchIndex()).filter(x => words.every(w => x.text.indexOf(w) >= 0)).slice(0, 12);
+  };
+  function wireSearch(root) {
+    const inp = root.querySelector('#oSearch'),
+      list = root.querySelector('#oFound');
+    if (!inp) return;
+    let index = null;
+    inp.addEventListener('input', () => {
+      index = index || O.searchIndex();
+      const hits = O.search(inp.value, index);
+      list.hidden = !inp.value.trim();
+      list.innerHTML = hits.length
+        ? hits
+            .map(
+              (x, i) =>
+                '<button class="o-hitbtn" role="listitem" data-i="' +
+                i +
+                '"><small>' +
+                H.esc(x.tabName) +
+                ' ›</small> ' +
+                H.esc(x.label) +
+                '</button>'
+            )
+            .join('')
+        : '<p class="o-none">' + H.esc(t('No setting matches that.')) + '</p>';
+      list.querySelectorAll('[data-i]').forEach(b =>
+        b.addEventListener('click', () => {
+          const x = hits[+b.dataset.i];
+          tab = x.tab;
+          render();
+          const row = [...root.querySelectorAll('.o-row')].find(
+            r => ((r.querySelector('.o-lab').firstChild || {}).textContent || '').trim() === x.label
+          );
+          if (!row) return;
+          row.classList.add('o-hit');
+          row.scrollIntoView({ block: 'center' });
+          const c = row.querySelector('button, input, select');
+          if (c) c.focus({ preventScroll: true });
+          setTimeout(() => row.classList.remove('o-hit'), 2500);
+        })
+      );
+    });
+    inp.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && inp.value) {
+        e.preventDefault();
+        e.stopPropagation();
+        inp.value = '';
+        inp.dispatchEvent(new Event('input'));
+      }
+      if (e.key === 'Enter') {
+        const first = list.querySelector('[data-i]');
+        if (first) first.click();
+      }
+    });
+  }
   function wire(root) {
+    wireSearch(root);
     root.querySelectorAll('[data-tab]').forEach(b =>
       b.addEventListener('click', () => {
         tab = b.dataset.tab;

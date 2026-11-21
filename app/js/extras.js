@@ -9,6 +9,7 @@
     st = App.state,
     S = FW.Story;
   const $ = s => document.querySelector(s);
+  const t = s => (FW.t ? FW.t(s) : s);
   const today = () => new Date().toISOString().slice(0, 10);
   const chain = (name, fn) => {
     const prev = App.hooks[name];
@@ -251,6 +252,14 @@
   }
 
   /* ================= versus ================= */
+  /* Three formats (13, 14): one fight; best of three (a draw does not count, at most five fights); and a team fight,
+     three against three, winner stays on: the loser of each bout is out and the next one steps in, a draw knocks
+     both out, and the side with a fighter left wins. The rules are FW.vsBestOf and FW.vsTeamStep (engine.js). */
+  const VS_FORMATS = [
+    ['one', 'One fight'],
+    ['bo3', 'Best of three'],
+    ['team', 'Team fight (3 vs 3)'],
+  ];
   function versusModal(preCode) {
     const opts = [];
     if (st.legend && st.legend.picks.mark) opts.push(['cur', 'Current legend: ' + st.legend.displayName()]);
@@ -264,66 +273,154 @@
     const sel = (id, def) =>
       '<select id="' +
       id +
+      '" aria-label="' +
+      H.esc(t('Fighter')) +
       '">' +
       opts
         .map(
           (o, i) =>
-            '<option value="' + H.esc(o[0]) + '"' + (i === def ? ' selected' : '') + '>' + H.esc(o[1]) + '</option>'
+            '<option value="' +
+            H.esc(o[0]) +
+            '"' +
+            (i === Math.min(def, opts.length - 1) ? ' selected' : '') +
+            '>' +
+            H.esc(o[1]) +
+            '</option>'
         )
         .join('') +
-      '<option value="paste">Paste a Legend Code...</option></select><textarea id="' +
+      '<option value="paste">' +
+      H.esc(t('Paste a Legend Code...')) +
+      '</option></select><textarea id="' +
       id +
       'Code" rows="2" placeholder="FW1...." hidden></textarea>';
+    const side = (k, first) =>
+      '<div class="vs-side">' +
+      sel('vs' + k + '1', first) +
+      '<div class="vs-team" hidden>' +
+      sel('vs' + k + '2', first + 2) +
+      sel('vs' + k + '3', first + 4) +
+      '</div></div>';
     App.openModal(
-      '<button class="btn small ghost close">Close ✕</button><h2>Versus</h2><p>Pit two legends against each other. Their real power, buffs, weaknesses and the arena decide the odds. Nothing on either card changes.</p>' +
-        '<label class="legend-key">Fighter one</label>' +
-        sel('vsA', 0) +
-        '<label class="legend-key" style="display:block;margin-top:10px">Fighter two</label>' +
-        sel('vsB', pre >= 0 ? pre : opts.length > 1 ? 1 : 0) +
-        '<p id="vsErr" style="color:var(--bad);min-height:1.3em"></p><button class="btn primary" id="vsGo">⚔ Fight</button>'
+      '<button class="btn small ghost close">Close ✕</button><h2>Versus</h2><p>' +
+        H.esc(
+          t(
+            'Pit legends against each other. Their real power, buffs, weaknesses and the arena decide the odds. Nothing on any card changes.'
+          )
+        ) +
+        '</p><div class="o-seg vs-format" role="radiogroup" aria-label="' +
+        H.esc(t('Format')) +
+        '">' +
+        VS_FORMATS.map(
+          ([id, n], i) =>
+            '<button role="radio" aria-checked="' +
+            (i === 0) +
+            '" class="' +
+            (i === 0 ? 'on' : '') +
+            '" data-vsf="' +
+            id +
+            '">' +
+            H.esc(t(n)) +
+            '</button>'
+        ).join('') +
+        '</div><label class="legend-key" style="display:block;margin-top:10px">' +
+        H.esc(t('Side one')) +
+        '</label>' +
+        side('A', 0) +
+        '<label class="legend-key" style="display:block;margin-top:10px">' +
+        H.esc(t('Side two')) +
+        '</label>' +
+        side('B', pre >= 0 ? pre : opts.length > 1 ? 1 : 0) +
+        '<p id="vsErr" style="color:var(--bad);min-height:1.3em"></p><div class="cta"><button class="btn primary" id="vsGo">⚔ ' +
+        H.esc(t('Fight')) +
+        '</button>' +
+        (st.legend && st.legend.picks.mark
+          ? '<button class="btn ghost" id="vsChallenge" title="' +
+            H.esc(t('Copies a message with your hero’s Legend Code, for a friend to fight in Versus')) +
+            '">' +
+            H.esc(t('Copy a challenge')) +
+            '</button>'
+          : '') +
+        '</div>'
     );
-    ['vsA', 'vsB'].forEach(id =>
-      $('#' + id).addEventListener('change', () => {
-        $('#' + id + 'Code').hidden = $('#' + id).value !== 'paste';
+    let format = 'one';
+    document.querySelectorAll('[data-vsf]').forEach(b =>
+      b.addEventListener('click', () => {
+        format = b.dataset.vsf;
+        document.querySelectorAll('[data-vsf]').forEach(x => {
+          x.classList.toggle('on', x === b);
+          x.setAttribute('aria-checked', String(x === b));
+        });
+        document.querySelectorAll('.vs-team').forEach(x => (x.hidden = format !== 'team'));
+      })
+    );
+    ['A', 'B'].forEach(k =>
+      [1, 2, 3].forEach(n => {
+        const id = 'vs' + k + n;
+        $('#' + id).addEventListener('change', () => {
+          $('#' + id + 'Code').hidden = $('#' + id).value !== 'paste';
+        });
       })
     );
     const get = id => {
       const v = $('#' + id).value;
       if (v === 'cur') return FW.Legend.fromCode(st.legend.toCode());
-      if (v === 'paste') return FW.Legend.fromCode($('#' + id + 'Code').value);
+      // a pasted challenge message works too: the code is the part that starts with FW1.
+      if (v === 'paste') return FW.Legend.fromCode(FW.codeIn($('#' + id + 'Code').value));
       if (v.indexOf('col:') === 0) return FW.Legend.fromCode(collected.find(h => 'col:' + h.id === v).code);
       return FW.Legend.fromCode(st.hall.find(h => h.id === v).code);
     };
+    if ($('#vsChallenge'))
+      $('#vsChallenge').onclick = () =>
+        App.copy(
+          FW.vsChallenge(st.legend.displayName(), FW.compute(st.legend).rating, st.legend.toCode()),
+          t('Challenge copied: send it to a friend')
+        );
     $('#vsGo').onclick = () => {
-      let A, B;
+      const n = format === 'team' ? 3 : 1,
+        A = [],
+        B = [];
       try {
-        A = get('vsA');
-        B = get('vsB');
+        for (let i = 1; i <= n; i++) {
+          A.push(get('vsA' + i));
+          B.push(get('vsB' + i));
+        }
       } catch (e) {
-        $('#vsErr').textContent = 'Could not read a fighter: ' + (e.message || e);
+        $('#vsErr').textContent = t('Could not read a fighter') + ': ' + (e.message || e);
         return;
       }
-      runVersus(A, B);
+      runVersus(A, B, format);
     };
   }
   // FW.versusOdds (engine.js): the same odds the Discord bot uses
-  async function runVersus(A, B) {
+  async function runVersus(A, B, format) {
     F.abortRun();
     App.closeModal();
     const run = F.newRun();
-    const an = A.displayName(),
-      bn = B.displayName() === an ? B.displayName() + ' (2)' : B.displayName();
+    format = format || 'one';
+    // names: a fighter on both sides gets a (2)
+    const nameOf = (L, taken) => {
+      let n = L.displayName();
+      while (taken.indexOf(n) >= 0) n += ' (2)';
+      taken.push(n);
+      return n;
+    };
+    const taken = [],
+      an = A.map(L => nameOf(L, taken)),
+      bn = B.map(L => nameOf(L, taken));
+    const sideName = (names, k) => (names.length > 1 ? t(k === 'a' ? 'Side one' : 'Side two') : names[0]);
     st.auto = false;
     F.syncAutoBtn();
     F.show('spin');
     FW.Audio.setScene('battle');
-    F.renderSteps(2, 0);
     $('#sheetTitle').textContent = 'Versus';
-    const side = (L, n) => {
+    const card = (L, n, out) => {
       const c = FW.compute(L);
       return (
-        '<div class="fx-card"><h3>' +
+        '<div class="fx-card' +
+        (out ? ' vs-out' : '') +
+        '"><h3>' +
         H.esc(n) +
+        (out ? ' · ' + H.esc(t('out')) : '') +
         '</h3><p class="perk">' +
         H.esc((L.has('sub') ? L.pickName('sub') + ' ' : '') + L.raceName()) +
         ' · ' +
@@ -333,23 +430,42 @@
         ')</p></div>'
       );
     };
-    $('#sheetBody').innerHTML = side(A, an) + side(B, bn);
-    try {
+    const log = [];
+    const sheet = (score, team) => {
+      $('#sheetBody').innerHTML =
+        (format === 'one'
+          ? ''
+          : '<p class="vs-score"><b>' +
+            H.esc(sideName(an, 'a')) +
+            ' ' +
+            score[0] +
+            ' : ' +
+            score[1] +
+            ' ' +
+            H.esc(sideName(bn, 'b')) +
+            '</b></p>') +
+        A.map((L, i) => card(L, an[i], team && i < team.a)).join('') +
+        B.map((L, i) => card(L, bn[i], team && i < team.b)).join('') +
+        (log.length ? '<ol class="vs-log">' + log.map(x => '<li>' + H.esc(x) + '</li>').join('') + '</ol>' : '');
+    };
+    // one bout between A[i] and B[j]: an arena, then the fight wheel; returns 'a', 'b' or 'draw'
+    async function bout(i, j, label) {
       const ai = await F.playStep({
         emoji: '🏟️',
-        title: 'Where do they fight?',
+        title: (label ? label + ': ' : '') + t('Where do they fight?'),
         entries: FW.ARENAS.map(a => ({ name: a.name, w: a.w, dsl: '' })),
         mode: 'cat',
         hue: 200,
       });
       const arena = FW.ARENAS[ai],
-        o = FW.versusOdds(A, B, arena);
-      F.renderSteps(2, 1);
+        o = FW.versusOdds(A[i], B[j], arena),
+        x = an[i],
+        y = bn[j];
       const rep = {
         hero: o.ra.hero,
         opp: Math.round(o.rb.hero * 10) / 10,
         adj: o.ra.adj.concat(
-          o.rb.adj.map(x => ({ label: bn + ': ' + x.label, d: -x.d, kind: x.d >= 0 ? 'debuff' : 'buff' }))
+          o.rb.adj.map(z => ({ label: y + ': ' + z.label, d: -z.d, kind: z.d >= 0 ? 'debuff' : 'buff' }))
         ),
         pWin: o.pA,
         pDraw: o.pDraw,
@@ -357,22 +473,87 @@
       };
       const wi = await F.playStep({
         emoji: '⚔️',
-        title: an + ' vs ' + bn,
+        title: (label ? label + ': ' : '') + x + ' vs ' + y,
         entries: [
-          { name: an + ' wins', w: o.pA, dsl: '', color: '#2f9e57', colorLight: 38 },
+          { name: x + ' wins', w: o.pA, dsl: '', color: '#2f9e57', colorLight: 38 },
           { name: 'Draw', w: o.pDraw, dsl: '', color: '#777', colorLight: 46 },
-          { name: bn + ' wins', w: o.pB, dsl: '', color: '#b8383b', colorLight: 40 },
+          { name: y + ' wins', w: o.pB, dsl: '', color: '#b8383b', colorLight: 40 },
         ],
         mode: 'cat',
         hue: 0,
         hint: 'Slice sizes are the real odds',
-        preFx: H.battle(an, bn, arena.name, rep),
-        onResult: () => ({ fx: H.battle(an, bn, arena.name, rep) }),
+        preFx: H.battle(x, y, arena.name, rep),
+        onResult: () => ({ fx: H.battle(x, y, arena.name, rep) }),
       });
-      FW.Audio.reveal(wi !== 1);
-      if (wi !== 1) FW.Audio.sting('victory');
-      F.setResult(['🏆 ' + an + ' wins', 'A draw', '🏆 ' + bn + ' wins'][wi], { pop: true });
-      $('#resultSub').textContent = 'At the ' + arena.name + '.';
+      const res = ['a', 'draw', 'b'][wi];
+      log.push(
+        (label ? label + ': ' : '') +
+          (res === 'draw'
+            ? x + ' ' + t('and') + ' ' + y + ': ' + t('a draw')
+            : (res === 'a' ? x : y) + ' ' + t('wins')) +
+          ' · ' +
+          arena.name
+      );
+      return { res, arena: arena.name };
+    }
+    try {
+      let winner = null,
+        score = [0, 0],
+        lastArena = '';
+      if (format === 'one') {
+        sheet(score);
+        F.renderSteps(2, 0);
+        const r = await bout(0, 0, '');
+        lastArena = r.arena;
+        winner = r.res;
+      } else if (format === 'bo3') {
+        let s = { a: 0, b: 0, fights: 0, done: false };
+        while (!s.done) {
+          sheet([s.a, s.b]);
+          F.renderSteps(Math.min(5, s.fights + 1), s.fights);
+          const r = await bout(0, 0, t('Fight') + ' ' + (s.fights + 1));
+          lastArena = r.arena;
+          s = FW.vsBestOf(s, r.res);
+        }
+        score = [s.a, s.b];
+        winner = s.winner;
+      } else {
+        let tm = { a: 0, b: 0, n: 3, bouts: 0, done: false };
+        while (!tm.done) {
+          sheet([3 - tm.a, 3 - tm.b], tm);
+          F.renderSteps(Math.min(6, tm.bouts + 1), tm.bouts);
+          const r = await bout(tm.a, tm.b, t('Bout') + ' ' + (tm.bouts + 1));
+          lastArena = r.arena;
+          tm = FW.vsTeamStep(tm, r.res);
+        }
+        score = [3 - tm.a, 3 - tm.b];
+        winner = tm.winner;
+        sheet(score, tm);
+      }
+      if (format !== 'team') sheet(score);
+      const wName = winner === 'a' ? sideName(an, 'a') : winner === 'b' ? sideName(bn, 'b') : '';
+      FW.Audio.reveal(!!wName);
+      if (wName) FW.Audio.sting('victory');
+      F.setResult(wName ? '🏆 ' + wName + ' ' + t('wins') : t('A draw'), { pop: true });
+      $('#resultSub').textContent =
+        format === 'one'
+          ? t('At the') + ' ' + lastArena + '.'
+          : (format === 'team' ? t('Fighters left') : t('Fights won')) + ': ' + score[0] + ' : ' + score[1];
+      // a result card to post (13)
+      const result = {
+        format,
+        a: an,
+        b: bn,
+        winner,
+        score,
+        arena: lastArena,
+        title: format === 'team' ? t('Team fight') : format === 'bo3' ? t('Best of three') : t('Versus'),
+      };
+      const fx = document.createElement('div');
+      fx.className = 'cta';
+      fx.innerHTML = '<button class="btn small" id="vsCard">' + H.esc(t('Save a result card')) + '</button>';
+      $('#effects').appendChild(fx);
+      $('#vsCard').onclick = () => saveResultCard(result);
       $('#btnSpin').hidden = true;
       F.setControls('result');
       $('#btnRespin').hidden = true;
@@ -382,6 +563,63 @@
     } catch (e) {
       if (e !== F.ABORT) throw e;
     }
+  }
+  // a 1200 × 630 picture of the result, the size social sites use for previews
+  function saveResultCard(r) {
+    const cv = document.createElement('canvas');
+    cv.width = 1200;
+    cv.height = 630;
+    const c = cv.getContext('2d'),
+      cs = getComputedStyle(document.documentElement),
+      accent = (cs.getPropertyValue('--accent') || '#e0a040').trim(),
+      font = (cs.getPropertyValue('--font-display') || 'serif').trim();
+    const g = c.createLinearGradient(0, 0, 0, 630);
+    g.addColorStop(0, '#16101a');
+    g.addColorStop(1, '#060406');
+    c.fillStyle = g;
+    c.fillRect(0, 0, 1200, 630);
+    c.strokeStyle = accent;
+    c.lineWidth = 4;
+    c.strokeRect(24, 24, 1152, 582);
+    c.textAlign = 'center';
+    c.fillStyle = accent;
+    c.font = '700 34px ' + font;
+    c.fillText(r.title.toUpperCase(), 600, 96);
+    const col = (names, x, won) => {
+      c.fillStyle = won ? '#ffe9b8' : '#c9c0d0';
+      names.forEach((n, i) => {
+        c.font = (i === 0 && names.length === 1 ? '800 52px ' : '700 40px ') + font;
+        let s = n;
+        while (c.measureText(s).width > 470 && s.length > 4) s = s.slice(0, -2);
+        c.fillText(s === n ? s : s + '…', x, 250 + i * 64 - (names.length - 1) * 32);
+      });
+    };
+    col(r.a, 320, r.winner === 'a');
+    col(r.b, 880, r.winner === 'b');
+    c.fillStyle = accent;
+    c.font = '800 64px ' + font;
+    c.fillText(r.format === 'one' ? 'VS' : r.score[0] + ' : ' + r.score[1], 600, 270);
+    c.fillStyle = '#fff';
+    c.font = '700 46px ' + font;
+    const w = r.winner === 'a' ? r.a : r.winner === 'b' ? r.b : null;
+    c.fillText(
+      w ? '🏆 ' + (w.length > 1 ? t(r.winner === 'a' ? 'Side one' : 'Side two') : w[0]) + ' ' + t('wins') : t('A draw'),
+      600,
+      470
+    );
+    c.fillStyle = '#9a8fa6';
+    c.font = '500 28px ' + font;
+    c.fillText((r.arena ? r.arena + ' · ' : '') + 'Destiny Unbound', 600, 560);
+    cv.toBlob(b => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(b);
+      a.download = 'destiny-unbound_versus.png';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 8000);
+      App.toast(t('Result card saved'));
+    }, 'image/png');
   }
 
   /* ================= vertical video recorder ================= */

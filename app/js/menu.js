@@ -310,6 +310,82 @@
     b.onclick = App.showTitle;
     homeHead.prepend(b);
   }
+  /* ---------------- the pause menu (36): Esc, the Back key or B/Circle while the wheels turn ----------------
+     Auto stops while it is open and comes back when it closes. */
+  let pausedAuto = false;
+  App.pauseModal = function () {
+    const st = App.state,
+      story = !!st.legend && !!st.legend.saga && !st.legend.saga.end && !$('#btnStoryExit').hidden;
+    pausedAuto = !!st.auto;
+    if (pausedAuto) $('#btnAutoToggle').click(); // Auto off while paused
+    const b = (id, label, cls) =>
+      '<button class="btn' + (cls ? ' ' + cls : '') + '" data-pause="' + id + '">' + H.esc(t(label)) + '</button>';
+    const speed = { normal: 'Normal', fast: 'Fast', slow: 'Slow' }[st.speed] || 'Normal';
+    App.openModal(
+      '<h2>' +
+        H.esc(t('Paused')) +
+        '</h2><div class="pause-menu">' +
+        b('resume', 'Resume', 'primary') +
+        b('speed', t('Spin speed') + ': ' + t(speed)) +
+        b('auto', pausedAuto ? 'Auto: on' : 'Auto: off') +
+        b('options', 'Options') +
+        (story ? b('story', 'Pause the story (back to the card)') : '') +
+        b('title', 'Main menu', 'ghost') +
+        '</div><p class="legend-key">' +
+        H.esc(t('Auto waits while this is open.')) +
+        '</p>'
+    );
+    const box = document.querySelector('#modalRoot .pause-menu');
+    box.addEventListener('click', e => {
+      const x = e.target.closest('[data-pause]');
+      if (!x) return;
+      const a = x.dataset.pause;
+      if (a === 'resume') return App.closeModal();
+      if (a === 'speed') {
+        $('#btnSpeed').click();
+        x.textContent = t('Spin speed') + ': ' + t({ normal: 'Normal', fast: 'Fast', slow: 'Slow' }[st.speed]);
+        return;
+      }
+      if (a === 'auto') {
+        pausedAuto = !pausedAuto;
+        x.textContent = t(pausedAuto ? 'Auto: on' : 'Auto: off');
+        return;
+      }
+      if (a === 'options') {
+        App.closeModal();
+        return FW.Options && FW.Options.open();
+      }
+      if (a === 'story') {
+        pausedAuto = false;
+        App.closeModal();
+        return $('#btnStoryExit').click();
+      }
+      if (a === 'title') {
+        pausedAuto = false;
+        return App.showTitle();
+      }
+    });
+    setTimeout(() => {
+      const r = box.querySelector('[data-pause="resume"]');
+      if (r) r.focus({ preventScroll: true });
+    }, 10);
+  };
+  const prevClosed = App.hooks.modalClosed;
+  App.hooks.modalClosed = () => {
+    if (prevClosed) prevClosed();
+    if (!document.querySelector('#modalRoot .pause-menu')) return;
+    // closing the pause menu, however it closes: Auto comes back if it was on
+    if (pausedAuto && !App.state.auto) setTimeout(() => $('#btnAutoToggle').click(), 0);
+    pausedAuto = false;
+  };
+  App.isPaused = () => !!document.querySelector('#modalRoot .pause-menu');
+  if ($('#btnPause')) $('#btnPause').onclick = () => App.pauseModal();
+  // the pause button sits in the top bar and shows only while the wheels are up
+  const prevPauseShown = App.hooks.screenShown;
+  App.hooks.screenShown = name => {
+    if (prevPauseShown) prevPauseShown(name);
+    if ($('#btnPause')) $('#btnPause').hidden = name !== 'spin';
+  };
   const prevTheme = App.setTheme;
   App.setTheme = function (n) {
     prevTheme(n);
@@ -381,6 +457,7 @@
       if (modalOpen()) return App.closeModal();
       if (FW.Options && FW.Options.isOpen()) return FW.Options.close();
       if (App.state.screen === 'home' || App.state.screen === 'card') return App.showTitle();
+      if (App.state.screen === 'spin' && App.pauseModal) return App.pauseModal();
       return;
     }
     if (a === 'options') {
@@ -451,6 +528,10 @@
         return FW.Options.close();
       }
       if (App.state.screen === 'home' || App.state.screen === 'card') return App.showTitle();
+      if (App.state.screen === 'spin' && App.pauseModal) {
+        e.preventDefault();
+        return App.pauseModal();
+      }
     }
     if (modalOpen()) return;
     const low = k.length === 1 ? k.toLowerCase() : k;

@@ -33,7 +33,7 @@
     wantTheme: saved.theme || '',
     luck: FW.LUCK.some(l => l.id === saved.luck) ? saved.luck : 'heroic',
     sound: saved.sound !== false,
-    speed: saved.speed === 'fast' ? 'fast' : 'normal',
+    speed: ['fast', 'slow'].indexOf(saved.speed) >= 0 ? saved.speed : 'normal',
     spinDir: saved.spinDir === 'cw' ? 'cw' : 'ccw',
     auto: false,
     legend: null,
@@ -398,10 +398,16 @@
         if (crowded) wheelStrip(cfg.entries, i, final);
       };
       wheel.onTick = (i, sp) => FW.Audio.tick(sp);
+      // a charged spin (137) turns more and a little longer; where it lands was already decided above
+      const ch = state.charge || 0;
+      state.charge = 0;
+      wheel.charge(null);
       await wheel.spinTo(idx, {
-        duration: rare && dur > 1000 ? Math.round(dur * 1.4) : dur,
+        duration: Math.round((rare && dur > 1000 ? dur * 1.4 : dur) * (1 + 0.3 * ch)),
         rng: state.rng,
         rare,
+        turns: ch ? 6 + Math.round(ch * 6) : undefined,
+        windup: ch ? false : undefined,
       });
       chk();
       const e = cfg.entries[idx];
@@ -647,7 +653,8 @@
   const cardStyle = () => (store.get('fw.cardStyle', 'arch') === 'full' ? 'full' : 'arch');
   function drawCardNow() {
     const o = { theme: state.theme, image: state.image || FW.defaultPortrait(state.legend, () => drawCardNow()) };
-    FW.drawCard($('#cardCanvas'), state.legend, Object.assign({ side: 'front', style: cardStyle() }, o));
+    const honour = window.FWApp && window.FWApp.honour ? window.FWApp.honour() : ''; // unlocks.js
+    FW.drawCard($('#cardCanvas'), state.legend, Object.assign({ side: 'front', style: cardStyle(), honour }, o));
     const back = window.FWApp && window.FWApp.cardBack ? window.FWApp.cardBack() : 'classic'; // hall.js
     FW.drawCard($('#cardBack'), state.legend, Object.assign({ side: 'back', back }, o));
     $('#btnCardStyle').textContent = tr(cardStyle() === 'full' ? 'Card: Full art' : 'Card: Arch');
@@ -1262,13 +1269,62 @@
       $('#brand').click();
     }
   });
-  $('#btnSpin').onclick = () => fire('spin');
+  $('#btnSpin').onclick = () => {
+    if (charged) return (charged = false); // a charged spin already started on release
+    fire('spin');
+  };
+  /* charge the spin (137): hold Spin (or the wheel) to wind it up, let go to spin. It looks better; the result is
+     random all the same. A quick click is a normal spin. */
+  let chargeT = 0,
+    chargeRaf = 0,
+    charged = false;
+  const CHARGE_MS = 1200;
+  FW.chargeLevel = held => Math.max(0, Math.min(1, (held - 200) / CHARGE_MS));
+  function chargeStart(e) {
+    if (state.mode !== 'ready' || !state.wheel || state.wheel.spinning || (e.button != null && e.button !== 0)) return;
+    chargeT = performance.now();
+    charged = false;
+    const btn = $('#btnSpin');
+    const step = () => {
+      const p = FW.chargeLevel(performance.now() - chargeT);
+      if (p > 0) {
+        if (!FW.motion || FW.motion() === 'full') state.wheel.charge(p);
+        btn.classList.add('charging');
+        btn.style.setProperty('--charge', String(p));
+      }
+      chargeRaf = requestAnimationFrame(step);
+    };
+    chargeRaf = requestAnimationFrame(step);
+  }
+  function chargeEnd() {
+    if (!chargeT) return;
+    cancelAnimationFrame(chargeRaf);
+    const p = FW.chargeLevel(performance.now() - chargeT);
+    chargeT = 0;
+    const btn = $('#btnSpin');
+    btn.classList.remove('charging');
+    btn.style.removeProperty('--charge');
+    if (p > 0 && state.mode === 'ready') {
+      state.charge = p;
+      charged = true;
+      fire('spin');
+      setTimeout(() => (charged = false), 400);
+    } else if (state.wheel) state.wheel.charge(null);
+  }
+  ['#btnSpin', '#wheel'].forEach(sel => {
+    const el = $(sel);
+    el.addEventListener('pointerdown', chargeStart);
+    el.addEventListener('pointerup', chargeEnd);
+    el.addEventListener('pointerleave', chargeEnd);
+    el.addEventListener('pointercancel', chargeEnd);
+  });
   $('#btnNext').onclick = () => fire('next');
   $('#btnRespin').onclick = () => {
     if (tokensLeft() > 0) fire('respin');
     else toast('No Fate Tokens left');
   };
   $('#wheel').addEventListener('click', () => {
+    if (charged) return (charged = false);
     if (state.wheel && state.wheel.spinning) state.wheel.skip();
     else if (state.mode === 'ready') fire('spin');
   });
@@ -1281,7 +1337,8 @@
     }
   };
   $('#btnSpeed').onclick = () => {
-    state.speed = state.speed === 'normal' ? 'fast' : 'normal';
+    // normal, fast, slow (156: slow lets a saga be watched and read)
+    state.speed = { normal: 'fast', fast: 'slow', slow: 'normal' }[state.speed] || 'normal';
     syncSpeedBtn();
     persist();
   };

@@ -63,6 +63,7 @@ const FILES = [
   'js/packs.js',
   'js/achievements.js',
   'js/hall.js',
+  'js/unlocks.js',
   'js/codex.js',
   'js/boss.js',
   'js/mods.js',

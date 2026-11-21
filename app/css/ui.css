@@ -541,3 +541,119 @@ body.easy-read :is(p,li,dd,.legend-key,.o-note){line-height:1.65}
 @media (max-width:520px){.boss-card{flex-direction:column;text-align:center}.boss-art{width:140px;height:140px}}
 .boss-abilities{list-style:none;margin:4px 0 0;padding:0;display:grid;gap:2px;font-size:12.5px}
 .boss-abilities b{font-size:12.5px;color:var(--fg)}
+
+/* the pause menu (36) */
+.pause-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 360px;
+  margin: 12px auto 4px;
+}
+
+/* settings search (35) */
+.o-searchbox {
+  position: relative;
+  margin: 8px 0 4px;
+}
+.o-searchbox input {
+  width: 100%;
+  box-sizing: border-box;
+}
+.o-found {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 6px;
+  padding: 6px;
+  border: 1px solid var(--line, rgba(255, 255, 255, 0.2));
+  border-radius: 8px;
+  background: var(--panel, rgba(0, 0, 0, 0.6));
+}
+.o-hitbtn {
+  text-align: left;
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.o-hitbtn:hover,
+.o-hitbtn:focus-visible {
+  background: rgba(255, 255, 255, 0.08);
+}
+.o-hitbtn small {
+  opacity: 0.75;
+}
+.o-none {
+  margin: 4px 8px;
+  opacity: 0.8;
+}
+.o-row.o-hit {
+  outline: 2px solid var(--accent, #e0a040);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+/* charge the spin (137): the Spin button fills while held */
+#btnSpin.charging {
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.28) calc(var(--charge, 0) * 100%),
+    transparent calc(var(--charge, 0) * 100%)
+  );
+}
+
+/* unlocks (22) */
+.unlock-list {
+  list-style: none;
+  padding: 0;
+  margin: 6px 0 14px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 6px;
+}
+.unlock-list li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  opacity: 0.75;
+}
+.unlock-list li.got {
+  opacity: 1;
+  border-color: var(--accent);
+}
+.unlock-list span {
+  font-size: 0.85em;
+  color: var(--muted);
+}
+
+/* versus formats (13, 14) */
+.vs-format {
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+.vs-side select,
+.vs-team select {
+  width: 100%;
+  margin-top: 4px;
+}
+.fx-card.vs-out {
+  opacity: 0.45;
+}
+.vs-score {
+  text-align: center;
+  font-size: 1.2em;
+}
+.vs-log {
+  margin: 8px 0 0;
+  padding-left: 20px;
+  font-size: 0.9em;
+  color: var(--muted);
+}
+

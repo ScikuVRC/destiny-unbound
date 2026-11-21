@@ -6,11 +6,20 @@
   const FW = (g.FW = g.FW || {});
 
   const C = (FW.Codex = {
-    empty: () => ({ race: {}, world: {}, end: {}, foe: {}, secret: {} }),
+    empty: () => ({ race: {}, world: {}, end: {}, foe: {}, secret: {}, cls: {}, mount: {}, chapter: {} }),
     clean(c) {
       const o = c && typeof c === 'object' ? c : {},
         obj = x => (x && typeof x === 'object' ? x : {});
-      return { race: obj(o.race), world: obj(o.world), end: obj(o.end), foe: obj(o.foe), secret: obj(o.secret) };
+      return {
+        race: obj(o.race),
+        world: obj(o.world),
+        end: obj(o.end),
+        foe: obj(o.foe),
+        secret: obj(o.secret),
+        cls: obj(o.cls),
+        mount: obj(o.mount),
+        chapter: obj(o.chapter),
+      };
     },
     // a hero was made (or a saga ended): their race, and their ending once there is one
     noteHero(c, L) {
@@ -19,6 +28,17 @@
       if (race && !c.race[race]) n += c.race[race] = 1;
       const end = L && L.saga && L.saga.end;
       if (end && !c.end[end]) n += c.end[end] = 1;
+      // the collection book (23): classes, mounts and the chapters a saga went through
+      const pick = id => (L && L.has && L.has(id) && !(L.isNone && L.isNone(id)) ? L.pickName(id) : '');
+      const cls = pick('cls'),
+        mount = pick('mount');
+      if (cls && !c.cls[cls]) n += c.cls[cls] = 1;
+      if (mount && !c.mount[mount]) n += c.mount[mount] = 1;
+      const s = L && L.saga;
+      if (s)
+        (s.used || []).concat(Object.keys((s.flags && s.flags.reps) || {})).forEach(id => {
+          if (!c.chapter[id]) n += c.chapter[id] = 1;
+        });
       return n; // how many entries are new
     },
     // a fight against a named foe: met, and won / drawn / lost
@@ -71,6 +91,13 @@
         );
       // secret chapters: found ones show their name, the rest only who they are for
       const secrets = (S.SECRETS || []).map(ch => ({ name: ch.name, id: ch.id, known: !!c.secret[ch.id], e: ch }));
+      const names = id =>
+        (FW.LISTS && FW.LISTS[id] ? FW.LISTS[id]() : []).filter(e => e && e.name && !/^No /.test(e.name));
+      const classes = names('cls').map(e => ({ name: e.name, known: !!c.cls[e.name], e }));
+      const mounts = names('mount').map(e => ({ name: e.name, known: !!c.mount[e.name], e }));
+      const chapters = (S.CHAPTERS || [])
+        .filter(ch => !ch.secret)
+        .map(ch => ({ name: ch.name, id: ch.id, known: !!c.chapter[ch.id], e: ch }));
       const count = list => ({ known: list.filter(x => x.known).length, total: list.length });
       const allFoes = foes.reduce((a, gp) => a.concat(gp.items), []);
       return {
@@ -78,6 +105,9 @@
         worlds: Object.assign({ items: worlds }, count(worlds)),
         endings: Object.assign({ items: ends }, count(ends)),
         secrets: Object.assign({ items: secrets }, count(secrets)),
+        classes: Object.assign({ items: classes }, count(classes)),
+        mounts: Object.assign({ items: mounts }, count(mounts)),
+        chapters: Object.assign({ items: chapters }, count(chapters)),
         foes: Object.assign({ groups: foes }, count(allFoes)),
       };
     },
@@ -193,6 +223,23 @@
       '</span></div>'
     );
   }
+  // the collection book (23): a class or mount you have rolled, and the chapters you have lived through
+  function entryCard(x) {
+    if (!x.known) return '<div class="codex-item unknown"><b>???</b></div>';
+    return (
+      '<div class="codex-item"><b>' +
+      H.esc(t(x.name)) +
+      '</b>' +
+      (x.e.perk ? '<i>' + H.esc(t(x.e.perk)) + '</i>' : '') +
+      '<div class="mods">' +
+      chips(x.e.dsl) +
+      '</div></div>'
+    );
+  }
+  function chapterCard(x) {
+    if (!x.known) return '<div class="codex-item unknown"><b>???</b></div>';
+    return '<div class="codex-item"><b>' + H.esc((x.e.emoji || '') + ' ' + t(x.name)) + '</b></div>';
+  }
   // an unfound secret only hints at who can find it
   function secretCard(x) {
     if (!x.known) return '<div class="codex-item unknown"><b>???</b><i>' + H.esc(t(x.e.fits || '')) + '</i></div>';
@@ -227,12 +274,13 @@
     '%"></i></div>';
   App.codexModal = function (tab) {
     const s = C.sections(book),
-      which = tab === 'bestiary' ? 'bestiary' : 'codex';
+      which = tab === 'bestiary' || tab === 'collection' ? tab : 'codex';
     const tabs =
       '<div class="codex-tabs" role="tablist">' +
       [
         ['codex', 'Codex'],
         ['bestiary', 'Bestiary'],
+        ['collection', 'Collection'],
       ]
         .map(
           ([id, name]) =>
@@ -266,24 +314,37 @@
           '<div class="codex-grid">' +
           s.secrets.items.map(secretCard).join('') +
           '</div>'
-        : head('Bestiary', s.foes) +
-          s.foes.groups
-            .map(
-              gp =>
-                '<h4 class="codex-group">' +
-                H.esc(t(gp.group)) +
-                ' <small>' +
-                gp.items.filter(x => x.known).length +
-                ' / ' +
-                gp.items.length +
-                '</small></h4><div class="codex-grid">' +
-                gp.items.map(foeCard).join('') +
-                '</div>'
-            )
-            .join('');
+        : which === 'collection'
+          ? head('Classes', s.classes) +
+            '<div class="codex-grid">' +
+            s.classes.items.map(entryCard).join('') +
+            '</div>' +
+            head('Mounts', s.mounts) +
+            '<div class="codex-grid">' +
+            s.mounts.items.map(entryCard).join('') +
+            '</div>' +
+            head('Chapters', s.chapters) +
+            '<div class="codex-grid">' +
+            s.chapters.items.map(chapterCard).join('') +
+            '</div>'
+          : head('Bestiary', s.foes) +
+            s.foes.groups
+              .map(
+                gp =>
+                  '<h4 class="codex-group">' +
+                  H.esc(t(gp.group)) +
+                  ' <small>' +
+                  gp.items.filter(x => x.known).length +
+                  ' / ' +
+                  gp.items.length +
+                  '</small></h4><div class="codex-grid">' +
+                  gp.items.map(foeCard).join('') +
+                  '</div>'
+              )
+              .join('');
     App.openModal(
       '<button class="btn small ghost close">Close ✕</button><h2>' +
-        H.esc(t(which === 'codex' ? 'Codex' : 'Bestiary')) +
+        H.esc(t({ codex: 'Codex', bestiary: 'Bestiary', collection: 'Collection' }[which])) +
         '</h2>' +
         tabs +
         '<p class="legend-key">' +
@@ -291,7 +352,9 @@
           t(
             which === 'codex'
               ? 'Races fill in when you make a hero of that race, worlds when you fight there, endings when a saga ends that way.'
-              : 'Foes fill in when you fight them, in the arena or in a saga, with your record against each.'
+              : which === 'collection'
+                ? 'Classes and mounts fill in when a hero rolls them, chapters when a saga goes through them.'
+                : 'Foes fill in when you fight them, in the arena or in a saga, with your record against each.'
           )
         ) +
         '</p>' +

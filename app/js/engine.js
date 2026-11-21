@@ -501,6 +501,35 @@
     pa = Math.min(0.96, Math.max(0.02, pa));
     return { ra, rb, edge, pA: pa, pDraw: draw, pB: 1 - pa - draw };
   };
+  /* versus formats (13, 14). Best of three: first to two wins; a draw does not count, and after five fights the
+     one ahead wins (level: a draw). Team fight, winner stays on: the loser of a bout is out and their next fighter
+     steps in; a draw knocks both out. a / b are how many of each side are out. */
+  FW.VS_MAX_FIGHTS = 5;
+  FW.vsBestOf = function (s, res) {
+    const n = { a: s.a + (res === 'a' ? 1 : 0), b: s.b + (res === 'b' ? 1 : 0), fights: s.fights + 1 };
+    n.done = n.a >= 2 || n.b >= 2 || n.fights >= FW.VS_MAX_FIGHTS;
+    n.winner = !n.done ? null : n.a > n.b ? 'a' : n.b > n.a ? 'b' : 'draw';
+    return n;
+  };
+  FW.vsTeamStep = function (tm, res) {
+    const n = { a: tm.a + (res !== 'a' ? 1 : 0), b: tm.b + (res !== 'b' ? 1 : 0), n: tm.n, bouts: tm.bouts + 1 };
+    n.done = n.a >= n.n || n.b >= n.n;
+    n.winner = !n.done ? null : n.a >= n.n && n.b >= n.n ? 'draw' : n.a >= n.n ? 'b' : 'a';
+    return n;
+  };
+  // a challenge to send a friend: the hero's Legend Code, which Versus reads with "Paste a Legend Code"
+  FW.vsChallenge = (name, rating, code) =>
+    'Can you beat ' +
+    name +
+    ' (power ' +
+    Math.round(rating) +
+    ')? Open Destiny Unbound, go to Versus, choose "Paste a Legend Code" and paste this:\n' +
+    code;
+  // the Legend Code inside any pasted text (a challenge message, a chat line); the text itself if there is none
+  FW.codeIn = text => {
+    const m = String(text || '').match(/FW1\.\S+/);
+    return m ? m[0] : String(text || '').trim();
+  };
   /* codes made before the ladders grew store tier numbers from the old lists: move each to the same tier name */
   FW.upgradeLadderPicks = function (picks) {
     if (!FW.LADDER_V1) return picks;

@@ -65,7 +65,8 @@
 
   /* what the rest of the game asks */
   FW.motion = () => (P.reduceMotion && P.anim === 'full' ? 'reduced' : P.anim);
-  FW.spinDuration = speed => ({ off: 250, reduced: 1200 })[FW.motion()] || (speed === 'fast' ? 2300 : 4600);
+  FW.spinDuration = speed =>
+    ({ off: 250, reduced: 1200 })[FW.motion()] || (speed === 'fast' ? 2300 : speed === 'slow' ? 7000 : 4600);
   FW.frameGap = () => (P.fps > 0 ? 1000 / P.fps - 1 : 0);
   FW.maxDpr = () => ({ low: 1, medium: 1.5 })[P.quality] || 3;
   FW.glowOn = () => P.glow !== false;

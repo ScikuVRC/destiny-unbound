@@ -265,6 +265,70 @@
       desc: 'Die a hero, saving others.',
       test: L => !!(L.saga && L.saga.end === 'martyr'),
     },
+    /* hidden achievements (147): the list shows only a riddle until they are unlocked */
+    {
+      id: 'secret',
+      icon: '🗝️',
+      name: 'Off the Map',
+      desc: 'Find a secret chapter.',
+      hidden: true,
+      riddle: 'Some chapters only open for the right hero.',
+      test: L => !!(L.saga && L.saga.flags && (L.saga.flags.secrets || []).length),
+    },
+    {
+      id: 'lichPupil',
+      icon: '💀',
+      name: 'Beyond the Grave',
+      desc: 'Meet the Lich King.',
+      hidden: true,
+      riddle: 'Some teachers wait on the far side of death.',
+      test: L => !!(L.saga && L.saga.flags && (L.saga.flags.secrets || []).indexOf('lichKing') >= 0),
+    },
+    {
+      id: 'saint',
+      icon: '😇',
+      name: 'Saintly',
+      desc: 'Reach the kindest alignment there is.',
+      hidden: true,
+      riddle: 'Be kind. Then be kinder.',
+      test: L => !!(L.saga && S && S.align(L.saga) >= S.ALIGN_MAX),
+    },
+    {
+      id: 'wicked',
+      icon: '😈',
+      name: 'Wicked to the Core',
+      desc: 'Reach the darkest alignment there is.',
+      hidden: true,
+      riddle: 'No mercy. Not once.',
+      test: L => !!(L.saga && S && S.align(L.saga) <= -S.ALIGN_MAX),
+    },
+    {
+      id: 'guildhead',
+      icon: '🏛️',
+      name: 'Head of the Table',
+      desc: 'Become the head of a guild.',
+      hidden: true,
+      riddle: 'Start at the bottom of the hall. End at the head of the table.',
+      test: L => !!(L.saga && S && S.guildRank(L.saga) >= 5),
+    },
+    {
+      id: 'ancestor',
+      icon: '👻',
+      name: 'The Blood Remembers',
+      desc: 'Be saved from death by an ancestor.',
+      hidden: true,
+      riddle: 'Your family is never quite gone.',
+      test: L => !!(L.saga && L.saga.flags && L.saga.flags.ancestor),
+    },
+    {
+      id: 'barkeep',
+      icon: '🍺',
+      name: 'Last Orders',
+      desc: 'Retire and run the best tavern in the land.',
+      hidden: true,
+      riddle: 'Every legend ends up behind a bar.',
+      test: L => !!(L.saga && L.saga.flags && L.saga.flags.after === 'The best tavern in the land'),
+    },
   ];
   const BY_ID = {};
   FW.ACHIEVEMENTS.forEach(a => (BY_ID[a.id] = a));
@@ -342,6 +406,7 @@
   }
   App.achievementsModal = function () {
     const have = got(),
+      secret = a => a.hidden && !have[a.id],
       n = Object.keys(have).filter(k => BY_ID[k]).length,
       pct = Math.round((n / FW.ACHIEVEMENTS.length) * 100);
     const order = FW.ACHIEVEMENTS.slice().sort(
@@ -368,13 +433,15 @@
               '<div class="ach' +
               (have[a.id] ? ' got' : '') +
               '" aria-label="' +
-              H.esc(tr(a.name) + ', ' + tr(have[a.id] ? 'unlocked' : 'locked')) +
+              H.esc(
+                (secret(a) ? tr('Hidden achievement') : tr(a.name)) + ', ' + tr(have[a.id] ? 'unlocked' : 'locked')
+              ) +
               '"><span aria-hidden="true">' +
-              FW.badge(a.id, a.icon) +
+              (secret(a) ? '<span class="badge-emoji">❔</span>' : FW.badge(a.id, a.icon)) +
               '</span><div><b>' +
-              H.esc(tr(a.name)) +
+              H.esc(secret(a) ? '???' : tr(a.name)) +
               '</b><small>' +
-              H.esc(tr(a.desc)) +
+              H.esc(secret(a) ? tr('Hidden.') + ' ' + tr(a.riddle) : tr(a.desc)) +
               (a.reward ? ' ' + H.esc(tr('Reward:')) + ' ' + H.esc(tr(a.reward.entry.name)) + '.' : '') +
               '</small>' +
               (have[a.id]

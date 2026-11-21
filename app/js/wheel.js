@@ -968,6 +968,18 @@
     skip() {
       this._skip = true;
     }
+    /* charge the spin (137): while the button is held the wheel draws back, up to about a third of a turn.
+       p is 0..1; charge(null) lets go (the spin starts from where it was drawn back to). */
+    charge(p) {
+      if (p == null) {
+        this._chargeBase = null;
+        return;
+      }
+      if (this._chargeBase == null) this._chargeBase = this.rot;
+      const dir = this.dir >= 0 ? 1 : -1;
+      this.rot = this._chargeBase - dir * 0.55 * Math.max(0, Math.min(1, p));
+      this.draw();
+    }
     /* animate to slice idx; resolves with idx when stopped */
     spinTo(idx, opts) {
       opts = opts || {};
