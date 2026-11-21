@@ -47,6 +47,7 @@ in [docs/release-plan.md](docs/release-plan.md).
 
 ## Recently done
 
+- 0.3.0-alpha.6: Versus formats, titles to earn, pause menu.
 - 0.3.0-alpha.5: Better saga feedback for testers.
 - 0.3.0-alpha.4: Secret chapters, alignment, world events, guild ranks.
 - 0.3.0-alpha.3: World Boss, mounts, scars, fame and infamy, after-the-ending chapters.

@@ -4,6 +4,27 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
+## 0.3.0-alpha.6 (2026-11-21)
+
+### New
+
+- **Versus, three ways.** One fight, best of three, or a team fight: three against three, winner stays on. Copy a
+  challenge sends a friend your hero's Legend Code (Versus reads it straight out of the message), and you can save a
+  result card to post.
+- **Titles and card backs to earn.** Achievements and arena championships unlock honour titles that show on the card
+  under your hero's name, and four new card backs. Beat every foe of an arena world to become its Champion. Pick
+  them in the card's Style menu; All unlocks shows everything and how to get it.
+- **Hidden achievements.** Seven secret achievements that show only a riddle until you find them.
+- **Collection.** A new page in the Codex for every class, mount and chapter you have come across, with the gaps.
+- **Pause menu.** Esc, the Back key, B/Circle or the new pause button while the wheels are up: resume, spin speed,
+  Auto, Options, pause the story or go to the main menu.
+- **Charge the spin.** Hold Spin (or the wheel) to wind it up, let go to spin harder. The result is just as random.
+
+### Changed
+
+- **Settings search.** Options has a search box that finds a setting on any tab.
+- **Slower if you like.** A Slow spin speed and a Very long auto-play pause, for watching a saga play itself.
+
 ## 0.3.0-alpha.5 (2026-11-19)
 
 ### Changed
