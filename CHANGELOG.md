@@ -4,6 +4,22 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
+## 0.3.0-alpha.7 (2026-11-23)
+
+### New
+
+- **A portrait for every race.** All 98 races now have a painted portrait, so every hero's card has a picture.
+- **Faces for friends and foes.** Companions have portraits by who they are (a mentor, a ghost, your royal in-laws, a
+  young dragon...), and your nemesis has a villain's face of their own. They show on the saga sheet, in the recap and,
+  for the nemesis, in the battle report.
+- **A map of the saga.** The saga recap draws your hero's road across a painted world map, chapter by chapter, with
+  the ending marked at the last stop.
+
+### Changed
+
+- **World Boss.** Four bosses take turns for now: Genesis, the Valkyr of Time, has been taken out of the rotation.
+  This week's boss stays the same.
+
 ## 0.3.0-alpha.6 (2026-11-21)
 
 ### New
