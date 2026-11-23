@@ -142,6 +142,8 @@
   const keyName = k =>
     ({ ' ': 'Space', Escape: 'Esc', ArrowUp: '↑', ArrowDown: '↓', ArrowLeft: '←', ArrowRight: '→' })[k] ||
     (k && k.length === 1 ? k.toUpperCase() : k || '-');
+  FW.keyName = keyName;
+  FW.KEY_ACTIONS = ACTIONS; // the keyboard help (menu.js, press ?) lists these with the player's own keys
 
   /* ---------------- tabs ---------------- */
   const BODY = {
@@ -311,6 +313,16 @@
         'Emoji instead of drawn icons',
         tog('emojiIcons', P.emojiIcons, 'Emoji instead of drawn icons'),
         "The game's own icons match each theme. Switch this on to see your system's emoji instead."
+      );
+      h += row(
+        'One-handed mode',
+        tog('oneHand', P.oneHand, 'One-handed mode'),
+        'On a phone held upright, the spin buttons and the result sit at the bottom of the screen, where your thumb reaches.'
+      );
+      h += row(
+        'Ask before leaving a saga',
+        tog('leaveAsk', P.leaveAsk !== false, 'Ask before leaving a saga'),
+        'A small check when you go back to the main menu in the middle of a saga.'
       );
       h += row(
         'Theme',

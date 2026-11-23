@@ -188,6 +188,91 @@
     s && s.cut
       ? '<p class="legend-key">' + H.esc(tt('Some early lines were left out to keep this Legend Code short.')) + '</p>'
       : '';
+  /* search the saga log and bookmark lines (157). Long logs (eight lines or more) get a search box and a
+     "Bookmarks" filter; every line has a star. Bookmarks are kept per legend (by its seed) on this device. */
+  const MARKS = 'fw.marks';
+  const marksOf = L => ((App.store.get(MARKS, {}) || {})[String(L.seed)] || []).slice();
+  function setMarks(L, list) {
+    const all = App.store.get(MARKS, {}) || {},
+      k = String(L.seed);
+    delete all[k];
+    if (list.length) all[k] = list;
+    const keys = Object.keys(all);
+    keys.slice(0, Math.max(0, keys.length - 40)).forEach(x => delete all[x]); // the newest forty legends
+    App.store.set(MARKS, all);
+  }
+  function logTools(root, L) {
+    const ol = root && root.querySelector('ol.saga-log:not(.recap-line)');
+    if (!ol || !L || ol.dataset.tools) return;
+    ol.dataset.tools = '1';
+    const marks = marksOf(L),
+      items = [...ol.children];
+    items.forEach((li, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'mark';
+      const on = marks.indexOf(i) >= 0;
+      li.classList.toggle('marked', on);
+      b.textContent = on ? '★' : '☆';
+      b.setAttribute('aria-pressed', String(on));
+      b.setAttribute('aria-label', tt('Bookmark this line'));
+      b.onclick = () => {
+        const m = marksOf(L),
+          k = m.indexOf(i);
+        if (k >= 0) m.splice(k, 1);
+        else m.push(i);
+        setMarks(L, m);
+        const now = k < 0;
+        li.classList.toggle('marked', now);
+        b.textContent = now ? '★' : '☆';
+        b.setAttribute('aria-pressed', String(now));
+        apply();
+      };
+      li.appendChild(b);
+    });
+    if (items.length < 8) return;
+    const bar = document.createElement('div');
+    bar.className = 'log-tools';
+    bar.innerHTML =
+      '<input type="search" class="log-find" placeholder="' +
+      H.esc(tt('Find a name or event')) +
+      '" aria-label="' +
+      H.esc(tt('Search the saga')) +
+      '"><button type="button" class="btn small ghost log-marks" aria-pressed="false">★ ' +
+      H.esc(tt('Bookmarks')) +
+      '</button><span class="log-count" aria-live="polite"></span>';
+    ol.parentNode.insertBefore(bar, ol);
+    const inp = bar.querySelector('.log-find'),
+      mb = bar.querySelector('.log-marks'),
+      cnt = bar.querySelector('.log-count');
+    let only = false;
+    function apply() {
+      const q = inp.value.trim().toLowerCase();
+      let n = 0;
+      items.forEach(li => {
+        const hit = (!q || li.textContent.toLowerCase().indexOf(q) >= 0) && (!only || li.classList.contains('marked'));
+        li.hidden = !hit;
+        if (hit) n++;
+      });
+      cnt.textContent = q || only ? n + ' / ' + items.length : '';
+    }
+    inp.addEventListener('input', apply);
+    inp.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && inp.value) {
+        e.preventDefault();
+        e.stopPropagation();
+        inp.value = '';
+        apply();
+      }
+    });
+    mb.onclick = () => {
+      only = !only;
+      mb.setAttribute('aria-pressed', String(only));
+      mb.classList.toggle('on', only);
+      apply();
+    };
+  }
+  App.logTools = logTools;
   function logHtml(log) {
     return log.length
       ? '<ol class="saga-log">' +
@@ -328,6 +413,8 @@
           throw e;
         }
         if (run !== F.runId()) return;
+        // every finished chapter is kept in the save slots (162), so leaving mid-saga loses only the chapter in play
+        if (App.saveSlot) App.saveSlot(L);
         if (window.FWAchieve) window.FWAchieve.check(L);
       }
       $('#btnStoryExit').hidden = true;
@@ -463,6 +550,7 @@
       cutNote(s) +
       '</div>';
     $('#btnRecap').onclick = () => recapModal(L);
+    logTools($('#effects'), L);
     bindSagaFeedback(L);
     if (S.MORTAL[s.end]) FW.Audio.bad();
     else FW.Audio.reveal(true);
@@ -881,6 +969,7 @@
     if (s) {
       $('#sagaSum').textContent = S.summary(L);
       $('#sagaList').innerHTML = logHtml(s.log) + cutNote(s);
+      logTools($('#sagaList'), L);
     }
     $('#btnStory').hidden = !!(s && s.end);
     $('#btnStory').textContent = s ? '📖 Continue the story' : '📖 Begin the story';
@@ -960,6 +1049,7 @@
     const n = st.legend && st.legend.saga && st.legend.saga.nem;
     return n && n.name === name ? S.nemArt(n) : '';
   };
+  App.inStory = () => inStory;
   App.runStory = runStory;
   App.continueAsHeir = continueAsHeir;
 })();

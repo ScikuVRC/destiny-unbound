@@ -13,22 +13,126 @@
 
   /* ---------------- the last legend, for Continue / Story / Arena ---------------- */
   const last = () => App.store.get('fw.last', null);
-  const prevShown = App.hooks.cardShown;
-  App.hooks.cardShown = L => {
-    if (prevShown) prevShown(L);
+  /* save slots (162): up to six sagas side by side, newest first. Each legend keeps one slot (by its seed), updated
+     when its card shows and after every finished chapter. "fw.last" stays the newest, for Continue, Story and Arena.
+     When all six are used, the oldest ended saga goes first, then the oldest of all. */
+  const SLOT_MAX = 6;
+  const slots = () => {
+    const s = App.store.get('fw.slots', null);
+    if (Array.isArray(s)) return s.filter(x => x && x.code);
+    const l = last();
+    return l ? [Object.assign({ id: 'last' }, l)] : [];
+  };
+  const slotOf = L => ({
+    id: String(L.seed),
+    code: L.toCode(),
+    name: L.displayName(),
+    race: L.raceName(),
+    ch: L.saga ? L.saga.ch || 0 : 0,
+    end: L.saga ? L.saga.end || '' : '',
+    date: new Date().toISOString().slice(0, 10),
+  });
+  App.saveSlot = L => {
     try {
-      App.store.set('fw.last', {
-        code: L.toCode(),
-        name: L.displayName(),
-        race: L.raceName(),
-        ch: L.saga ? L.saga.ch || 0 : 0,
-        end: L.saga ? L.saga.end || '' : '',
-        date: new Date().toISOString().slice(0, 10),
-      });
+      const e = slotOf(L),
+        s = slots().filter(x => x.id !== e.id && x.code !== e.code);
+      s.unshift(e);
+      while (s.length > SLOT_MAX) {
+        const k = s.map(x => !!x.end).lastIndexOf(true);
+        s.splice(k > 0 ? k : s.length - 1, 1);
+      }
+      App.store.set('fw.slots', s);
+      App.store.set('fw.last', e);
     } catch (e) {
       /* not finished yet */
     }
   };
+  App.slots = slots;
+  const prevShown = App.hooks.cardShown;
+  App.hooks.cardShown = L => {
+    if (prevShown) prevShown(L);
+    App.saveSlot(L);
+  };
+  const endText = x =>
+    x.end
+      ? ((FW.Story && FW.Story.endIcon && FW.Story.endIcon[x.end]) || '') +
+        ' ' +
+        t((FW.Story && FW.Story.endLabel && FW.Story.endLabel[x.end]) || 'Saga ended')
+      : x.ch
+        ? t('Chapter') + ' ' + x.ch
+        : t('Story not started');
+  function slotsModal() {
+    const s = slots();
+    App.openModal(
+      '<h2>' +
+        H.esc(t('Your sagas')) +
+        '</h2><p class="legend-key">' +
+        H.esc(t('Newest first. Up to six are kept; the oldest ended saga makes room for a new one.')) +
+        '</p><div class="slot-list">' +
+        s
+          .map(
+            (x, i) =>
+              '<div class="slot"><button class="btn slot-go" data-go="' +
+              i +
+              '"><b>' +
+              H.esc(x.name) +
+              '</b><small>' +
+              H.esc([x.race, endText(x).trim(), x.date].filter(Boolean).join('  ◆  ')) +
+              '</small></button><button class="btn small ghost" data-forget="' +
+              i +
+              '" aria-label="' +
+              H.esc(t('Forget') + ' ' + x.name) +
+              '">' +
+              H.esc(t('Forget')) +
+              '</button></div>'
+          )
+          .join('') +
+        '</div><div class="cta"><button class="btn ghost close">' +
+        H.esc(t('Close')) +
+        '</button></div>'
+    );
+    const box = document.querySelector('#modalRoot .slot-list');
+    box.addEventListener('click', e => {
+      const go = e.target.closest('[data-go]'),
+        fg = e.target.closest('[data-forget]');
+      const list = slots();
+      if (go) {
+        const x = list[+go.dataset.go];
+        if (!x) return;
+        App.closeModal();
+        if (App.loadCode(x.code) !== true) {
+          App.store.set(
+            'fw.slots',
+            list.filter(y => y !== x)
+          );
+          return App.toast(t('That saga could not be read, so it was removed'));
+        }
+        App.store.set('fw.slots', [x].concat(list.filter(y => y !== x)));
+        App.store.set('fw.last', x);
+        return;
+      }
+      if (fg) {
+        // two presses: the first asks, the second forgets (the legend stays in the Hall if it was saved there)
+        if (!fg.dataset.sure) {
+          fg.dataset.sure = '1';
+          fg.textContent = t('Forget? Press again');
+          return;
+        }
+        const x = list[+fg.dataset.forget],
+          rest = list.filter(y => y !== x);
+        App.store.set('fw.slots', rest);
+        App.store.set('fw.last', rest[0] || null);
+        if (rest.length) slotsModal();
+        else App.closeModal();
+        render();
+      }
+    });
+    setTimeout(() => {
+      const b = box.querySelector('.slot-go');
+      if (b) b.focus({ preventScroll: true });
+    }, 10);
+  }
+  App.slotsModal = slotsModal;
   function needLegend(what) {
     App.toast(t('Spin a legend first') + ' - ' + what);
     App.flow.show('home');
@@ -47,11 +151,14 @@
   const ITEMS = [
     {
       k: 'Continue',
-      run: () => withLast(() => {}, ''),
+      run: () => (slots().length > 1 ? slotsModal() : withLast(() => {}, '')),
       sub: () => {
-        const l = last();
+        const l = last(),
+          n = slots().length;
         return l
-          ? l.name + '  ◆  ' + (l.end ? t('Saga ended') : l.ch ? t('Chapter') + ' ' + l.ch : t('Story not started'))
+          ? n > 1
+            ? l.name + '  ◆  ' + n + ' ' + t('sagas')
+            : l.name + '  ◆  ' + (l.end ? t('Saga ended') : l.ch ? t('Chapter') + ' ' + l.ch : t('Story not started'))
           : '';
       },
       hide: () => !last(),
@@ -142,7 +249,9 @@
           '</div></button>'
         );
       }).join('') +
-      '</nav></div>' +
+      '</nav>' +
+      memo() +
+      '</div>' +
       '<div class="foot"><span>v' +
       H.esc(FW.VERSION) +
       (mods.length ? ' · ' + H.esc(t('Mods')) + ': ' + H.esc(mods.join(', ')).slice(0, 80) : '') +
@@ -184,6 +293,22 @@
       const c = el.querySelector('.item[data-i="' + coachItem + '"]');
       if (c) c.classList.add('coach-hl');
     } // a redraw (e.g. when mods finish loading) keeps the guide's highlight
+  }
+  /* a title screen that remembers (160): the last hero, and where their saga stands or how it ended */
+  function memo() {
+    const l = last();
+    if (!l || !l.name) return '';
+    return (
+      '<p class="tmemo">' +
+      H.esc(t('Last hero')) +
+      ': <b>' +
+      H.esc(l.name) +
+      '</b>' +
+      (l.race ? ', ' + H.esc(l.race) : '') +
+      '  ◆  ' +
+      H.esc(endText(l).trim()) +
+      '</p>'
+    );
   }
   let coachItem = -1;
   function icon(k) {
@@ -294,14 +419,47 @@
     }, 30);
     return true;
   }
-  App.showTitle = () => {
+  const toTitle = () => {
     App.flow.abortRun();
     App.closeModal();
     App.flow.show('title');
   };
+  /* confirm before leaving a saga (154): going to the main menu in the middle of a story asks first. Finished
+     chapters are kept (save slots), only the chapter in play starts again. "Don't ask again" turns it off
+     (Options > Accessibility brings it back). */
+  App.showTitle = () => {
+    if (App.state.screen === 'spin' && App.inStory && App.inStory() && FW.prefs.leaveAsk !== false) return leaveModal();
+    toTitle();
+  };
+  function leaveModal() {
+    App.openModal(
+      '<h2>' +
+        H.esc(t('Leave the saga?')) +
+        '</h2><p>' +
+        H.esc(
+          t(
+            'Your saga is kept up to the last finished chapter, so you can carry on from Continue. The chapter in play starts again.'
+          )
+        ) +
+        '</p><label class="o-check"><input type="checkbox" id="leaveNoAsk"> ' +
+        H.esc(t("Don't ask again")) +
+        '</label><div class="cta"><button class="btn primary" data-lv="stay">' +
+        H.esc(t('Stay')) +
+        '</button> <button class="btn" data-lv="go">' +
+        H.esc(t('Leave')) +
+        '</button></div>'
+    );
+    const dlg = document.querySelector('#modalRoot .modal');
+    dlg.querySelector('[data-lv="stay"]').onclick = () => App.closeModal();
+    dlg.querySelector('[data-lv="go"]').onclick = () => {
+      if ($('#leaveNoAsk').checked) FW.setPref('leaveAsk', false);
+      toTitle();
+    };
+    setTimeout(() => dlg.querySelector('[data-lv="stay"]').focus({ preventScroll: true }), 10);
+  }
   const brand = $('#brand');
   if (brand) {
-    brand.onclick = App.showTitle;
+    brand.onclick = () => App.showTitle();
     brand.title = t('Main menu');
   }
   const homeHead = document.querySelector('#screen-home .hero');
@@ -309,7 +467,7 @@
     const b = document.createElement('button');
     b.className = 'btn small ghost back-menu';
     b.textContent = '◂ ' + t('Main menu');
-    b.onclick = App.showTitle;
+    b.onclick = () => App.showTitle();
     homeHead.prepend(b);
   }
   /* ---------------- the pause menu (36): Esc, the Back key or B/Circle while the wheels turn ----------------
@@ -457,6 +615,12 @@
     }
     if (a === 'back') {
       if (modalOpen()) return App.closeModal();
+      // B / Circle closes the Spin settings pop-up first, as Esc does (34)
+      const ss = $('#spinSet');
+      if (ss && !ss.hidden) {
+        $('#btnSpinSet').click();
+        return $('#btnSpinSet').focus();
+      }
       if (FW.Options && FW.Options.isOpen()) return FW.Options.close();
       if (App.state.screen === 'home' || App.state.screen === 'card') return App.showTitle();
       if (App.state.screen === 'spin' && App.pauseModal) return App.pauseModal();
@@ -500,6 +664,11 @@
     if (e.defaultPrevented || e.ctrlKey || e.altKey || e.metaKey) return;
     setDevice('kb');
     if (FW.Options && FW.Options.capturing) return;
+    // keyboard help (155): ? anywhere outside a text box
+    if (e.key === '?' && !typing()) {
+      e.preventDefault();
+      return keysModal();
+    }
     if (e.defaultPrevented && (e.key === 'Escape' || e.key === K().back)) return; // a dialog just closed on this key
     const k = e.key,
       kk = K();
@@ -544,6 +713,59 @@
       if (low === (kk.auto || '').toLowerCase()) return Nav.act('auto');
     }
   });
+
+  /* ---------------- keyboard help (155): every shortcut on one page, with the player's own keys ---------------- */
+  function keysModal() {
+    if (document.querySelector('#modalRoot .keys-help')) return App.closeModal();
+    const kn = FW.keyName || (k => k),
+      P = FW.prefs || { keys: {} },
+      kb = k => '<kbd>' + H.esc(k) + '</kbd>',
+      row = (keys, what) => '<tr><td>' + keys + '</td><td>' + H.esc(t(what)) + '</td></tr>',
+      ps = Nav.device === 'ps';
+    const mine = (FW.KEY_ACTIONS || []).map(a => row(kb(kn(P.keys[a[0]])), a[1])).join('');
+    const fixed = [
+      [kb('↑') + kb('↓') + kb('W') + kb('S'), 'Move through the main menu'],
+      [kb('Tab') + kb('Shift+Tab'), 'Move between buttons'],
+      [kb('Enter'), 'Press the button that has focus'],
+      [kb('Esc'), 'Close a window, go back, or pause while the wheels turn'],
+      [H.esc(t('Hold Spin')), 'Charge the spin, then let go (mouse or touch)'],
+      [kb('?'), 'Show or hide this help'],
+    ]
+      .map(r => row(r[0], r[1]))
+      .join('');
+    const pad = [
+      ['D-pad / left stick', 'Move'],
+      [ps ? '✕' : 'Ⓐ', 'Confirm, spin, next'],
+      [ps ? '○' : 'Ⓑ', 'Back, close, pause'],
+      [ps ? '□' : 'Ⓧ', 'Re-spin'],
+      [ps ? '△' : 'Ⓨ', 'Auto-play on or off'],
+      ['Start / Options', 'Open Options'],
+    ]
+      .map(r => row(kb(t(r[0])), r[1]))
+      .join('');
+    App.openModal(
+      '<div class="keys-help"><h2>' +
+        H.esc(t('Keyboard and controller')) +
+        '</h2><h3>' +
+        H.esc(t('Your keys')) +
+        '</h3><table class="table keys">' +
+        mine +
+        '</table><h3>' +
+        H.esc(t('Always')) +
+        '</h3><table class="table keys">' +
+        fixed +
+        '</table><h3>' +
+        H.esc(t('Controller')) +
+        '</h3><table class="table keys">' +
+        pad +
+        '</table><p class="legend-key">' +
+        H.esc(t('Change your keys in Options > Controls.')) +
+        '</p><div class="cta"><button class="btn primary close">' +
+        H.esc(t('Close')) +
+        '</button></div></div>'
+    );
+  }
+  App.keysModal = keysModal;
 
   /* controllers (standard mapping): d-pad or left stick to move, A/Cross to confirm, B/Circle to go back,
      Start/Options for Options, X/Square to re-spin, Y/Triangle for auto-play */

@@ -57,6 +57,8 @@ const LEGEND = `(() => { const L = new FW.Legend({ luck: 'heroic', seed: 'layout
   FWApp.state.legend = L; return L; })()`;
 const OPEN = {
   title: `FWApp.flow.show('title')`,
+  // the title screen remembering the last hero (160)
+  'title-last': `${LEGEND}; FWApp.showCard(); FWApp.flow.show('title')`,
   home: `FWApp.flow.show('home')`,
   spin: `FWApp.runLegend(false)`,
   card: `${LEGEND}; FWApp.showCard()`,
@@ -161,7 +163,11 @@ app.whenReady().then(async () => {
         /* async flows keep running; that's fine */
       }
       await sleep(
-        sc === 'recap' || sc === 'endingReal' ? 3000 : sc === 'spin' || sc === 'story' || sc === 'ending' ? 1800 : 900
+        sc === 'recap' || sc === 'endingReal' || sc === 'title-last'
+          ? 3000
+          : sc === 'spin' || sc === 'story' || sc === 'ending'
+            ? 1800
+            : 900
       );
       const res = await js(CHECK);
       const key = w + 'x' + h;

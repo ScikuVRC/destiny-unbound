@@ -818,3 +818,206 @@ body.easy-read :is(p,li,dd,.legend-key,.o-note){line-height:1.65}
   text-transform: none;
   letter-spacing: 0;
 }
+
+/* a title screen that remembers (160): the last hero, low on the painted side of the screen (under the menu on
+   phones) */
+.tscr .stage > p.tmemo {
+  position: absolute;
+  right: 36px;
+  bottom: 64px;
+  max-width: 520px;
+  margin: 0;
+  text-align: right;
+  font-size: 14px;
+  line-height: 1.4;
+  opacity: 0.9;
+  text-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.9),
+    0 0 12px rgba(0, 0, 0, 0.7);
+  z-index: 1;
+}
+@media (max-aspect-ratio: 1/1) {
+  .tscr .stage > p.tmemo {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    margin: 14px auto 0;
+    max-width: 420px;
+    text-align: center;
+  }
+}
+
+/* save slots (162) */
+.slot-list {
+  display: grid;
+  gap: 8px;
+  margin: 10px 0;
+}
+.slot {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+.slot .slot-go {
+  display: grid;
+  gap: 2px;
+  justify-items: start;
+  text-align: left;
+  padding: 10px 14px;
+}
+.slot .slot-go small {
+  opacity: 0.75;
+  font-weight: 400;
+}
+
+/* search the saga log, bookmarks (157) */
+.log-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  margin: 8px 0 4px;
+}
+.log-tools .log-find {
+  flex: 1 1 180px;
+  max-width: 320px;
+}
+.log-tools .log-marks.on {
+  border-color: var(--accent2);
+  color: var(--accent2);
+}
+.log-tools .log-count {
+  font-size: 12px;
+  opacity: 0.7;
+  min-width: 3em;
+}
+body .saga-log li {
+  position: relative;
+  padding-right: 30px;
+}
+.saga-log li .mark {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: none;
+  border: 0;
+  color: inherit;
+  opacity: 0.35;
+  font-size: 15px;
+  line-height: 1;
+  padding: 4px;
+  cursor: pointer;
+}
+.saga-log li .mark:hover,
+.saga-log li .mark:focus-visible,
+.saga-log li.marked .mark {
+  opacity: 1;
+  color: var(--accent2);
+}
+.saga-log li.marked {
+  outline: 1px solid color-mix(in srgb, var(--accent2) 45%, transparent);
+}
+
+/* keyboard help (155) */
+.keys-help h3 {
+  margin: 14px 0 6px;
+  font-size: 14px;
+}
+.keys-help .table.keys td:first-child {
+  white-space: nowrap;
+  width: 40%;
+}
+.keys-help kbd {
+  display: inline-block;
+  min-width: 1.6em;
+  padding: 2px 6px;
+  margin: 0 2px;
+  border: 1px solid var(--line, rgba(255, 255, 255, 0.25));
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  font: inherit;
+  font-size: 12px;
+  text-align: center;
+}
+
+/* one-handed mode (153): on a phone held upright, Spin, Next and Re-spin sit in a dock at the bottom of the screen,
+   the pause button just above it, and dialogs open from the bottom */
+@media (max-width: 700px) and (orientation: portrait) {
+  body.one-hand #screen-spin {
+    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+  }
+  body.one-hand #screen-spin #controls {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 30;
+    margin: 0;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+    background: color-mix(in srgb, var(--panel, #15110e) 92%, transparent);
+    backdrop-filter: blur(6px);
+    border-top: 1px solid var(--line, rgba(255, 255, 255, 0.15));
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+  }
+  body.one-hand #screen-spin #controls .btn {
+    min-height: 54px;
+    flex: 1 1 0;
+    max-width: 260px;
+  }
+  /* the top bar's blur would trap the fixed pause button inside it */
+  body.one-hand .top {
+    backdrop-filter: none;
+  }
+  body.one-hand #btnPause:not([hidden]) {
+    position: fixed;
+    right: 12px;
+    bottom: calc(86px + env(safe-area-inset-bottom, 0px));
+    z-index: 31;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--panel, #15110e);
+    border: 1px solid var(--line, rgba(255, 255, 255, 0.2));
+  }
+  body.one-hand .overlay {
+    place-items: end center;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  }
+  body.one-hand .overlay .modal {
+    max-height: 78vh;
+  }
+  body.one-hand #screen-card .cta {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    padding: 8px 0 calc(8px + env(safe-area-inset-bottom, 0px));
+    background: color-mix(in srgb, var(--bg, #0d0b0a) 88%, transparent);
+  }
+}
+
+/* the smallest phones (320 px wide, under 600 px tall): the top bar keeps one row while the pause button shows (the
+   theme stays in Options), and the wheel may shrink a little more so Spin stays on screen (33) */
+@media (max-width: 360px) {
+  .top-actions:has(#btnPause:not([hidden])) #btnTheme {
+    display: none;
+  }
+}
+@media (max-width: 640px) and (orientation: portrait) and (max-height: 600px) {
+  .wheel-wrap {
+    width: min(100%, 520px, max(170px, calc(calc(100 * var(--dvh)) - 384px)));
+    margin: 8px auto 4px;
+  }
+}
+@media (max-width: 360px) {
+  /* three buttons under Spin in a story: Pause story gets its own row */
+  #screen-spin .ctl-row2 {
+    flex-wrap: wrap;
+  }
+  #screen-spin .ctl-row2 > #btnStoryExit {
+    flex-basis: 100%;
+  }
+}

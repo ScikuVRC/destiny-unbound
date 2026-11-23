@@ -26,6 +26,8 @@
     reduceMotion: false, // no flashing, shaking or sliding
     cbSafe: false, // colour-blind-safe wheel slices
     discord: true, // desktop app: show what you're playing in your Discord status (Rich Presence)
+    oneHand: false, // phones held upright: the main buttons sit low, in reach of a thumb (153)
+    leaveAsk: true, // ask before leaving a saga that is still going (154)
     errorAsk: true, // offer to send an error report when something goes wrong (nothing is sent without a click)
     keys: { advance: ' ', next: 'Enter', back: 'Escape', respin: 'r', auto: 'a', options: 'o', menu: 'm' },
   };
@@ -90,6 +92,7 @@
     b.classList.toggle('hc', !!P.contrast);
     b.classList.toggle('easy-read', !!P.easyRead);
     b.classList.toggle('calm', !!P.reduceMotion);
+    b.classList.toggle('one-hand', !!P.oneHand);
     g.document.documentElement.style.setProperty('--text-scale', (P.textSize || 100) / 100);
     // UI scale: the desktop app zooms the whole window; the browser uses CSS zoom
     const z = (P.uiScale || 100) / 100;

@@ -207,6 +207,7 @@
       this.rot = 0;
       this.focus = -1;
       this.kick = 0;
+      this.kickV = 0; // the pointer's swing speed: it flaps on a spring (158)
       this.spinning = false;
       this.dir = -1; // -1 = counter-clockwise, 1 = clockwise
       this.onTick = null;
@@ -980,6 +981,37 @@
       this.rot = this._chargeBase - dir * 0.55 * Math.max(0, Math.min(1, p));
       this.draw();
     }
+    /* the pointer flaps (158): each slice it passes pushes it back, and a damped spring swings it home, so it bends
+       on every peg and wobbles to rest after the stop. With animations reduced or off it only flicks, as before. */
+    flapOn() {
+      return !FW.motion || FW.motion() === 'full';
+    }
+    _flap(dt) {
+      dt = Math.min(0.05, Math.max(0, dt));
+      this.kickV += (-700 * this.kick - 14 * this.kickV) * dt;
+      this.kick += this.kickV * dt;
+    }
+    settlePointer() {
+      cancelAnimationFrame(this._settleRaf);
+      if (!this.flapOn() || typeof requestAnimationFrame !== 'function' || Math.abs(this.kick) < 0.01) {
+        this.kick = this.kickV = 0;
+        return;
+      }
+      let prev = performance.now();
+      const step = now => {
+        if (this.spinning) return;
+        this._flap((now - prev) / 1000);
+        prev = now;
+        if (Math.abs(this.kick) < 0.004 && Math.abs(this.kickV) < 0.05) {
+          this.kick = this.kickV = 0;
+          this.draw();
+          return;
+        }
+        this.draw();
+        this._settleRaf = requestAnimationFrame(step);
+      };
+      this._settleRaf = requestAnimationFrame(step);
+    }
     /* animate to slice idx; resolves with idx when stopped */
     spinTo(idx, opts) {
       opts = opts || {};
@@ -1001,7 +1033,10 @@
       this.rareWin = false;
       this.spinning = true;
       this._skip = false;
-      const t0 = performance.now();
+      const t0 = performance.now(),
+        flap = this.flapOn();
+      let prevT = t0;
+      cancelAnimationFrame(this._settleRaf);
       // a rare result creeps over the last slices before it stops
       const pw = opts.rare ? 5.4 : 3.8;
       const ease = x => 1 - Math.pow(1 - x, pw);
@@ -1025,11 +1060,16 @@
             // a gentle flick at most every 70 ms, softer while the wheel is still fast
             if (now - this._lastTick > 70 && !this._skip) {
               this._lastTick = now;
-              this.kick = 0.35 + 0.65 * x;
+              if (flap) {
+                this.kick = Math.max(this.kick, 0.35 + 0.65 * x);
+                this.kickV = Math.min(this.kickV, 0);
+              } else this.kick = 0.35 + 0.65 * x;
               if (this.onTick) this.onTick(i, 1 - x);
             }
           }
-          this.kick *= 0.7;
+          if (flap) this._flap((now - prevT) / 1000);
+          else this.kick *= 0.7;
+          prevT = now;
           if (x < 1) {
             const gap = FW.frameGap ? FW.frameGap() : 0;
             if (!gap || now - (this._lastDraw || 0) >= gap) {
@@ -1042,12 +1082,13 @@
             this.rot = r1 % TAU;
             this.spinning = false;
             this.focus = idx;
-            this.kick = 0;
+            if (!flap) this.kick = 0;
             this._lastIdx = idx;
             this.rareWin = !!opts.rare;
             if (this.onLabel) this.onLabel(this.entries[idx], idx, true);
             this.draw();
             this.flashWin(opts.rare);
+            if (flap) this.settlePointer();
             resolve(idx);
           }
         };

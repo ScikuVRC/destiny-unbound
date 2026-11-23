@@ -444,6 +444,7 @@
       const e = cfg.entries[idx];
       setResult(cfg.display ? cfg.display(idx) : e.name, { rare, pop: true });
       FW.Audio.reveal(rare);
+      if (rare && FW.burst) FW.burst($('#wheelWrap'), { theme: state.theme }); // legendary particles (159)
       const info = (cfg.onResult && cfg.onResult(idx)) || {};
       $('#resultSub').innerHTML = info.sub || '';
       $('#effects').innerHTML = info.fx || '';
@@ -725,6 +726,12 @@
     f.classList.remove('reveal');
     void f.offsetWidth; // restart the animation
     if (FW.motion && FW.motion() !== 'off') f.classList.add('reveal');
+    // a Mythic hero or better gets the theme's particles as the card turns over (159)
+    try {
+      if (FW.burst && FW.compute(L).baseRating >= 68) setTimeout(() => FW.burst(f, { theme: state.theme, n: 90 }), 250);
+    } catch (e) {
+      /* not finished yet */
+    }
   }
   const blobOf = cv => new Promise(r => cv.toBlob(r, 'image/png'));
   const cardFileName = side =>
@@ -1405,6 +1412,10 @@
     p.hidden = !open;
     b.setAttribute('aria-expanded', String(open));
   };
+  // moving focus out of the pop-up (Tab, the d-pad or a stick) closes it, so it never hangs open behind (34)
+  $('.spinset-wrap').addEventListener('focusout', e => {
+    if (e.relatedTarget && !e.currentTarget.contains(e.relatedTarget)) spinSet(false);
+  });
   $('#btnSpinSet').onclick = e => {
     e.stopPropagation();
     spinSet($('#spinSet').hidden);

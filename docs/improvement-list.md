@@ -1,7 +1,7 @@
 # Destiny Unbound: what can be improved
 
 First written 2026-11-13, after 0.2.0-alpha.1. Rewritten 2026-11-17, after 0.3.0-alpha.1, with 100 new ideas
-(103-202); updated since: 69 of the first 102 and 44 of the new ideas are done and listed at the end.
+(103-202); updated since: 71 of the first 102 and 52 of the new ideas are done and listed at the end.
 
 Each item has a rough size: **S** (an hour or two), **M** (a day), **L** (several days or more).
 Items marked ★ are the ones I'd do first. ✅ = done, ⬜ = not yet. Numbers stay the same as items get done.
@@ -47,10 +47,7 @@ Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of 
 
 ### Interface and feel
 
-33. ⬜ **Phone layout (M).** Partly done 2026-11-15 and 2026-11-16: Options and Content & mods fit at 320-412 px, and
-    phones held sideways put the wheel beside the question, all in emulation (`scripts/layout-check.js`). Still not
-    tried on a real phone.
-34. ⬜ **Controller polish (S).** Check the Spin settings pop-up and Show upcoming with a controller.
+All done (see Done 2026-11-23).
 
 ### Audio
 
@@ -136,14 +133,7 @@ Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of 
 
 ### Interface and feel
 
-153. ⬜ **One-handed phone mode (S).** Every button within thumb reach when the phone is held upright.
-154. ⬜ **Confirm before leaving a saga (S).** A small check when leaving a saga that is still going.
-155. ⬜ **Keyboard help (S).** Press ? to see every shortcut.
-157. ⬜ **Search the saga log (S).** Find a name or event in a long saga, and bookmark lines.
-158. ⬜ **A pointer that flaps (S).** The pointer bends on each slice and settles when the wheel stops.
-159. ⬜ **Particles for legendary results (S).** Embers, sparks or petals, matched to the theme.
-160. ⬜ **A title screen that remembers (S).** The last hero's name or ending shows on the title screen.
-162. ⬜ **Save slots (M).** Several sagas side by side instead of one at a time.
+All done (see Done 2026-11-23).
 
 ### Art
 
@@ -196,9 +186,20 @@ Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of 
 
 ## Done
 
-69 of the first 102, and 44 of the new ideas.
+71 of the first 102, and 52 of the new ideas.
 
 ### Done 2026-11-23
+
+33. ✅ **Phone layout.** 2026-11-23: every screen checked in emulation from 320×568 to 412×915 and sideways (`scripts/layout-check.js`). On the smallest phones the top bar keeps one row while the pause button shows, the wheel shrinks a little so Spin stays on screen, and Pause story gets its own row. Still not tried on a real phone.
+34. ✅ **Controller polish.** 2026-11-23: B / Circle closes the Spin settings pop-up first (as Esc does) instead of opening the pause menu, and moving focus out of the pop-up with the d-pad, a stick or Tab closes it. Show upcoming keeps focus when it opens and closes. Tested with simulated controller input, not a real pad.
+153. ✅ **One-handed phone mode.** 2026-11-23: Options > Accessibility. On a phone held upright, Spin, Next and Re-spin sit in a dock at the bottom of the screen, the pause button just above it, the card buttons stick to the bottom, and dialogs open from the bottom.
+154. ✅ **Confirm before leaving a saga.** 2026-11-23: going to the main menu in the middle of a story asks first; finished chapters are kept, only the chapter in play starts again. "Don't ask again" turns it off, and Options > Accessibility brings it back.
+155. ✅ **Keyboard help.** 2026-11-23: press ? anywhere for every shortcut on one page, with the player's own keys and the controller buttons for the pad in use.
+157. ✅ **Search the saga log.** 2026-11-23: sagas of eight lines or more get a search box and a Bookmarks filter on the card and the ending screen; every line has a star to bookmark it, kept per legend on this device.
+158. ✅ **A pointer that flaps.** 2026-11-23: the pointer rides a damped spring: each slice pushes it back, it swings home between pegs, and it wobbles to rest after the stop. With animations reduced or off it only flicks, as before.
+159. ✅ **Particles for legendary results.** 2026-11-23: a burst over the wheel when a rare slice lands, and over the card when a Mythic hero or better is revealed: embers, stars, sparks, ash and blood drops, or petals, by theme. Only with animations fully on and glow allowed.
+160. ✅ **A title screen that remembers.** 2026-11-23: the last hero, their race and where the saga stands (or its ending, with its icon) show low on the painted side of the title screen, and under the menu on phones.
+162. ✅ **Save slots.** 2026-11-23: up to six sagas side by side, newest first. Each legend keeps one slot, saved when its card shows and after every finished chapter; Continue opens a chooser when there is more than one, and a slot can be forgotten (two presses). When all six are used, the oldest ended saga makes room.
 
 3. ✅ **More arcs.** 2026-11-23: five new three-chapter arcs (ten in all): the hungry blade (a whispering sword to feed or starve, then break, master or drown), the war of the banners (join the Silver Crown or the Ember Rebellion), a lost twin (search, follow the trail, and meet them: a reunion, a stranger, an enemy or a grave), the grey fever (help the sick, seek a cure or flee, then live through it) and the Grand Circuit (three tournaments in three cities).
 

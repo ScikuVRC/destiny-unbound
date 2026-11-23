@@ -201,7 +201,8 @@ Uninstalling keeps all of these.
 | `app/js/hall.js`, `codex.js`, `guide.js` | Player level, favourites, Hall statistics, card backs and the print sheet; the Codex and Bestiary; the guided first hero |
 | `app/js/wheel.js`, `card.js`, `render.js`, `app.js` | Wheel canvas, card renderer, HTML helpers, main flow |
 | `app/js/skins-data.js`, `chapter-art.js`, `badges.js`, `icons.js` | Painted wheel rims and hubs, chapter illustrations, achievement badges, the icon set |
-| `app/js/menu.js`, `menu-data.js`, `css/menu.css` | Themed title screen, keyboard and controller input, guide, credits, thank-you screen |
+| `app/js/menu.js`, `menu-data.js`, `css/menu.css` | Themed title screen, save slots, keyboard and controller input, keyboard help (?), the leave-a-saga check, guide, credits, thank-you screen |
+| `app/js/title-fx.js`, `burst.js` | Moving title screens; particle bursts for rare results and Mythic cards |
 | `app/js/options.js`, `prefs.js`, `content.js`, `css/ui.css` | Options, the preferences every part reads, Content & mods |
 | `app/js/save.js` | Save format versions: updates old saves step by step, with a backup first |
 | `app/js/system.js`, `report.js`, `version.js` | Error log, backups, save export and import, play stats, feedback; error reports; version |
