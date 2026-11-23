@@ -247,6 +247,35 @@
       b.textContent = '';
     }
   }
+  /* screen readers (152): one quiet announcer for what matters (a new wheel and its result), instead of a live result
+     line that read out every slice the pointer passed */
+  let sayTimer = 0;
+  function say(text) {
+    const el = $('#srSay');
+    if (!el) return;
+    clearTimeout(sayTimer);
+    el.textContent = '';
+    sayTimer = setTimeout(
+      () =>
+        (el.textContent = String(text || '')
+          .replace(/\s+/g, ' ')
+          .trim()),
+      60
+    );
+  }
+  // the wheel's name for screen readers: how many results, and the likeliest ones with their odds
+  function wheelLabel(cfg, total) {
+    if (cfg.mystery) return tr('Wheel') + ': ' + cfg.entries.length + ' ' + tr('hidden results');
+    const top = cfg.entries
+      .map(e => ({ n: e.name, p: total ? e.w / total : 0 }))
+      .filter(x => x.p > 0)
+      .sort((a, b) => b.p - a.p)
+      .slice(0, 3)
+      .map(x => x.n + ' ' + Math.round(x.p * 100) + '%');
+    return (
+      tr('Wheel') + ': ' + cfg.entries.length + ' ' + tr('results') + '. ' + tr('Likeliest') + ': ' + top.join(', ')
+    );
+  }
   function setResult(text, o) {
     o = o || {};
     const r = $('#result');
@@ -368,6 +397,8 @@
     $('#effects').innerHTML = cfg.preFx || '';
     wheel.setEntries(cfg.entries, { mode: cfg.mode, hue: cfg.hue });
     const total = cfg.entries.reduce((a, e) => a + e.w, 0);
+    $('#wheel').setAttribute('aria-label', wheelLabel(cfg, total));
+    say((cfg.title || '') + (cfg.hint ? '. ' + cfg.hint : ''));
     let immediate = false;
     for (;;) {
       setControls('ready');
@@ -416,6 +447,14 @@
       const info = (cfg.onResult && cfg.onResult(idx)) || {};
       $('#resultSub').innerHTML = info.sub || '';
       $('#effects').innerHTML = info.fx || '';
+      say(
+        (cfg.display ? cfg.display(idx) : e.name) +
+          (rare ? ' (' + tr('rare') + ')' : '') +
+          '. ' +
+          $('#resultSub').textContent +
+          ' ' +
+          [...$('#effects').querySelectorAll('.mod')].map(m => m.textContent).join(', ')
+      );
       hook('spinResult', cfg);
       // "Not your thing? Never roll this again": the quickest way to remove content, right where it lands
       if (cfg.wsKey && window.FWApp.canNeverRoll && window.FWApp.canNeverRoll(cfg.wsKey, e.name)) {
@@ -601,6 +640,14 @@
     FW.Audio.setScene('spin');
     $('#sheet').classList.toggle('collapsed', window.innerWidth < 980);
     const L = state.legend;
+    // a note when a wheel completes two or three pieces of a set (16)
+    const setTiers = new Map();
+    const noteSets = () =>
+      (FW.setsOf ? FW.setsOf(L) : []).forEach(x => {
+        if (x.have <= (setTiers.get(x.set.name) || 0)) return;
+        setTiers.set(x.set.name, x.have);
+        toast('✦ ' + tr('Set bonus') + ': ' + tr(x.set.name) + ' (' + x.have + '/3)');
+      });
     try {
       let i = -1;
       while ((i = FW.nextStageIndex(L, i)) < FW.STAGES.length) {
@@ -637,7 +684,10 @@
             FW.commitPick(L, stage, idx, state.rng);
             return stageInfo(stage, idx);
           },
-          afterResult: () => refreshSheet(def.id),
+          afterResult: () => {
+            refreshSheet(def.id);
+            noteSets();
+          },
         });
         if (run !== state.runId) return;
       }

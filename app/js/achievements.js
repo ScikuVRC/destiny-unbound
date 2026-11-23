@@ -330,6 +330,108 @@
       test: L => !!(L.saga && L.saga.flags && L.saga.flags.after === 'The best tavern in the land'),
     },
   ];
+  /* milestones (146): long achievements in three steps, bronze, silver and gold, with a progress bar to the next one.
+     The counts come from the local play statistics, the daily challenge, the Codex and the monthly badges. */
+  FW.MILESTONES = [
+    {
+      id: 'heroes',
+      icon: '🎲',
+      name: 'Legend Maker',
+      what: 'heroes made',
+      of: c => c.stats.legendsFinished || 0,
+      tiers: [10, 50, 200],
+    },
+    {
+      id: 'chapters',
+      icon: '📖',
+      name: 'Storyteller',
+      what: 'chapters played',
+      of: c => c.stats.chapters || 0,
+      tiers: [50, 250, 1000],
+    },
+    {
+      id: 'arena',
+      icon: '⚔️',
+      name: 'Gladiator',
+      what: 'arena fights',
+      of: c => c.stats.arenaFights || 0,
+      tiers: [10, 50, 200],
+    },
+    {
+      id: 'deaths',
+      icon: '🪦',
+      name: 'Memento Mori',
+      what: 'heroes who died in their saga',
+      of: c => c.stats.deaths || 0,
+      tiers: [10, 40, 150],
+    },
+    {
+      id: 'retired',
+      icon: '🌅',
+      name: 'Quiet Lives',
+      what: 'heroes who retired',
+      of: c => c.stats.retirements || 0,
+      tiers: [5, 25, 100],
+    },
+    {
+      id: 'dailies',
+      icon: '📅',
+      name: 'Daily Devotion',
+      what: 'daily challenges finished',
+      of: c => c.dailyDays,
+      tiers: [5, 30, 100],
+    },
+    {
+      id: 'streak',
+      icon: '🔥',
+      name: 'Unbroken',
+      what: 'days in a row (best daily streak)',
+      of: c => c.bestStreak,
+      tiers: [3, 7, 30],
+    },
+    {
+      id: 'codex',
+      icon: '📚',
+      name: 'Chronicler',
+      what: 'Codex and Bestiary entries found',
+      of: c => c.codex,
+      tiers: [30, 100, 200],
+    },
+    {
+      id: 'monthly',
+      icon: '🗓️',
+      name: 'Month by Month',
+      what: 'monthly badges earned',
+      of: c => c.monthly,
+      tiers: [1, 6, 12],
+    },
+  ];
+  FW.MILESTONE_TIERS = ['', 'bronze', 'silver', 'gold'];
+  // how far a milestone is: { value, tier 0-3, next (the count for the next step, or null at gold), pct to next }
+  FW.milestoneTier = function (m, value) {
+    const v = Math.max(0, Math.floor(+value || 0)),
+      tier = m.tiers.filter(x => v >= x).length,
+      next = tier < 3 ? m.tiers[tier] : null,
+      prev = tier ? m.tiers[tier - 1] : 0;
+    return { value: v, tier, next, pct: next == null ? 100 : Math.round(((v - prev) / (next - prev)) * 100) };
+  };
+  // the counts, read from the player's saved data (or given directly in tests)
+  FW.milestoneCtx = function (store) {
+    const get = (k, d) => (store ? store.get(k, d) : d) || d;
+    const daily = get('fw.daily', {}),
+      codex = get('fw.codex', {});
+    const today = new Date().toISOString().slice(0, 10);
+    return {
+      stats: get('fw.stats', {}),
+      dailyDays: Object.keys(daily).length,
+      bestStreak: FW.dailyStreak ? FW.dailyStreak(daily, today).best : 0,
+      codex: ['race', 'world', 'end', 'foe', 'secret', 'cls', 'mount', 'chapter'].reduce(
+        (n, k) => n + Object.keys(codex[k] || {}).length,
+        0
+      ),
+      monthly: Object.keys(get('fw.monthly', {})).length,
+    };
+  };
   const BY_ID = {};
   FW.ACHIEVEMENTS.forEach(a => (BY_ID[a.id] = a));
   const enabled = () => !FW.gameOptions || FW.gameOptions().achievements;
@@ -378,7 +480,24 @@
   App.hooks.cardShown = L => {
     if (prev) prev(L);
     window.FWAchieve.check(L);
+    setTimeout(milestoneCheck, 4500); // after the play statistics have counted this hero
   };
+  function milestoneCheck() {
+    if (!enabled()) return;
+    const c = FW.milestoneCtx(App.store),
+      seen = App.store.get('fw.milestones', null) || {},
+      first = !App.store.get('fw.milestones', null);
+    let changed = false;
+    FW.MILESTONES.forEach(m => {
+      const r = FW.milestoneTier(m, m.of(c));
+      if (r.tier > (seen[m.id] || 0)) {
+        if (!first) pop({ id: m.id, icon: m.icon, name: tr(m.name) + ' (' + tr(FW.MILESTONE_TIERS[r.tier]) + ')' });
+        seen[m.id] = r.tier;
+        changed = true;
+      }
+    });
+    if (changed || first) App.store.set('fw.milestones', seen); // the first time, what a player already has counts as seen
+  }
   /* an unlock banner in the corner, like a game platform's (also read out by screen readers) */
   function pop(a) {
     const el = document.createElement('div');
@@ -404,6 +523,39 @@
     if (FW.Audio && FW.Audio.reveal) FW.Audio.reveal(true);
     setTimeout(() => el.remove(), 4200);
   }
+  function milestonesHtml() {
+    const c = FW.milestoneCtx(App.store),
+      medal = ['🔒', '🥉', '🥈', '🥇'];
+    return (
+      '<h3 class="opt-h">' +
+      H.esc(tr('Milestones')) +
+      '</h3><div class="milestones">' +
+      FW.MILESTONES.map(m => {
+        const r = FW.milestoneTier(m, m.of(c));
+        return (
+          '<div class="milestone t' +
+          r.tier +
+          '"><span class="ms-medal" aria-hidden="true">' +
+          medal[r.tier] +
+          '</span><div><b>' +
+          H.esc(m.icon + ' ' + tr(m.name)) +
+          (r.tier ? ' · ' + H.esc(tr(FW.MILESTONE_TIERS[r.tier])) : '') +
+          '</b><small>' +
+          H.esc(r.value + (r.next != null ? ' / ' + r.next : '') + ' ' + tr(m.what)) +
+          '</small><div class="ach-bar" role="progressbar" aria-label="' +
+          H.esc(tr(m.name)) +
+          '" aria-valuenow="' +
+          r.pct +
+          '" aria-valuemin="0" aria-valuemax="100"><i style="width:' +
+          r.pct +
+          '%"></i></div></div></div>'
+        );
+      }).join('') +
+      '</div><h3 class="opt-h">' +
+      H.esc(tr('Achievements')) +
+      '</h3>'
+    );
+  }
   App.achievementsModal = function () {
     const have = got(),
       secret = a => a.hidden && !have[a.id],
@@ -426,6 +578,7 @@
         pct +
         '%</b></div>' +
         (enabled() ? '' : '<p class="legend-key">Achievements are switched off in Options &gt; Gameplay.</p>') +
+        milestonesHtml() +
         '<div class="ach-grid">' +
         order
           .map(

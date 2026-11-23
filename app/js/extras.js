@@ -80,6 +80,18 @@
     );
   };
   const daily = () => App.store.get('fw.daily', {});
+  // the daily streak (142): days in a row with a finished daily challenge
+  App.dailyStreak = () => FW.dailyStreak(daily(), today());
+  const streakBadge = n => (n >= 30 ? '🏆' : n >= 7 ? '🔥' : n >= 3 ? '✨' : '');
+  App.dailySub = () => {
+    const k = App.dailyStreak();
+    if (!k.current) return '';
+    return (
+      (streakBadge(k.current) ? streakBadge(k.current) + ' ' : '') +
+      FW.fmt(t('{n}-day streak'), { n: k.current }) +
+      (k.today ? '' : ' · ' + t('play today to keep it'))
+    );
+  };
   async function startDaily() {
     const d = today();
     const keep = {
@@ -151,6 +163,7 @@
       score +
       (done ? '' : ' so far (finish the story to record it)') +
       (best ? ' · your best today: ' + best.score : '') +
+      (App.dailyStreak().current ? ' · ' + H.esc(App.dailySub()) : '') +
       ' <button class="btn small ghost" id="btnDailyShare">Copy result</button>' +
       (FW.World && FW.World.available()
         ? ' <button class="btn small ghost" id="btnDailyBoard">🏆 Leaderboard</button>'
@@ -246,6 +259,80 @@
       };
   }
   FW.dailyBoard = dailyBoard;
+  /* ================= monthly challenge (148) =================
+     One rule a month for everyone (engine.js FW.monthlyRule): it narrows one wheel. A hero made under it and taken to
+     the end of a saga earns the month's badge. */
+  const monthly = () => App.store.get('fw.monthly', {});
+  async function startMonthly() {
+    const rule = FW.monthlyRule(),
+      month = FW.monthKey();
+    const keep = { luck: st.luck, presets: st.person.presets, ov: st.overrides };
+    st.person.presets = {};
+    st.overrides = rule.ov();
+    try {
+      await App.runLegend(false);
+    } finally {
+      st.person.presets = keep.presets;
+      st.overrides = keep.ov;
+    }
+    if (st.screen === 'card' && st.legend && st.legend.picks.mark) {
+      st.legend.monthly = month;
+      App.showCard();
+      App.toast(rule.emoji + ' ' + t(rule.name) + ': ' + t('finish this hero’s saga to earn the badge.'));
+    }
+  }
+  App.startMonthly = startMonthly;
+  App.monthlySub = () => {
+    const rule = FW.monthlyRule(),
+      got = monthly()[FW.monthKey()];
+    return rule.emoji + ' ' + t(rule.name) + (got ? ' · ✅' : '');
+  };
+  App.monthlyBadges = () => monthly();
+  // the chooser behind the menu's Daily Challenge item: today's challenge and this month's
+  App.challengesModal = function () {
+    const rule = FW.monthlyRule(),
+      got = monthly()[FW.monthKey()],
+      best = daily()[today()],
+      streak = App.dailySub();
+    App.openModal(
+      '<button class="btn small ghost close">' +
+        H.esc(t('Close')) +
+        ' ✕</button><h2>' +
+        H.esc(t('Challenges')) +
+        '</h2><div class="challenges"><button class="btn big" id="chDaily"><b>📅 ' +
+        H.esc(t('Daily challenge')) +
+        '</b><span>' +
+        H.esc(t('The same spins for everyone today. Finish the story for your score.')) +
+        (best ? ' ' + H.esc(t('Your best today') + ': ' + best.score + '.') : '') +
+        (streak ? ' ' + H.esc(streak) + '.' : '') +
+        '</span></button><button class="btn big" id="chMonthly"><b>' +
+        H.esc(rule.emoji + ' ' + t('Monthly Challenge') + ': ' + t(rule.name)) +
+        '</b><span>' +
+        H.esc(
+          t(rule.desc) +
+            ' ' +
+            (got ? t('Badge earned') + ' ✅' : t('Finish a saga with a hero made this way to earn the badge.'))
+        ) +
+        '</span></button></div>'
+    );
+    $('#chDaily').onclick = () => {
+      App.closeModal();
+      startDaily();
+    };
+    $('#chMonthly').onclick = () => {
+      App.closeModal();
+      startMonthly();
+    };
+  };
+  chain('cardShown', L => {
+    if (!L || L.monthly !== FW.monthKey() || !L.saga || !L.saga.end) return;
+    const all = monthly();
+    if (all[L.monthly]) return;
+    const rule = FW.monthlyRule();
+    all[L.monthly] = { rule: rule.id, name: rule.name, emoji: rule.emoji, hero: L.displayName(), end: L.saga.end };
+    App.store.set('fw.monthly', all);
+    App.toast('🏅 ' + t('Monthly badge') + ': ' + rule.emoji + ' ' + t(rule.name));
+  });
   function homeDaily() {
     const b = daily()[today()];
     $('#btnDaily').textContent = '📅 Daily challenge' + (b ? ' (best ' + b.score + ')' : '');
@@ -259,6 +346,7 @@
     ['one', 'One fight'],
     ['bo3', 'Best of three'],
     ['team', 'Team fight (3 vs 3)'],
+    ['cup', 'Hall tournament'],
   ];
   function versusModal(preCode) {
     const opts = [];
@@ -351,6 +439,9 @@
           x.setAttribute('aria-checked', String(x === b));
         });
         document.querySelectorAll('.vs-team').forEach(x => (x.hidden = format !== 'team'));
+        // the Hall tournament picks its own field: the eight strongest heroes in the Hall
+        const m = document.querySelector('#modalRoot .modal');
+        if (m) m.classList.toggle('vs-cup', format === 'cup');
       })
     );
     ['A', 'B'].forEach(k =>
@@ -376,6 +467,25 @@
           t('Challenge copied: send it to a friend')
         );
     $('#vsGo').onclick = () => {
+      if (format === 'cup') {
+        const field = st.hall
+          .slice()
+          .sort((x, y) => (+y.rating || 0) - (+x.rating || 0))
+          .slice(0, 8);
+        const size = field.length >= 8 ? 8 : field.length >= 4 ? 4 : 0;
+        if (!size) {
+          $('#vsErr').textContent = t('A Hall tournament needs at least four heroes in your Hall of Legends.');
+          return;
+        }
+        let heroes;
+        try {
+          heroes = field.slice(0, size).map(h => FW.Legend.fromCode(h.code));
+        } catch (e) {
+          $('#vsErr').textContent = t('Could not read a fighter') + ': ' + (e.message || e);
+          return;
+        }
+        return runVersus(heroes, heroes, 'cup');
+      }
       const n = format === 'team' ? 3 : 1,
         A = [],
         B = [];
@@ -406,7 +516,7 @@
     };
     const taken = [],
       an = A.map(L => nameOf(L, taken)),
-      bn = B.map(L => nameOf(L, taken));
+      bn = format === 'cup' ? an : B.map(L => nameOf(L, taken)); // a tournament: one field, both sides
     const sideName = (names, k) => (names.length > 1 ? t(k === 'a' ? 'Side one' : 'Side two') : names[0]);
     st.auto = false;
     F.syncAutoBtn();
@@ -431,6 +541,16 @@
       );
     };
     const log = [];
+    const cupSheet = (alive, champion) => {
+      $('#sheetBody').innerHTML =
+        '<h3 class="vs-cup-title">🏆 ' +
+        H.esc(t('Hall tournament')) +
+        '</h3>' +
+        A.map((L, i) =>
+          card(L, (alive.indexOf(i) >= 0 ? '' : '✗ ') + (i === champion ? '🏆 ' : '') + an[i], alive.indexOf(i) < 0)
+        ).join('') +
+        (log.length ? '<ol class="vs-log">' + log.map(x => '<li>' + H.esc(x) + '</li>').join('') + '</ol>' : '');
+    };
     const sheet = (score, team) => {
       $('#sheetBody').innerHTML =
         (format === 'one'
@@ -500,6 +620,61 @@
       let winner = null,
         score = [0, 0],
         lastArena = '';
+      if (format === 'cup') {
+        // the bracket: winners go through; a draw is fought again, and a second draw sends the stronger one through
+        let alive = FW.cupSeeds(A.length),
+          done = 0,
+          runnerUp = -1;
+        const total = A.length - 1;
+        while (alive.length > 1) {
+          const label = t(FW.CUP_ROUNDS[alive.length] || 'Round'),
+            next = [];
+          for (let k = 0; k < alive.length; k += 2) {
+            const x = alive[k],
+              y = alive[k + 1];
+            cupSheet(alive, -1);
+            F.renderSteps(total, done);
+            let r = await bout(x, y, label);
+            if (r.res === 'draw') r = await bout(x, y, label + ' · ' + t('Replay'));
+            lastArena = r.arena;
+            const win = r.res === 'a' ? x : r.res === 'b' ? y : Math.min(x, y);
+            if (alive.length === 2) runnerUp = win === x ? y : x;
+            next.push(win);
+            done++;
+          }
+          alive = next;
+        }
+        const champ = alive[0];
+        cupSheet(alive, champ);
+        const cups = App.store.get('fw.cups', []) || [];
+        cups.push({ date: today(), champion: an[champ], field: A.length });
+        App.store.set('fw.cups', cups.slice(-50));
+        FW.Audio.reveal(true);
+        FW.Audio.sting('legend');
+        F.setResult('🏆 ' + an[champ] + ' ' + t('wins the Hall tournament'), { pop: true });
+        $('#resultSub').textContent = t('Final') + ': ' + an[champ] + ' ' + t('beat') + ' ' + an[runnerUp] + '.';
+        const fx = document.createElement('div');
+        fx.className = 'cta';
+        fx.innerHTML = '<button class="btn small" id="vsCard">' + H.esc(t('Save a result card')) + '</button>';
+        $('#effects').appendChild(fx);
+        $('#vsCard').onclick = () =>
+          saveResultCard({
+            format: 'cup',
+            a: [an[champ]],
+            b: [an[runnerUp]],
+            winner: 'a',
+            score: [1, 0],
+            arena: lastArena,
+            title: t('Hall tournament'),
+          });
+        $('#btnSpin').hidden = true;
+        F.setControls('result');
+        $('#btnRespin').hidden = true;
+        await F.finishWait(run);
+        if (st.legend) App.showCard();
+        else F.show('home');
+        return;
+      }
       if (format === 'one') {
         sheet(score);
         F.renderSteps(2, 0);
@@ -598,7 +773,7 @@
     col(r.b, 880, r.winner === 'b');
     c.fillStyle = accent;
     c.font = '800 64px ' + font;
-    c.fillText(r.format === 'one' ? 'VS' : r.score[0] + ' : ' + r.score[1], 600, 270);
+    c.fillText(r.format === 'one' ? 'VS' : r.format === 'cup' ? '🏆' : r.score[0] + ' : ' + r.score[1], 600, 270);
     c.fillStyle = '#fff';
     c.font = '700 46px ' + font;
     const w = r.winner === 'a' ? r.a : r.winner === 'b' ? r.b : null;

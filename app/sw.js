@@ -18,6 +18,7 @@ const FILES = [
   'js/report.js',
   'js/menu-data.js',
   'js/menu.js',
+  'js/title-fx.js',
   'js/guide.js',
   'js/options.js',
   'js/presence.js',

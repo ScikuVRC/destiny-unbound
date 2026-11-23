@@ -82,13 +82,14 @@
 <!-- SPIN (also used for the arena) -->
 <section class="screen" id="screen-spin" aria-labelledby="spinHeading">
   <h1 class="sr" id="spinHeading">Spin the wheels</h1>
+  <div class="sr" id="srSay" aria-live="polite" aria-atomic="true"></div>
   <div class="spin-layout">
     <div class="stage">
       <div class="steps" id="steps"></div>
       <div class="story-banner" id="storyBanner" hidden></div>
       <div class="chip-emoji" id="chipEmoji">&#129497;</div>
       <div class="chip"><span id="chipTitle">What's your Race?</span><span class="chip-bonus" id="chipBonus"></span></div>
-      <div class="result" id="result" aria-live="polite">&nbsp;</div>
+      <div class="result" id="result">&nbsp;</div>
       <div class="result-sub" id="resultSub"></div>
       <div class="wheel-wrap" id="wheelWrap"><canvas id="wheel" aria-label="Wheel"></canvas><div class="wheel-strip" id="wheelStrip" aria-hidden="true" hidden></div></div>
       <div class="controls" id="controls">
@@ -251,6 +252,7 @@
 <script src="js/report.js?v=101"></script>
 <script src="js/menu-data.js?v=101"></script>
 <script src="js/menu.js?v=101"></script>
+<script src="js/title-fx.js?v=101"></script>
 <script src="js/guide.js?v=101"></script>
 <script src="js/options.js?v=101"></script>
 <script src="js/presence.js?v=101"></script>

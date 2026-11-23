@@ -451,5 +451,101 @@ t('spin speed: slow is slower than normal, fast is faster', () => {
   }
 });
 
+t('set bonuses: two pieces give a named bonus, three a bigger one, and they show among the buffs', () => {
+  FW.SETS.forEach(s => {
+    assert.strictEqual(s.pieces.length, 3, s.name);
+    FW.parse(s.two);
+    FW.parse(s.three);
+  });
+  let two = 0,
+    three = 0;
+  for (let i = 0; i < 1500; i++) {
+    const L = legend('set' + i);
+    FW.setsOf(L).forEach(x => {
+      if (x.have === 2) two++;
+      if (x.have === 3) three++;
+      assert(
+        L.sources().some(src => src.label === 'Set: ' + x.set.name + ' (' + x.have + '/3)'),
+        'the set is not among the buffs'
+      );
+    });
+    assert(isFinite(FW.compute(L).rating));
+  }
+  assert(two > 150 && three > 3, 'sets: ' + two + ' with two pieces, ' + three + ' complete');
+  assert(two < 900, 'sets are too common: ' + two + ' of 1500');
+});
+
+t('daily streaks, the monthly challenge and the Hall tournament seeding', () => {
+  const d = {
+    '2026-11-20': 1,
+    '2026-11-21': 1,
+    '2026-11-22': 1,
+    '2026-11-01': 1,
+    '2026-11-02': 1,
+    '2026-11-03': 1,
+    '2026-11-04': 1,
+  };
+  assert.deepStrictEqual(FW.dailyStreak(d, '2026-11-23'), { current: 3, best: 4, today: false });
+  assert.deepStrictEqual(FW.dailyStreak(d, '2026-11-22'), { current: 3, best: 4, today: true });
+  assert.strictEqual(FW.dailyStreak(d, '2026-11-25').current, 0, 'a missed day breaks it');
+  assert.deepStrictEqual(FW.dailyStreak({}, '2026-11-25'), { current: 0, best: 0, today: false });
+  assert.strictEqual(
+    FW.dailyStreak({ '2026-12-31': 1, '2027-01-01': 1 }, '2027-01-01').current,
+    2,
+    'across a new year'
+  );
+  // a rule a month, in turn, each keeping at least one entry of a wheel that exists
+  const seen = new Set();
+  for (let m = 0; m < 12; m++) seen.add(FW.monthlyRule(Date.UTC(2026, m, 15)).id);
+  assert.strictEqual(seen.size, FW.MONTHLY.length, 'every rule gets a month');
+  assert.strictEqual(
+    FW.monthlyRule(Date.UTC(2026, 0, 1)).id,
+    FW.monthlyRule(Date.UTC(2027, 0, 31)).id,
+    'a yearly cycle'
+  );
+  FW.MONTHLY.forEach(r => {
+    const ov = r.ov(),
+      k = Object.keys(ov)[0];
+    const left = FW.LISTS[k]().filter(e => ov[k].removed.indexOf(e.name) < 0);
+    assert(left.length >= 1, r.id + ' leaves nothing on the ' + k + ' wheel');
+    assert(FW.LANG_PACKS.es.strings[r.name] != null, 'monthly rule not translated: ' + r.name);
+  });
+  const L = legend('monthly');
+  L.monthly = '2026-11';
+  assert.strictEqual(FW.Legend.fromCode(L.toCode()).monthly, '2026-11', 'the monthly mark travels in the code');
+  // seeding: the top two only meet in the final
+  const s8 = FW.cupSeeds(8);
+  assert.deepStrictEqual(s8.slice().sort(), [0, 1, 2, 3, 4, 5, 6, 7]);
+  assert(s8.indexOf(0) < 4 && s8.indexOf(1) >= 4, 'the top seeds are in different halves');
+  assert.deepStrictEqual(FW.cupSeeds(4).slice().sort(), [0, 1, 2, 3]);
+  const cup = FW.Unlocks.titles().find(x => x.id === 'cup');
+  assert(cup && !cup.test({ cups: 0 }) && cup.test({ cups: 1 }), 'a title for the Hall champion');
+});
+
+t('milestones: bronze, silver and gold with a progress bar to the next step', () => {
+  const m = FW.MILESTONES[0];
+  assert.deepStrictEqual(FW.milestoneTier(m, 0), { value: 0, tier: 0, next: m.tiers[0], pct: 0 });
+  assert.strictEqual(FW.milestoneTier(m, m.tiers[0]).tier, 1);
+  assert.strictEqual(FW.milestoneTier(m, m.tiers[2] + 5).tier, 3);
+  assert.strictEqual(FW.milestoneTier(m, m.tiers[2] + 5).next, null);
+  assert.strictEqual(FW.milestoneTier(m, (m.tiers[0] + m.tiers[1]) / 2).pct, 50);
+  const mem = {
+    'fw.stats': { legendsFinished: 12, chapters: 300, arenaFights: 3 },
+    'fw.daily': { '2026-11-20': 1, '2026-11-21': 1, '2026-11-22': 1 },
+    'fw.codex': { race: { Elf: 1, Orc: 1 }, foe: { X: {} } },
+    'fw.monthly': { '2026-11': {} },
+  };
+  const c = FW.milestoneCtx({ get: (k, d) => (k in mem ? mem[k] : d) });
+  assert.strictEqual(c.dailyDays, 3);
+  assert.strictEqual(c.codex, 3);
+  assert.strictEqual(c.monthly, 1);
+  FW.MILESTONES.forEach(x => {
+    assert.strictEqual(x.tiers.length, 3);
+    assert(x.tiers[0] < x.tiers[1] && x.tiers[1] < x.tiers[2], x.id + ' tiers out of order');
+    assert(typeof x.of(c) === 'number', x.id);
+    assert(FW.LANG_PACKS.es.strings[x.name] != null, 'milestone not translated: ' + x.name);
+  });
+});
+
 console.log('\n' + pass + ' of ' + (pass + fail) + ' checks passed');
 process.exit(fail ? 1 : 0);

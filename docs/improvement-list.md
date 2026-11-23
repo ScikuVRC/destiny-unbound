@@ -1,14 +1,14 @@
 # Destiny Unbound: what can be improved
 
 First written 2026-11-13, after 0.2.0-alpha.1. Rewritten 2026-11-17, after 0.3.0-alpha.1, with 100 new ideas
-(103-202); updated since: 67 of the first 102 and 38 of the new ideas are done and listed at the end.
+(103-202); updated since: 68 of the first 102 and 44 of the new ideas are done and listed at the end.
 
 Each item has a rough size: **S** (an hour or two), **M** (a day), **L** (several days or more).
 Items marked ★ are the ones I'd do first. ✅ = done, ⬜ = not yet. Numbers stay the same as items get done.
 
 Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of them secret), 10 endings with epilogues and a saga recap,
 13 arena worlds with 77 opponents, 34 achievements, 5 themes, 5 languages, a Discord bot with 6 commands,
-167 automated checks plus balance, accessibility, performance and licence checks in CI.
+170 automated checks plus balance, accessibility, performance and licence checks in CI.
 
 **Contents:** [Still to do (1-102)](#still-to-do-from-the-first-list) · [New ideas (103-202)](#new-ideas-103-202) ·
 [Done](#done) · [Suggested order](#suggested-order)
@@ -37,7 +37,6 @@ Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of 
 
 ### Character creation
 
-16. ⬜ **Synergies and set bonuses (M).** Reward combinations (fire element + fire weapon + dragon bloodline) with a
     named bonus shown on the card. Gives players something to hope for while spinning.
 18. ⬜ **Quick create (S).** A "surprise me" button that builds a hero in five seconds for players who want the story.
 19. ⬜ **Hero comparison (S).** Compare two heroes from the Hall side by side.
@@ -115,7 +114,6 @@ Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of 
 
 ### Arena and versus
 
-121. ⬜ ★ **Hall tournament (M).** Eight heroes from your Hall in a bracket, fought with the real odds.
 122. ⬜ **Arena hazards (S).** Each world adds a twist: lava, fog, a sacred ground that favours holy heroes.
 123. ⬜ **Fight replay (S).** A turn-by-turn view of how a fight was won or lost.
 124. ⬜ **Wager tokens on a fight (S).** Bet Fate Tokens on your hero before an arena fight.
@@ -135,15 +133,11 @@ Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of 
 
 ### Progression and keeping players
 
-142. ⬜ **Daily streaks (S).** Count days in a row of the daily challenge, with a small badge.
 143. ⬜ **Hall filters and search (S).** Sort and filter the Hall by race, ending, rank or date.
-146. ⬜ **Tiered achievements (S).** Progress bars and bronze, silver and gold steps for long achievements.
-148. ⬜ **Monthly challenge (S).** One fixed rule for a month ("all heroes are undead"), with its own badge.
 150. ⬜ **On this day (S).** The title screen recalls a hero you made a month or a year ago.
 
 ### Interface and feel
 
-152. ⬜ **Screen reader pass (S).** Play a full saga with NVDA and fix what gets in the way.
 153. ⬜ **One-handed phone mode (S).** Every button within thumb reach when the phone is held upright.
 154. ⬜ **Confirm before leaving a saga (S).** A small check when leaving a saga that is still going.
 155. ⬜ **Keyboard help (S).** Press ? to see every shortcut.
@@ -156,7 +150,6 @@ Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of 
 ### Art
 
 164. ⬜ **The other chapter illustrations (L).** 12 of 49 chapters have a painting.
-167. ⬜ **Moving title screens (M).** A slow parallax or drifting particles over the painted title art.
 169. ⬜ **Card frames per theme (M).** Each theme gets its own set of eight rank frames.
 170. ⬜ **Seasonal title variants (S).** Snow in winter, falling leaves in autumn.
 
@@ -205,9 +198,17 @@ Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of 
 
 ## Done
 
-67 of the first 102, and 38 of the new ideas.
+68 of the first 102, and 44 of the new ideas.
 
 ### Done 2026-11-23
+
+16. ✅ **Synergies and set bonuses.** 2026-11-23: twelve sets of three pieces (an element, a class, a race, a weapon, a mount...), such as Child of the Flame or Lord of the Dead; two pieces give a named bonus, all three a bigger one. A note pops up while spinning when a piece lands, and the set shows among the buffs and on the back of the card. About three heroes in ten get two pieces, one in eighty a full set.
+121. ✅ ★ **Hall tournament.** 2026-11-23: a fourth Versus format: the eight strongest heroes in your Hall (or four) in a seeded bracket, fought with the real odds; a draw is fought again. The champion is recorded and earns the title Champion of the Hall.
+142. ✅ **Daily streaks.** 2026-11-23: days in a row of finished daily challenges, with a badge at 3, 7 and 30 days, on the menu and the daily line.
+146. ✅ **Tiered achievements.** 2026-11-23: nine milestones in bronze, silver and gold (heroes made, chapters, arena fights, deaths, retirements, dailies, best streak, Codex entries, monthly badges), with progress bars at the top of the achievements screen.
+148. ✅ **Monthly challenge.** 2026-11-23: twelve rules in turn, one a month for everyone (every hero undead, giants, the fey, no weapons...); finish a saga with a hero made under it to earn the month's badge. Daily Challenge on the menu now opens a chooser for today's and this month's challenge.
+152. ✅ **Screen reader pass.** 2026-11-23: the result line no longer reads out every slice the pointer passes; a quiet announcer says the new wheel's question and its result with what it gives, and the wheel is labelled with its likeliest results and their odds. Not yet tried with NVDA itself.
+167. ✅ **Moving title screens.** 2026-11-23: a slow drift over the painted art and particles for each look (embers, twinkling stars, falling sparks, drifting ash, fireflies); only with animations fully on, only while the title shows.
 
 110. ✅ **Gold and a travelling merchant.** 2026-11-23: good outcomes in chapters that pay (treasure, heists, dragons, tournaments, conquests...) bring gold, shown in the saga log, on the saga sheet and in the recap; losing everything loses it too, and an heir inherits half. After about one chapter in seven a merchant offers three of ten wares (stat boosts, a healing draught that turns the next death into a narrow escape, a hired sellsword, a noble title); an option in the story settings.
 
@@ -360,7 +361,7 @@ Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of 
 
 1. **Feel:** real sound effects (52), ending stingers (55).
 2. **Play:** quick create (18), saga goals (24).
-3. **Depth:** companion and nemesis arcs (4, 5), Hall tournament (121), arena gauntlet (11).
+3. **Depth:** companion and nemesis arcs (4, 5), arena gauntlet (11).
 4. **Reach:** a real phone test (33), story text translated (60, now ready for plural and gender markers),
    native-speaker reviews (61).
 5. **Foundations:** move story text out of code (66), browser tests in CI (76), type checking (75).

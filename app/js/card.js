@@ -1131,6 +1131,11 @@
     if (legend.has('pow') && !legend.isNone('pow')) facts.push({ k: 'POWER', v: legend.pickName('pow') });
     if (legend.has('weak') && !legend.isNone('weak')) facts.push({ k: 'WEAKNESS', v: legend.pickName('weak') });
     if (legend.has('pet') && !legend.isNone('pet')) facts.push({ k: 'COMPANION', v: legend.pickName('pet') });
+    // set bonuses first, so a crowded card never leaves them out (16)
+    if (FW.setsOf) {
+      const sets = FW.setsOf(legend).map(x => tr(x.set.name) + (x.have >= 3 ? ' ★' : ''));
+      if (sets.length) facts.unshift({ k: 'SET BONUS', v: sets.join(', ') });
+    }
     y += 26;
     // the facts, the weak/resist line and the saga must all fit above the footer: tighten the rows first (down to
     // 48px), then leave out the last facts if a hero still has too many

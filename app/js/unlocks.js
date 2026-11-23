@@ -41,6 +41,14 @@
         desc: byId[id] ? byId[id].desc : '',
         test: ctx => !!(ctx.ach && ctx.ach[id]),
       }));
+      // the Hall tournament (121)
+      out.push({
+        id: 'cup',
+        name: 'Champion of the Hall',
+        kind: 'cup',
+        how: 'Win a Hall tournament (Versus).',
+        test: ctx => (ctx.cups || 0) > 0,
+      });
       // world champions (129): every foe of a world beaten at least once, in the arena or in a saga
       (FW.UNIVERSES || []).forEach(u =>
         out.push({
@@ -83,7 +91,11 @@
     store = App.store,
     $ = s => document.querySelector(s),
     t = s => (FW.t ? FW.t(s) : s);
-  const ctx = () => ({ ach: store.get('fw.achievements', {}) || {}, codex: store.get('fw.codex', null) || {} });
+  const ctx = () => ({
+    ach: store.get('fw.achievements', {}) || {},
+    codex: store.get('fw.codex', null) || {},
+    cups: (store.get('fw.cups', []) || []).length,
+  });
   U.ctx = ctx;
   // the title on the card: one the player picked, if they still have it
   App.honour = () => {

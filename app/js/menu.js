@@ -79,10 +79,12 @@
     },
     {
       k: 'Daily Challenge',
+      // today's challenge and this month's, in one small chooser (the menu has no room for another line)
       run: () => {
         FW.Audio.init();
-        App.startDaily();
+        return App.challengesModal ? App.challengesModal() : App.startDaily();
       },
+      sub: () => (App.dailySub && App.dailySub()) || (App.monthlySub ? App.monthlySub() : ''),
     },
     {
       k: 'World Boss',

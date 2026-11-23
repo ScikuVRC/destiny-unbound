@@ -403,6 +403,10 @@
       if ((x = e('mount')) && !FW.P(x).none) add('Mount: ' + x.name, 'mount', FW.P(x));
       if ((x = e('title'))) add(x.name, 'title', FW.P(x));
       if ((x = e('mark')) && !FW.P(x).none) add('Mark: ' + x.name, 'mark', FW.P(x));
+      if (FW.setsOf)
+        FW.setsOf(this).forEach(x =>
+          add('Set: ' + x.set.name + ' (' + x.have + '/3)', 'synergy', FW.parse(x.have >= 3 ? x.set.three : x.set.two))
+        );
       this.chron.forEach(c => add(c.label, 'chron', FW.parse(c.dsl)));
       return out;
     }
@@ -423,6 +427,7 @@
       const St = FW.Story;
       if (this.saga) j.y = St && St.forCode ? St.forCode(this.saga) : this.saga;
       if (this.daily) j.d = this.daily;
+      if (this.monthly) j.mo = this.monthly; // made under the monthly challenge (148)
       // story chronicle lines carry an empty text; leave it out
       j.c = this.chron.map(c => {
         if (c && c.text === '') {
@@ -472,11 +477,213 @@
       if (!(j.t >= 2)) FW.upgradeLadderPicks(L.picks);
       if (j.y && FW.Story) L.saga = FW.Story.sanitize(j.y);
       if (typeof j.d === 'string' && /^\d{4}-\d\d-\d\d$/.test(j.d)) L.daily = j.d;
+      if (typeof j.mo === 'string' && /^\d{4}-\d\d$/.test(j.mo)) L.monthly = j.mo;
       FW.validateLegend(L);
       return L;
     }
   }
   FW.Legend = Legend;
+  /* set bonuses (16): three pieces that belong together (an element, a class, a race, a weapon, a mount...). Two of
+     them give a small named bonus, all three a bigger one. They show among the buffs and on the back of the card. */
+  const pickIn = (L, id, names) => L.has(id) && !L.isNone(id) && names.indexOf(L.pickName(id)) >= 0;
+  const attacks = (L, tag) =>
+    ['wpn', 'pow', 'enh'].some(id => L.has(id) && !L.isNone(id) && (FW.P(L.entry(id)).atk || []).indexOf(tag) >= 0);
+  const UNDEAD = [
+    'Skeleton',
+    'Vampire',
+    'Ghoul',
+    'Revenant',
+    'Zombie',
+    'Mummy',
+    'Lich',
+    'Banshee',
+    'Dullahan',
+    'Shade',
+    'Reaper',
+  ];
+  FW.SETS = [
+    {
+      name: 'Child of the Flame',
+      pieces: [
+        ['the Fire element', L => pickIn(L, 'elem', ['Fire', 'Magma'])],
+        ['a fire weapon or power', L => attacks(L, 'fire')],
+        [
+          'fire in the blood',
+          L =>
+            ['Dragonborn', 'Phoenixkin', 'Salamanderkin', 'Demon', 'Hellblood', 'Elemental'].indexOf(L.raceName()) >= 0,
+        ],
+      ],
+      two: 'pwr+1',
+      three: 'pwr+1 fgt+1 r=fire',
+    },
+    {
+      name: 'Heart of Winter',
+      pieces: [
+        ['the Ice element', L => pickIn(L, 'elem', ['Ice'])],
+        ['an ice weapon or power', L => attacks(L, 'ice')],
+        [
+          'born of the cold',
+          L =>
+            ['Frost Giant', 'Yeti', 'Wendigo'].indexOf(L.raceName()) >= 0 ||
+            pickIn(L, 'mount', ['Mammoth', 'Riding Elk']),
+        ],
+      ],
+      two: 'dur+1',
+      three: 'dur+1 str+1 r=ice',
+    },
+    {
+      name: 'Stormcaller',
+      pieces: [
+        ['the Storm or Lightning element', L => pickIn(L, 'elem', ['Storm', 'Lightning', 'Wind'])],
+        ['a lightning weapon or power', L => attacks(L, 'lightning')],
+        [
+          'a creature of the sky',
+          L =>
+            L.raceName() === 'Thunderbird' ||
+            L.raceName() === 'Harpy' ||
+            pickIn(L, 'mount', ['Griffin', 'Pegasus', 'Giant Owl']),
+        ],
+      ],
+      two: 'spd+1',
+      three: 'spd+2 fgt+1',
+    },
+    {
+      name: 'Lord of the Dead',
+      pieces: [
+        ['the Necromancer or Warlock class', L => pickIn(L, 'cls', ['Necromancer', 'Warlock', 'Witch'])],
+        ['an undead body', L => UNDEAD.indexOf(L.raceName()) >= 0],
+        [
+          'shadow, spirit or blood magic',
+          L => pickIn(L, 'elem', ['Shadow', 'Spirit', 'Blood']) || attacks(L, 'shadow') || attacks(L, 'blood'),
+        ],
+      ],
+      two: 'pwr+1',
+      three: 'pwr+2 dark:all+1',
+    },
+    {
+      name: 'Holy Crusade',
+      pieces: [
+        ['a holy class', L => pickIn(L, 'cls', ['Paladin', 'Templar', 'Cleric', 'Healer'])],
+        ['the Light element or a holy weapon', L => pickIn(L, 'elem', ['Light']) || attacks(L, 'holy')],
+        [
+          'a warhorse or heaven’s blood',
+          L =>
+            pickIn(L, 'mount', ['Destrier', 'Horse']) ||
+            ['Angel', 'Lightborn', 'Celestial', 'Nephilim'].indexOf(L.raceName()) >= 0,
+        ],
+      ],
+      two: 'dur+1',
+      three: 'dur+1 fgt+1 r=shadow',
+    },
+    {
+      name: 'Shadow of the Night',
+      pieces: [
+        ['a class that strikes from the dark', L => pickIn(L, 'cls', ['Assassin', 'Ninja', 'Rogue', 'Hexblade'])],
+        ['the Shadow or Moon element', L => pickIn(L, 'elem', ['Shadow', 'Moon'])],
+        [
+          'a child of the night',
+          L => ['Shadowborn', 'Dark Elf', 'Vampire', 'Shade', 'Voidling'].indexOf(L.raceName()) >= 0,
+        ],
+      ],
+      two: 'spd+1',
+      three: 'spd+1 fgt+1 dark:all+1',
+    },
+    {
+      name: 'Beast Bond',
+      pieces: [
+        ['a class of the wilds', L => pickIn(L, 'cls', ['Beastmaster', 'Druid', 'Ranger', 'Shaman'])],
+        ['an animal companion', L => L.has('pet') && !L.isNone('pet')],
+        ['the Nature element or a nature weapon', L => pickIn(L, 'elem', ['Nature']) || attacks(L, 'nature')],
+      ],
+      two: 'fgt+1',
+      three: 'fgt+1 dur+1 spd+1',
+    },
+    {
+      name: 'Sea Raider',
+      pieces: [
+        ['the Pirate class', L => pickIn(L, 'cls', ['Pirate'])],
+        ['the Water element or a water weapon', L => pickIn(L, 'elem', ['Water']) || attacks(L, 'water')],
+        [
+          'a child of the sea',
+          L =>
+            ['Mermaid', 'Leviathan', 'Sharkfolk', 'Undine', 'Naga', 'Lizardfolk'].indexOf(L.raceName()) >= 0 ||
+            pickIn(L, 'mount', ['Sea Serpent']),
+        ],
+      ],
+      two: 'spd+1',
+      three: 'spd+1 str+1 fate+1',
+    },
+    {
+      name: 'Dragon Lord',
+      pieces: [
+        ['the Dragon Rider class', L => pickIn(L, 'cls', ['Dragon Rider'])],
+        ['dragon blood', L => ['Dragonborn', 'Kobold'].indexOf(L.raceName()) >= 0],
+        ['a drake or wyvern to ride', L => pickIn(L, 'mount', ['Drake', 'Riding Wyvern'])],
+      ],
+      two: 'str+1',
+      three: 'str+1 pwr+1 rt+1',
+    },
+    {
+      name: 'Arcane Scholar',
+      pieces: [
+        [
+          'a class of study',
+          L => pickIn(L, 'cls', ['Mage', 'Sorcerer', 'Chronomancer', 'Alchemist', 'Runesmith', 'Illusionist']),
+        ],
+        ['a scholar’s mind', L => pickIn(L, 'per', ['Scholar', 'Mad Genius', 'Calculating', 'Mastermind'])],
+        [
+          'mind, time or star magic',
+          L => pickIn(L, 'elem', ['Mind', 'Time', 'Star', 'Void']) || attacks(L, 'mind') || attacks(L, 'time'),
+        ],
+      ],
+      two: 'int+1',
+      three: 'int+2 pwr+1',
+    },
+    {
+      name: 'Iron Legion',
+      pieces: [
+        ['a soldier’s class', L => pickIn(L, 'cls', ['Warrior', 'Knight', 'Gladiator', 'Samurai', 'Duelist'])],
+        ['the Metal element or a metal weapon', L => pickIn(L, 'elem', ['Metal']) || attacks(L, 'metal')],
+        [
+          'a body built for war',
+          L => ['Golem', 'Automaton', 'Dwarf', 'Cyborg', 'Half-Giant', 'Hobgoblin'].indexOf(L.raceName()) >= 0,
+        ],
+      ],
+      two: 'dur+1',
+      three: 'dur+1 wpn+1 str+1',
+    },
+    {
+      name: 'Wild Heart',
+      pieces: [
+        [
+          'a beast’s blood',
+          L =>
+            ['Beastkin', 'Werewolf', 'Bearfolk', 'Centaur', 'Satyr', 'Gnoll', 'Kitsune', 'Minotaur'].indexOf(
+              L.raceName()
+            ) >= 0,
+        ],
+        ['the Nature element or a nature weapon', L => pickIn(L, 'elem', ['Nature']) || attacks(L, 'nature')],
+        ['a wild class', L => pickIn(L, 'cls', ['Druid', 'Shaman', 'Berserker', 'Monster Hunter'])],
+      ],
+      two: 'str+1',
+      three: 'str+1 spd+1',
+    },
+  ];
+  // the sets a legend has, with how many pieces ({ set, have, pieces: [[label, has]] }); only those with 2 or 3
+  FW.setsOf = function (L, all) {
+    return FW.SETS.map(set => {
+      const pieces = set.pieces.map(([label, fn]) => {
+        let ok = false;
+        try {
+          ok = !!fn(L);
+        } catch (e) {
+          ok = false;
+        }
+        return [label, ok];
+      });
+      return { set, have: pieces.filter(p => p[1]).length, pieces };
+    }).filter(x => all || x.have >= 2);
+  };
   /* versus: two legends fight each other; each is turned into a foe for the other, and the edge between them sets
      the odds (the game's Versus mode and the Discord bot's /versus) */
   FW.legendAsFoe = L => {
@@ -517,6 +724,10 @@
     n.winner = !n.done ? null : n.a >= n.n && n.b >= n.n ? 'draw' : n.a >= n.n ? 'b' : 'a';
     return n;
   };
+  /* the Hall tournament (121): the field sorted strongest first, then seeded so the top two can only meet in the
+     final (1 v 8, 4 v 5, 2 v 7, 3 v 6). Returns the order of the first round, as indexes into the field. */
+  FW.cupSeeds = n => (n >= 8 ? [0, 7, 3, 4, 1, 6, 2, 5] : n >= 4 ? [0, 3, 1, 2] : [0, 1].slice(0, n));
+  FW.CUP_ROUNDS = { 8: 'Quarter-finals', 4: 'Semi-finals', 2: 'Final' };
   // a challenge to send a friend: the hero's Legend Code, which Versus reads with "Paste a Legend Code"
   FW.vsChallenge = (name, rating, code) =>
     'Can you beat ' +
@@ -529,6 +740,190 @@
   FW.codeIn = text => {
     const m = String(text || '').match(/FW1\.\S+/);
     return m ? m[0] : String(text || '').trim();
+  };
+  /* daily streaks (142): days in a row with a recorded daily challenge. `days` is { 'YYYY-MM-DD': ... }; the current
+     streak still counts until the end of today, so a streak that reached yesterday is alive. */
+  FW.dailyStreak = function (days, today) {
+    const set = new Set(Object.keys(days || {}).filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d)));
+    const prev = d => {
+      const t = new Date(d + 'T12:00:00Z');
+      t.setUTCDate(t.getUTCDate() - 1);
+      return t.toISOString().slice(0, 10);
+    };
+    let current = 0,
+      d = set.has(today) ? today : prev(today);
+    while (set.has(d)) {
+      current++;
+      d = prev(d);
+    }
+    let best = 0;
+    set.forEach(x => {
+      if (set.has(prev(x))) return; // not the start of a run
+      let n = 0,
+        y = x;
+      while (set.has(y)) {
+        n++;
+        const t = new Date(y + 'T12:00:00Z');
+        t.setUTCDate(t.getUTCDate() + 1);
+        y = t.toISOString().slice(0, 10);
+      }
+      best = Math.max(best, n);
+    });
+    return { current, best: Math.max(best, current), today: set.has(today) };
+  };
+
+  /* the monthly challenge (148): one fixed rule a month, the same for everyone. Each rule keeps only some entries of
+     one wheel; finish a saga with a hero made under it to earn that month's badge. */
+  const keepOnly = (id, names) => () => {
+    const all = (FW.LISTS[id] ? FW.LISTS[id]() : []).map(e => e.name);
+    return { [id]: { removed: all.filter(n => names.indexOf(n) < 0) } };
+  };
+  FW.MONTHLY = [
+    {
+      id: 'undead',
+      emoji: '💀',
+      name: 'Month of the Dead',
+      desc: 'Every hero is undead.',
+      ov: keepOnly('race', [
+        'Skeleton',
+        'Vampire',
+        'Ghoul',
+        'Revenant',
+        'Zombie',
+        'Mummy',
+        'Lich',
+        'Banshee',
+        'Dullahan',
+        'Shade',
+        'Reaper',
+      ]),
+    },
+    {
+      id: 'small',
+      emoji: '🐭',
+      name: 'Month of Small Folk',
+      desc: 'Every hero is small: halflings, gnomes, goblins and their kin.',
+      ov: keepOnly('race', ['Halfling', 'Gnome', 'Goblin', 'Kobold', 'Fairy', 'Ratfolk', 'Frogfolk', 'Homunculus']),
+    },
+    {
+      id: 'giants',
+      emoji: '🗻',
+      name: 'Month of Giants',
+      desc: 'Every hero is huge.',
+      ov: keepOnly('race', [
+        'Half-Giant',
+        'Frost Giant',
+        'Titan',
+        'Forest Giant',
+        'Cyclops',
+        'Ogre',
+        'Troll',
+        'Yeti',
+        'Behemoth',
+      ]),
+    },
+    {
+      id: 'beasts',
+      emoji: '🐺',
+      name: 'Month of Beasts',
+      desc: 'Every hero has a beast’s blood.',
+      ov: keepOnly('race', [
+        'Beastkin',
+        'Werewolf',
+        'Bearfolk',
+        'Centaur',
+        'Satyr',
+        'Gnoll',
+        'Kitsune',
+        'Minotaur',
+        'Owlfolk',
+        'Sharkfolk',
+      ]),
+    },
+    {
+      id: 'heaven',
+      emoji: '😇',
+      name: 'Month of Heaven',
+      desc: 'Every hero comes from on high.',
+      ov: keepOnly('race', ['Angel', 'Celestial', 'Lightborn', 'Nephilim', 'Valkyrie', 'Demigod', 'God', 'Starchild']),
+    },
+    {
+      id: 'hell',
+      emoji: '😈',
+      name: 'Month of the Pit',
+      desc: 'Every hero comes from below.',
+      ov: keepOnly('race', ['Demon', 'Hellblood', 'Succubus', 'Oni', 'Reaper', 'Gargoyle', 'Voidling']),
+    },
+    {
+      id: 'machines',
+      emoji: '⚙️',
+      name: 'Month of Machines',
+      desc: 'Every hero was built, not born.',
+      ov: keepOnly('race', ['Golem', 'Automaton', 'Cyborg', 'Android', 'Crystalborn', 'Homunculus']),
+    },
+    {
+      id: 'fey',
+      emoji: '🧚',
+      name: 'Month of the Fey',
+      desc: 'Every hero comes from the fairy courts.',
+      ov: keepOnly('race', [
+        'Fairy',
+        'Archfey',
+        'Dryad',
+        'Sylph',
+        'Undine',
+        'Changeling',
+        'Kitsune',
+        'Satyr',
+        'Dreamborn',
+      ]),
+    },
+    {
+      id: 'sea',
+      emoji: '🌊',
+      name: 'Month of the Sea',
+      desc: 'Every hero comes from the deep.',
+      ov: keepOnly('race', ['Mermaid', 'Leviathan', 'Sharkfolk', 'Undine', 'Naga', 'Lizardfolk', 'Frogfolk']),
+    },
+    {
+      id: 'barehanded',
+      emoji: '👊',
+      name: 'Month of Bare Hands',
+      desc: 'No hero gets a weapon.',
+      ov: keepOnly('wpn', ['No weapon']),
+    },
+    {
+      id: 'mages',
+      emoji: '🔮',
+      name: 'Month of Magic',
+      desc: 'Every hero is a spellcaster.',
+      ov: keepOnly('cls', [
+        'Mage',
+        'Sorcerer',
+        'Warlock',
+        'Witch',
+        'Necromancer',
+        'Chronomancer',
+        'Druid',
+        'Shaman',
+        'Illusionist',
+        'Summoner',
+      ]),
+    },
+    {
+      id: 'commoners',
+      emoji: '🧑‍🌾',
+      name: 'Month of Nobodies',
+      desc: 'Every hero starts as a commoner.',
+      ov: keepOnly('cls', ['Commoner']),
+    },
+  ];
+  FW.monthKey = now => new Date(now == null ? Date.now() : now).toISOString().slice(0, 7);
+  // this month's rule: the list in turn from January 2026
+  FW.monthlyRule = function (now) {
+    const d = new Date(now == null ? Date.now() : now),
+      n = (d.getUTCFullYear() - 2026) * 12 + d.getUTCMonth();
+    return FW.MONTHLY[((n % FW.MONTHLY.length) + FW.MONTHLY.length) % FW.MONTHLY.length];
   };
   /* codes made before the ladders grew store tier numbers from the old lists: move each to the same tier name */
   FW.upgradeLadderPicks = function (picks) {
