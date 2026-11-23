@@ -4,6 +4,19 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
+## 0.3.0-alpha.10 (2026-11-23)
+
+### New
+
+- **Five new story arcs**, each running over three chapters:
+  - **The hungry blade:** a whispering sword that grows stronger the more you feed it. Feed it or starve it, then
+    break it, master it, or throw it into the sea.
+  - **The war of the banners:** join the Silver Crown or the Ember Rebellion, fight the great battle, and win a land,
+    a free country, or a price on your head.
+  - **A sibling you never knew:** follow the trail of a lost twin and find out who they became.
+  - **The grey fever:** help the sick, look for a cure or run, then live through the plague as it spreads.
+  - **The Grand Circuit:** three tournaments in three cities, ending in a final before fifty thousand people.
+
 ## 0.3.0-alpha.9 (2026-11-23)
 
 ### New
