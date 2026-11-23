@@ -1335,6 +1335,9 @@
       'Team fight': 'チーム戦',
       'Save a result card': '結果カードを保存',
       'Result card saved': '結果カードを保存しました',
+      'Map of the saga': 'サーガの地図',
+      'A painted map with the hero’s path from chapter to chapter': '章から章へと英雄がたどった道を描いた地図',
+      'Friends and foes': '仲間と宿敵',
       'After the ending': '結末のその後',
       'Heroes who retire, ascend, are damned or become undying get one more chapter about what came after.':
         '引退・昇天・堕落・不死の結末を迎えた英雄には、その後を描く章がもう一つ加わります。',

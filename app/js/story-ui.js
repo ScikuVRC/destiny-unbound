@@ -46,18 +46,33 @@
       row('World event', S.event(s) ? S.event(s).emoji + ' ' + S.event(s).name : '') +
       row('Beloved', s.love) +
       row('Heir', s.heir ? s.heir.name + ' (' + s.heir.kind + ')' : '');
+    // a face for the nemesis and each companion (165, 166)
+    const face = (src, name, label, sub) =>
+      '<div class="face-row"><img src="' +
+      H.esc(src) +
+      '" alt="" loading="lazy"><div><small>' +
+      H.esc(label) +
+      '</small><b>' +
+      H.esc(name) +
+      '</b>' +
+      (sub ? '<span>' + H.esc(sub) + '</span>' : '') +
+      '</div></div>';
     if (s.nem)
-      h += row(
-        'Nemesis',
-        s.nem.name + ' · ' + (s.nem.ally ? 'now your ally' : s.nem.alive ? 'power ' + s.nem.lv : 'defeated')
+      h += face(
+        S.nemArt(s.nem),
+        s.nem.name,
+        tt('Nemesis'),
+        s.nem.ally ? 'now your ally' : s.nem.alive ? 'power ' + s.nem.lv : 'defeated'
       );
     if (L.ally.length)
       h +=
         '<h2 style="margin-top:12px">Companions</h2>' +
         L.ally
           .map(a =>
-            row(
+            face(
+              S.allyArt(a),
               a.name,
+              '',
               (a.lv ? 'power ' + a.lv : '') + (opts().loyalty && a.loyalty != null ? ' · loyalty ' + a.loyalty : '')
             )
           )
@@ -667,6 +682,13 @@
           ? '<ol class="saga-log recap-line">' + line + '</ol>'
           : '<p class="legend-key">' + H.esc(t('A quiet life.')) + '</p>') +
         epilogueHtml(L) +
+        (S.mapPath(L).length > 1
+          ? '<h3>' +
+            H.esc(t('Map of the saga')) +
+            '</h3><canvas class="saga-map" id="sagaMap" width="1600" height="900" role="img" aria-label="' +
+            H.esc(t('A painted map with the hero’s path from chapter to chapter')) +
+            '"></canvas>'
+          : '') +
         (legacy.length
           ? '<h3>' +
             H.esc(t('Legacy')) +
@@ -674,8 +696,111 @@
             legacy.map(([k, v]) => '<dt>' + H.esc(k) + '</dt><dd>' + H.esc(v) + '</dd>').join('') +
             '</dl>'
           : '') +
+        facesHtml(L) +
         fam
     );
+    drawSagaMap(L, $('#sagaMap'));
+  }
+  // the nemesis and the companions at the end of the saga, with their faces (165, 166)
+  function facesHtml(L) {
+    const s = L.saga,
+      t = x => (FW.t ? FW.t(x) : x);
+    const tile = (src, name, what) =>
+      '<figure><img src="' +
+      H.esc(src) +
+      '" alt="" loading="lazy"><figcaption><b>' +
+      H.esc(name) +
+      '</b><span>' +
+      H.esc(what) +
+      '</span></figcaption></figure>';
+    const tiles = (s.nem ? [tile(S.nemArt(s.nem), s.nem.name, t('Nemesis'))] : []).concat(
+      L.ally.slice(0, 8).map(a => tile(S.allyArt(a), a.name, t('Companion')))
+    );
+    return tiles.length
+      ? '<h3>' + H.esc(t('Friends and foes')) + '</h3><div class="recap-faces">' + tiles.join('') + '</div>'
+      : '';
+  }
+  /* the map of the saga (168): the painted map, the hero's path from chapter to chapter, a numbered stop for each
+     and the ending marked at the last one */
+  function drawSagaMap(L, cv) {
+    if (!cv) return;
+    const stops = S.mapPath(L),
+      c = cv.getContext('2d'),
+      W = cv.width,
+      Hh = cv.height,
+      css = getComputedStyle(document.documentElement),
+      accent = (css.getPropertyValue('--accent') || '#e0a040').trim(),
+      font = (css.getPropertyValue('--font-display') || 'serif').trim();
+    const im = new Image();
+    im.onload = () => {
+      c.drawImage(im, 0, 0, W, Hh);
+      c.fillStyle = 'rgba(0,0,0,.18)';
+      c.fillRect(0, 0, W, Hh);
+      const P = stops.map(p => [p.x * W, p.y * Hh]);
+      // the road: a dark under-stroke and a dashed line on top, curving a little between stops. Early legs fade, so a
+      // long saga still reads: the most recent part of the journey is the brightest
+      const leg = i => {
+        const [x0, y0] = P[i - 1],
+          [x1, y1] = P[i];
+        c.beginPath();
+        c.moveTo(x0, y0);
+        c.quadraticCurveTo((x0 + x1) / 2 + (y1 - y0) * 0.15, (y0 + y1) / 2 - (x1 - x0) * 0.15, x1, y1);
+        c.stroke();
+      };
+      const fade = i => (P.length <= 6 ? 1 : 0.25 + 0.75 * Math.pow(i / (P.length - 1), 1.5));
+      c.lineCap = 'round';
+      c.lineJoin = 'round';
+      for (let i = 1; i < P.length; i++) {
+        c.globalAlpha = fade(i);
+        c.setLineDash([]);
+        c.strokeStyle = 'rgba(20,10,5,.7)';
+        c.lineWidth = 9;
+        leg(i);
+        c.setLineDash([16, 12]);
+        c.strokeStyle = accent;
+        c.lineWidth = 5;
+        leg(i);
+      }
+      c.setLineDash([]);
+      c.globalAlpha = 1;
+      // numbered stops; the last one bigger, with the ending
+      stops.forEach((p, i) => {
+        const [x, y] = P[i],
+          last = i === stops.length - 1,
+          r = last ? 30 : 21;
+        c.globalAlpha = Math.max(0.55, fade(i));
+        c.beginPath();
+        c.arc(x, y, r, 0, Math.PI * 2);
+        c.fillStyle = last ? accent : 'rgba(18,12,8,.92)';
+        c.fill();
+        c.lineWidth = 4;
+        c.strokeStyle = last ? '#fff3da' : accent;
+        c.stroke();
+        c.fillStyle = last ? '#1a1008' : '#fff3da';
+        c.font = '700 ' + (last ? 26 : 22) + 'px ' + font;
+        c.textAlign = 'center';
+        c.textBaseline = 'middle';
+        c.fillText(String(p.ch), x, y + 1);
+        c.globalAlpha = 1;
+      });
+      const end = stops[stops.length - 1];
+      if (end && L.saga.end) {
+        const label =
+          (S.endLabel[L.saga.end] ? (FW.t ? FW.t(S.endLabel[L.saga.end]) : S.endLabel[L.saga.end]) : '') || '';
+        if (label) {
+          c.font = '700 34px ' + font;
+          const w = c.measureText(label).width + 36,
+            x = Math.min(W - w / 2 - 10, Math.max(w / 2 + 10, P[P.length - 1][0])),
+            y = P[P.length - 1][1] > 120 ? P[P.length - 1][1] - 62 : P[P.length - 1][1] + 62;
+          c.fillStyle = 'rgba(18,12,8,.85)';
+          c.fillRect(x - w / 2, y - 26, w, 52);
+          c.fillStyle = accent;
+          c.textBaseline = 'middle';
+          c.fillText(label, x, y + 2);
+        }
+      }
+    };
+    im.src = 'art/saga-map.webp';
   }
   const RES = { win: 'won', lose: 'lost', draw: 'drawn' };
 
@@ -818,6 +943,11 @@
   $('#btnStoryExit').onclick = () => {
     F.abortRun();
     App.showCard();
+  };
+  // the battle report shows the nemesis with their portrait (render.js)
+  FW.extraFace = name => {
+    const n = st.legend && st.legend.saga && st.legend.saga.nem;
+    return n && n.name === name ? S.nemArt(n) : '';
   };
   App.runStory = runStory;
   App.continueAsHeir = continueAsHeir;

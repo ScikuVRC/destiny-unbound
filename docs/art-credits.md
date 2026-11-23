@@ -342,18 +342,158 @@ seen straight from the front, perfectly circular, filling about 80 percent of th
 - Blood Moon (rim 3, hub 1): blackened silver with thorned gothic filigree, small crimson garnets / a large glowing crimson blood-moon garnet at the core. Gothic painterly style, eerie and elegant.
 - Verdant Wild (rim 3, hub 1): woven from living dark wood and twisted vines with old gold leaf inlay, small carved leaves and runes, tiny golden-green glowing fireflies / a glowing emerald-gold seed at the core. Dark fantasy painterly style.
 
+## Portraits for every other race (2026-11-23)
+
+Generated 2026-11-23 on the developer's SuperGrok account at grok.com (Grok Imagine, image mode, Quality 2.0, 2:3,
+four images per prompt). **How they were made:** at the developer's request, Claude (Anthropic's AI assistant) typed
+these prompts into grok.com in the developer's own signed-in Chrome and saved the results; the developer accepted the
+account risk this carries under xAI's Acceptable Use Policy (see "Automation" above). Claude picked one image per
+prompt from contact sheets and `art-source/race-portraits/make-webp.js` made the 640x960 WebP game copies in
+`app/art/portraits/`. The four originals per race, the prompts (`prompts.json`) and the picks (`picks.json`) are
+in the local `art-source/race-portraits/` folder. Created with Grok.
+
+Every prompt has the same frame as the first portraits: "Painterly dark fantasy video game character portrait, tall
+2:3:" + the subject + ". Head and shoulders, facing the viewer, centred in the upper half, plain dark smoky
+background, dramatic rim lighting, highly detailed concept art. No text, no logo, no frame." The subjects
+(file, variant picked):
+
+- **Fairy** (`fairy-f1`, 2): a fairy woman with iridescent dragonfly wings, pointed ears and a crown of thorny wildflowers, glowing pollen in the air.
+- **Mermaid** (`mermaid-f1`, 2): a mermaid with sea-green scales on her shoulders and cheekbones, long wet dark hair woven with pearls and kelp, gill slits on her neck.
+- **Slime** (`slime-1`, 2): a humanoid made of translucent glowing green slime, bubbles and a swallowed dagger floating inside its body, a vaguely face-like shape.
+- **Golem** (`golem-1`, 1): a stone golem with a carved granite face, glowing blue runes cut into its chest and brow, moss in the cracks.
+- **Half-Giant** (`halfgiant-m1`, 2): a towering half-giant man with a broad scarred face, a shaved head and a fur mantle, a huge iron torc around his neck.
+- **Vampire** (`vampire-1`, 3): an elegant pale vampire noble with red eyes, sharp fangs and a high-collared black and crimson coat, candlelight behind.
+- **Werewolf** (`werewolf-1`, 3): a snarling werewolf with grey fur, yellow eyes and torn leather armour, a full moon glow behind its head.
+- **Kitsune** (`kitsune-f1`, 3): a kitsune woman with fox ears, several fluffy white-tipped tails curling behind her, a red and white robe and blue foxfire flames.
+- **Oni** (`oni-m1`, 3): a red-skinned oni with two curved horns, wild black hair, tusks and a spiked iron club over his shoulder.
+- **Banshee** (`banshee-f1`, 2): a ghostly banshee woman with long white hair streaming upward, hollow glowing eyes and a mouth open in a silent wail, translucent.
+- **Chimera** (`chimera-1`, 3): a chimera with a lion's head and mane, a goat's horns rising beside it and a serpent coiled over its shoulder, fierce eyes.
+- **Succubus** (`succubus-f1`, 2): a succubus with curling black horns, bat wings folded behind her, violet skin and a sly smile, dark jewellery.
+- **Shadowborn** (`shadowborn-1`, 1): a shadowborn figure made of living shadow, wisps of darkness pouring off a hooded silhouette, two pale glowing eyes.
+- **Phoenixkin** (`phoenixkin-1`, 3): a phoenixkin with feathered hair of living flame in red and gold, ember-bright eyes and fiery plumage on the shoulders.
+- **Demon** (`demon-1`, 3): a hulking demon with charred red skin, massive ram horns, glowing cracks of lava in its hide and burning eyes.
+- **Dragonborn** (`dragonborn-1`, 1): a dragonborn warrior with bronze scales, a draconic snout, horns sweeping back and ornate plate armour, smoke curling from its nostrils.
+- **Celestial** (`celestial-1`, 3): a celestial being with skin like the night sky full of stars, a halo of constellations and calm silver eyes.
+- **Angel** (`angel-f1`, 3): an angel woman with great white feathered wings, golden armour, a radiant halo and a stern gaze.
+- **Spirit** (`spirit-1`, 1): a translucent blue spirit of a long-dead traveller, softly glowing, wisps of mist trailing from its outline.
+- **Leviathan** (`leviathan-1`, 3): a leviathan-blooded sea titan with dark blue scales, a crest of fins, deep-sea bioluminescent markings and water streaming off it.
+- **Reaper** (`reaper-1`, 3): a reaper in a tattered black hooded robe, a bone-white skull face in the shadows of the hood and a great scythe over its shoulder.
+- **Ghoul** (`ghoul-1`, 2): a gaunt grey-skinned ghoul with sunken eyes, long sharp teeth and ragged grave clothes.
+- **Cyborg** (`cyborg-1`, 4): a cyborg warrior, half of the face replaced by brass and steel plates, a glowing red mechanical eye, cables at the neck.
+- **Mutant** (`mutant-1`, 3): a mutant with mottled skin, one oversized arm, glowing green veins and a third eye on the forehead, scavenged armour.
+- **Frost Giant** (`frostgiant-m1`, 2): a frost giant with pale blue skin, a beard of icicles, a horned iron helm and frost on his fur cloak.
+- **Titan** (`titan-1`, 2): a colossal titan of bronze-coloured skin, eyes like molten gold, ancient carved armour and clouds drifting at its shoulders.
+- **Eldritch Horror** (`eldritch-1`, 2): an eldritch horror, a shape of writhing tentacles and too many eyes around a dark gaping maw, impossible geometry.
+- **Cosmic Entity** (`cosmic-1`, 2): a cosmic entity, a humanoid shape made of nebulae and swirling galaxies, a single bright star where its heart would be.
+- **Eternal** (`eternal-1`, 2): an eternal being with ageless grey eyes, robes embroidered with hourglasses and sand slowly drifting upward around them.
+- **God** (`god-1`, 3): a god in radiant golden armour with a crown of light, eyes blazing white, an aura of divine fire.
+- **Kobold** (`kobold-1`, 2): a small kobold with reddish-brown scales, a lizard snout, a miner's candle helmet and a crude spear.
+- **Ogre** (`ogre-m1`, 3): a huge ogre with a heavy brow, a lumpy bald head, tusks, crude hide armour and a stupid grin.
+- **Troll** (`troll-1`, 4): a green-skinned troll with a long hooked nose, mossy hair, tusks and long arms, regenerating scars across its face.
+- **Centaur** (`centaur-1`, 3): a centaur archer, a human torso on a chestnut horse body, braided hair, a longbow and a quiver of feathered arrows.
+- **Minotaur** (`minotaur-1`, 2): a minotaur with a bull's head, huge curved horns, a brass nose ring and a double-headed axe.
+- **Harpy** (`harpy-f1`, 3): a harpy with storm-grey feathered wings for arms, talon hands, wild windswept hair and fierce golden eyes.
+- **Satyr** (`satyr-1`, 1): a grinning satyr with small goat horns, curly hair, a wreath of grapevines and a set of pan pipes.
+- **Naga** (`naga-1`, 3): a naga with the upper body of a person and a long emerald serpent tail, a cobra hood behind the head and glowing venom-green magic.
+- **Dryad** (`dryad-f1`, 2): a dryad with bark-textured skin, leaves and blossoms growing in her hair, amber eyes and vines curling around her arms.
+- **Hellblood** (`hellblood-1`, 4): a hellblood with small curved horns, red-tinted skin, a pointed tail over the shoulder and a charming smirk, a rogue's coat.
+- **Gargoyle** (`gargoyle-1`, 2): a gargoyle with grey stone skin, folded stone wings, a snarling face and cracked horns, perched on a cathedral ledge.
+- **Tengu** (`tengu-1`, 1): a tengu with a crow's head and black feathers, crow wings, a samurai's lacquered armour and a katana.
+- **Arachne** (`arachne-f1`, 2): an arachne with the upper body of a woman and spider legs rising behind her, several small glowing eyes, silk threads.
+- **Yeti** (`yeti-1`, 4): a yeti with thick white fur, a dark blue face, frost in its fur and big blunt teeth, snow falling.
+- **Automaton** (`automaton-1`, 2): a clockwork automaton with a polished brass mask face, glowing amber eye lenses and visible gears turning in its chest.
+- **Mothfolk** (`mothfolk-1`, 2): a mothfolk with soft grey-white fur, feathery antennae, huge dark compound eyes and dusty patterned wings, drawn to a lantern.
+- **Mycelid** (`mycelid-1`, 4): a mycelid, a humanoid made of fungus with a broad mushroom cap for a head, glowing spores drifting around it.
+- **Changeling** (`changeling-1`, 1): a changeling, its pale face half-shifted between two different people, blank grey eyes and a hooded cloak.
+- **Revenant** (`revenant-1`, 3): a revenant, a corpse-pale warrior with burning blue eyes, rusted armour and a noose scar, come back for revenge.
+- **Elemental** (`elemental-1`, 3): an elemental made of swirling fire, water, stone and wind meeting in one humanoid shape.
+- **Djinn** (`djinn-1`, 1): a djinn of smokeless blue fire, gold bracelets and earrings, a curling smoke tail instead of legs and glowing eyes.
+- **Valkyrie** (`valkyrie-f1`, 2): a valkyrie with a winged silver helm, braided blonde hair, a spear and feathered wings, chooser of the slain.
+- **Lich** (`lich-1`, 3): a lich, a skeletal archmage with a jewelled crown, rotting purple robes and green soul-fire burning in its eye sockets.
+- **Nephilim** (`nephilim-1`, 4): a nephilim, a tall half-divine warrior with one feathered wing and a faint halo, mortal scars on the face.
+- **Sphinx** (`sphinx-1`, 2): a sphinx with a human face, a lion's mane and golden headdress, wise ancient eyes, desert sand behind.
+- **Starchild** (`starchild-1`, 4): a starchild with pale silver skin that glows softly, hair like a stream of stars and wide curious eyes.
+- **Voidling** (`voidling-1`, 4): a voidling, a flickering silhouette of pure black emptiness with violet edges, a cold glint where eyes should be.
+- **Primordial** (`primordial-1`, 3): a primordial being of ancient rock and magma, a face like a cliff, eyes older than the world.
+- **Ratfolk** (`ratfolk-1`, 2): a ratfolk with brown fur, long whiskers, a patched hooded cloak, clever beady eyes and a dagger.
+- **Hobgoblin** (`hobgoblin-1`, 4): a disciplined hobgoblin legionary with orange skin, a crested iron helm, a red military cloak and a stern face.
+- **Gnoll** (`gnoll-1`, 2): a gnoll with a spotted hyena head, a manic grin full of teeth, bone trophies and a crude bone-handled axe.
+- **Frogfolk** (`frogfolk-1`, 3): a frogfolk warrior with green and yellow spotted skin, big golden eyes, a reed helmet and a bone spear.
+- **Bearfolk** (`bearfolk-1`, 1): a bearfolk bruiser with thick brown fur, a bear's head, small bright eyes and leather straps across the chest.
+- **Owlfolk** (`owlfolk-1`, 3): an owlfolk with brown and white feathers, a round owl face with huge amber eyes and a scholar's robe.
+- **Sharkfolk** (`sharkfolk-1`, 4): a sharkfolk with grey skin, a shark's head full of teeth, gill slits and a harpoon, sea water dripping.
+- **Zombie** (`zombie-1`, 4): a zombie with greenish decaying skin, a vacant stare, torn burial clothes and an exposed cheekbone.
+- **Homunculus** (`homunculus-1`, 1): a small homunculus with smooth grey-pink skin, large dark eyes, alchemical symbols painted on its head and a glass flask.
+- **Lightborn** (`lightborn-1`, 2): a lightborn with faintly glowing golden skin, white-gold hair and a soft radiance around them, wearing white robes.
+- **Salamanderkin** (`salamanderkin-1`, 2): a salamanderkin with orange and black spotted scales, a long lizard face and flames flickering along its back.
+- **Undine** (`undine-f1`, 4): an undine, a water nymph whose hair and body flow like moving water, droplets floating around her.
+- **Sylph** (`sylph-1`, 2): a sylph, a slender airy being with pale hair blown upward by wind, translucent wing-like veils and grey-blue eyes.
+- **Forest Giant** (`forestgiant-1`, 1): a gentle forest giant with bark-like skin, a beard of moss and leaves, birds nesting on the shoulder.
+- **Cyclops** (`cyclops-m1`, 3): a cyclops forge giant with one large eye, a leather apron, a smith's hammer and soot-covered skin.
+- **Mummy** (`mummy-1`, 3): a mummy king wrapped in ancient bandages, a golden pharaoh's headdress and glowing blue eyes.
+- **Shade** (`shade-1`, 1): a shade, a walking human-shaped shadow with a faint outline and grim white eyes, a long coat of darkness.
+- **Crystalborn** (`crystalborn-1`, 4): a crystalborn whose body is living faceted amethyst crystal, light refracting through the face.
+- **Android** (`android-1`, 2): an android with a flawless porcelain-white synthetic face, thin seams along the jaw and softly glowing blue eyes.
+- **Gorgon** (`gorgon-f1`, 3): a gorgon with a crown of living green snakes for hair, reptilian golden eyes and scaled skin at the neck.
+- **Dullahan** (`dullahan-1`, 4): a headless dullahan knight in black armour holding its own glowing-eyed head under one arm, a green ghostly flame at the neck.
+- **Wendigo** (`wendigo-1`, 3): a wendigo, a gaunt antlered creature with a deer skull face, frost-bitten grey skin and hollow glowing eyes, snowstorm.
+- **Treant** (`treant-1`, 2): a treant, an ancient walking tree with a face in the bark, branches for hair and glowing green eyes.
+- **Dreamborn** (`dreamborn-1`, 2): a dreamborn with a soft hazy outline, pastel nebula colours, floating fragments of a dream around the head and sleepy eyes.
+- **Thunderbird** (`thunderbird-1`, 3): a thunderbird-blooded warrior with a great eagle's head, dark storm-blue feathers crackling with lightning.
+- **Demigod** (`demigod-1`, 3): a demigod hero with a golden laurel, a muscular build, divine light in the eyes and a bronze breastplate.
+- **Behemoth** (`behemoth-1`, 3): a behemoth, a massive horned beast-titan with thick armoured hide, small fierce eyes and steam from its nostrils.
+- **Archfey** (`archfey-f1`, 2): an archfey queen with antlers wreathed in flowers, glittering eyes, gossamer wings and a regal cold smile.
+- **Chronoborn** (`chronoborn-1`, 4): a chronoborn whose silhouette shows several overlapping afterimages, clock gears and sand swirling around them.
+
+## Companions, nemeses and the map of the saga (2026-11-23)
+
+Generated 2026-11-23 the same way as the race portraits above (the developer's SuperGrok account at grok.com, typed in
+by Claude at the developer's request, one of four picked per prompt). Companion and nemesis portraits are 1:1 and the
+game copies are 512x512 WebP in `app/art/allies/` and `app/art/nemesis/`; the map is 16:9, 1600x900 in
+`app/art/saga-map.webp`. Originals and picks are in the local `art-source/allies-nemesis/` folder. Created with Grok.
+
+Companion prompts: "Painterly dark fantasy video game companion portrait, square:" + the subject + ". Head and
+shoulders, facing the viewer, plain dark smoky background, warm rim lighting, highly detailed concept art. No text,
+no logo, no frame."
+
+- `mentor` (4): an old grey-bearded mentor in a travel-worn robe with a gnarled staff, kind tired eyes, a lantern at his side.
+- `beloved` (2): a beloved companion with a soft smile, windswept dark hair and a simple silver pendant, warm candlelight on the face.
+- `ghost` (2): a restless ghost, a translucent pale figure in old-fashioned clothes with a sad gentle face, a faint blue glow and drifting mist.
+- `army` (2): a ragged army standard-bearer holding a tattered banner, rows of soldiers with spears behind in the smoke.
+- `townsfolk` (1): a hopeful townswoman holding up a lantern, a crowd of townsfolk with torches behind her.
+- `royal` (3): a regal noble in a jewelled circlet and a fur-trimmed velvet robe, a proud but warm expression.
+- `traveller` (3): a mysterious traveller from another world in strange ornate armour, eyes reflecting alien stars, a cloak of unfamiliar fabric.
+- `prisoner` (2): a freed prisoner with broken shackles on the wrists, gaunt and unshaven, grateful determined eyes.
+- `apprentice` (3): a young apprentice with an eager freckled face, a satchel of books and a wooden practice sword.
+- `dragon` (2): a young dragon companion with gleaming bronze scales, curious golden eyes and a wisp of smoke from its nostrils.
+- `warrior` (1): a battle-hardened sellsword with a scarred face, a notched sword over the shoulder and loyal steady eyes.
+
+Nemesis prompts: "Painterly dark fantasy video game villain portrait, square:" + the subject + ". Head and shoulders,
+facing the viewer, menacing, plain dark smoky background, cold rim lighting, highly detailed concept art. No text, no
+logo, no frame."
+
+- `warlord` (2): a brutal warlord in spiked black armour with a scarred face and a cruel grin.
+- `sorceress` (2): a cold sorceress with violet eyes, dark lace and a high collar, shadow magic curling from her fingers.
+- `assassin` (3): a masked assassin in dark leathers and a deep hood, only narrowed eyes showing, a curved dagger raised.
+- `fallen` (2): a fallen knight in tarnished once-holy armour, hollow bitter eyes and a broken sun sigil on the breastplate.
+- `necromancer` (4): a gaunt necromancer with a skull-topped staff, sunken cheeks and green deathlight glowing in the eyes.
+- `beastlord` (3): a savage beast-lord wearing a wolf pelt over the shoulders, red war paint and feral yellow eyes.
+- `schemer` (2): a smiling noble schemer in rich dark velvet and rings, raising a goblet of poisoned wine.
+- `prophet` (3): a cult prophet with a burning sigil branded on the forehead, fanatical eyes and ragged ceremonial robes.
+
+Map (second prompt, variant 2):
+
+> Painterly dark fantasy overworld map, wide 16:9, top-down view of a single wild continent: jagged snowy peaks in the north, dense dark woods in the west, a lone castle city with tall towers at the heart, a glowing volcano in the east, golden dunes in the south-east, swamp and bog in the south-west, a vast sea with islands to the south, ancient ruins scattered between. Hand-painted, warm aged-parchment tones, soft vignette. Absolutely no text, no labels, no symbols, no compass, no border.
+
 ## World bosses
 
-### `app/art/bosses/` (`hunger`, `colossus`, `storms`, `court`, `genesis`)
+### `app/art/bosses/` (`hunger`, `colossus`, `storms`, `court`)
 
 Made with Grok Imagine on 2026-11-17. Each boss first got a 6-second video (video mode, 1:1, 480p, the prompts
 below); a frame of it then went into Grok Imagine's **Loop** mode (10 seconds, the video starts and ends on that
 picture) with the same motion described, so the animation loops. `scripts/make-boss-art.js` cuts each loop into a
 320×320 animated WebP (the last 0.3 s fades into the first to hide the seam) and a still frame for reduced motion.
 The videos and loop pictures are kept in `art-source/grok-bosses/`. Created with Grok.
-
-**Genesis, the Valkyr of Time** was designed by the game's creator, who made her video with Grok; the loop was
-made from its first frame the same way (cropped toward the top to keep her face).
 
 - **Vaelthrax, the Hunger Below** (`hunger`):
 

@@ -1360,6 +1360,10 @@
       'Team fight': 'Combate por equipos',
       'Save a result card': 'Guardar una carta de resultado',
       'Result card saved': 'Carta de resultado guardada',
+      'Map of the saga': 'Mapa de la saga',
+      'A painted map with the hero’s path from chapter to chapter':
+        'Un mapa pintado con el camino del héroe de capítulo en capítulo',
+      'Friends and foes': 'Amigos y enemigos',
       'After the ending': 'Después del final',
       'Heroes who retire, ascend, are damned or become undying get one more chapter about what came after.':
         'Los héroes que se retiran, ascienden, son condenados o se vuelven inmortales tienen un capítulo más sobre lo que vino después.',

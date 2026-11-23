@@ -1,14 +1,14 @@
 # Destiny Unbound: what can be improved
 
 First written 2026-11-13, after 0.2.0-alpha.1. Rewritten 2026-11-17, after 0.3.0-alpha.1, with 100 new ideas
-(103-202); updated since: 67 of the first 102 and 32 of the new ideas are done and listed at the end.
+(103-202); updated since: 67 of the first 102 and 36 of the new ideas are done and listed at the end.
 
 Each item has a rough size: **S** (an hour or two), **M** (a day), **L** (several days or more).
 Items marked ★ are the ones I'd do first. ✅ = done, ⬜ = not yet. Numbers stay the same as items get done.
 
 Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of them secret), 10 endings with epilogues and a saga recap,
 13 arena worlds with 77 opponents, 34 achievements, 5 themes, 5 languages, a Discord bot with 6 commands,
-164 automated checks plus balance, accessibility, performance and licence checks in CI.
+165 automated checks plus balance, accessibility, performance and licence checks in CI.
 
 **Contents:** [Still to do (1-102)](#still-to-do-from-the-first-list) · [New ideas (103-202)](#new-ideas-103-202) ·
 [Done](#done) · [Suggested order](#suggested-order)
@@ -158,13 +158,8 @@ Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of 
 
 ### Art
 
-163. ⬜ **Portraits for the other races (L).** 19 portraits cover the 11 most common races; the other 87 still show
-     a silhouette.
 164. ⬜ **The other chapter illustrations (L).** 12 of 49 chapters have a painting.
-165. ⬜ **Companion portraits (M).** A small set by companion type.
-166. ⬜ **Nemesis portraits (M).** One per nemesis motive, once item 5 exists.
 167. ⬜ **Moving title screens (M).** A slow parallax or drifting particles over the painted title art.
-168. ⬜ ★ **A map of the saga (M).** A painted world map with the hero's path drawn across it, in the recap.
 169. ⬜ **Card frames per theme (M).** Each theme gets its own set of eight rank frames.
 170. ⬜ **Seasonal title variants (S).** Snow in winter, falling leaves in autumn.
 
@@ -213,7 +208,14 @@ Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of 
 
 ## Done
 
-67 of the first 102, and 32 of the new ideas.
+67 of the first 102, and 36 of the new ideas.
+
+### Done 2026-11-23
+
+165. ✅ **Companion portraits.** 2026-11-23: eleven portraits by kind of companion (mentor, beloved, ghost, army, townsfolk, royal, traveller, freed prisoner, apprentice or heir, young dragon, sellsword); arena foes and dragons who join you keep their own. On the saga sheet and in the recap.
+166. ✅ **Nemesis portraits.** 2026-11-23: eight villain portraits (warlord, sorceress, assassin, fallen knight, necromancer, beast-lord, schemer, cult prophet), one fixed by the nemesis's name, since motives (item 5) don't exist yet. On the saga sheet, in their fights' battle report and in the recap.
+168. ✅ ★ **A map of the saga.** 2026-11-23: a painted world map in the recap with the hero's road from chapter to chapter: every chapter has its place (the capital, the volcano, the swamps, the sea...), stops are numbered, the ending is marked and older legs fade so long sagas still read.
+163. ✅ **Portraits for every race.** 2026-11-23: one painted portrait for each of the 87 races that had none (Grok, picked from four each), so every hero's card now has a picture; 106 portraits in all.
 
 ### Done 2026-11-21
 
@@ -247,7 +249,7 @@ Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of 
 107. ✅ **Fame and infamy.** 2026-11-17: heroic chapters bring fame, crimes and conquests infamy; from 3 up they tilt quests, heists and mentors, and show in the recap.
 109. ✅ **Scars.** 2026-11-17: eight scars from lost fights and narrow escapes, each a small penalty and some a grim bonus; at most three, on the card and in the recap.
 113. ✅ **Mounts and pets.** 2026-11-17: a mount wheel with 19 mounts (a mount helps on quests, a flying or swimming one at sea), and a companion can save the hero from death once.
-125. ✅ **World boss.** 2026-11-17: five bosses take turns weekly (each with a looping animation made with Grok; Genesis, the Valkyr of Time, designed by the game's creator); each hero fights once a week with the real arena odds; players who share counts fight one shared health bar (`/v1/boss`).
+125. ✅ **World boss.** 2026-11-17: bosses take turns weekly, each with a looping animation made with Grok (four since 2026-11-23); each hero fights once a week with the real arena odds; players who share counts fight one shared health bar (`/v1/boss`).
 149. ✅ **Export your statistics.** 2026-11-17: the Hall and statistics as a spreadsheet file (CSV), from the Hall of Legends.
 151. ✅ **Easy-read text.** 2026-11-17: Options > Accessibility: a plain, evenly spaced system font with more spacing and no capitals-only headings (no font download needed).
 161. ✅ **Ultrawide and 4K check.** 2026-11-17: the layout check now emulates sizes bigger than the screen; everything fits at 2560×1080, 3440×1440 and 3840×2160.
@@ -356,7 +358,7 @@ Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of 
 ## Suggested order
 
 1. **Feel:** real sound effects (52), ending stingers (55).
-2. **Play:** quick create (18), saga goals (24), a map of the saga (168).
+2. **Play:** quick create (18), saga goals (24).
 3. **Depth:** companion and nemesis arcs (4, 5), Hall tournament (121), arena gauntlet (11).
 4. **Reach:** a real phone test (33), story text translated (60, now ready for plural and gender markers),
    native-speaker reviews (61).

@@ -10,6 +10,8 @@ export default [
       'node_modules/**',
       'dist/**',
       'research/**',
+      'art-source/**', // local art originals and helper scripts (not in git)
+      'backup/**', // local backups (not in git)
       'mockups/**',
       'mods/**',
       'packs/**',

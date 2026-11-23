@@ -695,6 +695,42 @@ async function playSaga(seed, opts, ov) {
     assert(any > 20, 'the facts are almost always empty');
   });
 
+  await t(
+    'faces and the map: every companion, nemesis and chapter has art and a place, and the path stays on the map',
+    async () => {
+      const fs = require('fs'),
+        path = require('path'),
+        APP = path.join(__dirname, '..', 'app');
+      const exists = p => fs.existsSync(path.join(APP, p));
+      assert(exists('art/saga-map.webp'), 'the map picture');
+      S.NEMESIS_ART.forEach(n => assert(exists('art/nemesis/' + n + '.webp'), 'nemesis art ' + n));
+      S.ALLY_ART.map(x => x[0])
+        .concat(['warrior', 'prisoner', 'beloved'])
+        .forEach(n => assert(exists('art/allies/' + n + '.webp'), 'ally art ' + n));
+      S.CHAPTERS.forEach(c => assert(S.MAP_REGIONS[S.CH_REGION[c.id]], 'no place on the map for ' + c.id));
+      const types = new Set();
+      for (let i = 0; i < 80; i++) {
+        const { L } = await playSaga('map' + i, {});
+        const stops = S.mapPath(L);
+        assert.strictEqual(
+          stops.length,
+          new Set(L.saga.log.filter(x => x.ch).map(x => x.ch)).size,
+          'one stop per chapter'
+        );
+        stops.forEach(p => assert(p.x > 0 && p.x < 1 && p.y > 0 && p.y < 1, 'off the map'));
+        if (stops.length) assert(stops[stops.length - 1].end, 'the last stop is the ending');
+        L.ally.forEach(a => {
+          const f = S.allyArt(a);
+          types.add(f);
+          assert(exists(f), 'missing ' + f + ' for ' + a.name);
+        });
+        if (L.saga.nem) assert(exists(S.nemArt(L.saga.nem)));
+        assert.deepStrictEqual(S.mapPath(L), stops, 'the same saga draws the same map');
+      }
+      assert(types.size >= 4, 'companions barely vary: ' + [...types]);
+    }
+  );
+
   console.log('\n' + pass + ' of ' + (pass + fail) + ' checks passed');
   process.exit(fail ? 1 : 0);
 })();

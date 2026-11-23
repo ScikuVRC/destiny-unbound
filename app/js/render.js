@@ -235,7 +235,11 @@
     // painted backdrop for the arena and a portrait of the foe, when the game has them
     const ar = (FW.ARENAS || []).find(a => a.name === arena);
     const bg = ar && FW.ARENA_ART ? FW.ARENA_ART[ar.tags[0] || 'none'] : '';
-    const face = FW.FOE_ART && FW.FOE_ART[opp];
+    // a named arena foe or dragon, or the saga's nemesis (story-ui.js sets FW.extraFace)
+    const face =
+      FW.FOE_ART && FW.FOE_ART[opp]
+        ? 'art/foes/' + FW.FOE_ART[opp] + '.webp'
+        : (FW.extraFace && FW.extraFace(opp)) || '';
     const art =
       bg || face
         ? '<div class="battle-art' +
@@ -243,7 +247,7 @@
           '"' +
           (bg ? ' style="background-image:url(art/arena/' + bg + '.webp)"' : '') +
           '>' +
-          (face ? '<img class="foe-art" src="art/foes/' + face + '.webp" alt="' + esc(opp) + '" loading="lazy">' : '') +
+          (face ? '<img class="foe-art" src="' + face + '" alt="' + esc(opp) + '" loading="lazy">' : '') +
           '</div>'
         : '';
     return (

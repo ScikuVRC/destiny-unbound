@@ -1573,6 +1573,193 @@
     );
     return out.join(' · ');
   };
+
+  /* ---------------- faces for companions and the nemesis (165, 166) ----------------
+     A companion who was an arena foe or a dragon keeps that portrait; the others get one by what they are. A nemesis
+     gets one of eight villain portraits, fixed by their name. Paths are relative to app/. */
+  S.ALLY_ART = [
+    ['dragon', /dragon|wyrm|drake/i],
+    ['mentor', /mentor/i],
+    ['beloved', /beloved/i],
+    ['ghost', /ghost|spirit|shade/i],
+    ['army', /army|legion|soldiers/i],
+    ['townsfolk', /people of|villagers|townsfolk/i],
+    ['royal', /royal|in-laws|king|queen|prince/i],
+    ['traveller', /traveller|another world/i],
+    ['prisoner', /prisoner|chains/i],
+    ['apprentice', /apprentice|heir|child/i],
+  ];
+  S.allyArt = a => {
+    if (!a || !a.name) return '';
+    const face = FW.FOE_ART && FW.FOE_ART[a.name];
+    if (face) return 'art/foes/' + face + '.webp';
+    if (a.how === 'love') return 'art/allies/beloved.webp';
+    const hit = S.ALLY_ART.find(x => x[1].test(a.name));
+    return 'art/allies/' + (hit ? hit[0] : a.how === 'rescued' ? 'prisoner' : 'warrior') + '.webp';
+  };
+  S.NEMESIS_ART = ['warlord', 'sorceress', 'assassin', 'fallen', 'necromancer', 'beastlord', 'schemer', 'prophet'];
+  const nameHash = s => {
+    let h = 2166136261;
+    for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619) >>> 0;
+    return h;
+  };
+  S.nemArt = n =>
+    n && n.name ? 'art/nemesis/' + S.NEMESIS_ART[nameHash(String(n.name)) % S.NEMESIS_ART.length] + '.webp' : '';
+
+  /* ---------------- the map of the saga (168) ----------------
+     The painted map (app/art/saga-map.webp) has a capital in the middle, mountains in the north, a forest in the west,
+     a volcano in the east, a desert in the south-east, swamps in the south-west and a sea with islands to the south.
+     Each chapter happens somewhere on it; the recap draws the hero's path from place to place. Points are fractions
+     of the map's width and height; a chapter picks one of its region's spots with the saga's seed. */
+  S.MAP_REGIONS = {
+    capital: [
+      [0.49, 0.4],
+      [0.45, 0.45],
+      [0.54, 0.44],
+    ],
+    plains: [
+      [0.41, 0.56],
+      [0.55, 0.58],
+      [0.36, 0.47],
+      [0.62, 0.5],
+    ],
+    forest: [
+      [0.2, 0.38],
+      [0.27, 0.46],
+      [0.15, 0.48],
+      [0.31, 0.32],
+    ],
+    mountains: [
+      [0.55, 0.14],
+      [0.4, 0.18],
+      [0.69, 0.16],
+      [0.8, 0.22],
+    ],
+    volcano: [
+      [0.73, 0.32],
+      [0.68, 0.38],
+      [0.79, 0.4],
+    ],
+    desert: [
+      [0.73, 0.62],
+      [0.82, 0.58],
+      [0.66, 0.68],
+    ],
+    swamp: [
+      [0.27, 0.6],
+      [0.2, 0.66],
+      [0.34, 0.68],
+    ],
+    ruins: [
+      [0.26, 0.36],
+      [0.6, 0.3],
+      [0.44, 0.66],
+      [0.58, 0.68],
+    ],
+    sea: [
+      [0.48, 0.84],
+      [0.62, 0.8],
+      [0.35, 0.78],
+      [0.9, 0.62],
+    ],
+    coast: [
+      [0.18, 0.76],
+      [0.86, 0.46],
+      [0.42, 0.74],
+    ],
+    edge: [
+      [0.09, 0.3],
+      [0.93, 0.32],
+      [0.92, 0.74],
+    ],
+  };
+  S.CH_REGION = {
+    train: 'plains',
+    study: 'capital',
+    treasure: 'ruins',
+    quest: 'forest',
+    dungeon: 'mountains',
+    boss: 'volcano',
+    dragon: 'mountains',
+    evolve: 'ruins',
+    artifact: 'ruins',
+    kingdom: 'capital',
+    conquerRace: 'plains',
+    conquerWorld: 'capital',
+    guild: 'capital',
+    guildWork: 'capital',
+    guildMaster: 'capital',
+    tournament: 'capital',
+    rescue: 'swamp',
+    love: 'plains',
+    heir: 'capital',
+    apprentice: 'plains',
+    betrayal: 'capital',
+    nemesis: 'desert',
+    showdown: 'desert',
+    rival: 'plains',
+    oldLegend: 'forest',
+    curse: 'swamp',
+    exile: 'desert',
+    plague: 'swamp',
+    rebellion: 'capital',
+    otherworld: 'edge',
+    religion: 'mountains',
+    ascend: 'mountains',
+    loseAll: 'desert',
+    timeSkip: 'plains',
+    oracle: 'mountains',
+    omen: 'ruins',
+    fate: 'volcano',
+    pact: 'volcano',
+    debt: 'volcano',
+    seal: 'mountains',
+    awaken: 'volcano',
+    lastStand: 'plains',
+    heirGrown: 'capital',
+    siege: 'capital',
+    voyage: 'sea',
+    heist: 'capital',
+    haunted: 'swamp',
+    mentor: 'forest',
+    duel: 'plains',
+    succession: 'capital',
+    found: 'coast',
+    retire: 'forest',
+    lichKing: 'swamp',
+    lastEgg: 'volcano',
+    meetYourself: 'ruins',
+    dawn: 'desert',
+    drownedCrown: 'sea',
+  };
+  // where the saga went: one stop per chapter, in order ({ch, id, chapter, emoji, x, y, end})
+  S.mapPath = function (L) {
+    const s = L.saga;
+    if (!s) return [];
+    const byName = {};
+    S.CHAPTERS.forEach(c => (byName[c.name] = c.id));
+    const stops = [],
+      seen = {};
+    (s.log || []).forEach(x => {
+      const id = byName[x.chapter];
+      if (!id || !x.ch || seen[x.ch]) return;
+      seen[x.ch] = true;
+      const spots = S.MAP_REGIONS[S.CH_REGION[id] || 'plains'],
+        r = FW.makeRng(String(L.seed) + ':map:' + x.ch);
+      const p = spots[Math.floor(r() * spots.length) % spots.length];
+      stops.push({
+        ch: x.ch,
+        id,
+        chapter: x.chapter,
+        emoji: x.emoji || '',
+        x: Math.min(0.96, Math.max(0.04, p[0] + (r() - 0.5) * 0.05)),
+        y: Math.min(0.94, Math.max(0.06, p[1] + (r() - 0.5) * 0.05)),
+        end: false,
+      });
+    });
+    if (stops.length && s.end) stops[stops.length - 1].end = true;
+    return stops;
+  };
   /* ---------------- the epilogue: what became of everything, after the end ----------------
      A few sentences built from what the saga left behind: the kingdom, the heir, the nemesis, a love or an unfinished
      thread, and a closing line for the ending. The wording is picked with the hero's own seed, so the same hero always

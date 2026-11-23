@@ -56,7 +56,7 @@ chapter, until they retire, ascend or fall.
   family tree remembers every generation.
 - **Fight in the arena.** 77 opponents across 13 worlds, painted arenas, and bosses with tricks of their own:
   wards, immunities, rage and second phases. The wheel always shows the true chances.
-- **Painted heroes.** Portraits for the most common races, a painting for every ending, card frames that grow
+- **Painted heroes.** A portrait for every race, a painting for every ending, card frames that grow
   grander with your rank, and your own portrait if you connect an image generator.
 - **Four painted themes.** Ashen Crown, Astral Oracle, Iron Litany and Blood Moon, each with its own title
   screen, wheel, character-card frame, sound effects and music, plus optional HD music.

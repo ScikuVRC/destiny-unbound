@@ -49,27 +49,11 @@
         lore: 'A lich-queen and the nobles who followed her into undeath, still holding court after a thousand years.',
         art: 'court', // set to the id once app/art/bosses/<id>.webp exists (scripts/make-boss-art.js)
       },
-      {
-        // designed by the game's creator: "The First and Last Choir"
-        id: 'genesis',
-        name: 'Genesis, the Valkyr of Time',
-        emoji: '⏳',
-        dsl: 'lv=85 a=time',
-        lair: { name: 'The First and Last Choir', tags: ['void'] },
-        hp: 125000,
-        rewind: 0.2, // Genesis Pulse: a fifth of every blow is rewound
-        lore: 'She does not destroy. She rewinds, pauses, and rewrites the flow of battle until only one outcome remains.',
-        abilities: [
-          ['Chrono Scythe', 'A sweeping cleave that slows time around you.'],
-          ['Frozen Moment', 'Locks a hero in a bubble of stopped time.'],
-          ['Genesis Pulse', 'Rewinds a fifth of every blow you land.'],
-          ['Hourglass Collapse', 'Below a third of her health, time shatters and her echoes join the fight.'],
-          ["Valkyr's Judgment", 'Marks the strongest hero, then strikes from anywhere.'],
-        ],
-        art: 'genesis',
-      },
     ],
     EPOCH: Date.UTC(2026, 0, 5), // a Monday: week 0
+    // where the rotation starts: when Genesis was taken out (2026-11-23) the list went from five bosses to four, and
+    // this keeps the boss of that week (the Clockwork Colossus) in place, so nobody's week changes halfway through
+    OFFSET: 3,
     MAX_HIT: 5000, // the server refuses more than this from one fight
     // the week a moment falls in, as YYYY-Www (ISO weeks start on Monday)
     week(now) {
@@ -84,8 +68,9 @@
     // which boss is up: the bosses take turns from the epoch, one a week
     current(now) {
       const n = Math.floor(((now == null ? Date.now() : now) - B.EPOCH) / (7 * 864e5));
-      const list = B.LIST;
-      return list[((n % list.length) + list.length) % list.length];
+      const list = B.LIST,
+        k = n + B.OFFSET;
+      return list[((k % list.length) + list.length) % list.length];
     },
     // the moment the week ends (next Monday 00:00 UTC)
     endsAt(now) {
@@ -116,7 +101,7 @@
         outcome: e,
         index: i,
         entries: ents,
-        // some bosses undo part of every hit (Genesis Pulse)
+        // a boss can undo part of every hit (`rewind`, 0..1; none does right now)
         damage: Math.max(1, Math.round(B.damage(FW.compute(L).baseRating, e.mult) * (1 - (boss.rewind || 0)))),
       };
     },

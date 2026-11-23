@@ -30,3 +30,6 @@ __pycache__/
 Thumbs.db
 desktop.ini
 .DS_Store
+
+# local backups (never pushed), e.g. bosses taken out of the game
+backup/
