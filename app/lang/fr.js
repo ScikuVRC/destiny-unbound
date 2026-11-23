@@ -215,6 +215,10 @@
         'Un héros mort-vivant de la lumière, des étoiles, de la lune ou du monde des esprits',
       'A Pirate, a hero of the sea, or a rider of a sea serpent':
         "Un pirate, un héros de la mer, ou le cavalier d'un serpent de mer",
+      'Pass on the sword': "Transmettre l'épée",
+      'One last adventure': 'Une dernière aventure',
+      'The old enemy': 'Le vieil ennemi',
+      'Council of elders': 'Le conseil des anciens',
       'Join a guild': 'Rejoindre une guilde',
       'Win a tournament': 'Remporter un tournoi',
       'Rescue someone': "Sauver quelqu'un",
@@ -1354,6 +1358,19 @@
       'A painted map with the hero’s path from chapter to chapter':
         'Une carte peinte avec le chemin du héros de chapitre en chapitre',
       'Friends and foes': 'Amis et ennemis',
+      'Life stage': 'Âge de la vie',
+      'In their prime': "Dans la force de l'âge",
+      'Middle-aged': "D'âge mûr",
+      Old: 'Âgé',
+      Venerable: 'Vénérable',
+      'Growing older': 'Vieillir',
+      'Travelling merchant': 'Marchand itinérant',
+      'Chapters pay out gold, and now and then a merchant turns up between chapters to sell you something.':
+        "Les chapitres rapportent de l'or et, de temps en temps, un marchand passe entre deux chapitres pour vous vendre quelque chose.",
+      Gold: 'Or',
+      Bought: 'Acheté',
+      'A travelling merchant': 'Un marchand itinérant',
+      gold: 'or',
       'After the ending': 'Après la fin',
       'Heroes who retire, ascend, are damned or become undying get one more chapter about what came after.':
         "Les héros qui prennent leur retraite, s'élèvent, sont damnés ou deviennent immortels ont un chapitre de plus sur ce qui vient après.",

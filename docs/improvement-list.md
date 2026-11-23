@@ -1,14 +1,14 @@
 # Destiny Unbound: what can be improved
 
 First written 2026-11-13, after 0.2.0-alpha.1. Rewritten 2026-11-17, after 0.3.0-alpha.1, with 100 new ideas
-(103-202); updated since: 67 of the first 102 and 36 of the new ideas are done and listed at the end.
+(103-202); updated since: 67 of the first 102 and 38 of the new ideas are done and listed at the end.
 
 Each item has a rough size: **S** (an hour or two), **M** (a day), **L** (several days or more).
 Items marked ★ are the ones I'd do first. ✅ = done, ⬜ = not yet. Numbers stay the same as items get done.
 
 Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of them secret), 10 endings with epilogues and a saga recap,
 13 arena worlds with 77 opponents, 34 achievements, 5 themes, 5 languages, a Discord bot with 6 commands,
-165 automated checks plus balance, accessibility, performance and licence checks in CI.
+167 automated checks plus balance, accessibility, performance and licence checks in CI.
 
 **Contents:** [Still to do (1-102)](#still-to-do-from-the-first-list) · [New ideas (103-202)](#new-ideas-103-202) ·
 [Done](#done) · [Suggested order](#suggested-order)
@@ -107,9 +107,6 @@ Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of 
 
 ### Story mode
 
-103. ⬜ **Age that matters (S).** Old heroes lose a little strength and gain wisdom; a few chapters only appear
-     after 60.
-110. ⬜ **Gold and a travelling merchant (M).** Chapters pay out gold; a merchant between chapters sells one item.
 112. ⬜ **Romance in more than one chapter (M).** Courtship, a rival suitor, a wedding, children that can become heirs.
 115. ⬜ **Prophecy foreshadowing (S).** The prophecy is read out vaguely at the start and its meaning shows at the end.
 116. ⬜ **Two-hero sagas (L).** Two heroes take turns, their paths cross, and one can save or betray the other.
@@ -208,9 +205,13 @@ Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of 
 
 ## Done
 
-67 of the first 102, and 36 of the new ideas.
+67 of the first 102, and 38 of the new ideas.
 
 ### Done 2026-11-23
+
+110. ✅ **Gold and a travelling merchant.** 2026-11-23: good outcomes in chapters that pay (treasure, heists, dragons, tournaments, conquests...) bring gold, shown in the saga log, on the saga sheet and in the recap; losing everything loses it too, and an heir inherits half. After about one chapter in seven a merchant offers three of ten wares (stat boosts, a healing draught that turns the next death into a narrow escape, a hired sellsword, a noble title); an option in the story settings.
+
+103. ✅ **Age that matters.** 2026-11-23: heroes pass through life stages by their race's lifespan (middle-aged, old, venerable); each new stage takes a little from the body and gives a little to the mind, with a line in the saga. Old heroes get four chapters of their own (pass on the sword, one last adventure, the old enemy, the council of elders), and years help with study, mentors and dragons but slow training and heists. Ageless races never age; all of it follows the Aging option.
 
 165. ✅ **Companion portraits.** 2026-11-23: eleven portraits by kind of companion (mentor, beloved, ghost, army, townsfolk, royal, traveller, freed prisoner, apprentice or heir, young dragon, sellsword); arena foes and dragons who join you keep their own. On the saga sheet and in the recap.
 166. ✅ **Nemesis portraits.** 2026-11-23: eight villain portraits (warlord, sorceress, assassin, fallen knight, necromancer, beast-lord, schemer, cult prophet), one fixed by the nemesis's name, since motives (item 5) don't exist yet. On the saga sheet, in their fights' battle report and in the recap.

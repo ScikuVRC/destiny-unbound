@@ -346,7 +346,8 @@ async function playSaga(seed, opts, ov) {
           assert(k >= 0 && k < done.length - 1, ch.id + ' before ' + after[ch.id]);
         }
         if (ch.id === 'heirGrown' || ch.id === 'succession')
-          assert(done.indexOf('heir') >= 0, ch.id + ' without an heir');
+          // an heir comes from the Have an heir chapter, or a student when the old hero passes on the sword
+          assert(done.indexOf('heir') >= 0 || done.indexOf('passSword') >= 0, ch.id + ' without an heir');
       }
       ends[L.saga.end] = (ends[L.saga.end] || 0) + 1;
       if (S.NO_HEIR[L.saga.end]) assert(!S.canContinue(L, {}), L.saga.end + ' still lets an heir continue');
@@ -730,6 +731,113 @@ async function playSaga(seed, opts, ov) {
       assert(types.size >= 4, 'companions barely vary: ' + [...types]);
     }
   );
+
+  await t(
+    'age that matters: life stages change the hero once each, and old heroes get their own chapters',
+    async () => {
+      // a hero of a race with a human lifespan (old at 65)
+      let L = null;
+      for (let i = 0; i < 400 && !L; i++) {
+        const M = makeLegend('age' + i);
+        const life = S.lifespan(M);
+        if (life && life.old === 65 && M.picks.age && M.picks.age.years) L = M;
+      }
+      assert(L, 'no human-lifespan hero found');
+      L.picks.age.years = 40;
+      S.newSaga(L, {}, FW.makeRng('a'));
+      assert.strictEqual(S.lifeStage(L), 0);
+      assert.strictEqual(L.saga.flags.stage, 0, 'the starting stage counts as reached');
+      const ids = () => S.wheelEntries(L, {}).map(e => e.id);
+      assert(ids().indexOf('passSword') < 0, 'elder chapters for a young hero');
+      const chron0 = L.chron.length;
+      L.saga.years = 30; // 70: old
+      assert.deepStrictEqual(S.ageUp(L, S.opts()), [1, 2], 'middle age, then old age');
+      assert.strictEqual(L.chron.length, chron0 + 2, 'each stage changes the stats');
+      L.chron.slice(-2).forEach(x => FW.parse(x.dsl));
+      assert.strictEqual(L.saga.log.filter(x => x.chapter === 'Growing older').length, 2);
+      L.saga.log.forEach(x => assert(x.text.indexOf('{') < 0, 'unfilled: ' + x.text));
+      assert.deepStrictEqual(S.ageUp(L, S.opts()), [], 'only once per stage');
+      assert(
+        ids().indexOf('passSword') >= 0 && ids().indexOf('lastAdventure') >= 0,
+        'old heroes get the elder chapters'
+      );
+      assert.strictEqual(ids().indexOf('oldEnemy') >= 0, !!(L.saga.nem && L.saga.nem.alive && !L.saga.nem.ally));
+      assert(!S.wheelEntries(L, { aging: false }).some(e => e.id === 'passSword'), 'Aging off: no elder chapters');
+      L.saga.years = 60; // 100: venerable
+      assert.deepStrictEqual(S.ageUp(L, { aging: false }), null, 'Aging off: no change');
+      assert.deepStrictEqual(S.ageUp(L, S.opts()), [3]);
+      // years help an old hero study and slow their training
+      assert(S.fit(L, 'study').why.indexOf('your years') >= 0 || S.fit(L, 'study').m >= 1);
+      // every elder chapter plays through for old heroes
+      for (let i = 0; i < 30; i++) {
+        const io = bot('eld' + i);
+        for (const id of ['passSword', 'lastAdventure', 'oldEnemy', 'elderCouncil']) {
+          const M = makeLegend('eld' + i);
+          S.newSaga(M, {}, io.rng);
+          M.saga.years = 5000;
+          await S.CHAPTER_BY_ID[id].run(M, io, { o: S.opts(), ch: id, chName: id, emoji: '', rng: io.rng });
+          M.saga.log.forEach(x => assert(x.text.indexOf('{') < 0, id + ' unfilled: ' + x.text));
+        }
+      }
+      // an ageless race has no stages
+      for (let i = 0; i < 400; i++) {
+        const M = makeLegend('ageless' + i);
+        if (!S.lifespan(M)) {
+          S.newSaga(M, {}, FW.makeRng('x'));
+          assert.strictEqual(S.lifeStage(M), null);
+          break;
+        }
+      }
+    }
+  );
+
+  await t('gold and the travelling merchant: chapters pay, the merchant sells, heirs inherit half', async () => {
+    let paid = 0,
+      bought = 0;
+    for (let i = 0; i < 120; i++) {
+      const { L } = await playSaga('gold' + i, {});
+      if (L.saga.log.some(x => /\(\+\d+ gold\)/.test(x.text))) paid++;
+      bought += (L.saga.flags.bought || []).length;
+      assert(S.gold(L.saga) >= 0, 'negative gold');
+    }
+    assert(paid > 80, 'chapters rarely pay: ' + paid + ' of 120');
+    assert(bought > 40, 'the merchant rarely sells: ' + bought);
+    for (let i = 0; i < 40; i++) {
+      const { L } = await playSaga('gold' + i, { merchant: false });
+      assert(!L.saga.log.some(x => x.chapter === 'A travelling merchant'), 'merchant with the option off');
+    }
+    // buying: the price comes off, the item does what it says, and a draught saves a life once
+    const L = makeLegend('shop');
+    S.newSaga(L, {}, FW.makeRng('s'));
+    L.saga.flags.gold = 200;
+    const tome = S.MERCHANT_ITEMS.find(x => x.id === 'tome'),
+      draught = S.MERCHANT_ITEMS.find(x => x.id === 'draught');
+    const n = L.chron.length;
+    assert(S.buy(L, tome));
+    assert.strictEqual(S.gold(L.saga), 200 - tome.price);
+    assert.strictEqual(L.chron.length, n + 1);
+    assert(S.buy(L, draught));
+    assert(
+      !S.buy(
+        L,
+        S.MERCHANT_ITEMS.find(x => x.id === 'title')
+      ),
+      'bought without the gold'
+    );
+    L.saga.flags.petSaved = 'x';
+    const ctx = { o: S.opts(), ch: 'boss', chName: 'Boss', rng: () => 0.99 };
+    assert(!S.apply(L, { name: 'Killed', w: 1, text: 'dies', tone: 'bad', end: 'dead' }, ctx).end, 'the draught saves');
+    assert(!L.saga.flags.draught, 'used up');
+    S.MERCHANT_ITEMS.filter(x => x.dsl).forEach(x => FW.parse(x.dsl));
+    // an heir gets half
+    L.saga.flags.gold = 101;
+    L.saga.end = 'retired';
+    L.saga.heir = { name: 'Ada', kind: 'daughter' };
+    const inh = S.inheritance(L);
+    assert.strictEqual(inh.gold, 50);
+    S.startHeir(L, inh, {}, FW.makeRng('h'));
+    assert.strictEqual(S.gold(L.saga), 50);
+  });
 
   console.log('\n' + pass + ' of ' + (pass + fail) + ' checks passed');
   process.exit(fail ? 1 : 0);

@@ -252,6 +252,7 @@
               fx: s => {
                 s.kingdom = null;
                 s.artifacts = [];
+                s.flags.gold = 0;
                 L.ally.splice(0);
               },
             }

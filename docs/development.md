@@ -37,12 +37,12 @@ npm run lint          # ESLint: real mistakes such as undefined names and duplic
 npm run format        # Prettier: formats JavaScript and JSON (CSS and HTML keep their compact form)
 ```
 
-165 checks in 10 suites:
+167 checks in 10 suites:
 
 - **engine (28):** data validity, unique names, tier shifts, odds, conditional buffs, Legend Codes, arena maths, own
   Workshop entries and their effect limits.
 - **art (18):** every generator and language-model connector against a mock server.
-- **story (25):** 500 full sagas with random options, requirements, every option switched off, dynasty, arcs and
+- **story (27):** 500 full sagas with random options, requirements, every option switched off, dynasty, arcs and
   endings, the saga recap, epilogues, Legend Codes that stay under the card-code limit, ancestor spirits, alignment,
   world events, secret chapters, retirement and guild ranks.
 - **extras (17):** packs, achievements, translations and the plural and gender markers, player level, the Codex and

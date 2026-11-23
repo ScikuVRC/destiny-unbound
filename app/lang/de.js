@@ -215,6 +215,10 @@
         'Ein untoter Held des Lichts, der Sterne, des Mondes oder der Geisterwelt',
       'A Pirate, a hero of the sea, or a rider of a sea serpent':
         'Ein Pirat, ein Held des Meeres oder der Reiter einer Seeschlange',
+      'Pass on the sword': 'Das Schwert weitergeben',
+      'One last adventure': 'Ein letztes Abenteuer',
+      'The old enemy': 'Der alte Feind',
+      'Council of elders': 'Rat der Ältesten',
       'Join a guild': 'Einer Gilde beitreten',
       'Win a tournament': 'Ein Turnier gewinnen',
       'Rescue someone': 'Jemanden retten',
@@ -1355,6 +1359,19 @@
       'A painted map with the hero’s path from chapter to chapter':
         'Eine gemalte Karte mit dem Weg des Helden von Kapitel zu Kapitel',
       'Friends and foes': 'Freunde und Feinde',
+      'Life stage': 'Lebensabschnitt',
+      'In their prime': 'In den besten Jahren',
+      'Middle-aged': 'Mittleren Alters',
+      Old: 'Alt',
+      Venerable: 'Ehrwürdig',
+      'Growing older': 'Älter werden',
+      'Travelling merchant': 'Fahrender Händler',
+      'Chapters pay out gold, and now and then a merchant turns up between chapters to sell you something.':
+        'Kapitel bringen Gold, und ab und zu taucht zwischen den Kapiteln ein Händler auf und verkauft dir etwas.',
+      Gold: 'Gold',
+      Bought: 'Gekauft',
+      'A travelling merchant': 'Ein fahrender Händler',
+      gold: 'Gold',
       'After the ending': 'Nach dem Ende',
       'Heroes who retire, ascend, are damned or become undying get one more chapter about what came after.':
         'Helden, die sich zur Ruhe setzen, aufsteigen, verdammt werden oder untot bleiben, bekommen ein weiteres Kapitel über das Danach.',

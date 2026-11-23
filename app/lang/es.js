@@ -219,6 +219,10 @@
         'Un héroe no muerto de la luz, las estrellas, la luna o el mundo de los espíritus',
       'A Pirate, a hero of the sea, or a rider of a sea serpent':
         'Un pirata, un héroe del mar, o el jinete de una serpiente marina',
+      'Pass on the sword': 'Pasar la espada',
+      'One last adventure': 'Una última aventura',
+      'The old enemy': 'El viejo enemigo',
+      'Council of elders': 'Consejo de ancianos',
       'Join a guild': 'Unirse a un gremio',
       'Win a tournament': 'Ganar un torneo',
       'Rescue someone': 'Rescatar a alguien',
@@ -1364,6 +1368,19 @@
       'A painted map with the hero’s path from chapter to chapter':
         'Un mapa pintado con el camino del héroe de capítulo en capítulo',
       'Friends and foes': 'Amigos y enemigos',
+      'Life stage': 'Etapa de la vida',
+      'In their prime': 'En plenitud',
+      'Middle-aged': 'De mediana edad',
+      Old: 'Anciano',
+      Venerable: 'Venerable',
+      'Growing older': 'Envejecer',
+      'Travelling merchant': 'Mercader ambulante',
+      'Chapters pay out gold, and now and then a merchant turns up between chapters to sell you something.':
+        'Los capítulos dan oro y, de vez en cuando, aparece un mercader entre capítulos para venderte algo.',
+      Gold: 'Oro',
+      Bought: 'Comprado',
+      'A travelling merchant': 'Un mercader ambulante',
+      gold: 'oro',
       'After the ending': 'Después del final',
       'Heroes who retire, ascend, are damned or become undying get one more chapter about what came after.':
         'Los héroes que se retiran, ascienden, son condenados o se vuelven inmortales tienen un capítulo más sobre lo que vino después.',

@@ -79,11 +79,11 @@
           title: 'What do you find?',
           hue: 45,
           entries: [
-            good('Dragon gold', 5, 'rt+1', 'A hoard fit for a king.'),
+            good('Dragon gold', 5, 'rt+1', 'A hoard fit for a king.', { gold: 120 }),
             good('A lucky charm', 4, 'fate+1', 'It hums when danger is near.'),
             good('An ancient artifact', 3, 'pwr+1', 'You found {art}.', { fx: s => s.artifacts.push(c.newArt) }),
             good('A legendary weapon', 2, 'wpn+1', 'An old blade that remembers its last owner.'),
-            bad('Cursed gold', 3, 'fate-1 rt+1', 'Rich, and very, very unlucky.'),
+            bad('Cursed gold', 3, 'fate-1 rt+1', 'Rich, and very, very unlucky.', { gold: 80 }),
             bad('It was a mimic', 3, 'dur-1', 'The chest bites back.'),
             E('Empty chest', 3, '', 'Someone got here first.'),
             bad('A deadly trap', 1, '', 'The vault seals behind you.', {

@@ -35,6 +35,11 @@
       blurb: 'Heroes who retire, ascend, are damned or become undying get one more chapter about what came after.',
     },
     {
+      id: 'merchant',
+      name: 'Travelling merchant',
+      blurb: 'Chapters pay out gold, and now and then a merchant turns up between chapters to sell you something.',
+    },
+    {
       id: 'worldEvents',
       name: 'World events',
       blurb: 'Now and then a famine, a comet or a war colours the next few chapters.',
@@ -195,10 +200,13 @@
       if (inherit.kingdom) s.kingdom = Object.assign({}, inherit.kingdom);
       if (inherit.artifact) s.artifacts.push(Object.assign({}, inherit.artifact, { inherited: true }));
       if (inherit.nem) s.nem = Object.assign({}, inherit.nem, { lv: inherit.nem.lv + 3, met: 0 });
+      if (inherit.gold) s.flags.gold = inherit.gold;
     }
     if (o.nemesis && !s.nem) s.nem = S.makeNemesis(L, rng);
     const a0 = S.startAlign(L);
     if (a0) s.flags.align = a0;
+    const st0 = S.lifeStage(L);
+    if (st0 != null) s.flags.stage = st0;
     L.saga = s;
     return s;
   };
@@ -384,6 +392,59 @@
       a = S.age(L);
     return !!(life && a && a >= life.old);
   };
+  /* ---------------- life stages (103): growing older changes the hero ----------------
+     0 in their prime, 1 middle-aged (from 70% of the race's "old" age), 2 old, 3 venerable (halfway from old to the
+     race's longest life). Ageless races have none. Each new stage reached during a saga takes a little from the body
+     and gives a little to the mind (S.STAGE_FX), says so in the log, and from "old" on opens the elder chapters. */
+  S.LIFE_STAGES = ['In their prime', 'Middle-aged', 'Old', 'Venerable'];
+  S.STAGE_FX = [null, 'spd-1 int+1', 'str-1 int+1', 'dur-1 fate+1'];
+  S.STAGE_LINES = [
+    null,
+    [
+      '{hero} is not as quick as {g:he|she|they} used to be, and far harder to fool.',
+      'Grey at the temples now, {hero} fights smarter than {g:he fights|she fights|they fight} fast.',
+      'At {age}, {hero} has stopped rushing in, and started winning anyway.',
+    ],
+    [
+      'At {age}, {hero}’s sword arm is slower, but {g:he sees|she sees|they see} every fight coming.',
+      'Old age takes some of {hero}’s strength and gives back wisdom.',
+      'At {age}, {hero} needs a moment to get up in the morning, and no time at all to read a liar.',
+    ],
+    [
+      'At {age}, {hero} is frail in body, sharp as a blade in mind, and luckier than anyone has a right to be.',
+      '{hero} has outlived friends, foes and kings. At {age}, fate itself seems fond of {g:him|her|them}.',
+    ],
+  ];
+  S.lifeStage = L => {
+    const life = S.lifespan(L),
+      a = S.age(L);
+    if (!life || !a) return null;
+    if (a >= life.old + (life.max - life.old) * 0.5) return 3;
+    if (a >= life.old) return 2;
+    if (a >= life.old * 0.7) return 1;
+    return 0;
+  };
+  // after a chapter: a hero who reached a new life stage changes (only forwards, and not for the age they started at)
+  S.ageUp = function (L, o) {
+    const s = L.saga,
+      st = S.lifeStage(L);
+    if (st == null || !o.aging) return null;
+    if (s.flags.stage == null) s.flags.stage = st; // a saga from before life stages: start counting now
+    const out = [];
+    while (s.flags.stage < st) {
+      const k = ++s.flags.stage;
+      L.chron.push({ label: 'Age: ' + S.LIFE_STAGES[k], dsl: S.STAGE_FX[k], text: '', kind: 'story', key: 'age' + k });
+      const line = S.vary(S.STAGE_LINES[k], L, 'stage' + k).replace(/\{age\}/g, String(S.age(L)));
+      s.log.push({
+        ch: s.ch,
+        chapter: 'Growing older',
+        emoji: '⏳',
+        text: FW.fmt(line, { g: L.pres }).replace(/\{hero\}/g, L.displayName()),
+      });
+      out.push(k);
+    }
+    return out;
+  };
 
   /* ---------------- power and battles ---------------- */
   // story bonuses on top of the character's power rating; war = armies, duel = you alone
@@ -534,6 +595,11 @@
         );
       }
     }
+    // a healing draught from the merchant (110)
+    if (S.MORTAL[e.end] && s.flags.draught) {
+      delete s.flags.draught;
+      e = Object.assign({}, e, close('{hero} drinks the healing draught with a last breath, and lives.'));
+    }
     // an heir can call on a dead ancestor once per saga (105)
     if (S.MORTAL[e.end] && o.dynasty && !s.flags.ancestor) {
       const anc = S.ancestor(L);
@@ -569,6 +635,12 @@
       else if (e.tone === 'good' && S.ALIGN_CH.evil.indexOf(ctx.ch) >= 0) S.drift(s, -1);
     }
     let scarText = '';
+    // gold (110): an outcome's own, or the chapter's base for a good outcome, seeded around it
+    const gBase = e.gold != null ? e.gold : !e.end && e.tone === 'good' && ctx.ch ? S.GOLD_CH[ctx.ch] || 0 : 0;
+    if (gBase > 0) {
+      const got = S.addGold(s, gBase * (0.6 + 0.8 * FW.makeRng(String(L.seed) + ':gold:' + s.ch + ':' + e.name)()));
+      if (got) scarText += ' (+' + got + ' gold)';
+    }
     // the guild notices good work in its own line of business (119): one rank up, as far as Officer
     const gd = s.guild && S.GUILDS[s.guild];
     if (gd && !e.end && e.tone === 'good' && gd.ch.indexOf(ctx.ch) >= 0 && S.guildRank(s) < 4) {
@@ -633,6 +705,122 @@
   };
   S.choose = choose;
 
+  /* ---------------- gold and the travelling merchant (110) ----------------
+     Good outcomes in chapters that pay (S.GOLD_CH) bring gold, a seeded amount around the chapter's base; an outcome
+     can name its own (`gold`). Between chapters a merchant sometimes turns up and sells one thing. Gold lives in the
+     saga's flags; an heir inherits half of it. */
+  S.GOLD_CH = {
+    treasure: 40,
+    heist: 55,
+    dungeon: 35,
+    boss: 45,
+    dragon: 70,
+    quest: 25,
+    tournament: 35,
+    voyage: 30,
+    guildWork: 20,
+    guildMaster: 60,
+    conquerRace: 50,
+    conquerWorld: 120,
+    rescue: 20,
+    artifact: 15,
+    kingdom: 40,
+    siege: 30,
+    duel: 20,
+    lastStand: 25,
+    drownedCrown: 100,
+    lichKing: 50,
+  };
+  S.gold = s => (s && s.flags && +s.flags.gold) || 0;
+  S.addGold = (s, n) => {
+    if (!s || !n) return 0;
+    s.flags = s.flags || {};
+    s.flags.gold = Math.max(0, S.gold(s) + Math.round(n));
+    return Math.round(n);
+  };
+  S.MERCHANT_CHANCE = 0.15;
+  S.MERCHANT_ITEMS = [
+    {
+      id: 'draught',
+      name: 'A healing draught',
+      price: 80,
+      hint: 'The next time you would die, you live.',
+      fx: s => (s.flags.draught = true),
+    },
+    { id: 'whetstone', name: 'A dwarven whetstone', price: 30, dsl: 'wpn+1', hint: '+1 weapon skill.' },
+    { id: 'charm', name: 'A lucky charm', price: 35, dsl: 'fate+1', hint: '+1 Fate Token.' },
+    { id: 'boots', name: 'Boots of the old roads', price: 35, dsl: 'spd+1', hint: '+1 speed.' },
+    { id: 'tome', name: 'A tome of secrets', price: 45, dsl: 'int+1', hint: '+1 intellect.' },
+    { id: 'shield', name: 'An ironbark shield', price: 45, dsl: 'dur+1', hint: '+1 durability.' },
+    { id: 'elixir', name: 'An elixir of giants', price: 60, dsl: 'str+1', hint: '+1 strength.' },
+    { id: 'focus', name: 'A spell focus', price: 55, dsl: 'pwr+1', hint: '+1 power.' },
+    {
+      id: 'sellsword',
+      name: 'A sellsword’s contract',
+      price: 70,
+      hint: 'A hired blade joins you.',
+      fx: (s, L, rng) =>
+        L.ally.push({ name: 'a hired sellsword', lv: Math.round(40 + 20 * rng()), how: 'hired', loyalty: 50 }),
+    },
+    {
+      id: 'title',
+      name: 'A noble title',
+      price: 120,
+      dsl: 'rt+2',
+      hint: 'Bought respectability (+2 renown).',
+      fx: s => (s.flags.fame = S.rep(s, 'fame') + 1),
+    },
+  ];
+  // a merchant turns up after this chapter? (seeded, so it never shifts the story's dice)
+  S.merchantDue = (L, o) => {
+    const s = L.saga;
+    if (!o.merchant || s.end || s.ch < 2) return false;
+    if (S.gold(s) < Math.min(...S.MERCHANT_ITEMS.map(x => x.price))) return false;
+    return FW.makeRng(String(L.seed) + ':merchant:' + s.ch)() < S.MERCHANT_CHANCE;
+  };
+  // three wares, picked with the seed; the ones the hero can afford are offered
+  S.merchantWares = L => {
+    const r = FW.makeRng(String(L.seed) + ':wares:' + L.saga.ch),
+      pool = S.MERCHANT_ITEMS.slice(),
+      out = [];
+    while (out.length < 3 && pool.length) out.push(pool.splice(Math.floor(r() * pool.length) % pool.length, 1)[0]);
+    return out.filter(x => x.price <= S.gold(L.saga));
+  };
+  S.buy = function (L, item, rng) {
+    const s = L.saga;
+    if (!item || item.price > S.gold(s)) return false;
+    S.addGold(s, -item.price);
+    if (item.dsl)
+      L.chron.push({ label: 'Bought: ' + item.name, dsl: item.dsl, text: '', kind: 'story', key: 'buy' + s.ch });
+    if (item.fx) item.fx(s, L, rng || Math.random);
+    s.flags.bought = (s.flags.bought || []).concat([item.name]);
+    s.log.push({
+      ch: s.ch,
+      chapter: 'A travelling merchant',
+      emoji: '🧳',
+      text:
+        L.displayName() + ' buys ' + item.name.replace(/^An? /, m => m.toLowerCase()) + ' for ' + item.price + ' gold.',
+      tone: 'good',
+    });
+    return true;
+  };
+  async function merchant(L, io, c) {
+    const wares = S.merchantWares(L);
+    if (!wares.length) return null;
+    // its own seeded dice (for the player's sellsword and for a bot's pick), so the merchant never shifts the story
+    const rng = FW.makeRng(String(L.seed) + ':buy:' + L.saga.ch);
+    const i = await choose(L, Object.assign({}, io, { rng }), c, {
+      emoji: '🧳',
+      title: 'A travelling merchant opens a cart full of wonders. You have ' + S.gold(L.saga) + ' gold.',
+      options: wares
+        .map(w => ({ label: w.name + ' (' + w.price + ' gold)', hint: w.hint }))
+        .concat([{ label: 'Buy nothing', hint: 'Keep your gold.' }]),
+    });
+    if (i < wares.length) S.buy(L, wares[i], rng);
+    return i < wares.length ? wares[i] : null;
+  }
+  S.merchant = merchant;
+
   /* ---------------- chapters that react to the hero ----------------
      For some chapters a fitting class, personality, element or background makes the good slices bigger (and an
      unfitting one the bad slices), and the wheel says why. */
@@ -645,6 +833,7 @@
       against: { cls: ['Paladin', 'Templar', 'Knight'], per: ['Lawful Good', 'Honourable', 'Pacifist'] },
       rep: { infamy: 1, fame: -1 }, // the underworld trusts a known name; everyone else knows your face
       align: -1,
+      age: -1,
     },
     haunted: {
       what: 'the dead',
@@ -666,12 +855,14 @@
       cls: ['Warrior', 'Monk', 'Brawler', 'Gladiator', 'Samurai', 'Knight', 'Duelist', 'Berserker', 'Archer'],
       per: ['Stoic', 'Glory Hound', 'Honourable', 'Ambitious', 'Hot-headed'],
       against: { per: ['Coward', 'Free Spirit', 'Playful'] },
+      age: -1,
     },
     study: {
       what: 'study',
       cls: ['Mage', 'Sorcerer', 'Alchemist', 'Chronomancer', 'Runesmith', 'Engineer', 'Tactician', 'Witch', 'Warlock'],
       per: ['Scholar', 'Mad Genius', 'Calculating', 'Mastermind', 'Serene'],
       against: { per: ['Hot-headed', 'Thrill Seeker', 'Bloodthirsty'] },
+      age: 1,
     },
     quest: {
       what: 'the quest',
@@ -688,6 +879,7 @@
       against: { per: ['Arrogant', 'Paranoid', 'Loner'] },
       rep: { fame: 1, infamy: -1 },
       align: 1,
+      age: 1,
     },
     cunning: {
       what: 'outwitting a demon',
@@ -700,6 +892,7 @@
       cls: ['Dragon Rider', 'Bard', 'Druid', 'Beastmaster', 'Merchant', 'Sorcerer'],
       per: ['Serene', 'Calculating', 'Manipulator', 'Honourable', 'Gentle Giant'],
       against: { per: ['Arrogant', 'Hot-headed', 'Bloodthirsty', 'Greedy'] },
+      age: 1,
     },
   };
   const LABEL_OF = { cls: 'class', per: 'nature', elem: 'element', weak: 'weakness' };
@@ -733,6 +926,8 @@
       const mt = L.pickName('mount');
       if (r.mount === true || r.mount.indexOf(mt) >= 0) plus.push('your ' + mt.toLowerCase());
     }
+    // the years: an old hero knows more and moves less (103)
+    if (r.age && (S.lifeStage(L) || 0) >= 2) (r.age > 0 ? plus : minus).push(r.age > 0 ? 'your years' : 'your age');
     // a good heart or a dark one (alignment, from 2 either way)
     const al = S.align(s);
     if (r.align && Math.abs(al) >= 2)
@@ -822,7 +1017,7 @@
   /* shared result sets */
   const WIN_LOOT = [
     good('Glory', 6, 'rt+1', 'Songs are sung about {hero}.'),
-    good('A sack of gold', 5, 'fate+1', 'Rich enough to buy your luck.'),
+    good('A sack of gold', 5, 'fate+1', 'Rich enough to buy your luck.', { gold: 60 }),
     good('A new ally', 3, '', '{foe} swears to follow you.', {
       fx: (s, L, c) => addAlly(L, c.foe || c.lastFoe, 35 + 30 * c.rng(), 'recruit', 55),
     }),
@@ -850,7 +1045,7 @@
 
   const has = (s, k) => !!s[k];
   /* ---------------- chapters: listed in app/js/chapters/*.js, which add themselves in this order ---------------- */
-  S.CHAPTER_FILES = ['quests', 'power', 'people', 'fortune', 'arcs', 'world', 'secrets'];
+  S.CHAPTER_FILES = ['quests', 'power', 'people', 'fortune', 'arcs', 'world', 'elders', 'secrets'];
   S.CHAPTERS = [];
   S.CHAPTER_BY_ID = {};
   S.addChapters = list =>
@@ -1038,6 +1233,9 @@
     await ch.run(L, io, c);
     if (!s.end && o.kingdomEvents && s.kingdom && ch.id !== 'kingdom' && io.rng() < 0.3)
       await kingdomEvent(L, io, Object.assign({}, c));
+    if (!s.end) S.ageUp(L, o);
+    if (S.merchantDue(L, o))
+      await merchant(L, io, Object.assign({}, c, { chName: 'A travelling merchant', emoji: '🧳' }));
     if (!s.end && o.aging && S.isOld(L) && io.rng() < 0.5) await oldAge(L, io, Object.assign({}, c));
     if (s.end && S.AFTER[s.end] && o.beyond && !s.flags.after) await afterEnd(L, io, Object.assign({}, c));
     if (s.end && !o.dynasty) s.heir = s.heir || null;
@@ -1284,6 +1482,7 @@
       best,
       heir: s.heir,
       record: S.record(L),
+      gold: Math.floor(S.gold(s) / 2),
       dsl:
         best +
         '+1' +
@@ -1516,6 +1715,7 @@
       years: s.years || 0,
       ageEnd: age,
       ageStart: age != null ? age - (s.years || 0) : null,
+      stage: S.lifeStage(L) != null ? S.LIFE_STAGES[S.lifeStage(L)] : '',
       fights: { total: F.w + F.l + F.d, won: F.w, lost: F.l, draw: F.d },
       closest: F.closest || null,
       upset: F.upset || null,
@@ -1526,6 +1726,8 @@
       infamy: S.rep(s, 'infamy'),
       scars: ((s.flags && s.flags.scars) || []).slice(),
       after: (s.flags && s.flags.after) || '',
+      gold: S.gold(s),
+      bought: ((s.flags && s.flags.bought) || []).slice(),
       align: S.align(s),
       alignName: S.alignName(S.align(s)),
       guild: s.guild ? S.rankName(s) + ', ' + s.guild : '',
@@ -1554,6 +1756,8 @@
     add('gen', s.dyn && s.dyn.gen > 1 ? s.dyn.gen : 0);
     add('fights', F.w + F.l + F.d ? F.w + '/' + F.l + '/' + F.d : '');
     add('align', S.align(s) ? S.alignName(S.align(s)) + ' ' + S.align(s) : '');
+    add('gold', S.gold(s));
+    add('bought', (f.bought || []).length);
     add('fame', S.rep(s, 'fame'));
     add('infamy', S.rep(s, 'infamy'));
     add('guild', s.guild ? S.rankName(s) : '');
@@ -1726,6 +1930,10 @@
     succession: 'capital',
     found: 'coast',
     retire: 'forest',
+    passSword: 'forest',
+    lastAdventure: 'mountains',
+    oldEnemy: 'desert',
+    elderCouncil: 'capital',
     lichKing: 'swamp',
     lastEgg: 'volcano',
     meetYourself: 'ruins',

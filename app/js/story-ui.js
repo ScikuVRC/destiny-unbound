@@ -23,8 +23,16 @@
     let h = H.rating(c);
     h +=
       row('Chapter', String(s.ch)) +
-      row('Age', age ? age + (S.isOld(L) && opts().aging ? ' (old)' : '') : s.years ? '+' + s.years + ' years' : '') +
-      row('House', s.dyn ? s.dyn.house + (s.dyn.gen > 1 ? ', gen ' + s.dyn.gen : '') : '');
+      row(
+        'Age',
+        age
+          ? age + (opts().aging && S.lifeStage(L) ? ' (' + tt(S.LIFE_STAGES[S.lifeStage(L)]).toLowerCase() + ')' : '')
+          : s.years
+            ? '+' + s.years + ' years'
+            : ''
+      ) +
+      row('House', s.dyn ? s.dyn.house + (s.dyn.gen > 1 ? ', gen ' + s.dyn.gen : '') : '') +
+      row('Gold', S.gold(s) ? '🪙 ' + S.gold(s) : '');
     h += row(
       'Kingdom',
       s.world
@@ -610,6 +618,8 @@
       r.heir && [t('Heir'), r.heir],
       r.scars.length && [t('Scars'), r.scars.map(t).join(', ')],
       r.after && [t('After the ending'), t(r.after)],
+      r.bought.length && [t('Bought'), r.bought.join(', ')],
+      r.stage && r.stage !== 'In their prime' && [t('Life stage'), t(r.stage)],
       r.guild && [t('Guild'), r.guild],
       r.align && [t('Alignment'), t(r.alignName)],
       r.ancestor && [t('Saved by an ancestor'), r.ancestor],
@@ -673,6 +683,7 @@
         (r.cheated ? stat(r.cheated, '{p:close call with death|close calls with death}') : '') +
         (r.fame ? stat(r.fame, 'fame') : '') +
         (r.infamy ? stat(r.infamy, 'infamy') : '') +
+        (r.gold ? stat(r.gold, 'gold') : '') +
         '</div>' +
         (fights ? '<ul class="recap-fights">' + fights + '</ul>' : '') +
         '<h3>' +

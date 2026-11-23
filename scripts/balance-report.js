@@ -17,7 +17,9 @@ const TARGETS = {
   all: {
     retired: [30, 50],
     legend: [8, 25],
-    death: [28, 48], // sagas ending in any death
+    // sagas ending in any death; 25 since 2026-11-23: old heroes (103) can go out on a last adventure as a legend, and
+    // the strongest (divine luck) usually win it
+    death: [25, 48],
     firstDeath: [0, 5], // died in chapter 1
     chaptersMedian: [8, 20], // chapters, not percent
     good: [52, 72], // share of good events
