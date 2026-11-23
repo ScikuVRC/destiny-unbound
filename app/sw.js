@@ -47,6 +47,7 @@ const FILES = [
   'js/chapters/people.js',
   'js/chapters/fortune.js',
   'js/chapters/arcs.js',
+  'js/chapters/arcs-more.js',
   'js/chapters/world.js',
   'js/chapters/elders.js',
   'js/chapters/secrets.js',

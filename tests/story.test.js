@@ -97,7 +97,8 @@ async function playSaga(seed, opts, ov) {
       ' codes trimmed',
       trimmed
     );
-    assert(trimmed <= 10, 'too many trimmed codes: ' + trimmed);
+    // a long saga's code leaves out its oldest ordinary lines (and says so); 15 of 500 since the five extra arcs (2026-11-23)
+    assert(trimmed <= 15, 'too many trimmed codes: ' + trimmed);
   });
 
   await t(
@@ -329,7 +330,17 @@ async function playSaga(seed, opts, ov) {
   });
 
   await t('story arcs happen in order, reach their finale, and every ending can happen', async () => {
-    const after = { omen: 'oracle', fate: 'omen', debt: 'pact', awaken: 'seal', lastStand: 'awaken' };
+    const after = {
+      omen: 'oracle',
+      fate: 'omen',
+      debt: 'pact',
+      awaken: 'seal',
+      lastStand: 'awaken',
+      bladeHunger: 'hungryBlade',
+      bladeReckoning: 'bladeHunger',
+      warBattle: 'warBanners',
+      warEnd: 'warBattle',
+    };
     const reached = {},
       ends = {};
     for (let i = 0; i < 1500; i++) {
@@ -838,6 +849,62 @@ async function playSaga(seed, opts, ov) {
     S.startHeir(L, inh, {}, FW.makeRng('h'));
     assert.strictEqual(S.gold(L.saga), 50);
   });
+
+  await t(
+    'more arcs: the blade, the war, the lost sibling, the grey fever and the grand circuit run in order through every branch',
+    async () => {
+      const ends = new Set();
+      for (let i = 0; i < 60; i++) {
+        for (const start of ['hungryBlade', 'warBanners', 'lostSibling', 'greyFever', 'circuit']) {
+          const L = makeLegend('arc2' + start + i),
+            io = bot('arc2' + start + i);
+          S.newSaga(L, {}, io.rng);
+          const ctx = id => ({ o: S.opts(), ch: id, chName: S.CHAPTER_BY_ID[id].name, emoji: '', rng: io.rng });
+          const chain = {
+            hungryBlade: ['hungryBlade', 'bladeHunger', 'bladeReckoning'],
+            warBanners: ['warBanners', 'warBattle', 'warEnd'],
+            lostSibling: ['lostSibling', 'siblingTrail', 'siblingFound'],
+            greyFever: ['greyFever', 'feverSpreads', 'feverEnd'],
+            circuit: ['circuit', 'circuitRound', 'circuitFinal'],
+          }[start];
+          for (const id of chain) {
+            const ch = S.CHAPTER_BY_ID[id];
+            if (ch.req && !ch.req(L.saga, L, S.opts())) break; // left the stone alone, or stayed out of the war
+            if (id !== start)
+              assert(
+                S.wheelEntries(L, {}).some(e => e.id === id && e.w > 0),
+                id + ' is not on the wheel'
+              );
+            L.saga.ch++;
+            await ch.run(L, io, ctx(id));
+            if (L.saga.end) break;
+          }
+          const last = L.saga.log[L.saga.log.length - 1];
+          ends.add(start + ':' + (L.saga.end || (last && last.chapter)));
+          L.saga.log.forEach(x => {
+            assert(x.text.indexOf('{') < 0, 'unfilled: ' + x.text);
+            assert(/^[^a-z]/.test(x.text), 'starts in lower case: ' + x.text);
+          });
+        }
+      }
+      // the hidden chapters never show before their turn
+      const L = makeLegend('arc2fresh');
+      S.newSaga(L, {}, FW.makeRng('x'));
+      [
+        'bladeHunger',
+        'bladeReckoning',
+        'warBattle',
+        'warEnd',
+        'siblingTrail',
+        'siblingFound',
+        'feverSpreads',
+        'feverEnd',
+        'circuitRound',
+        'circuitFinal',
+      ].forEach(id => assert(!S.wheelEntries(L, {}).some(e => e.id === id), id + ' shows too early'));
+      assert(ends.size >= 10, 'the arcs barely branch: ' + [...ends]);
+    }
+  );
 
   console.log('\n' + pass + ' of ' + (pass + fail) + ' checks passed');
   process.exit(fail ? 1 : 0);

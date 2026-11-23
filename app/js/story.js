@@ -1045,7 +1045,7 @@
 
   const has = (s, k) => !!s[k];
   /* ---------------- chapters: listed in app/js/chapters/*.js, which add themselves in this order ---------------- */
-  S.CHAPTER_FILES = ['quests', 'power', 'people', 'fortune', 'arcs', 'world', 'elders', 'secrets'];
+  S.CHAPTER_FILES = ['quests', 'power', 'people', 'fortune', 'arcs', 'arcs-more', 'world', 'elders', 'secrets'];
   S.CHAPTERS = [];
   S.CHAPTER_BY_ID = {};
   S.addChapters = list =>

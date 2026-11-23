@@ -218,7 +218,7 @@
           entries: [
             good('King of the drowned', 3, 'rt+2', '{hero} puts on the crown, and the drowned kingdom kneels.', {
               fx: s => {
-                if (!s.kingdom) s.kingdom = { name: 'the Drowned Kingdom', style: 'Sunken', power: 55 };
+                if (!s.kingdom) s.kingdom = { name: 'Drowned Kingdom', style: 'Sunken', power: 55 };
               },
             }),
             good('Leaves it there', 2, 'fate+2', '{hero} leaves the crown where it lies. The sea is grateful.', {

@@ -1,14 +1,14 @@
 # Destiny Unbound: what can be improved
 
 First written 2026-11-13, after 0.2.0-alpha.1. Rewritten 2026-11-17, after 0.3.0-alpha.1, with 100 new ideas
-(103-202); updated since: 68 of the first 102 and 44 of the new ideas are done and listed at the end.
+(103-202); updated since: 69 of the first 102 and 44 of the new ideas are done and listed at the end.
 
 Each item has a rough size: **S** (an hour or two), **M** (a day), **L** (several days or more).
 Items marked ★ are the ones I'd do first. ✅ = done, ⬜ = not yet. Numbers stay the same as items get done.
 
 Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of them secret), 10 endings with epilogues and a saga recap,
 13 arena worlds with 77 opponents, 34 achievements, 5 themes, 5 languages, a Discord bot with 6 commands,
-170 automated checks plus balance, accessibility, performance and licence checks in CI.
+171 automated checks plus balance, accessibility, performance and licence checks in CI.
 
 **Contents:** [Still to do (1-102)](#still-to-do-from-the-first-list) · [New ideas (103-202)](#new-ideas-103-202) ·
 [Done](#done) · [Suggested order](#suggested-order)
@@ -19,8 +19,6 @@ Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of 
 
 ### Story mode
 
-3. ⬜ **More arcs (M each).** Four exist. Candidates: a cursed artifact that grows stronger and hungrier, a war between
-   two factions where you pick a side, a lost sibling, a plague that spreads across chapters, a tournament circuit.
 4. ⬜ **Companion arcs (M).** Companions are a name and a loyalty number. Give them small events: a quarrel, a request,
    a sacrifice, a betrayal that was foreshadowed. (GitHub issue #1 asks for more companions.)
 5. ⬜ **The nemesis as a character (M).** Give the nemesis a motive rolled at the start (envy, revenge, duty), lines
@@ -198,9 +196,11 @@ Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of 
 
 ## Done
 
-68 of the first 102, and 44 of the new ideas.
+69 of the first 102, and 44 of the new ideas.
 
 ### Done 2026-11-23
+
+3. ✅ **More arcs.** 2026-11-23: five new three-chapter arcs (ten in all): the hungry blade (a whispering sword to feed or starve, then break, master or drown), the war of the banners (join the Silver Crown or the Ember Rebellion), a lost twin (search, follow the trail, and meet them: a reunion, a stranger, an enemy or a grave), the grey fever (help the sick, seek a cure or flee, then live through it) and the Grand Circuit (three tournaments in three cities).
 
 16. ✅ **Synergies and set bonuses.** 2026-11-23: twelve sets of three pieces (an element, a class, a race, a weapon, a mount...), such as Child of the Flame or Lord of the Dead; two pieces give a named bonus, all three a bigger one. A note pops up while spinning when a piece lands, and the set shows among the buffs and on the back of the card. About three heroes in ten get two pieces, one in eighty a full set.
 121. ✅ ★ **Hall tournament.** 2026-11-23: a fourth Versus format: the eight strongest heroes in your Hall (or four) in a seeded bracket, fought with the real odds; a draw is fought again. The champion is recorded and earns the title Champion of the Hall.
