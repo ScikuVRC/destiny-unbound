@@ -4,6 +4,25 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
+## 0.3.0-alpha.12 (2026-11-23)
+
+### New
+
+- **The Gauntlet:** a new button on the card screen. Fight five times in a row through one world, from its weakest foes
+  to its strongest, with one life. Every round won pays at once, and the rewards rise. You can walk away between rounds.
+  Win all five to earn the title Gauntlet Champion.
+- **Companion arcs:** between chapters, your companions now have stories of their own:
+  - a quarrel
+  - a request for help
+  - a quiet night by the fire
+  - an oath sworn to you
+  - a sworn friend who takes a blade meant for you
+  - a betrayal you saw coming
+  A stranger may also ask to join you. These happen only with Companion loyalty on.
+- **Kingdom management:** your kingdom now has a treasury, an army and the people's loyalty, shown in the saga sheet.
+  Events move them, and royal decrees let you raise taxes, drill the army or hold a feast. Wars depend on your army, and
+  a disloyal people makes coups and rebellions harder to put down.
+
 ## 0.3.0-alpha.11 (2026-11-23)
 
 ### New
