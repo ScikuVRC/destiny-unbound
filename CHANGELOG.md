@@ -4,6 +4,20 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
+## 0.3.0-alpha.8 (2026-11-23)
+
+### New
+
+- **Age that matters.** Heroes grow older through life stages that follow their race's lifespan: middle age, old
+  age and a venerable old age each take a little from the body and give a little to the mind. Old heroes get four
+  chapters of their own: pass on the sword, one last adventure, a last meeting with the old enemy, and the council of
+  elders. Years help with study, mentors and dragons, and slow down training and heists. Ageless races never age, and
+  all of it follows the Aging option.
+- **Gold and a travelling merchant.** Treasure, heists, dragons, tournaments and conquests pay out gold, shown in the
+  saga and the recap; an heir inherits half. Now and then a travelling merchant turns up between chapters with three
+  wares: stat boosts, a healing draught that turns your next death into a narrow escape, a hired sellsword or a noble
+  title. The merchant can be switched off in the story settings.
+
 ## 0.3.0-alpha.7 (2026-11-23)
 
 ### New

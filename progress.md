@@ -2,7 +2,7 @@
 
 A running record of where the game stands. Update it when something ships, starts or gets decided.
 This file is public: server addresses, account, payment and moderation details go in `private-notes.md` (not on GitHub).
-Last updated: 2026-11-23 · Current version: **0.3.0-alpha.7**
+Last updated: 2026-11-23 · Current version: **0.3.0-alpha.8**
 
 Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 
@@ -49,6 +49,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 💭 idea, not decided
 | Better saga feedback for testers | 0.3.0-alpha.5 | ✅ released 2026-11-19 |
 | Versus formats, titles to earn, pause menu | 0.3.0-alpha.6 | ✅ released 2026-11-21 |
 | Portraits for every race, faces for friends and foes, a map of the saga | 0.3.0-alpha.7 | ✅ released 2026-11-23 |
+| Age that matters, gold and a travelling merchant | 0.3.0-alpha.8 | ✅ released 2026-11-23 |
 | Alpha test with 5-15 players | two weeks after release | ⬜ |
 | Beta (fixes from the alpha, signed build, store page) | 0.2.0-beta.1 | ⬜ |
 | 1.0 on itch.io | 1.0.0 | ⬜ |
