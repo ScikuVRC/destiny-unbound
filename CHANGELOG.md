@@ -4,6 +4,27 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
+## 0.3.0-alpha.11 (2026-11-23)
+
+### New
+
+- **Save slots:** up to six sagas side by side. Continue lets you pick one, and every finished chapter is saved.
+- **Leave a saga safely:** going to the main menu mid-story asks first. Your finished chapters are kept.
+- **Keyboard help:** press **?** anywhere to see every shortcut, including your own keys and the controller buttons.
+- **Search the saga log:** long sagas get a search box, and you can bookmark any line with a star.
+- **A pointer that flaps:** it bends on every slice and wobbles to rest when the wheel stops.
+- **Legendary particles:** rare results and Mythic heroes get a burst of embers, stars, sparks, ash or petals, matched to
+  the theme.
+- **The title screen remembers** your last hero and where their saga stands.
+- **One-handed mode** (Options > Accessibility): on a phone held upright, the Spin, Next and Re-spin buttons sit at the
+  bottom of the screen.
+
+### Fixed
+
+- On the smallest phones, the Spin button no longer falls off the bottom of the screen, and the top bar stays on one
+  row.
+- On a controller, B / Circle closes the Spin settings pop-up instead of opening the pause menu.
+
 ## 0.3.0-alpha.10 (2026-11-23)
 
 ### New

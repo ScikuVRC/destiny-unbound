@@ -47,6 +47,7 @@ in [docs/release-plan.md](docs/release-plan.md).
 
 ## Recently done
 
+- 0.3.0-alpha.11: save slots, keyboard help, saga search, one-handed mode.
 - 0.3.0-alpha.10: Five new story arcs.
 - 0.3.0-alpha.9: Set bonuses, Hall tournament, monthly challenge, moving title screens.
 - 0.3.0-alpha.8: Age that matters, gold and a travelling merchant.
