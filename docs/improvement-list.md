@@ -1,14 +1,14 @@
 # Destiny Unbound: what can be improved
 
 First written 2026-11-13, after 0.2.0-alpha.1. Rewritten 2026-11-17, after 0.3.0-alpha.1, with 100 new ideas
-(103-202); updated since: 71 of the first 102 and 52 of the new ideas are done and listed at the end.
+(103-202); updated since: 74 of the first 102 and 52 of the new ideas are done and listed at the end.
 
 Each item has a rough size: **S** (an hour or two), **M** (a day), **L** (several days or more).
 Items marked ★ are the ones I'd do first. ✅ = done, ⬜ = not yet. Numbers stay the same as items get done.
 
 Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of them secret), 10 endings with epilogues and a saga recap,
 13 arena worlds with 77 opponents, 34 achievements, 5 themes, 5 languages, a Discord bot with 6 commands,
-171 automated checks plus balance, accessibility, performance and licence checks in CI.
+174 automated checks plus balance, accessibility, performance and licence checks in CI.
 
 **Contents:** [Still to do (1-102)](#still-to-do-from-the-first-list) · [New ideas (103-202)](#new-ideas-103-202) ·
 [Done](#done) · [Suggested order](#suggested-order)
@@ -19,19 +19,13 @@ Where the game stands: 26 wheels per hero, 98 races, 56 story chapters (five of 
 
 ### Story mode
 
-4. ⬜ **Companion arcs (M).** Companions are a name and a loyalty number. Give them small events: a quarrel, a request,
-   a sacrifice, a betrayal that was foreshadowed. (GitHub issue #1 asks for more companions.)
 5. ⬜ **The nemesis as a character (M).** Give the nemesis a motive rolled at the start (envy, revenge, duty), lines
    that change with each meeting, and an ending where you become friends or they take your place.
-6. ⬜ **Kingdom management light (M).** A kingdom is one object with a "power" number. Add two or three stats (gold,
-   army, loyalty) that kingdom events move and that wars read.
 10. ⬜ **Difficulty presets for the story (S).** "Gentle / Standard / Brutal" on top of the luck level, changing the
     second-chance rates that already exist in code.
 
 ### Arena and versus
 
-11. ⬜ **Arena progression (M).** Fights are one-offs. Add a ladder or gauntlet: five fights in a row, rising rewards,
-    one life.
 
 ### Character creation
 
@@ -186,9 +180,13 @@ All done (see Done 2026-11-23).
 
 ## Done
 
-71 of the first 102, and 52 of the new ideas.
+74 of the first 102, and 52 of the new ideas.
 
 ### Done 2026-11-23
+
+4. ✅ **Companion arcs.** 2026-11-23: now and then, between chapters, a companion quarrels with you (make peace, stand your ground or send them away), asks for help with their own trouble, opens up by the fire, or swears an oath. A sworn companion may later take an assassin’s blade meant for you; a disloyal one is first seen whispering with strangers at night, and if you let it lie, betrays you and runs with half your gold. With few companions, a stranger may ask to join (issue #1). Only with Companion loyalty on; its own seeded dice.
+6. ✅ **Kingdom management light.** 2026-11-23: a kingdom has a treasury, an army and the people’s loyalty (0-100, shown in the saga sheet). Kingdom events move them, a royal decree now and then lets you raise taxes, drill the army or hold a feast, wars read the army (+1.5 to +10.5 instead of a flat +6), and a disloyal people makes coups and rebellions harder to put down.
+11. ✅ **Arena progression.** 2026-11-23: the Gauntlet, on the card screen: five fights in a row through one world, from its weakest foes to its strongest, with one life. Each round won pays at once and the rewards rise (+1 Renown up to +2 Renown and a Fate Token); you may walk away between rounds; a stalemate is fought again. Winning all five earns the title Gauntlet Champion; the best run is kept.
 
 33. ✅ **Phone layout.** 2026-11-23: every screen checked in emulation from 320×568 to 412×915 and sideways (`scripts/layout-check.js`). On the smallest phones the top bar keeps one row while the pause button shows, the wheel shrinks a little so Spin stays on screen, and Pause story gets its own row. Still not tried on a real phone.
 34. ✅ **Controller polish.** 2026-11-23: B / Circle closes the Spin settings pop-up first (as Esc does) instead of opening the pause menu, and moving focus out of the pop-up with the d-pad, a stick or Tab closes it. Show upcoming keeps focus when it opens and closes. Tested with simulated controller input, not a real pad.
@@ -362,7 +360,7 @@ All done (see Done 2026-11-23).
 
 1. **Feel:** real sound effects (52), ending stingers (55).
 2. **Play:** quick create (18), saga goals (24).
-3. **Depth:** companion and nemesis arcs (4, 5), arena gauntlet (11).
+3. **Depth:** the nemesis as a character (5), difficulty presets (10).
 4. **Reach:** a real phone test (33), story text translated (60, now ready for plural and gender markers),
    native-speaker reviews (61).
 5. **Foundations:** move story text out of code (66), browser tests in CI (76), type checking (75).

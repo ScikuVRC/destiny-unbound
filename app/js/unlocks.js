@@ -49,6 +49,14 @@
         how: 'Win a Hall tournament (Versus).',
         test: ctx => (ctx.cups || 0) > 0,
       });
+      // the arena gauntlet (11): all five rounds won
+      out.push({
+        id: 'gauntlet',
+        name: 'Gauntlet Champion',
+        kind: 'gauntlet',
+        how: 'Win all five rounds of the Gauntlet.',
+        test: ctx => (ctx.gauntlet || 0) > 0,
+      });
       // world champions (129): every foe of a world beaten at least once, in the arena or in a saga
       (FW.UNIVERSES || []).forEach(u =>
         out.push({
@@ -95,6 +103,7 @@
     ach: store.get('fw.achievements', {}) || {},
     codex: store.get('fw.codex', null) || {},
     cups: (store.get('fw.cups', []) || []).length,
+    gauntlet: ((store.get('fw.gauntlet', null) || {}).champs || []).length,
   });
   U.ctx = ctx;
   // the title on the card: one the player picked, if they still have it

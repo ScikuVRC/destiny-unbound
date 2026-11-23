@@ -1634,6 +1634,7 @@
       setResult,
       setControls,
       updateTokens,
+      refreshFightSheet,
       newRun: () => ++state.runId,
       runId: () => state.runId,
       finishWait,

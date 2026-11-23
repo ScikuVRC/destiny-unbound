@@ -108,10 +108,16 @@
       reqText: 'needs a kingdom',
       run: async (L, io, c) => {
         c.foe = 'the rebels';
-        const r = await fight(L, io, c, foe('the rebels of ' + L.saga.kingdom.name, nearYou(L, io.rng, -10, 8)), {
-          scale: 'war',
-          title: 'Can you crush the rebellion?',
-        });
+        const r = await fight(
+          L,
+          io,
+          c,
+          foe('the rebels of ' + L.saga.kingdom.name, nearYou(L, io.rng, -10 + S.unrest(L.saga), 8 + S.unrest(L.saga))),
+          {
+            scale: 'war',
+            title: 'Can you crush the rebellion?',
+          }
+        );
         if (r === 'win')
           return outcome(L, io, c, {
             title: 'The rebels are beaten. Now what?',

@@ -20,6 +20,7 @@ const FILES = [
   'js/menu.js',
   'js/title-fx.js',
   'js/burst.js',
+  'js/gauntlet.js',
   'js/guide.js',
   'js/options.js',
   'js/presence.js',

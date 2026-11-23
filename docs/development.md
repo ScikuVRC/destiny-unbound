@@ -37,16 +37,16 @@ npm run lint          # ESLint: real mistakes such as undefined names and duplic
 npm run format        # Prettier: formats JavaScript and JSON (CSS and HTML keep their compact form)
 ```
 
-171 checks in 10 suites:
+174 checks in 10 suites:
 
 - **engine (28):** data validity, unique names, tier shifts, odds, conditional buffs, Legend Codes, arena maths, own
   Workshop entries and their effect limits.
 - **art (18):** every generator and language-model connector against a mock server.
-- **story (28):** 500 full sagas with random options, requirements, every option switched off, dynasty, arcs and
+- **story (30):** 500 full sagas with random options, requirements, every option switched off, dynasty, arcs and
   endings, the saga recap, epilogues, Legend Codes that stay under the card-code limit, ancestor spirits, alignment,
-  world events, secret chapters, retirement and guild ranks.
-- **extras (20):** packs, achievements, translations and the plural and gender markers, player level, the Codex and
-  Bestiary (with secret chapters and the collection), hidden achievements, unlockable titles and card backs, versus formats, spin speeds, Hall statistics and the spreadsheet export, the world boss.
+  world events, secret chapters, retirement, guild ranks, companion arcs and kingdom management.
+- **extras (21):** packs, achievements, translations and the plural and gender markers, player level, the Codex and
+  Bestiary (with secret chapters and the collection), hidden achievements, unlockable titles and card backs, versus formats, spin speeds, Hall statistics and the spreadsheet export, the world boss, the arena Gauntlet.
 - **mods (14):** validation, CSS that tries to escape its theme or load outside pictures, every mod kit template
   loads, the kit's generated reference is up to date.
 - **system (12):** version and cache numbers agree, a release bump on a copy, preferences, save import checks, no API
@@ -203,6 +203,7 @@ Uninstalling keeps all of these.
 | `app/js/skins-data.js`, `chapter-art.js`, `badges.js`, `icons.js` | Painted wheel rims and hubs, chapter illustrations, achievement badges, the icon set |
 | `app/js/menu.js`, `menu-data.js`, `css/menu.css` | Themed title screen, save slots, keyboard and controller input, keyboard help (?), the leave-a-saga check, guide, credits, thank-you screen |
 | `app/js/title-fx.js`, `burst.js` | Moving title screens; particle bursts for rare results and Mythic cards |
+| `app/js/gauntlet.js` | The arena Gauntlet: five rising fights, one life, its rewards and record |
 | `app/js/options.js`, `prefs.js`, `content.js`, `css/ui.css` | Options, the preferences every part reads, Content & mods |
 | `app/js/save.js` | Save format versions: updates old saves step by step, with a backup first |
 | `app/js/system.js`, `report.js`, `version.js` | Error log, backups, save export and import, play stats, feedback; error reports; version |

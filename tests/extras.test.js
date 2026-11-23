@@ -27,6 +27,7 @@ require('../app/js/i18n.js');
   'boss.js',
   'unlocks.js',
   'prefs.js',
+  'gauntlet.js',
 ].forEach(f => require('../app/js/' + f));
 const FW = globalThis.FW;
 let pass = 0,
@@ -545,6 +546,42 @@ t('milestones: bronze, silver and gold with a progress bar to the next step', ()
     assert(typeof x.of(c) === 'number', x.id);
     assert(FW.LANG_PACKS.es.strings[x.name] != null, 'milestone not translated: ' + x.name);
   });
+});
+
+t('gauntlet: five rounds from the weakest foes to the strongest, rising rewards, a kept record and a title', () => {
+  const G = FW.Gauntlet;
+  FW.UNIVERSES.forEach(u => {
+    const lad = G.ladder(u);
+    assert.strictEqual(lad.length, G.ROUNDS);
+    lad.forEach((band, r) => {
+      assert(band.length >= Math.min(2, u.opps.length), u.name + ' round ' + (r + 1) + ' has one foe');
+      band.forEach(o => assert(u.opps.indexOf(o) >= 0));
+    });
+    const lv = o => FW.P(o).lv,
+      max = Math.max(...u.opps.map(lv));
+    assert(
+      lad[G.ROUNDS - 1].some(o => lv(o) === max),
+      u.name + ': the strongest foe is not in the last round'
+    );
+    const avg = b => b.reduce((t, o) => t + lv(o), 0) / b.length;
+    assert(avg(lad[0]) <= avg(lad[G.ROUNDS - 1]), u.name + ': the gauntlet does not get harder');
+  });
+  // rewards rise, parse, and the line counts as an arena win with its odds
+  G.REWARDS.forEach(w => FW.parse(w.dsl));
+  const worth = w => (/rt\+(\d)/.exec(w.dsl) || [0, 0])[1] * 1 + (/fate\+(\d)/.exec(w.dsl) || [0, 0])[1] * 1;
+  assert(worth(G.REWARDS[G.ROUNDS - 1]) > worth(G.REWARDS[0]), 'the last round pays no more than the first');
+  const u = FW.UNIVERSES[0],
+    line = G.rewardLine(4, u.opps[0], { arena: 'X', uni: u.name, p: 0.4567 });
+  assert.strictEqual(line.kind, 'win');
+  assert.strictEqual(line.p, 0.457);
+  // the record: best and runs, and a championship only for all five
+  let r = G.record(null, { won: 3, world: u.name, name: 'A', date: 'd' });
+  assert.deepStrictEqual([r.best, r.runs, r.champs.length], [3, 1, 0]);
+  r = G.record(r, { won: 5, world: u.name, name: 'B', date: 'd' });
+  r = G.record(r, { won: 1, world: u.name, name: 'C', date: 'd' });
+  assert.deepStrictEqual([r.best, r.runs, r.champs.length], [5, 3, 1]);
+  const title = FW.Unlocks.titles().find(x => x.id === 'gauntlet');
+  assert(title && !title.test({}) && title.test({ gauntlet: 1 }));
 });
 
 console.log('\n' + pass + ' of ' + (pass + fail) + ' checks passed');

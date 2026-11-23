@@ -97,8 +97,9 @@ async function playSaga(seed, opts, ov) {
       ' codes trimmed',
       trimmed
     );
-    // a long saga's code leaves out its oldest ordinary lines (and says so); 15 of 500 since the five extra arcs (2026-11-23)
-    assert(trimmed <= 15, 'too many trimmed codes: ' + trimmed);
+    // a long saga's code leaves out its oldest ordinary lines (and says so); 30 of 500 (24 measured) since the five
+    // extra arcs and the companion and kingdom events between chapters (2026-11-23)
+    assert(trimmed <= 30, 'too many trimmed codes: ' + trimmed);
   });
 
   await t(
@@ -903,6 +904,108 @@ async function playSaga(seed, opts, ov) {
         'circuitFinal',
       ].forEach(id => assert(!S.wheelEntries(L, {}).some(e => e.id === id), id + ' shows too early'));
       assert(ends.size >= 10, 'the arcs barely branch: ' + [...ends]);
+    }
+  );
+
+  await t(
+    'companion arcs: quarrels, requests, oaths, sacrifices and foreshadowed betrayals; only with loyalty on',
+    async () => {
+      const kinds = {};
+      let events = 0;
+      for (let i = 0; i < 160; i++) {
+        const { L } = await playSaga('comp' + i, {});
+        events += L.saga.log.filter(x => x.chapter === 'Your companions').length;
+        L.ally.forEach(a => assert(a.loyalty == null || (a.loyalty >= 0 && a.loyalty <= 100), 'loyalty out of range'));
+      }
+      assert(events > 60, 'companion events are rare: ' + events);
+      for (let i = 0; i < 40; i++) {
+        const { L } = await playSaga('comp' + i, { loyalty: false });
+        assert(!L.saga.log.some(x => x.chapter === 'Your companions'), 'companion event with loyalty off');
+      }
+      // the pick follows the companion: a disloyal one is first seen whispering, then (still doubted) betrays
+      const L = makeLegend('arc');
+      S.newSaga(L, {}, FW.makeRng('arc'));
+      L.saga.ch = 5;
+      L.ally = [{ name: 'Brann', lv: 40, how: 'befriend', loyalty: 20 }];
+      assert.strictEqual(S.companionPick(L).kind, 'whisper');
+      L.ally[0].doubt = true;
+      assert.strictEqual(S.companionPick(L).kind, 'betray');
+      for (let ch = 3; ch < 60; ch++) {
+        L.saga.ch = ch;
+        L.ally = [
+          { name: 'Mira', lv: 40, how: 'befriend', loyalty: 90, sworn: true },
+          { name: 'Tobb', lv: 40, loyalty: 60 },
+        ];
+        kinds[S.companionPick(L).kind] = 1;
+      }
+      ['sacrifice', 'quarrel', 'request'].forEach(k => assert(kinds[k], 'never picked: ' + k));
+      // every kind plays through
+      const io = bot('arcplay');
+      for (const [kind, ally] of [
+        ['betray', { name: 'Brann', lv: 40, loyalty: 10, doubt: true }],
+        ['whisper', { name: 'Brann', lv: 40, loyalty: 10 }],
+        ['sacrifice', { name: 'Mira', lv: 40, loyalty: 95, sworn: true }],
+      ]) {
+        const L2 = makeLegend('arc' + kind);
+        S.newSaga(L2, {}, FW.makeRng('a'));
+        L2.saga.ch = 4;
+        L2.ally = [ally];
+        // the sacrifice is a 40% roll for a sworn companion, so it is asked for here
+        const p = await S.companionEvent(
+          L2,
+          io,
+          { o: S.opts(), ch: 'x', chName: 'x', rng: io.rng },
+          kind === 'sacrifice' ? { kind, ally: L2.ally[0] } : null
+        );
+        assert.strictEqual(p.kind, kind);
+        if (kind === 'betray') assert(!L2.ally.length, 'the traitor stays');
+      }
+    }
+  );
+
+  await t(
+    'kingdom management: treasury, army and loyalty move with events and decrees, and wars read the army',
+    async () => {
+      let decrees = 0,
+        moved = 0;
+      for (let i = 0; i < 200; i++) {
+        const { L } = await playSaga('realm' + i, {});
+        decrees += L.saga.log.filter(x => x.chapter === 'A royal decree').length;
+        const k = S.realm(L.saga);
+        if (k) {
+          ['gold', 'army', 'loyalty'].forEach(x => assert(k[x] >= 0 && k[x] <= 100, x + ' out of range'));
+          if (k.gold !== 50 || k.army !== 50 || k.loyalty !== 50) moved++;
+        }
+      }
+      assert(decrees > 5, 'decrees are rare: ' + decrees);
+      assert(moved > 5, 'kingdom numbers never move: ' + moved);
+      // an old kingdom gets its numbers; the army sets the war bonus; loyalty sets the unrest
+      const L = makeLegend('throne');
+      S.newSaga(L, {}, FW.makeRng('t'));
+      L.saga.kingdom = { name: 'Vel', style: 'War kingdom', power: 50 };
+      assert.strictEqual(S.realm(L.saga).army, 65);
+      const war = () => S.bonuses(L, 'war', S.opts()).find(b => /army/.test(b.label)).d;
+      const strong = war();
+      S.kmove(L.saga, { army: -100 });
+      assert.strictEqual(L.saga.kingdom.army, 0);
+      assert(war() < strong, 'a smaller army gives the same bonus');
+      S.kmove(L.saga, { loyalty: -100 });
+      assert(S.unrest(L.saga) > 0);
+      S.kmove(L.saga, { loyalty: 200 });
+      assert(S.unrest(L.saga) < 0);
+      // a decree plays through and moves the numbers
+      const io = bot('decree');
+      S.realm(L.saga).gold = 50;
+      const before = JSON.stringify(L.saga.kingdom);
+      await S.decree(L, io, { o: S.opts(), ch: 'x', chName: 'x', rng: io.rng });
+      assert(L.saga.log.some(x => x.chapter === 'A royal decree'));
+      assert(
+        JSON.stringify(L.saga.kingdom) !== before || /Leave things be|run itself/.test(L.saga.log.slice(-1)[0].text)
+      );
+      for (let i = 0; i < 30; i++) {
+        const { L: L3 } = await playSaga('realm' + i, { kingdomEvents: false });
+        assert(!L3.saga.log.some(x => x.chapter === 'A royal decree'), 'decree with kingdom events off');
+      }
     }
   );
 

@@ -446,6 +446,40 @@
     return out;
   };
 
+  /* ---------------- the kingdom (6): a treasury, an army and the people's loyalty, 0-100 each ----------------
+     Kingdom events and royal decrees move them; wars read the army, and a disloyal people makes coups and rebellions
+     harder to put down. A kingdom from an older save gets its numbers the first time they are read. */
+  S.KSTYLE = {
+    'War kingdom': { army: 65 },
+    'Merchant kingdom': { gold: 65 },
+    'Benevolent ruler': { loyalty: 65 },
+    'Holy kingdom': { loyalty: 60 },
+    'Mage kingdom': { gold: 55 },
+    'City-state': { gold: 55, army: 40 },
+  };
+  S.realm = s => {
+    const k = s && s.kingdom;
+    if (!k || typeof k !== 'object') return null;
+    const d = S.KSTYLE[k.style] || {};
+    if (k.gold == null) k.gold = d.gold || 50;
+    if (k.army == null) k.army = d.army || clamp(Math.round(k.power || 50), 20, 80);
+    if (k.loyalty == null) k.loyalty = d.loyalty || 50;
+    return k;
+  };
+  S.kmove = (s, d) => {
+    const k = S.realm(s);
+    if (!k) return null;
+    ['gold', 'army', 'loyalty'].forEach(x => {
+      if (d[x]) k[x] = clamp(Math.round(k[x] + d[x]), 0, 100);
+    });
+    return k;
+  };
+  // how much harder a coup or a rebellion is with a disloyal people (and easier with a loyal one), in levels
+  S.unrest = s => {
+    const k = S.realm(s);
+    return k ? Math.round((50 - k.loyalty) / 5) : 0;
+  };
+
   /* ---------------- power and battles ---------------- */
   // story bonuses on top of the character's power rating; war = armies, duel = you alone
   S.bonuses = function (L, scale, o) {
@@ -461,7 +495,11 @@
         ) / (scale === 'war' ? 20 : 45);
       out.push({ label: 'Allies at your side (' + allies.length + ')', d: Math.min(scale === 'war' ? 10 : 5, v) });
     }
-    if (scale === 'war' && s.kingdom) out.push({ label: 'The army of ' + s.kingdom.name, d: 6 });
+    // the army of your kingdom (6): about +6 at an army of 50, from +1.5 (none left) to +10.5 (the strongest)
+    if (scale === 'war' && s.kingdom) {
+      const k = S.realm(s);
+      out.push({ label: 'The army of ' + k.name + ' (' + k.army + ')', d: 1.5 + (k.army / 100) * 9 });
+    }
     if (scale === 'war' && s.conquered && s.conquered.length)
       out.push({ label: 'Conquered peoples march with you', d: Math.min(9, 3 * s.conquered.length) });
     if (s.artifacts && s.artifacts.length)
@@ -1116,15 +1154,22 @@
       emoji: '👑',
       hue: 45,
       entries: [
-        good('A golden age', 3, 'rt+1 fate+1', '{kingdom} enters a golden age.'),
-        bad('Famine', 3, 'fate-1', 'Famine strikes {kingdom}.'),
-        good('A royal wedding', 2, 'fate+1', 'A royal wedding brings a new ally.', {
-          fx: () => addAlly(L, 'your royal in-laws', 45, 'befriend', 70),
+        good('A golden age', 3, 'rt+1 fate+1', '{kingdom} enters a golden age.', {
+          fx: s2 => S.kmove(s2, { gold: 10, loyalty: 10 }),
         }),
-        good('Trade boom', 3, 'int+1', 'Merchants flock to {kingdom}.'),
+        bad('Famine', 3, 'fate-1', 'Famine strikes {kingdom}.', { fx: s2 => S.kmove(s2, { gold: -10, loyalty: -10 }) }),
+        good('A royal wedding', 2, 'fate+1', 'A royal wedding brings a new ally.', {
+          fx: s2 => {
+            addAlly(L, 'your royal in-laws', 45, 'befriend', 70);
+            S.kmove(s2, { loyalty: 8 });
+          },
+        }),
+        good('Trade boom', 3, 'int+1', 'Merchants flock to {kingdom}.', { fx: s2 => S.kmove(s2, { gold: 15 }) }),
         E('A dragon attacks the capital', 2, '', 'A dragon descends on {kingdom}!'),
         E('A coup', 2, '', 'Your generals plot against you.'),
-        bad('Plague in the capital', 2, 'dur-1', 'Plague spreads through {kingdom}.'),
+        bad('Plague in the capital', 2, 'dur-1', 'Plague spreads through {kingdom}.', {
+          fx: s2 => S.kmove(s2, { army: -10, loyalty: -5 }),
+        }),
       ],
     });
     if (e.name === 'A dragon attacks the capital') {
@@ -1138,15 +1183,21 @@
       S.apply(
         L,
         r === 'win'
-          ? good('Dragon driven off', 1, 'rt+2', 'You defend {kingdom} from {foe}.')
+          ? good('Dragon driven off', 1, 'rt+2', 'You defend {kingdom} from {foe}.', {
+              fx: s2 => S.kmove(s2, { loyalty: 10 }),
+            })
           : r === 'lose'
-            ? bad('The capital burns', 1, 'rt-1 fate-1', '{foe} burns the capital of {kingdom}.')
+            ? bad('The capital burns', 1, 'rt-1 fate-1', '{foe} burns the capital of {kingdom}.', {
+                fx: s2 => S.kmove(s2, { gold: -15, army: -10 }),
+              })
             : E('The dragon leaves', 1, '', '{foe} leaves, for now.'),
         c
       );
     } else if (e.name === 'A coup') {
       c.foe = 'the generals';
-      const r = await fight(L, io, c, foe('the generals', nearYou(L, io.rng, -12, 6)), {
+      // a loyal people leaves the generals few friends; a resentful one hands them an army
+      const u = S.unrest(s);
+      const r = await fight(L, io, c, foe('the generals', nearYou(L, io.rng, -12 + u, 6 + u)), {
         title: 'Can you stop the coup?',
       });
       S.apply(
@@ -1157,11 +1208,301 @@
                 s2.kingdom = null;
               },
             })
-          : good('Coup crushed', 1, 'rt+1', 'You crush the coup.'),
+          : good('Coup crushed', 1, 'rt+1', 'You crush the coup.', { fx: s2 => S.kmove(s2, { army: -8, loyalty: 5 }) }),
         c
       );
     }
   }
+  /* a royal decree (6): now and then the ruler decides how the kingdom is run. Its own seeded dice. */
+  S.DECREE_CHANCE = 0.15;
+  S.decreeDue = (L, o) => {
+    const s = L.saga;
+    return (
+      !!(o.kingdomEvents && s.kingdom && !s.end) && FW.makeRng(String(L.seed) + ':decree:' + s.ch)() < S.DECREE_CHANCE
+    );
+  };
+  async function decree(L, io, c) {
+    const s = L.saga,
+      k = S.realm(s),
+      rng = FW.makeRng(String(L.seed) + ':decreePick:' + s.ch);
+    c.chName = 'A royal decree';
+    c.emoji = '📜';
+    const rich = k.gold >= 15;
+    const ops = [
+      {
+        label: 'Raise taxes',
+        hint: 'Gold +20, loyalty −12',
+        e: E('Raise taxes', 1, '', 'You raise taxes in {kingdom}. The treasury fills; the people grumble.', {
+          fx: s2 => S.kmove(s2, { gold: 20, loyalty: -12 }),
+        }),
+      },
+    ];
+    if (rich)
+      ops.push(
+        {
+          label: 'Drill the army',
+          hint: 'Gold −15, army +15',
+          e: E('Drill the army', 1, '', 'You pay for new soldiers and long drills. The army of {kingdom} grows.', {
+            fx: s2 => S.kmove(s2, { gold: -15, army: 15 }),
+          }),
+        },
+        {
+          label: 'Hold a great feast',
+          hint: 'Gold −15, loyalty +15',
+          align: 1,
+          e: good('Hold a great feast', 1, '', 'You open the palace for a feast. {kingdom} drinks to your name.', {
+            fx: s2 => S.kmove(s2, { gold: -15, loyalty: 15 }),
+          }),
+        }
+      );
+    ops.push({
+      label: 'Leave things be',
+      hint: 'Nothing changes',
+      e: E('Leave things be', 1, '', 'You leave {kingdom} to run itself for a while.', { quiet: true }),
+    });
+    const i = await choose(L, Object.assign({}, io, { rng }), c, {
+      emoji: '📜',
+      title:
+        'Treasury ' +
+        k.gold +
+        ' · army ' +
+        k.army +
+        ' · loyalty ' +
+        k.loyalty +
+        '. What do you decree for ' +
+        k.name +
+        '?',
+      options: ops.map(x => ({ label: x.label, hint: x.hint, align: x.align })),
+    });
+    S.apply(L, ops[i].e, c);
+    if (S.realm(s) && S.realm(s).loyalty <= 15) S.apply(L, bad('Unrest', 1, '', 'Unrest grows in {kingdom}.'), c);
+  }
+  S.decree = decree;
+
+  /* ---------------- companion arcs (4): small events with the people who travel with you ----------------
+     Now and then, between chapters, a companion quarrels with you, asks for help, opens up by the fire or swears to
+     stand by you. A sworn companion may later give their life for you; a disloyal one is first seen whispering with
+     strangers, and if you let it lie, betrays you. With few companions, a stranger may ask to join. Only with
+     Companion loyalty on, and with its own seeded dice, so it never shifts the story. */
+  S.COMP_CHANCE = 0.12;
+  S.JOIN_CHANCE = 0.06;
+  const loyOf = a => (a.loyalty == null ? 60 : a.loyalty);
+  S.companionDue = (L, o) => {
+    const s = L.saga;
+    if (!o.loyalty || s.end || s.ch < 2) return false;
+    const n = (L.ally || []).filter(a => !a.gone).length,
+      r = FW.makeRng(String(L.seed) + ':comp:' + s.ch)();
+    return n ? r < S.COMP_CHANCE : r < S.JOIN_CHANCE;
+  };
+  // which companion, and what happens (seeded); exported for the tests
+  S.companionPick = L => {
+    const s = L.saga,
+      rng = FW.makeRng(String(L.seed) + ':compPick:' + s.ch),
+      al = (L.ally || []).filter(a => !a.gone);
+    if (!al.length) return { kind: 'join', ally: null };
+    // a companion already under suspicion is the one the story follows; a story under way comes before a stranger
+    const doubted = al.find(a => a.doubt);
+    const a = doubted || al[Math.floor(rng() * al.length) % al.length];
+    const lo = loyOf(a);
+    if (a.doubt && lo <= 40) return { kind: 'betray', ally: a };
+    if (lo <= 30) return { kind: 'whisper', ally: a };
+    if (a.sworn && lo >= 80 && rng() < 0.4) return { kind: 'sacrifice', ally: a };
+    if (al.length < 2 && rng() < 0.35) return { kind: 'join', ally: null };
+    const ws = [
+      { k: 'quarrel', w: 3 },
+      { k: 'request', w: 3 },
+      { k: 'campfire', w: 2 },
+      { k: 'oath', w: lo >= 70 && !a.sworn ? 3 : 0 },
+    ];
+    return { kind: ws[FW.weightedIndex(ws, rng)].k, ally: a };
+  };
+  const TOPICS = ['the road ahead', 'a broken promise', 'money', 'a prisoner you spared', 'an old flame', 'who leads'];
+  const ASKS = [
+    'their home village is threatened by raiders',
+    'their brother is held for ransom',
+    'their old master lies dying far to the north',
+    'a debt they owe has come due',
+    'they want to settle an old score',
+  ];
+  async function companionEvent(L, io, c, forced) {
+    const s = L.saga,
+      p = forced || S.companionPick(L),
+      rng = FW.makeRng(String(L.seed) + ':compDice:' + s.ch),
+      sio = Object.assign({}, io, { rng }),
+      cc = Object.assign({}, c, { rng, chName: 'Your companions', emoji: '🤝' });
+    const a = p.ally,
+      nm = a ? a.name : '',
+      Up = x => x.charAt(0).toUpperCase() + x.slice(1),
+      say = (tone, title, text, more) =>
+        S.apply(
+          L,
+          (tone === 'good' ? good : tone === 'bad' ? bad : E)(title, 1, (more && more.dsl) || '', text, more),
+          cc
+        );
+    const leave = why => {
+      removeAlly(L, a);
+      say('bad', Up(nm) + ' leaves', why);
+    };
+    if (p.kind === 'join') {
+      const name = Nm().person(rng, pick(['human', 'elven', 'dwarven'], rng));
+      const i = await choose(L, sio, cc, {
+        emoji: '🤝',
+        title: 'A stranger, ' + name + ', asks to travel with you. Do you let them?',
+        options: [
+          { label: 'Welcome them', hint: 'A new companion' },
+          { label: 'Send them on their way', hint: 'Travel light' },
+        ],
+      });
+      if (i === 0) {
+        addAlly(L, name, 30 + 30 * rng(), 'befriend', 55);
+        say('good', 'A new companion', name + ' joins you on the road.');
+      } else say('', 'A stranger turned away', '{hero} sends ' + name + ' on their way.', { quiet: true });
+      return p;
+    }
+    if (p.kind === 'quarrel') {
+      const i = await choose(L, sio, cc, {
+        emoji: '🗯️',
+        title: Up(nm) + ' and you quarrel about ' + pick(TOPICS, rng) + '. What do you do?',
+        options: [
+          { label: 'Make peace', hint: 'Loyalty grows', align: 1 },
+          { label: 'Stand your ground', hint: 'They may come round, or walk out' },
+          { label: 'Send them away', hint: 'The end of the road together' },
+        ],
+      });
+      if (i === 0) {
+        a.loyalty = clamp(loyOf(a) + 12, 0, 100);
+        say('good', 'Peace made', '{hero} and ' + nm + ' make peace by the fire.');
+      } else if (i === 1) {
+        await outcome(L, sio, cc, {
+          title: 'Does ' + nm + ' come round?',
+          emoji: '🗯️',
+          hue: 30,
+          entries: [
+            good('They come round', 2, '', Up(nm) + ' admits you were right.', {
+              fx: () => (a.loyalty = clamp(loyOf(a) + 5, 0, 100)),
+            }),
+            bad('They walk out', 1, '', Up(nm) + ' packs up and leaves in the night.', { fx: () => removeAlly(L, a) }),
+          ],
+        });
+      } else leave('{hero} sends ' + nm + ' away. The road is quieter now.');
+      return p;
+    }
+    if (p.kind === 'request') {
+      const ask = pick(ASKS, rng);
+      const i = await choose(L, sio, cc, {
+        emoji: '🙏',
+        title: Up(nm) + ' asks for your help: ' + ask + '.',
+        options: [
+          { label: 'Help them', hint: 'A detour, and a risk', align: 1 },
+          { label: 'Refuse', hint: 'Loyalty falls', align: -1 },
+        ],
+      });
+      if (i === 0)
+        await outcome(L, sio, cc, {
+          title: 'How does it go?',
+          emoji: '🙏',
+          hue: 120,
+          entries: [
+            good('Done, and well done', 3, 'rt+1', 'You help ' + nm + ' and it ends well. They will not forget it.', {
+              fx: () => (a.loyalty = clamp(loyOf(a) + 20, 0, 100)),
+            }),
+            bad('It goes wrong', 1, 'dur-1', 'You help ' + nm + ', but it costs you. They thank you all the same.', {
+              fx: () => (a.loyalty = clamp(loyOf(a) + 8, 0, 100)),
+            }),
+          ],
+        });
+      else {
+        a.loyalty = clamp(loyOf(a) - 18, 0, 100);
+        if (loyOf(a) <= 20) leave(Up(nm) + ' goes alone, and does not come back.');
+        else say('bad', 'Refused', '{hero} refuses to help ' + nm + '. Something cools between you.');
+      }
+      return p;
+    }
+    if (p.kind === 'campfire') {
+      a.loyalty = clamp(loyOf(a) + 8, 0, 100);
+      say('good', 'By the fire', 'By the fire, ' + nm + ' tells {hero} the story of their life.');
+      return p;
+    }
+    if (p.kind === 'oath') {
+      a.sworn = true;
+      a.loyalty = clamp(loyOf(a) + 5, 0, 100);
+      say('good', 'An oath', Up(nm) + ' kneels and swears to stand by {hero} to the end.');
+      return p;
+    }
+    if (p.kind === 'sacrifice') {
+      await outcome(L, sio, cc, {
+        title: 'An assassin’s blade, meant for you, in the dark. What happens?',
+        emoji: '🗡️',
+        hue: 0,
+        entries: [
+          good(
+            'A life for a life',
+            2,
+            'fate+2',
+            Up(nm) + ' throws themself in front of the blade and dies keeping their oath.',
+            {
+              fx: () => {
+                removeAlly(L, a);
+                s.flags.sacrifice = nm;
+              },
+            }
+          ),
+          good('Fought off together', 2, 'rt+1', '{hero} and ' + nm + ' fight the assassin off, back to back.'),
+          E('Both escape', 1, '', 'The blade misses you both by a hair.'),
+        ],
+      });
+      return p;
+    }
+    if (p.kind === 'whisper') {
+      a.doubt = true;
+      const i = await choose(L, sio, cc, {
+        emoji: '👁️',
+        title: 'You catch ' + nm + ' whispering with strangers at night. What do you do?',
+        options: [
+          { label: 'Confront them', hint: 'The truth, now' },
+          { label: 'Say nothing', hint: 'Keep watching' },
+        ],
+      });
+      if (i === 0)
+        await outcome(L, sio, cc, {
+          title: 'What does ' + nm + ' say?',
+          emoji: '👁️',
+          hue: 270,
+          entries: [
+            good('A confession', 2, '', Up(nm) + ' confesses an old debt, and swears it is paid. You believe them.', {
+              fx: () => {
+                a.doubt = false;
+                a.loyalty = clamp(loyOf(a) + 20, 0, 100);
+              },
+            }),
+            bad('They run', 1, '', Up(nm) + ' runs before dawn, with half your supplies.', {
+              fx: () => removeAlly(L, a),
+            }),
+          ],
+        });
+      else say('bad', 'Whispers', 'You catch ' + nm + ' whispering with strangers at night, and say nothing.');
+      return p;
+    }
+    // the betrayal that was foreshadowed
+    c.foe = nm;
+    const r = await fight(L, sio, cc, foe(nm, a.lv || nearYou(L, rng, -10, 4)), {
+      emoji: '🗡️',
+      title: Up(nm) + ' turns on you, as you feared. Do you win?',
+    });
+    removeAlly(L, a);
+    if (r === 'win') say('good', 'The traitor falls', '{hero} defeats ' + nm + ', who betrayed them.', { dsl: 'rt+1' });
+    else {
+      const gold = S.gold(s);
+      if (gold) S.addGold(s, -Math.ceil(gold / 2));
+      say('bad', 'Betrayed', Up(nm) + ' betrays {hero} and escapes' + (gold ? ' with half your gold' : '') + '.', {
+        dsl: r === 'lose' ? 'dur-1' : '',
+      });
+    }
+    loyal(L, -5); // the others wonder who is next
+    return p;
+  }
+  S.companionEvent = companionEvent;
+
   async function oldAge(L, io, c) {
     const life = S.lifespan(L),
       a = S.age(L);
@@ -1233,6 +1574,8 @@
     await ch.run(L, io, c);
     if (!s.end && o.kingdomEvents && s.kingdom && ch.id !== 'kingdom' && io.rng() < 0.3)
       await kingdomEvent(L, io, Object.assign({}, c));
+    if (!s.end && ch.id !== 'kingdom' && S.decreeDue(L, o)) await decree(L, io, Object.assign({}, c));
+    if (!s.end && S.companionDue(L, o)) await companionEvent(L, io, Object.assign({}, c));
     if (!s.end) S.ageUp(L, o);
     if (S.merchantDue(L, o))
       await merchant(L, io, Object.assign({}, c, { chName: 'A travelling merchant', emoji: '🧳' }));

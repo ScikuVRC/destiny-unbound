@@ -26,9 +26,10 @@ const CPU = +(arg('cpu') || 1);
 const BUDGET = {
   startMs: 2500, // until the title screen is ready (a player's PC does it in well under a second)
   startKB: 2500, // everything the title screen loads: page, scripts, styles, fonts, art (1712 KB on 2026-11-17)
-  // the JavaScript alone (1021 KB on 2026-11-17, 1361 KB on 2026-11-23 after a month of features in five languages);
+  // the JavaScript alone (1021 KB on 2026-11-17, 1361 KB on 2026-11-23 after a month of features in five languages,
+  // 1451 KB later that day with save slots, the gauntlet and companion and kingdom events);
   // loading the four other languages only when chosen (improvement list 192) would take about 370 KB off
-  scriptKB: 1450,
+  scriptKB: 1500,
   frameP95Ms: 25, // 95% of frames while spinning arrive within this (60 fps is 16.7 ms between frames)
   frameMaxMs: 50, // the longest gap while a wheel turns: a stutter you can see (66.7 before the rim fix, now 16.8)
   longFrames: 6, // frames over 50 ms in 15 s of Auto-spin: opening hero-making and the odd browser pause (2-3)

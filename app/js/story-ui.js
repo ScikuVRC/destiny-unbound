@@ -43,6 +43,13 @@
           ? s.kingdom.name + ' (' + s.kingdom.style + ')'
           : ''
     );
+    // the kingdom's three numbers (6)
+    const k = S.realm(s);
+    if (k)
+      h += row(
+        'Realm',
+        '🪙 ' + k.gold + ' · ⚔ ' + k.army + ' · ❤ ' + k.loyalty + ' (' + tt('treasury, army, loyalty') + ')'
+      );
     h +=
       row('Artifacts', s.artifacts.map(a => a.name).join(', ')) +
       row('Conquered', s.conquered.join(', ')) +
@@ -81,7 +88,11 @@
               S.allyArt(a),
               a.name,
               '',
-              (a.lv ? 'power ' + a.lv : '') + (opts().loyalty && a.loyalty != null ? ' · loyalty ' + a.loyalty : '')
+              (a.lv ? 'power ' + a.lv : '') +
+                (opts().loyalty && a.loyalty != null ? ' · loyalty ' + a.loyalty : '') +
+                // companion arcs (4): an oath sworn, or a doubt you are keeping to yourself
+                (a.sworn ? ' · ' + tt('sworn to you') : '') +
+                (a.doubt ? ' · ' + tt('under suspicion') : '')
             )
           )
           .join('');
