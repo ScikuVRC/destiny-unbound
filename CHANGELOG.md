@@ -4,6 +4,26 @@ What changed in each release of Destiny Unbound. The release workflow uses the s
 GitHub release notes. Builds: [GitHub releases](https://github.com/ScikuVRC/destiny-unbound/releases) and
 [itch.io](https://bzrkherja.itch.io/destiny-unbound).
 
+## 0.3.0-alpha.9 (2026-11-23)
+
+### New
+
+- **Set bonuses.** Twelve sets of three pieces, like Child of the Flame (fire element, a fire weapon, fire in the
+  blood) or Lord of the Dead. Two pieces give a named bonus, all three a bigger one; a note pops up while you spin.
+- **Hall tournament.** A new Versus format: the eight strongest heroes in your Hall fight a seeded bracket with the
+  real odds. The champion earns the title Champion of the Hall.
+- **Monthly challenge.** One rule a month for everyone, like a Month of the Dead or a Month of Giants. Finish a saga
+  with a hero made under it to earn the month's badge. Daily Challenge on the menu now offers both.
+- **Daily streaks.** Days in a row of finished daily challenges, with a badge at 3, 7 and 30 days.
+- **Milestones.** Nine long achievements in bronze, silver and gold, with progress bars.
+- **Moving title screens.** The painted title art drifts slowly, with embers, stars, sparks, ash or fireflies to
+  match each look (only with animations fully on).
+
+### Changed
+
+- **Screen readers.** The result is announced once instead of every slice the pointer passes, and the wheel says how
+  many results it has and the likeliest ones.
+
 ## 0.3.0-alpha.8 (2026-11-23)
 
 ### New
